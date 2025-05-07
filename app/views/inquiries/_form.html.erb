@@ -1,0 +1,30 @@
+<div class="row">
+	<div class="col-12 col-lg-12">
+		<h4 class="font-weight-400"><%= t('contacts.title') %></h4>
+	</div>
+	<div class="col-12 col-lg-12">
+		<%= flash_message2 %>
+		<%= simple_form_for @inquiry || Inquiry.new, url: inquiries_path, method: :post, remote: true do |f| %>
+			<div class="row">
+				<div class="col-12 col-md-6">
+					<%= f.input :name %>
+					<%= f.input :company_name %>
+					<%= f.input :email %>
+				</div>
+				<div class="col-12 col-md-6">
+					<%= f.input :phone %>
+					<%= f.input :message, as: :text, input_html: { rows: "8" }	%>
+					<% if @show_recaptcha_v2 %>
+						<input type="hidden" value="true" name="inquiry[use_v2]" id="inquiry_use_v2">
+						<%= raw BGRC::Recaptcha.recaptcha_v2_render %>
+					<% else %>
+						<%= raw BGRC::Recaptcha.recaptcha_execute('inquiry') %>
+					<% end %>
+					<div class="col-12 margin-30px-top">
+						<button type="submit" class="btn btn-large btn-iec btn-rounded"><%= t('global.submit') %></button>
+					</div>
+				</div>
+			</div>
+		<% end %>
+	</div>
+</div>

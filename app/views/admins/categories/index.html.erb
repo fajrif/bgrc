@@ -1,0 +1,21 @@
+<% title_page("Categories") %>
+<div class="row">
+	<div class="col-lg-12">
+		<div class="card">
+			<div class="card-header border-0">
+				<div class="row g-4 align-items-center">
+					<div class="col-sm-auto ms-auto">
+						<div class="hstack gap-2">
+							<a class="btn btn-success add-btn" href="<%= new_admins_category_path %>"><i class="ri-add-line align-bottom me-1"></i> Add Category</a>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="card-body">
+				<%= render 'table' %>
+			</div>
+		</div>
+	</div>
+	<!--end col-->
+</div>
+<!--end row-->

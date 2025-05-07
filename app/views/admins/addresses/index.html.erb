@@ -1,0 +1,48 @@
+<% title_page("List Address") %>
+<div class="row">
+	<div class="col-lg-12">
+		<div class="card">
+			<div class="card-header border-0">
+				<div class="row g-4 align-items-center">
+					<div class="col-sm-auto ms-auto">
+						<div class="hstack gap-2">
+							<a class="btn btn-success add-btn" href="<%= new_admins_address_path %>"><i class="ri-add-line align-bottom me-1"></i> Add address</a>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div id="index_table" class="card-body">
+				<%= render 'table' %>
+			</div>
+		</div>
+	</div>
+	<!--end col-->
+</div>
+<!--end row-->
+<%= content_for :tail do %>
+	<%= javascript_include_tag "jquery-ui/widget" %>
+	<%= javascript_include_tag "jquery-ui/widgets/sortable" %>
+	<script>
+		$(document).on('ready page:load', function () {
+			$("#contents").sortable({
+				handle: '.handle',
+				update: function(e, ui) {
+					$.ajax({
+							url: $(this).data("url"),
+							type: "PATCH",
+							data: $(this).sortable('serialize'),
+							dataType: 'script',
+							error: function() {
+									console.log('Unable to use jquery-ui sortable');
+							}
+					});
+				}
+			});
+		});
+	</script>
+	<style>
+		.ui-sortable-handle{
+			cursor: pointer;
+		}
+	</style>
+<% end %>

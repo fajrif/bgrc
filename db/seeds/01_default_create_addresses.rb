@@ -1,0 +1,1 @@
+Address.delete_all

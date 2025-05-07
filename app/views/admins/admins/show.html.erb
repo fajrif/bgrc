@@ -1,0 +1,44 @@
+<% title_page("Admin details") %>
+<div class="row">
+	<div class="col-12">
+		<div class="card">
+			<div class="card-body">
+				<table class="table table-hover">
+					<tr>
+						<td style="width:20%;"><b>ID</b></td>
+						<td><%= @admin.id %></td>
+					</tr>
+					<tr>
+						<td><b>Full Name</b></td>
+						<td><h5 class="fs-14 mb-0 text-body"><%= @admin.full_name %></h5></td>
+					</tr>
+					<tr>
+						<td><b>Email</b></td>
+						<td><%= @admin.email %></td>
+					</tr>
+					<tr>
+						<td><b>Password</b></td>
+						<td>*****</td>
+					</tr>
+					<tr>
+						<td><b>Role</b></td>
+						<td><%= @admin.role.name %></td>
+					</tr>
+					<tr>
+						<td><b>Last Sign In At</b></td>
+						<td><%= @admin.try(:last_sign_in_at).try(:strftime, '%d/%m/%Y %H:%M') %></td>
+					</tr>
+					<tr>
+						<td><b>Create At</b></td>
+						<td><%= @admin.created_at.strftime('%d/%m/%Y %H:%M') %></td>
+					</tr>
+				</table>
+				<div class="form-actions">
+					<%= link_to 'Edit', edit_admins_admin_path(@admin), :class => 'btn btn-secondary' %>
+					<%= link_to 'Destroy', admins_admin_path(@admin), :data => { :confirm => 'Are you sure?' }, :method => :delete, :class => 'btn btn-danger' %>
+					<%= link_to 'View All', admins_admins_path, :class => 'btn btn-light' %>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

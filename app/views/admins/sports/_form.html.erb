@@ -1,0 +1,26 @@
+<%= simple_form_for @sport, url: (@sport.new_record? ? admins_sports_path : admins_sport_path(@sport.id)), method: (@sport.new_record? ? :post : :put) do |f| %>
+	<div class="row">
+		<div class="col-lg-8">
+			<div class="card">
+				<div class="card-body">
+					<%= f.error_notification %>
+					<fieldset>
+						<%= f.input :image, as: :file, input_html: { class: "mb-3", accept: "image/gif, image/png, image/jpg, image/jpeg, image/webp" } %>
+						<%= f.input :name, as: :string %>
+						<%= f.input :short_description, as: :text %>
+						<%= f.input :description, as: :text %>
+					</fieldset>
+					<%= f.error :base %>
+					<div class="form-actions">
+						<%= f.button :submit, :class => 'btn btn-secondary' %>
+						<% unless @sport.new_record? %>
+							<%= link_to "Cancel", admins_sport_path(@sport.id), :class => 'btn btn-light' %>
+						<% else %>
+							<%= link_to "Cancel", admins_sports_path, :class => 'btn btn-light' %>
+						<% end %>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+<% end %>

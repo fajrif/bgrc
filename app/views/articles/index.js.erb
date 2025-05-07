@@ -1,0 +1,14 @@
+$("#index_table").html("<%= escape_javascript(render("table")) %>");
+
+var $blog_filter = $('.blog-wrapper');
+$blog_filter.imagesLoaded(function () {
+		$blog_filter.removeClass('grid-loading');
+		$blog_filter.isotope({
+				layoutMode: 'masonry',
+				itemSelector: '.grid-item',
+				percentPosition: true,
+				masonry: {
+						columnWidth: '.grid-sizer'
+				}
+		});
+});

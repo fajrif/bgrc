@@ -1,0 +1,39 @@
+<%= render "shared/setting_banners" %>
+
+<!-- start blog content section -->
+<section style="overflow:visible;">
+	<div class="container-xl">
+		<div class="row">
+			<div class="col-lg-8">
+				<div class="row">
+					<div class="col-md-8 text-center tab-style3">
+						<!-- start tab navigation -->
+						<ul class="nav nav-tabs margin-30px-bottom sm-margin-30px-bottom text-uppercase alt-font text-medium font-weight-500 justify-content-start">
+							<li class="nav-item"><a href="<%= page_path(@page_news) %>" class="nav-link text-medium-gray <%= 'active' if @page.id == @page_news.id %>"><%= t('global.all') %></a></li>
+							<% @categories.each do |cat| %>
+								<li class="nav-item"><a href="<%= page_path(cat) %>" class="nav-link text-medium-gray <%= 'active' if @category && @category == cat %>"><%= cat.name %></a></li>
+							<% end %>
+						</ul>
+						<!-- end tab navigation -->
+					</div>
+					<div class="col-8 col-md-4 text-start text-lg-end padding-30px-right sm-margin-15px-bottom">
+						<!-- filter -->
+						<%= form_tag (@category ? page_path(@category) : page_path(@page_news)), { id: "index_search", method: :get } do %>
+							<%= select_tag :sort_by, options_for_select([["Newest", "desc"], ["Oldest", "asc"]], params[:sort_by]), :prompt => 'Select Order By', :class => "selectpicker filter_select mb-0" %>
+						<% end %>
+						<!-- end filter -->
+					</div>
+				</div>
+				<div class="row">
+					<div id="index_table" class="col-12 blog-content">
+						<%= render "table" %>
+					</div>
+				</div>
+			</div>
+			<div class="col-lg-4">
+				<%= render "disclosure_informations" unless @disclosure_informations.empty? %>
+			</div>
+		</div>
+	</div>
+</section>
+<!-- end blog content section -->

@@ -1,0 +1,44 @@
+<!-- most recent -->
+<section class="half-section pt-0">
+	<% unless @articles.empty? %>
+	<div class="container">
+		<div class="row">
+			<div class="row justify-content-start align-items-center wow animate__fadeIn">
+				<div class="col-lg-7">
+					<h5 class="font-weight-320 text-extra-dark-gray mb-4"><%= t('global.others_news') %></h5>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-12 blog-content no-padding-lr">
+				<ul class="hover-option4 blog-post-style3 blog-grid blog-wrapper grid grid-3col xl-grid-3col lg-grid-3col md-grid-2col sm-grid-2col xs-grid-1col gutter-extra-large">
+					<li class="grid-sizer"></li>
+					<% @articles.each do |article| %>
+					<!-- start post item -->
+					<li class="grid-item last-paragraph-no-margin text-center text-sm-start wow animate__fadeInUp">
+						<div class="blog-post bg-light-grey border-radius-10">
+							<% if article.image.attached? %>
+							<div class="blog-post-images overflow-hidden position-relative padding-10px-all">
+								<a href="<%= article_path(article) %>">
+									<%= image_tag article.image.variant(resize_to_limit: [345,253]), class: "border-radius-8" %>
+								</a>
+							</div>
+							<% end %>
+							<div class="post-details padding-40px-all md-padding-20px-all padding-10px-top">
+								<span class="post-author text-medium text-extra-dark-gray d-block margin-10px-bottom sm-margin-5px-bottom"><%= article.try(:published_date).try(:strftime, '%b %d, %Y') %></span>
+								<a href="<%= article_path(article) %>" class="alt-font post-title font-weight-400 text-extra-large text-extra-dark-gray d-block margin-10px-bottom sm-margin-5px-bottom"><%= article.title %></a>
+								<%= link_to article_path(article), class: "btn btn-medium btn-line text-gray text-uppercase margin-20px-top sm-margin-10px-top" do %>
+									<%= t('global.read_more') %> <i class="fa-solid fa-arrow-right icon-very-small" aria-hidden="true"></i>
+								<% end %>
+							</div>
+						</div>
+					</li>
+					<!-- end post item -->
+					<% end %>
+				</ul>
+			</div>
+		</div>
+	</div>
+	<% end %>
+</section>
+<!-- end most recent -->

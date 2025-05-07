@@ -1,0 +1,85 @@
+# Files in the config/locales directory are used for internationalization and
+# are automatically loaded by Rails. If you want to use locales other than
+# English, add the necessary files in this directory.
+#
+# To use the locales, use `I18n.t`:
+#
+#     I18n.t "hello"
+#
+# In views, this is aliased to just `t`:
+#
+#     <%= t("hello") %>
+#
+# To use a different locale, set it with `I18n.locale`:
+#
+#     I18n.locale = :es
+#
+# This would use the information in config/locales/es.yml.
+#
+# To learn more about the API, please read the Rails Internationalization guide
+# at https://guides.rubyonrails.org/i18n.html.
+#
+# Be aware that YAML interprets the following case-insensitive strings as
+# booleans: `true`, `false`, `on`, `off`, `yes`, `no`. Therefore, these strings
+# must be quoted to be interpreted as strings. For example:
+#
+#     en:
+#       "yes": yup
+#       enabled: "ON"
+
+en:
+  contacts:
+    title: "Contact Us"
+    short_description: "You can contact us if you have any questions or comments"
+    instructions: "Submit your inquiries through this form"
+  inquiries:
+    success: "Thank You for your inquiry!"
+    errors: "Oops sorry we are unable to submit your inquiry!"
+  sumatra_kruh:
+    key_point1: "Positive cash flow producing block."
+    key_point2: "Average total gross production of 330 barrels of oil per day from 4 wells in 2018"
+    key_point3: "Additional 5 prospects within Kruh Block provide significant upside potential in terms of reserves"
+  java_citarum:
+    key_point1: "De-risked exploration block with proven presence of hydrocarbon"
+    key_point2: "Located near the market where there’s a current deficit of natural gas supply"
+    key_point3: "Possibility to tap into the region’s existing pipeline infrastructure network"
+  errors:
+    404_title: "Page Not Found"
+    404_desc: "The page you were looking for could not be found."
+    403_title: "Forbidden Access"
+    403_desc: "Access to the requested resource is forbidden."
+    422_title: "Unprocessable Content"
+    422_desc: "The change you wanted was rejected."
+    500_title: "Page Error"
+    500_desc: "We're sorry, but something went wrong."
+  global:
+    read_more: "Read More"
+    recaptcha_failed: "Recaptcha verification failed"
+    view_profile: "View Profile"
+    view_all: "View All"
+    view_locations: "See All Locations"
+    view_media: "See All Media"
+    view: "View"
+    about_us: "About Us"
+    contact_us: "Contact Us"
+    press_release: "Press Release"
+    media_page: "Media"
+    sec_filings: "SEC Filings"
+    research_reports: "Research Reports"
+    corporate_governance: "Corporate Governance"
+    back_to: "Back to %{object_name}"
+    back_to_news: "Back to News"
+    others: "Other %{object_name}"
+    others_news: "More News & Media"
+    no_data_found: "No Data Found"
+    download: "Download"
+    download_now: "Download Now"
+    apply_now: "Apply Now"
+    submit: "Submit"
+    search_results: "Search Results"
+    search_not_found: "Search not found: `%{search}`"
+    articles: "Articles"
+    pages: "Pages"
+    max: "Max"
+    key_points: "Key Points"
+    all: "All"

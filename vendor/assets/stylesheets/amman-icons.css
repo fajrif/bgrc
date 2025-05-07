@@ -1,0 +1,84 @@
+[class^="amman-icon-"], [class*=" amman-icon-"] {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'amman-icons' !important;
+  speak: never;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.amman-icon-left:before {
+  content: "\e900";
+}
+.amman-icon-right:before {
+  content: "\e903";
+}
+.amman-icon-play:before {
+  content: "\e901";
+}
+.amman-icon-send:before {
+  content: "\e902";
+}
+.amman-icon-upload:before {
+  content: "\e904";
+}
+.amman-icon-download:before {
+  content: "\e906";
+}
+.amman-icon-search:before {
+  content: "\e905";
+}
+.amman-icon-plus:before {
+  content: "\e907";
+}
+.amman-icon-close:before {
+  content: "\e909";
+}
+.amman-icon-refresh:before {
+  content: "\e908";
+}
+.amman-icon-warning:before {
+  content: "\e90d";
+}
+.amman-icon-exclamation:before {
+  content: "\e90a";
+}
+.amman-icon-first-aid:before {
+  content: "\e90b";
+}
+.amman-icon-helmet:before {
+  content: "\e90c";
+}
+.amman-icon-bell:before {
+  content: "\e90f";
+}
+.amman-icon-washroom:before {
+  content: "\e90e";
+}
+.amman-icon-location:before {
+  content: "\e910";
+}
+.amman-icon-paperclip:before {
+  content: "\e912";
+}
+.amman-icon-user:before {
+  content: "\e911";
+}
+.amman-icon-dashboard:before {
+  content: "\e914";
+}
+.amman-icon-database:before {
+  content: "\e913";
+}
+.amman-icon-contact:before {
+  content: "\e915";
+}
+.amman-icon-article:before {
+  content: "\e916";
+}

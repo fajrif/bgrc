@@ -1,0 +1,54 @@
+/*
+ * This is a manifest file that'll be compiled into application.css, which will include all the files
+ * listed below.
+ *
+ * Any CSS (and SCSS, if configured) file within this directory, lib/assets/stylesheets, or any plugin's
+ * vendor/assets/stylesheets directory can be referenced here using a relative path.
+ *
+ * You're free to add application-wide styles to this file and they'll appear at the bottom of the
+ * compiled file so the styles you add here take precedence over styles defined in any other CSS
+ * files in this directory. Styles in this file should be added after the last require_* statement.
+ * It is generally better to create a new file per style scope.
+ *
+ *= require bootsnav.css
+ *= require theme-vendors.min.css
+ *= require bootstrap-select.min.css
+ *= require style.css
+ *= require custom.css
+ *= require responsive.css
+ *= require_self
+ */
+
+@media (max-width: 991px) {
+	nav.navbar.bootsnav .navbar-nav {
+		background-color: rgba(0, 0, 0, 0.95);
+	}
+	.center-logo {
+		padding: 10px 15px 10px 0;
+	}
+}
+
+.alert a {
+	color: #fff;
+	font-weight: 500;
+}
+
+.alert-danger {
+	--bs-alert-color: #fff;
+	--bs-alert-bg: var(--bs-form-invalid-color);
+	--bs-alert-border-color: var(--bs-form-invalid-color);
+	--bs-alert-link-color: #fff;
+	margin-bottom: 2rem;
+}
+.alert-success {
+	--bs-alert-color: #fff;
+	--bs-alert-bg: var(--green-color);
+	--bs-alert-border-color: var(--very-light-green-color);
+	--bs-alert-link-color: #fff;
+	margin-bottom: 2rem;
+}
+.btn-close {
+	--bs-btn-close-color: #fff;
+	opacity: 1;
+	background: none;
+}

@@ -1,0 +1,48 @@
+.business-line .row {
+	display: flex;
+	flex: 0 0 auto;
+	flex-direction: column-reverse;
+}
+.business-line .row .col {
+	border-radius: 8px;
+	margin-bottom: 10px;
+  -moz-transition: all 0.5s ease-in-out;
+  -ms-transition: all 0.5s ease-in-out;
+  -webkit-transition: all 0.5s ease-in-out;
+  transition: all 0.5s ease-in-out;
+}
+.business-line .row .col:hover,
+.business-line .row .col:first-child ~ .col:last-child {
+  -moz-transition: all 0.5s ease-in-out;
+  -ms-transition: all 0.5s ease-in-out;
+  -webkit-transition: all 0.5s ease-in-out;
+  transition: all 0.5s ease-in-out;
+}
+@media (min-width: 992px) {
+	.business-line .row {
+		flex-direction: row-reverse;
+	}
+	.business-line .row .col {
+		width: 15%;
+		height: 600px;
+		/*opacity: 0.8;*/
+		margin: 0 2px;
+		-moz-transition: all 0.5s ease-in-out;
+		-ms-transition: all 0.5s ease-in-out;
+		-webkit-transition: all 0.5s ease-in-out;
+		transition: all 0.5s ease-in-out;
+	}
+	.business-line .row .col:hover,
+	.business-line .row .col:first-child ~ .col:last-child {
+		width: 52%;
+		/*opacity: 1;*/
+		-moz-transition: all 0.5s ease-in-out;
+		-ms-transition: all 0.5s ease-in-out;
+		-webkit-transition: all 0.5s ease-in-out;
+		transition: all 0.5s ease-in-out;
+	}
+	.business-line .row .col:hover ~ .col:last-child {
+		width: 15%;
+		/*opacity: 0.8;*/
+	}
+}

@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en" data-layout="vertical" data-topbar="light" data-sidebar="dark" data-sidebar-size="lg" data-sidebar-image="none" data-preloader="disable">
+<head>
+	<meta charset="utf-8" />
+	<title><%= @meta_title.nil? ? configatron.site_title : @meta_title %></title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<!-- Google fonts -->
+	<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+	<!-- CDNJS -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/7.2.96/css/materialdesignicons.min.css" integrity="sha512-LX0YV/MWBEn2dwXCYgQHrpa9HJkwB+S+bnBpifSOTO1No27TqNMKYoAn6ff2FBh03THAzAiiCwQ+aPX+/Qt/Ow==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/line-awesome/1.3.0/line-awesome/css/line-awesome.min.css" integrity="sha512-vebUliqxrVkBy3gucMhClmyQP9On/HAWQdKDXRaAlb/FKuTbxkjPKUyqVOxAcGwFDka79eTF+YXwfke1h3/wfg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.2.0/remixicon.min.css" integrity="sha512-MqL4+Io386IOPMKKyplKII0pVW5e+kb+PI/I3N87G3fHIfrgNNsRpzIXEi+0MQC0sR9xZNqZqCYVcC61fL5+Vg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+	<!-- favicon -->
+	<%= favicon_link_tag 'favicon.png' %>
+	<%= stylesheet_link_tag 'admin', :media => "all" %>
+	<%= csrf_meta_tag %>
+	<%= yield :head %>
+</head>
+<body>
+	<!-- auth-page wrapper -->
+	<div class="auth-page-wrapper auth-bg-cover py-5 d-flex justify-content-center align-items-center min-vh-100">
+		<div class="bg-overlay"></div>
+		<!-- auth-page content -->
+		<div class="auth-page-content overflow-hidden pt-lg-5">
+			<div class="container">
+				<%= yield %>
+			</div>
+			<!-- end container -->
+		</div>
+		<!-- end auth page content -->
+		<%= render "admins/shared/footer" %>
+	</div>
+	<!-- end auth-page-wrapper -->
+	<!-- JAVASCRIPT -->
+	<%= javascript_include_tag 'admin' %>
+	<%= yield :tail %>
+</body>
+</html>

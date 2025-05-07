@@ -1,0 +1,24 @@
+<%= simple_form_for [:admins, @address] do |f| %>
+	<%= f.error_notification %>
+	<fieldset>
+		<%= f.input :order_no %>
+		<%= f.input :name, as: :string %>
+		<%= f.input :complete_address, as: :text %>
+		<%= f.input :email1, as: :string %>
+		<%= f.input :email2, as: :string %>
+		<%= f.input :phone1, as: :string %>
+		<%= f.input :phone2, as: :string %>
+		<%= f.input :fax, as: :string %>
+		<%= f.input :latitude, as: :string %>
+		<%= f.input :longitude, as: :string %>
+	</fieldset>
+	<%= f.error :base %>
+	<div class="form-actions">
+		<%= f.button :submit, :class => 'btn btn-secondary' %>
+		<% unless @address.new_record? %>
+			<%= link_to "Cancel", admins_address_path(@address), :class => 'btn btn-light' %>
+		<% else %>
+			<%= link_to "Cancel", admins_addresses_path, :class => 'btn btn-light' %>
+		<% end %>
+	</div>
+<% end %>

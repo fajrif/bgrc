@@ -1,0 +1,39 @@
+<%= simple_form_for @question, url: (@question.new_record? ? admins_questions_path : admins_question_path(@question.id)), method: (@question.new_record? ? :post : :put) do |f| %>
+	<div class="row">
+		<div class="col-lg-8">
+			<div class="card">
+				<div class="card-body">
+					<%= f.error_notification %>
+					<fieldset>
+						<%= f.input :title, as: :string %>
+						<%= f.input :description, as: :text %>
+					</fieldset>
+					<%= f.error :base %>
+					<div class="form-actions">
+						<%= f.button :submit, :class => 'btn btn-secondary' %>
+						<% unless @question.new_record? %>
+							<%= link_to "Cancel", admins_question_path(@question.id), :class => 'btn btn-light' %>
+						<% else %>
+							<%= link_to "Cancel", admins_questions_path, :class => 'btn btn-light' %>
+						<% end %>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-lg-4">
+			<div class="row">
+				<%= render "admins/shared/error_messages", :target => @question, col: 'col-lg-12' %>
+				<div class="col-lg-12">
+					<div class="card">
+						<div class="card-header">
+							<h5 class="card-title mb-0">Settings</h5>
+						</div>
+						<div class="card-body">
+              <%= f.input :section, collection: option_sections %>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+<% end %>

@@ -1,0 +1,128 @@
+<!-- ========== App Menu ========== -->
+<div class="app-menu navbar-menu">
+	<!-- LOGO -->
+	<div class="navbar-brand-box">
+		<!-- Light Logo-->
+		<a href="<%= root_path %>" class="logo logo-light">
+			<span class="logo-sm">
+				<%= image_tag('favicon.png', height: "42") %>
+			</span>
+			<span class="logo-lg">
+				<%= image_tag('logo.png', height: "50") %>
+			</span>
+		</a>
+		<button type="button" class="btn btn-sm p-0 fs-20 header-item float-end btn-vertical-sm-hover" id="vertical-hover">
+			<i class="ri-record-circle-line"></i>
+		</button>
+	</div>
+
+	<div id="scrollbar">
+		<div class="container-fluid">
+			<div id="two-column-menu"></div>
+			<ul class="navbar-nav" id="navbar-nav">
+				<li class="menu-title"><span data-key="t-menu">Menu</span></li>
+				<li class="nav-item">
+					<a class="nav-link menu-link <%= 'active' if is_admins_dashboard_page? %>" href="<%= admins_root_path %>">
+						<i class="ri-dashboard-2-line"></i> <span data-key="t-dashboards">Dashboards</span>
+					</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link menu-link <%= 'active' if is_admins_banners_page? %>" href="#sidebarBanners" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarBanners">
+						<i class="ri-image-fill"></i> <span data-key="t-landing">Banners</span>
+					</a>
+					<div class="collapse menu-dropdown <%= 'show' if is_admins_banners_page? %>" id="sidebarBanners">
+						<ul class="nav nav-sm flex-column">
+							<li class="nav-item">
+								<a href="<%= admins_banners_path %>" class="nav-link <%= current_path?('banners') %>">Banners</a>
+							</li>
+							<li class="nav-item">
+								<a href="<%= admins_banner_sections_path %>" class="nav-link <%= current_path?('banner_sections') %>">Banner Sections</a>
+							</li>
+						</ul>
+					</div>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link menu-link <%= 'active' if is_admins_articles_page? %>" href="#sidebarArticles" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarArticles">
+						<i class="ri-article-line"></i> <span data-key="t-landing">Articles</span>
+					</a>
+					<div class="collapse menu-dropdown <%= 'show' if is_admins_articles_page? %>" id="sidebarArticles">
+						<ul class="nav nav-sm flex-column">
+							<li class="nav-item">
+								<a href="<%= admins_articles_path %>" class="nav-link <%= current_path?('articles') %>">Articles</a>
+							</li>
+							<li class="nav-item">
+								<a href="<%= admins_categories_path %>" class="nav-link <%= current_path?('categories') %>">Categories</a>
+							</li>
+						</ul>
+					</div>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link menu-link <%= 'active' if is_admins_users_page? %>" href="#sidebarUsers" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarUsers">
+						<i class="ri-user-line"></i> <span data-key="t-landing">Users</span>
+					</a>
+					<div class="collapse menu-dropdown <%= 'show' if is_admins_users_page? %>" id="sidebarUsers">
+						<ul class="nav nav-sm flex-column">
+							<li class="nav-item">
+								<a href="<%= admins_users_path %>" class="nav-link <%= current_path?('users') %>">Users</a>
+							</li>
+							<li class="nav-item">
+								<a href="#" class="nav-link <%= current_path?('bookings') %>">Bookings</a>
+							</li>
+						</ul>
+					</div>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link menu-link <%= 'active' if is_admins_sports_page? %>" href="#sidebarSports" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarSports">
+						<i class="ri-basketball-line"></i> <span data-key="t-landing">Sports</span>
+					</a>
+					<div class="collapse menu-dropdown <%= 'show' if is_admins_sports_page? %>" id="sidebarSports">
+						<ul class="nav nav-sm flex-column">
+							<li class="nav-item">
+								<a href="<%= admins_sports_path %>" class="nav-link <%= current_path?('sports') %>">Sports</a>
+							</li>
+							<li class="nav-item">
+								<a href="<%= admins_facilities_path %>" class="nav-link <%= current_path?('facilities') %>">Facilities</a>
+							</li>
+							<li class="nav-item">
+								<a href="<%= admins_events_path %>" class="nav-link <%= current_path?('events') %>">Events</a>
+							</li>
+							<li class="nav-item">
+								<a href="<%= admins_promos_path %>" class="nav-link <%= current_path?('promos') %>">Promo</a>
+							</li>
+						</ul>
+					</div>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link menu-link <%= 'active' if is_admins_others_page? %>" href="#sidebarOthers" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarOthers">
+						<i class="ri-message-line"></i> <span data-key="t-landing">Others</span>
+					</a>
+					<div class="collapse menu-dropdown <%= 'show' if is_admins_others_page? %>" id="sidebarOthers">
+						<ul class="nav nav-sm flex-column">
+							<li class="nav-item">
+								<a href="<%= admins_testimonials_path %>" class="nav-link <%= current_path?('testimonials') %>">Testimonials</a>
+							</li>
+							<li class="nav-item">
+								<a href="<%= admins_questions_path %>" class="nav-link <%= current_path?('questions') %>">FAQ</a>
+							</li>
+						</ul>
+					</div>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link menu-link <%= 'active' if is_admins_contact_page? %>" href="<%= admins_inquiries_path %>">
+						<i class="ri-account-box-fill"></i> <span data-key="t-dashboards">Inquiries</span>
+					</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link menu-link <%= 'active' if is_admins_users_page? %>" href="<%= admins_admins_path %>">
+						<i class="ri-account-circle-line"></i> <span data-key="t-dashboards">Admins</span>
+					</a>
+				</li>
+			</ul>
+		</div>
+		<!-- Sidebar -->
+	</div>
+	<div class="sidebar-background"></div>
+</div>
+<!-- Left Sidebar End -->
+<!-- Vertical Overlay-->
+<div class="vertical-overlay"></div>

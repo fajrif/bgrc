@@ -1,0 +1,12 @@
+//= link_tree ../images
+//= link_directory ../stylesheets .css
+//= link_directory ../javascripts .js
+//= link_tree ../../../vendor/assets/images
+//= link application.js
+//= link application.css
+//= link password-addon.init.js
+//= link jquery.marquee.min.js
+//= link jquery-ui/widget.js
+//= link jquery-ui/widgets/sortable.js
+//= link pdfjs_viewer/application.css
+//= link pdfjs_viewer/application.js

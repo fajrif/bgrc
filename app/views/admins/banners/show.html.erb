@@ -1,0 +1,44 @@
+<% title_page("Banner details") %>
+<div class="row">
+	<div class="col-12">
+		<div class="card">
+			<div class="card-body">
+				<div class="form-actions text-end">
+					<%= link_to 'Edit', edit_admins_banner_path(@banner), :class => 'btn btn-secondary' %>
+					<%= link_to 'Destroy', admins_banner_path(@banner), :data => { :confirm => 'Are you sure?' }, :method => :delete, :class => 'btn btn-danger' %>
+					<%= link_to 'View All', admins_banners_path, :class => 'btn btn-light' %>
+				</div>
+				<div id="show-table">
+					<table class="table table-hover">
+						<tr>
+							<td style="width:15%;"><b>ID</b></td>
+							<td><%= @banner.id %></td>
+						</tr>
+						<tr>
+							<td><b>Order No</b></td>
+							<td><%= @banner.order_no %></td>
+						</tr>
+						<tr>
+							<td><b>Image</b></td>
+							<td>
+								<%= image_tag @banner.image.variant(resize_to_limit: [100,100]) %>
+							</td>
+						</tr>
+						<tr>
+							<td><b>Banner Section</b></td>
+							<td><%= @banner.try(:banner_section).try(:name) %></td>
+						</tr>
+						<tr>
+							<td><b>Title</b></td>
+							<td><h5 class="fs-14 mb-0 text-body"><%= @banner.title %></h5></td>
+						</tr>
+						<tr>
+							<td><b>Description</b></td>
+							<td><%= @banner.description %></td>
+						</tr>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

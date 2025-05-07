@@ -1,0 +1,15 @@
+<%= paginator.render do -%>
+	<div class="d-flex justify-content-end mt-3">
+		<div class="pagination-wrap hstack gap-2">
+			<%= prev_page_tag unless current_page.first? %>
+			<ul class="pagination listjs-pagination mb-0">
+				<% each_page do |page| -%>
+					<% if page.left_outer? || page.right_outer? || page.inside_window? -%>
+						<%= page_tag page %>
+					<% end -%>
+				<% end -%>
+			</ul>
+			<%= next_page_tag unless current_page.last? %>
+		</div>
+	</div>
+<% end -%>

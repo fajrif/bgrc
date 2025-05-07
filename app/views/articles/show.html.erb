@@ -1,0 +1,39 @@
+<!-- start page single banner -->
+<section class="wow animate__fadeIn parallax" data-parallax-background-ratio="0.5" style="background-image:url('<%= url_for(@article.image) %>');">
+		<div class="opacity-medium bg-black"></div>
+		<div class="container position-relative">
+			<div class="row align-items-center">
+				<div class="col-12 d-flex flex-column justify-content-center text-start extra-small-screen page-title-large">
+					<h1 class="text-white-2 text-uppercase font-weight-400 letter-spacing-minus-1 margin-10px-bottom"><%= @article.title %></h1>
+					<span class="text-very-light-gray text-uppercase"><%= @article.try(:category).try(:name) %></span>
+				</div>
+			</div>
+		</div>
+</section>
+<!-- end page single banner -->
+<!-- start blog content section -->
+<section class="half-section wow animate__fadeIn">
+	<div class="container">
+		<div class="row">
+			<div class="col-12 margin-50px-bottom">
+				<span class="post-author text-medium text-extra-dark-gray d-block margin-10px-bottom sm-margin-5px-bottom"><%= @article.try(:published_date).try(:strftime, '%b %d, %Y') %></span>
+				<h5 class="font-weight-400 text-extra-dark-gray text-uppercase"><%= @article.title %></h5>
+				<div class="line-height-26">
+					<%= raw @article.content %>
+				</div>
+				<% if @article.file.attached? %>
+					<div class="margin-50px-top">
+						<%= render_link_download_file(@article, "btn btn-medium btn-iec btn-rounded") %>
+					</div>
+				<% end %>
+			</div>
+			<div class="col-12 text-center">
+				<%= link_to :back, class: "btn btn-medium btn-rounded btn-iec" do %>
+					<i class="fa-solid fa-arrow-left icon-very-small m-switch" aria-hidden="true"></i>&nbsp;<%= t('global.back_to_news') %>
+				<% end %>
+			</div>
+		</div>
+	</div>
+</section>
+<!-- end blog content section -->
+<%= render "most_recent" %>

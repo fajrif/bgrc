@@ -1,0 +1,17 @@
+<div id="menu-wrap-menu-1" class="menu-wrap-menu full-screen d-none d-md-block">
+	<div class="row g-0 h-100 justify-content-start align-items-end">
+		<div class="col-md-3 menu-wrap-content position-absolute z-index-1 px-0 bg-yellow text-start h-90p d-flex flex-column justify-content-center xs-padding-45px-tb">
+			<div class="w-100 overflow-auto">
+				<div class="h-100 w-100">
+					<div class="h-100 w-100 align-middle padding-twelve-lr alt-font link-style-2 sm-padding-15px-lr">
+						<%= raw generate_popup_menus(@right_menu, @left_menu) %>
+					</div>
+				</div>
+			</div>
+			<button id="menu-wrap-close-btn" class="close-button-menu"></button>
+		</div>
+		<div class="col-md-12 menu-wrap-mask p-0 text-center z-index-0 d-none d-md-flex flex-column justify-content-center">
+			<div class="z-index-minus1"></div>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,26 @@
+<%= simple_form_for @testimonial, url: (@testimonial.new_record? ? admins_testimonials_path : admins_testimonial_path(@testimonial.id)), method: (@testimonial.new_record? ? :post : :put) do |f| %>
+	<div class="row">
+		<div class="col-lg-8">
+			<div class="card">
+				<div class="card-body">
+					<%= f.error_notification %>
+					<fieldset>
+						<%= f.input :name, as: :string %>
+						<%= f.input :email, as: :string %>
+						<%= f.input :company_name, as: :string %>
+						<%= f.input :comment, as: :text %>
+					</fieldset>
+					<%= f.error :base %>
+					<div class="form-actions">
+						<%= f.button :submit, :class => 'btn btn-secondary' %>
+						<% unless @testimonial.new_record? %>
+							<%= link_to "Cancel", admins_testimonial_path(@testimonial.id), :class => 'btn btn-light' %>
+						<% else %>
+							<%= link_to "Cancel", admins_testimonials_path, :class => 'btn btn-light' %>
+						<% end %>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+<% end %>

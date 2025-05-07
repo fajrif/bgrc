@@ -1,0 +1,45 @@
+/*
+ * This is a manifest file that'll automatically include all the stylesheets available in this directory
+ * and any sub-directories. You're free to add application-wide styles to this file and they'll appear at
+ * the top of the compiled file, but it's generally better to create a new file per style scope.
+ *
+ *= require bootstrap.min.css
+ *= require simplebar.min.css
+ *= require icons.css
+ *= require flatpickr.min.css
+ *= require app.css
+ *= require_self
+*/
+
+.topbar-user {
+	background-color: #fff;
+}
+.navbar-menu {
+	background: #000;
+	border-right: 1px solid #000;
+}
+:is([data-layout=vertical], [data-layout=semibox])[data-sidebar-size=sm] .navbar-menu .navbar-nav .nav-item:hover > a.menu-link,
+:is([data-layout=vertical], [data-layout=semibox])[data-sidebar-size=sm] .navbar-menu .navbar-nav .nav-item:hover > .menu-dropdown,
+:is([data-layout=vertical], [data-layout=semibox])[data-sidebar-size=sm] .navbar-brand-box {
+	background: #000;
+}
+.menu-title {
+	color: #5f6270;
+}
+.navbar-menu .navbar-nav .nav-link {
+	color: #7c7f90;
+}
+.navbar-menu .navbar-nav .nav-sm .nav-link {
+	color: #7c7f90;
+}
+.navbar-menu .navbar-nav .nav-sm .nav-link:before {
+	background-color: #7c7f90;
+}
+
+.table tbody td > img {
+	border: 1px solid #eee;
+}
+
+.select .invalid-feedback {
+	display: block;
+}

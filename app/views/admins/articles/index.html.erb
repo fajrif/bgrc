@@ -1,0 +1,32 @@
+<% title_page("Articles") %>
+<div class="row">
+	<div class="col-lg-12">
+		<div class="card">
+			<div class="card-header border-0">
+				<%= form_tag admins_articles_url, { :id => "index_search", :method => :get } do %>
+					<div class="row g-4 align-items-center">
+						<div class="col-md-4">
+							<div class="form-icon">
+								<%= text_field_tag :search, params[:search], :class => "form-control form-control-icon", :placeholder => "Search articles ..." %>
+								<i class="ri-search-line"></i>
+							</div>
+						</div>
+						<div class="col-md-3">
+							<%= select_tag :category_id, options_from_collection_for_select(Category.all, :id, :name, params[:category_id]), :prompt => 'Select Category', :class => "form-select", :onchange => "this.form.submit();" %>
+						</div>
+						<div class="col-sm-auto ms-auto">
+							<div class="hstack gap-2">
+								<a class="btn btn-success add-btn" href="<%= new_admins_article_path %>"><i class="ri-add-line align-bottom me-1"></i> Add Article</a>
+							</div>
+						</div>
+					</div>
+				<% end %>
+			</div>
+			<div id="index_table" class="card-body">
+				<%= render 'table' %>
+			</div>
+		</div>
+	</div>
+	<!--end col-->
+</div>
+<!--end row-->

@@ -1,0 +1,24 @@
+<% title_page("Inquiries") %>
+<div class="row">
+	<div class="col-lg-12">
+		<div class="card">
+			<div class="card-header border-0">
+				<div class="row g-4 align-items-center">
+					<div class="col-md-4">
+						<%= form_tag admins_inquiries_url, { :id => "index_search", :method => :get } do %>
+							<div class="form-icon">
+								<%= text_field_tag :search, params[:search], :class => "form-control form-control-icon", :placeholder => "Search by name or email ..." %>
+								<i class="ri-search-line"></i>
+							</div>
+						<% end %>
+					</div>
+				</div>
+			</div>
+			<div id="index_table" class="card-body">
+				<%= render 'table' %>
+			</div>
+		</div>
+	</div>
+	<!--end col-->
+</div>
+<!--end row-->

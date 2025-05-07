@@ -1,0 +1,33 @@
+# See https://cloud.google.com/sdk/gcloud/reference/topic/gcloudignore
+
+.gcloudignore
+.git
+.gitignore
+
+# Ignore all environment files (except templates).
+/.env*
+
+# Ignore all logfiles and tempfiles.
+/log/*
+/tmp/*
+!/log/.keep
+!/tmp/.keep
+
+# Ignore pidfiles, but keep the directory.
+/tmp/pids/*
+!/tmp/pids/
+!/tmp/pids/.keep
+
+# Ignore storage (uploaded files in development and any SQLite databases).
+/storage/*
+!/storage/.keep
+/tmp/storage/*
+!/tmp/storage/
+!/tmp/storage/.keep
+
+.DS_STORE
+
+/public/assets
+/public/menu
+/public/reports
+/public/images

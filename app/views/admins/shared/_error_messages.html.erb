@@ -1,0 +1,18 @@
+<% if target.errors.any? %>
+	<%- col ||= 'col-lg-4' -%>
+	<div class="<%= col %>">
+	<div class="card text-light">
+		<div class="card-header bg-gradient bg-dark">
+			<h5 class="card-title text-light mb-0">Error</h5>
+		</div>
+		<div class="card-body">
+			<h3 style="color:red;"><%= pluralize(target.errors.count, "error") + " prohibited this record from being saved:" %></h3>
+			<ul class="text-danger">
+				<% target.errors.full_messages.each do |msg| %>
+					<li><%= msg %></li>
+				<% end %>
+			</ul>
+		</div>
+	</div>
+</div>
+<% end %>

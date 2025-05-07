@@ -1,0 +1,15 @@
+<%= simple_form_for [:admins, @admin] do |f| %>
+	<%= f.error_notification %>
+	<fieldset>
+		<%= f.input :full_name %>
+		<%= f.input :email %>
+		<%= f.association :role, as: :select %>
+		<%= f.input :password %>
+		<%= f.input :password_confirmation %>
+	</fieldset>
+	<%= f.error :base %>
+	<div class="form-actions">
+		<%= f.button :submit, :class => 'btn btn-secondary' %>
+		<%= link_to "Cancel", admins_admins_path, :class => 'btn btn-light' %>
+	</div>
+<% end %>

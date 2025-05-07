@@ -1,0 +1,41 @@
+<!-- start header -->
+<header>
+	<!-- start navigation -->
+	<nav class="navbar navbar-default bootsnav navbar-fixed-top header-light background-transparent white-link navbar-expand-lg">
+		<div class="container-xl nav-header-container">
+			<!-- start logo -->
+			<div class="col-auto ps-0">
+				<%= link_to root_path, class: "logo" do %>
+					<%= image_tag("logo2.png", class: "", alt: "Bali Golf & Racket Club") %>
+				<% end %>
+			</div>
+			<!-- end logo -->
+			<div class="col-auto col-lg order-2 order-md-1 accordion-menu pe-0">
+				<button type="button" class="navbar-toggler collapsed" data-bs-toggle="collapse" data-bs-target="#navbar-collapse-toggle-1">
+					<span class="sr-only">toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<div class="navbar-collapse collapse justify-content-end" id="navbar-collapse-toggle-1">
+					<ul class="nav navbar-nav alt-font font-weight-700">
+					</ul>
+				</div>
+			</div>
+			<div class="col-auto order-1 order-md-2 pe-0">
+				<div class="btn-group dropdown-style-1">
+					<button type="button" class="btn text-uppercase dropdown-toggle sm-w-100" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						<% if I18n.locale == :en %>
+							<span class="icon-country usa"></span><span class="caret"></span>
+						<% elsif I18n.locale == :id %>
+							<span class="icon-country indonesia"></span><span class="caret"></span>
+						<% end %>
+					</button>
+					<%= get_locale_current_page_route %>
+				</div>
+			</div>
+		</div>
+	</nav>
+	<!-- end navigation -->
+</header>
+<!-- end header -->

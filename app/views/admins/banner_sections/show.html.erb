@@ -1,0 +1,36 @@
+<% title_page("Banner Section details") %>
+<div class="row">
+	<div class="col-12">
+		<div class="card">
+			<div class="card-body">
+				<table class="table table-hover">
+					<tr>
+						<td style="width:10%;"><b>ID</b></td>
+						<td><%= @banner_section.id %></td>
+					</tr>
+					<tr>
+						<td><b>Name</b></td>
+						<td><h5 class="fs-14 mb-0 text-body"><%= @banner_section.name %></h5></td>
+					</tr>
+					<tr>
+						<td>Style</td>
+						<td><%= @banner_section.style_label %></td>
+					</tr>
+					<tr>
+						<td>Size</td>
+						<td><%= @banner_section.size_label %></td>
+					</tr>
+					<tr>
+						<td><b>Banners</b></td>
+						<td><%= @banner_section.banners.size %></td>
+					</tr>
+				</table>
+				<div class="form-actions">
+					<%= link_to 'Edit', edit_admins_banner_section_path(@banner_section), :class => 'btn btn-secondary' %>
+					<%= link_to 'Destroy', admins_banner_section_path(@banner_section), :data => { :confirm => 'Are you sure?' }, :method => :delete, :class => 'btn btn-danger' %>
+					<%= link_to 'View All', admins_banner_sections_path, :class => 'btn btn-light' %>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

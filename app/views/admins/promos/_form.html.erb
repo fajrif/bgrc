@@ -1,0 +1,43 @@
+<%= simple_form_for @promo, url: (@promo.new_record? ? admins_promos_path : admins_promo_path(@promo.id)), method: (@promo.new_record? ? :post : :put) do |f| %>
+	<div class="row">
+		<div class="col-lg-8">
+			<div class="card">
+				<div class="card-body">
+					<%= f.error_notification %>
+					<fieldset>
+						<%= f.input :image, as: :file, input_html: { class: "mb-3", accept: "image/gif, image/png, image/jpg, image/jpeg, image/webp" } %>
+						<%= f.input :name, as: :string %>
+						<%= f.input :short_description, as: :text %>
+						<%= f.input :description, as: :text %>
+					</fieldset>
+					<%= f.error :base %>
+					<div class="form-actions">
+						<%= f.button :submit, :class => 'btn btn-secondary' %>
+						<% unless @promo.new_record? %>
+							<%= link_to "Cancel", admins_promo_path(@promo.id), :class => 'btn btn-light' %>
+						<% else %>
+							<%= link_to "Cancel", admins_promos_path, :class => 'btn btn-light' %>
+						<% end %>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-lg-4">
+			<div class="row">
+				<%= render "admins/shared/error_messages", :target => @promo, col: 'col-lg-12' %>
+				<div class="col-lg-12">
+					<div class="card">
+						<div class="card-header">
+							<h5 class="card-title mb-0">Settings</h5>
+						</div>
+						<div class="card-body">
+							<%= f.association :sport, as: :select %>
+							<%= f.input :start_date, as: :string, input_html: { class: "datetimepicker", value: get_input_date_value(f.object.start_date) } %>
+              <%= f.input :end_date, as: :string, input_html: { class: "datetimepicker", value: get_input_date_value(f.object.end_date) } %>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+<% end %>

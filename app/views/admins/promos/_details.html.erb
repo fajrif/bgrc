@@ -1,0 +1,41 @@
+<table class="table table-hover">
+	<tr>
+		<td style="width:15%;"><b>ID</b></td>
+		<td><%= @promo.id %></td>
+	</tr>
+	<% if @promo.image.attached? %>
+	<tr>
+		<td><b>Image</b></td>
+		<td>
+			<%= image_tag @promo.image.variant(resize_to_limit: [100,100]) %>
+			<%= link_to delete_attachment_image_admins_promo_path(@promo.id, @promo.image.id), :class => "ms-2 btn btn-danger btn-sm", :data => { :confirm => 'Are You sure want to delete this image?' }, :method => :delete do %>
+				<i class="ri-delete-bin-fill"></i>
+			<% end %>
+		</td>
+	</tr>
+	<% end %>
+	<tr>
+		<td><b>Name</b></td>
+		<td><h5 class="fs-14 mb-0 text-body"><%= @promo.name %></h5></td>
+	</tr>
+	<tr>
+		<td><b>Short Description</b></td>
+		<td><%= @promo.short_description %></td>
+	</tr>
+	<tr>
+		<td><b>Description</b></td>
+		<td><%= @promo.description %></td>
+	</tr>
+	<tr>
+		<td><b>Sport</b></td>
+    <td><%= @promo.try(:sport).try(:name) %></td>
+	</tr>
+	<tr>
+		<td><b>Start Date</b></td>
+		<td><%= @promo.start_date.strftime('%d/%m/%Y %H:%M') %></td>
+	</tr>
+	<tr>
+		<td><b>End Date</b></td>
+    <td><%= @promo.end_date.strftime('%d/%m/%Y %H:%M') %></td>
+	</tr>
+</table>

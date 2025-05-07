@@ -1,0 +1,52 @@
+<div class="table-card">
+	<table class="table table-hover table-striped align-middle mb-0">
+		<thead class="table-light">
+			<tr>
+				<th class="text-center" style="width:10%;">ID</th>
+				<th style="width:50%;">Name</th>
+				<th>Style</th>
+				<th>Size</th>
+				<th class="text-center">Banners</th>
+				<th>Action</th>
+			</tr>
+		</thead>
+		<tbody>
+			<% for banner_section in @banner_sections %>
+				<tr>
+					<td class="text-center"><%= banner_section.id %></td>
+					<td><h5 class="fs-14 mb-0"><%= link_to banner_section.name, admins_banner_section_path(banner_section), class: "text-body" %></h5></td>
+					<td><%= banner_section.style_label %></td>
+					<td><%= banner_section.size_label %></td>
+					<td class="text-center"><%= banner_section.banners.size %></td>
+					<td>
+						<div class="dropdown">
+							<button class="btn btn-soft-secondary btn-sm dropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+								<i class="ri-more-fill"></i>
+							</button>
+							<ul class="dropdown-menu dropdown-menu-end">
+								<li>
+									<%= link_to admins_banner_section_path(banner_section), class: "dropdown-item" do %>
+										<i class="ri-eye-fill align-bottom me-2 text-muted"></i> View
+									<% end %>
+								</li>
+								<li>
+									<%= link_to edit_admins_banner_section_path(banner_section), class: "dropdown-item edit-list" do %>
+										<i class="ri-pencil-fill align-bottom me-2 text-muted"></i> Edit
+									<% end %>
+								</li>
+								<li class="dropdown-divider"></li>
+								<li>
+									<%= link_to admins_banner_section_path(banner_section), :data => { :confirm => 'Are you sure?' }, :method => :delete, class: "dropdown-item remove-list" do %>
+										<i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i> Delete
+									<% end %>
+								</li>
+							</ul>
+						</div>
+					</td>
+				</tr>
+			<% end %>
+		</tbody>
+	</table>
+</div>
+<!-- pagination -->
+<%= paginate @banner_sections %>

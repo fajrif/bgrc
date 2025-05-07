@@ -1,0 +1,11 @@
+<% title_page("Create New Category") %>
+<div class="row">
+	<div class="col-lg-8">
+		<div class="card">
+			<div class="card-body">
+				<%= render "form" %>
+			</div>
+		</div>
+	</div>
+	<%= render "admins/shared/error_messages", :target => @category %>
+</div>

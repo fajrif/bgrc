@@ -1,0 +1,9 @@
+id:
+  simple_form:
+    "yes": 'Ya'
+    "no": 'Tidak'
+    required:
+      text: 'required'
+      html: ''
+    error_notification:
+      default_message: "Silahkan periksa inputan anda:"

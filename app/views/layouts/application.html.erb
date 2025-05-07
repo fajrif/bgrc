@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<!-- Enable zoom on mobile device -->
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title><%= @meta_title.nil? ? configatron.site_title : @meta_title %></title>
+	<meta name="title" content="<%= @meta_title.nil? ? configatron.site_title : @meta_title %>">
+	<meta name="description" content="<%= @meta_desc.nil? ? configatron.site_description : @meta_desc %>">
+	<meta name="robots" content="index, follow">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<meta name="language" content="English">
+	<meta name="revisit-after" content="1 days">
+	<meta name="author" content="Galo Solutions ">
+
+	<!-- Open Graph / Facebook -->
+	<meta property="og:type" content="website">
+	<meta property="og:url" content="<%= request.original_url %>">
+	<meta property="og:title" content="<%= @meta_title.nil? ? configatron.site_title : @meta_title %>">
+	<meta property="og:description" content="<%= @meta_desc.nil? ? configatron.site_description : @meta_desc %>">
+	<meta property="og:image" content="<%= image_url("logo-icon.png") %>">
+
+	<!-- Twitter -->
+	<meta property="twitter:card" content="summary_large_image">
+	<meta property="twitter:url" content="<%= request.original_url %>">
+	<meta property="twitter:title" content="<%= @meta_title.nil? ? configatron.site_title : @meta_title %>">
+	<meta property="twitter:description" content="<%= @meta_desc.nil? ? configatron.site_description : @meta_desc %>">
+	<meta property="twitter:image" content="<%= image_url("logo-icon.png") %>">
+
+	<!-- favicon -->
+	<link rel="icon" href="<%= image_url('favicon.png') %>" type="image/png" sizes="96x96">
+	<link rel="apple-touch-icon" href="<%= image_url('favicon.png') %>" sizes="180x180">
+	<link rel="apple-touch-icon-precomposed" href="<%= image_url('favicon.png') %>" sizes="192x192">
+	<meta name="msapplication-TileImage" content="<%= image_url('favicon.png') %>">
+	<!-- fonts CDN -->
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+	<%= csrf_meta_tags %>
+	<%= csp_meta_tag %>
+	<%= stylesheet_link_tag 'application', media: 'all' %>
+	<%= yield :head %>
+</head>
+<body class="w-100">
+	<%= render "shared/header" %>
+	<%= yield %>
+	<%= render "shared/footer" %>
+	<%= javascript_include_tag 'application' %>
+	<%= yield :tail %>
+</body>
+</html>

@@ -1,0 +1,120 @@
+# Files in the config/locales directory are used for internationalization and
+# are automatically loaded by Rails. If you want to use locales other than
+# English, add the necessary files in this directory.
+#
+# To use the locales, use `I18n.t`:
+#
+#     I18n.t "hello"
+#
+# In views, this is aliased to just `t`:
+#
+#     <%= t("hello") %>
+#
+# To use a different locale, set it with `I18n.locale`:
+#
+#     I18n.locale = :es
+#
+# This would use the information in config/locales/es.yml.
+#
+# To learn more about the API, please read the Rails Internationalization guide
+# at https://guides.rubyonrails.org/i18n.html.
+#
+# Be aware that YAML interprets the following case-insensitive strings as
+# booleans: `true`, `false`, `on`, `off`, `yes`, `no`. Therefore, these strings
+# must be quoted to be interpreted as strings. For example:
+#
+#     en:
+#       "yes": yup
+#       enabled: "ON"
+
+id:
+  contacts:
+    title: "Hubungi Kami"
+    short_description: "Anda dapat menghubungi kami jika memiliki pertanyaan atau komentar"
+    instructions: "Kirimkan pertanyaan Anda melalui form ini"
+    journalist: "Jurnalis"
+    partner: "Mitra"
+  galleries:
+    photos: "Foto"
+    videos: "Video"
+  inquiries:
+    success: "Terima kasih pesan dan data anda telah terkirim!"
+    errors: "Maaf sistem tidak dapat memproses data anda!"
+  amnt:
+    mines_location: "Tambang dan Lokasi"
+    operations: "Operasi AMNT"
+    copper: "Tembaga"
+    gold: "Emas"
+    desc1: "Miliar Pon<br/>Laporan JORC 2023"
+    desc2: "Juta Ons<br/>Laporan JORC 2023"
+  amin:
+    smelter_feed: "Input Smelter"
+    smelter_feed_desc: "<strong>900.000 metrik ton</strong><br/>konsentrat tembaga<br/>dari Batu Hijau dan Elang di masa depan"
+    smelter_product: "Produk Smelter"
+    smelter_product_desc1: "<strong>220.000 metrik ton</strong><br/>katoda tembaga <br/>LME Grade A<br/>dengan kemurnian<br/> 99,99%"
+    smelter_product_desc2: "<strong>830.000 metrik ton</strong><br/>asam sulfat<br/>dengan kemurnian<br/> 98,50%"
+    pmr_feed: "Umpan PMR"
+    pmr_feed_desc: "<strong>970 metrik ton</strong><br/>lumpur anoda dari smelter"
+    pmr_product: "Produk PMR"
+    pmr_product_desc1: "<strong>579 kilo ons</strong><br/>Emas bullions, bars, minted, grains<br/>dengan kemurnian<br/> 99,99%"
+    pmr_product_desc2: "<strong>1.8 juta ons</strong><br/>perak batangan<br/>dengan kemurnian<br/> 99,95%"
+    pmr_product_desc3: "<strong>77 metrik ton</strong><br/>selenium dengan<br/>kemurnian<br/> 95,00%"
+  work_experience:
+    title1: "2004 - 2008"
+    desc1: "Firma Hukum Makarim & Taira S. sebagai Associate"
+    title2: "2008 - 2009"
+    desc2: "LUCAS, S.H. & Partners Law Firm sebagai Associate"
+    title3: "2010 - 2019"
+    desc3: "PT Agincourt Resources sebagai Manajer Hukum"
+    title4: "2019 - Sekarang"
+    desc4: "PT Amman Mineral Nusa Tenggara sebagai Penasihat Hukum Perusahaan"
+    title5: "2022 - Sekarang"
+    desc5: "PT Amman Mineral International Tbk sebagai Sekretaris Perusahaan"
+  disclaimer:
+    title: "Waspada Penipuan Mengatasnamakan AMMAN"
+    desc: "<ul><li><strong>AMMAN tidak pernah meminta dana dalam bentuk apa pun, termasuk uang rekrutmen atau pelatihan calon karyawan, transfer uang untuk investasi</strong>. AMMAN tidak bertanggung jawab atas kerugian yang ditimbulkan akibat aktivitas penipuan ini.</li><li><strong>AMMAN tidak meminta dana dari calon mitra bisnis untuk menjalankan proyek tertentu</strong>, dan proses penunjukan mitra bisnis dilakukan secara terbuka dengan melibatkan perwakilan resmi Perusahaan.</li><li><strong>Hindari penawaran mencurigakan dan selalu verifikasi informasi melalui kanal resmi AMMAN:</strong> <a href='https://www.amman.co.id/id/kontak-kami'>https://www.amman.co.id/id/kontak-kami</a> dan/atau media sosial resmi kami.</li><li>Laporkan segala aktivitas mencurigakan kepada aparat penegak hukum demi keamanan bersama.</li></ul>"
+  document_inquiries:
+    title: "Permohonan Dokumen"
+    sub_title: "Permohonan Unduh Dokumen"
+    success: "Terima kasih telah mengunduh dokumen kami dan atas ketertarikan Anda terhadap bisnis AMMAN. Silakan menghubungi kami jika Anda memiliki pertanyaan atau memerlukan informasi lebih lanjut."
+    failed: "Anda tidak dapat mendownload file tersebut karena domain email perusahaan Anda belum terdaftar.<br/>Silakan hubungi <a href='/id/kontak'>Hubungan</a> untuk mengirimkan permintaan dokumen Anda."
+  mining_phase:
+    phase: "Fase %{value}"
+    bottom_elevation: "Ketinggian Dasar"
+    mrl_desc: "Meter Di Atas Permukaan Laut / mRL"
+    mrl: "mRL"
+  partner_inquiry:
+    attach_company_profile: "Lampirkan Profil Perusahaan"
+    attach_company_license: "Lampirkan Izin Usaha Perusahaan"
+    select_service_category: "Silahkan pilih kategori layanan"
+  errors:
+    404_title: "Halaman Tidak Ditemukan"
+    404_desc: "Halaman yang Anda cari tidak dapat ditemukan."
+    403_title: "Akses Terlarang"
+    403_desc: "Akses menuju file atau folder dilarang."
+    422_title: "Konten Tidak Dapat Diproses"
+    422_desc: "Perubahan yang Anda inginkan ditolak."
+    500_title: "Halaman Error"
+    500_desc: "Mohon maaf terjadi kesalahan pada halaman ini."
+  global:
+    dismiss: "Tutup"
+    read_more: "Telusuri"
+    recaptcha_failed: "Recaptcha verifikasi gagal"
+    view_profile: "Lihat Profil"
+    view_all: "Lihat Semua"
+    view: "Lihat"
+    back_to: "Kembali ke %{object_name}"
+    back_to_news: "Kembali ke Berita"
+    others: "%{object_name}"
+    others_news: "Berita Lainnya"
+    no_data_found: "Data Tidak Ditemukan"
+    download: "Unduh"
+    download_now: "Unduh File"
+    apply_now: "Lamar Sekarang"
+    submit: "Kirim"
+    search_results: "Hasil Pencarian"
+    search_not_found: "Pencarian tidak ditemukan: `%{search}`"
+    articles: "Artikel"
+    pages: "Halaman"
+    max: "Maks"
+    all: "Semua"

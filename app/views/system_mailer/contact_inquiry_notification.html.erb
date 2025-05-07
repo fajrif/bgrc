@@ -1,0 +1,27 @@
+<h4 style="text-decoration:underline;">Inquiry Details:</h4>
+<table style="border:none;">
+	<tr>
+		<td style="font-size:15px;width:150px;"><strong>ID</strong></td>
+		<td><%= @inquiry.id %></td>
+	</tr>
+	<tr>
+		<td style="font-size:15px;"><strong>Name</strong></td>
+		<td><%= @inquiry.name %></td>
+	</tr>
+	<tr>
+		<td style="font-size:15px;"><strong>Company Name</strong></td>
+		<td><%= @inquiry.company_name %></td>
+	</tr>
+	<tr>
+		<td style="font-size:15px;"><strong>Email</strong></td>
+		<td><%= @inquiry.email %> <<%= link_to @inquiry.email, "mailto:#{@inquiry.email}" %>></td>
+	</tr>
+	<tr>
+		<td style="font-size:15px;"><strong>Phone</strong></td>
+		<td><%= @inquiry.phone %></td>
+	</tr>
+	<tr>
+		<td style="font-size:15px;"><strong>Message</strong></td>
+		<td><%= @inquiry.message %></td>
+	</tr>
+</table>

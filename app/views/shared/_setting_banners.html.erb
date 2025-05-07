@@ -1,0 +1,19 @@
+<% if @banners %>
+	<% unless @banners.empty? %>
+		<% if @banners.size > 1 %>
+			<%= render "pages/banners" %>
+		<% else %>
+			<% if banner = @banners.first %>
+				<% if banner.try(:banner_section).try(:is_medium?) %>
+					<%= render partial: "pages/banner_medium", locals: { banner: banner } %>
+				<% else %>
+					<%= render partial: "pages/banner", locals: { banner: banner } %>
+				<% end %>
+			<% end %>
+		<% end %>
+	<% else %>
+		<%= render "shared/default_banner", locals: { title: @page.title, description: "", bg_image: nil } %>
+	<% end %>
+<% else %>
+	<%= render "shared/default_banner", locals: { title: @page.title, description: "", bg_image: nil } %>
+<% end %>

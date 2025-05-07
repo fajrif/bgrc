@@ -1,0 +1,59 @@
+<table class="table table-hover">
+	<tr>
+		<td style="width:15%;"><b>ID</b></td>
+		<td><%= @article.id %></td>
+	</tr>
+	<% if @article.image.attached? %>
+	<tr>
+		<td><b>Image</b></td>
+		<td>
+			<%= image_tag @article.image.variant(resize_to_limit: [100,100]) %>
+			<%= link_to delete_attachment_image_admins_article_path(@article.id, @article.image.id), :class => "ms-2 btn btn-danger btn-sm", :data => { :confirm => 'Are You sure want to delete this image?' }, :method => :delete do %>
+				<i class="ri-delete-bin-fill"></i>
+			<% end %>
+		</td>
+	</tr>
+	<% end %>
+	<tr>
+		<td><b>Title</b></td>
+		<td><h5 class="fs-14 mb-0 text-body"><%= @article.title %></h5></td>
+	</tr>
+	<tr>
+		<td><b>Tags</b></td>
+		<td><h5 class="fs-14 mb-0 text-body"><%= @article.tags %></h5></td>
+	</tr>
+	<tr>
+		<td><b>Slug</b></td>
+		<td><%= link_to article_path(@article), article_path(@article) %></td>
+	</tr>
+	<tr>
+		<td><b>Category</b></td>
+		<td><%= badge_category(@article.try(:category)) %></td>
+	</tr>
+	<% if @article.file.attached? %>
+	<tr>
+		<td><b>File</b></td>
+		<td>
+			<%= link_to @article.file.filename, url_for(@article.file), target: :_blank %>
+			<%= link_to delete_attachment_admins_article_path(@article.id, @article.file.id), :class => "ms-2 btn btn-danger btn-sm", :data => { :confirm => 'Are You sure want to delete this file?' }, :method => :delete do %>
+				<i class="ri-delete-bin-fill"></i>
+			<% end %>
+		</td>
+	</tr>
+	<% end %>
+	<tr>
+		<td><b>Status</b></td>
+		<td>
+			<h5 class="fs-14 mb-1"><%= @article.published_label %></h5>
+			<p class="text-muted mb-0">Date : <%= @article.published_date_label %></p>
+		</td>
+	</tr>
+	<tr>
+		<td><b>Short Description</b></td>
+		<td><%= @article.short_description %></td>
+	</tr>
+	<tr>
+		<td><b>Content</b></td>
+		<td><%= raw @article.content %></td>
+	</tr>
+</table>
