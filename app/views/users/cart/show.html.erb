@@ -1,0 +1,89 @@
+<div class="cart-area section-padding pt-120">
+		<div class="container">
+						<div class="wpo-section-title">
+							<div class="row">
+								<div class="col-md-10">
+									<div class="wpo-section-title-left">
+										<h3>My Cart</h3>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="cart-wrapper">
+								<div class="row">
+										<div class="col-12">
+												<table class="table-responsive cart-wrap">
+														<thead>
+															<tr>
+																<th class="images images-b">Product</th>
+																<th class="product-2">Product Name</th>
+																<th class="pr">Quantity</th>
+																<th class="ptice">Price</th>
+																<th class="stock">Total Price</th>
+																<th class="remove remove-b">Action</th>
+															</tr>
+														</thead>
+														<tbody>
+															<% @current_cart.line_items.each do |line_item| %>
+																<tr>
+																		<td class="images">
+																			<%= link_to product_path(line_item.product) do %>
+																				<%= image_tag(line_item.product.images.first.variant(resize: "100x100").processed) if line_item.product.images.first %>
+																			<% end %>
+																		</td>
+																		<td class="product">
+																				<ul>
+																						<li class="first-cart"><%= link_to line_item.product.name, product_path(line_item.product) %></li>
+																						<li>Brand : <%= line_item.product.vendor %></li>
+																				</ul>
+																		</td>
+																		<td class="stock">
+																				<ul class="input-style">
+																						<li class="quantity cart-plus-minus">
+																								<input type="text" value="<%= line_item.quantity %>" />
+																						</li>
+																				</ul>
+																		</td>
+																		<td class="ptice"><%= line_item.product.price_label %></td>
+																		<td class="stock"><%= line_item.sub_total_label %></td>
+																		<td class="action">
+																				<ul>
+																					<li class="w-btn">
+																						<%= link_to users_cart_line_item_path(line_item), method: :delete do %>
+																							<i class="fi ti-trash"></i>
+																						<% end %>
+																					</li>
+																				</ul>
+																		</td>
+																</tr>
+															<% end if @current_cart %>
+														</tbody>
+												</table>
+											<% if @current_cart %>
+											<div class="submit-btn-area">
+												<ul>
+													<li><%= link_to "Empty cart", users_cart_path, method: :delete, class: "theme-btn default" %></li>
+													<li>
+														<a class="theme-btn" href="#">
+															Proceed to Checkout <i class="fa fa-angle-double-right"></i>
+														</a>
+													</li>
+												</ul>
+											</div>
+											<div class="cart-product-list">
+												<ul>
+													<li>Total product<span>( <%= @current_cart.total_items %> )</span></li>
+													<li>Sub Price<span><%= @current_cart.grand_total %></span></li>
+													<li>Delivery Charge<span>Rp.0</span></li>
+													<li class="cart-b">Total Price<span><%= @current_cart.grand_total %></span></li>
+												</ul>
+											</div>
+											<% end %>
+										</div>
+								</div>
+						</div>
+				</div>
+		</div>
+</div>
+<!-- cart-area end -->
+

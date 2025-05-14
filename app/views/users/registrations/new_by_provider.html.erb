@@ -1,0 +1,23 @@
+<div class="question-area section-padding pt-120">
+		<div class="container">
+				<div class="row">
+						<div class="col-lg-12">
+								<div class="question-touch">
+										<h2>You are almost there !!</h2>
+										<p>
+											Before continue to your account
+											Please provide us with more information.
+										</p>
+										<%= simple_form_for(@resource, as: :user, url: user_registration_by_provider_path, html: { method: :post, class: "contact-validation-active" }) do |f| %>
+											<%= f.input :email, as: text_or_hidden(f.object.email), label: false, placeholder: "Email address" %>
+											<%= f.input :full_name, as: text_or_hidden(f.object.full_name), label: false, placeholder: "Full name" %>
+											<%= f.input :phone, as: text_or_hidden(f.object.phone), label: false, placeholder: "Phone" %>
+											<div class="submit-btn-wrapper">
+													<button type="submit" class="theme-btn btn-big default">Submit</button>
+											</div>
+										<% end %>
+								</div>
+						</div>
+				</div>
+		</div>
+</div>

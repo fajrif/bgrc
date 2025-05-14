@@ -1,0 +1,2 @@
+$("#business_hour_<%= @business_hour.id %>").replaceWith("<%= escape_javascript(render partial: 'business_hour', locals: {business_hour: @business_hour} ) %>")
+$("#edit-form-<%= @business_hour.id %>").remove()

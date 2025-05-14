@@ -1,0 +1,31 @@
+<%= content_for :head do %>
+	<script type="text/javascript" src="<%= configatron.midtrans_js_file %>" data-client-key="<%= configatron.midtrans_client_key %>"></script>
+<% end %>
+
+<div class="cart-area section-padding pt-120">
+		<div class="container">
+				<div class="wpo-section-title">
+					<div class="row">
+						<div class="col-md-10">
+							<div class="wpo-section-title-left">
+								<h3 style="font-size: 26px;font-weight: 700;">My Bookings</h3>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="cart-wrapper">
+						<div class="row">
+								<div class="col-12" id="bookingsTable">
+									<%= render "table" %>
+								</div>
+						</div>
+				</div>
+		</div>
+</div>
+
+<style>
+	#bookingsTable {
+		overflow: scroll;
+    overflow-y: hidden;
+	}
+</style>

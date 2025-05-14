@@ -1,0 +1,27 @@
+<div class="category-holder">
+	<div class="title-holder"><h3>Purchase History</h3></div>
+	<div class="table-type-1 recent-order responsive-table">
+		<table>
+			<thead>
+				<tr>
+					<th class="order-number">Product #</th>
+					<th class="order-date">Date</th>
+					<th>Status</th>
+					<th>Total</th>
+				</tr>
+			</thead>
+			<% @purchases.each do |p| %>
+				<% if p.productable %>
+				<tr>
+					<td data-title="Order #">
+						<%= raw("<b>#{p.try(:productable).try(:name_label)}</b>") %>
+					</td>
+					<td data-title="Date"><%= p.created_at.to_time.strftime("%B %d, %Y") %></td>
+					<td data-title="Status"><%= p.transaction_status.titleize %></td>
+					<td data-title="Total"><%= p.price_label %></td>
+				</tr>
+				<% end %>
+			<% end %>
+		</table>
+	</div>
+</div>

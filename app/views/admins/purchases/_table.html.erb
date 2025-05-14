@@ -1,0 +1,47 @@
+<div class="row">
+	<div class="col-md-6 col-sm-6 col-6">
+		<p><small><%= "Display total #{@purchases.count} purchases" %></small></p>
+	</div>
+	<div class="col-md-6 col-sm-6 col-6">
+		<div class="btn-group" style="float:right;">
+			<a href="<%= admins_purchases_path(format: :xls, search: params[:search], page: params[:page], status_code: params[:status_code]) %>" class="btn btn-success">
+				Export All <i class="fa fa-book"></i>
+			</a>
+		</div>
+	</div>
+</div>
+
+<table class="table display product-overview mb-30">
+  <thead>
+    <tr>
+      <th>User</th>
+      <th>Type #</th>
+      <th>Gross Amount</th>
+      <th>Payment Type</th>
+      <th>Status Code</th>
+      <th>Status Message</th>
+      <th>Transaction Time</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% for purchase in @purchases %>
+      <tr>
+				<td><strong><%= link_to purchase.user.full_name, admins_purchase_path(purchase) %></strong></td>
+				<td><%= purchase.productable_type %></td>
+				<td><strong><%= purchase.price_label %></strong></td>
+				<td><%= purchase.payment_type %></td>
+				<td><%= purchase.status_code %></td>
+				<td><%= purchase.status_message %></td>
+				<td><%= purchase.created_at.strftime('%Y-%m-%d %H:%M') %></td>
+        <td class="actions">
+					<%= link_to admins_purchase_path(purchase), "data-toggle" => "tooltip", :title => "Edit" do %>
+						<i class="fa fa-pencil"></i>
+					<% end %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<%= paginate @purchases %>

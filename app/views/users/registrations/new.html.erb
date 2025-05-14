@@ -1,0 +1,46 @@
+<div class="question-area section-padding pt-120">
+		<div class="container">
+				<div class="row">
+						<div class="col-lg-12">
+								<div class="question-touch">
+										<h2>Join Flex</h2>
+										<p>
+											Join now to Book Your Experience
+										</p>
+										<%= simple_form_for(resource, :as => resource_name, :url => registration_path(resource_name), :html => { :class => "contact-validation-active" }) do |f| %>
+											<%= f.input :full_name, label: false, placeholder: "Full name" %>
+											<%= f.input :email, label: false, placeholder: "Email address" %>
+											<%= f.input :phone, label: false, placeholder: "Phone" %>
+											<%= f.input :password, label: false, placeholder: "Password" %>
+											<%= f.input :password_confirmation, label: false, placeholder: "Password confirmation" %>
+											<div class="col-lg-12 mb-20">
+												<%= flash[:recaptcha_error] %>
+												<%= recaptcha_tags %>
+											</div>
+											<div class="col-lg-12 mb-20">
+												<%- if controller_name != 'sessions' %>
+													Alrady have an account? <%= link_to "Login", new_session_path(resource_name) %><br />
+												<% end %>
+											</div>
+											<div class="col-lg-12 mb-20">
+												<div class="submit-btn-wrapper">
+													<button type="submit" class="theme-btn default">Create Account</button>
+												</div>
+											</div>
+											<div class="col-lg-12" style="font-size: .85rem;">
+												By Clicking "Create Account" I agree to Flex’s TnC and <%= link_to "Privacy Policy", privacy_path %>.
+											</div>
+										<% end %>
+								</div>
+						</div>
+				</div>
+		</div>
+</div>
+
+<style>
+.g-recaptcha > div {
+	width: auto !important;
+	height: auto !important;
+	text-align: center;
+}
+</style>

@@ -7,6 +7,11 @@ Rails.application.routes.draw do
 
 	mount PdfjsViewer::Rails::Engine => "/pdfjs", as: 'pdfjs'
 
+  devise_for :user, :controllers => { :sessions => "users/sessions", :registrations => "users/registrations", :omniauth_callbacks => "users/omniauth_callbacks" }
+  devise_scope :user do
+    get 'users/sign_up_by_provider' => 'users/registrations#new_by_provider', :as => :new_user_registration_by_provider
+    post 'users/sign_up_by_provider' => 'users/registrations#create_by_provider', :as => :user_registration_by_provider
+  end
   devise_for :admins, :controllers => { :sessions => "admins/sessions" }
 
 	scope "(:locale)", locale: /id/ do
@@ -16,7 +21,7 @@ Rails.application.routes.draw do
 			put "account/update_password" => "accounts#update_password", :as => :update_password
 
 			resources :admins
-			resources :users
+      resources :users, :except => [:new, :create]
 			resources :testimonials
 			resources :questions
 
@@ -35,6 +40,24 @@ Rails.application.routes.draw do
 					patch :sort
 				end
 			end
+      resources :courts do
+        resources :business_hours, :controller => "courts/business_hours"
+        resources :costs, :controller => "courts/costs"
+        match 'delete_image/:id', to: 'courts#delete_image', via: :delete, as: :delete_image
+      end
+      resources :bookings do
+        collection do
+          get "update_select_duration" => "bookings#update_select_duration", :as => :update_select_duration
+        end
+        member do
+          post "send_email_notification" => "bookings#send_email_notification", :as => :send_email_notification
+        end
+      end
+      resources :purchases, :only => [:index, :show, :destroy] do
+        member do
+          put "settlement" => "purchases#settlement", :as => :settlement
+        end
+      end
 			resources :facilities do
 				member do
           delete "delete_attachment_image/:asset_id" => "facilities#delete_attachment_image", :as => :delete_attachment_image
@@ -56,6 +79,30 @@ Rails.application.routes.draw do
         end
       end
 		end
+
+    namespace :users do
+      resource :account, :only => [:show, :update]
+      resource :password, :only => [:edit, :update]
+
+      resource :purchase, :only => [:create]
+      get "purchase/:type/:id" => "purchases#new", :as => :new_purchase
+
+      # Carts & Orders
+      resource :cart, :only => [:show, :destroy], :controller => "cart" do
+        resources :line_items, :only => [:destroy], :controller => "cart/line_items" do
+          post 'create/:product_id' => "cart/line_items#create", on: :collection, as: :create
+          put 'add' => "cart/line_items#add", as: :add
+          put 'reduce' => "cart/line_items#reduce", as: :reduce
+        end
+      end
+
+      # Bookings
+      resources :bookings, :except => [:edit, :update, :show] do
+        collection do
+          get "history" => "bookings#history", :as => :history
+        end
+      end
+    end
 
 		# For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 		# i18n Scope for id

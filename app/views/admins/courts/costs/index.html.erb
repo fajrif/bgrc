@@ -1,0 +1,32 @@
+<div class="page-bar">
+	<div class="page-title-breadcrumb">
+		<div class=" pull-left">
+			<div class="page-title"><%= "#{@court.name} business hours" %></div>
+		</div>
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-12 col-sm-12">
+		<div class="card card-box">
+			<div class="card-body ">
+				<div class="row">
+					<div class="col-md-6 col-sm-6 col-6">
+						<%= link_to new_admins_court_cost_path(@court.id), class: "btn btn-info", :id => "btn_create", :remote => true do %>
+							Add New <i class="fa fa-plus"></i>
+						<% end %>
+						<%= link_to 'Back', admins_court_path(@court), class: 'btn' %>
+					</div>
+					<div class="col-md-6 col-sm-6 col-6">
+					</div>
+				</div>
+				<div class="table-wrap" style="margin-top:20px;">
+					<div id="new-form-placeholder"></div>
+					<div id="index_table" class="table-responsive">
+						<%= render 'table' %>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+

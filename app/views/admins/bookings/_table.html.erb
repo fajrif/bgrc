@@ -1,0 +1,34 @@
+<p><small><%= "Display total #{@bookings.count} bookings" %></small></p>
+
+<table class="table display product-overview mb-30">
+  <thead>
+    <tr>
+      <th>User</th>
+      <th>Court</th>
+      <th>Date</th>
+      <th>Duration</th>
+      <th>Total Price</th>
+      <th>Status</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% for booking in @bookings %>
+      <tr>
+				<td><strong><%= booking.try(:user).try(:full_name) %></strong></td>
+				<td><strong><%= booking.try(:court).try(:name) %></strong></td>
+				<td><%= booking.date.strftime('%A, %d-%m-%Y %H:%M %p') %></td>
+				<td><%= booking.duration_label %></td>
+				<td><%= booking.price_label %></td>
+				<td>
+					<span class="<%= booking.is_unpaid? ? 'text-red' : 'text-green' %>"><%= booking.status_label %></span>
+				</td>
+        <td class="actions">
+					<%= link_to admins_booking_path(booking), "data-toggle" => "tooltip", :title => "Edit" do %>
+						<i class="fa fa-pencil"></i>
+					<% end %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

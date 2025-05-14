@@ -1,0 +1,52 @@
+<%= simple_form_for [:admins, @booking], :html => { :class => 'form-horizontal' } do |f| %>
+	<%= f.error_notification %>
+	<div class="form-body">
+		<%= f.association :user, as: :select, label_method: :email, value_method: :id %>
+		<%= f.association :court, collection: @courts, label_method: :name, value_method: :id %>
+		<%= f.input :date, as: :string, input_html: { class: "datetimepicker", value: f.object.date.try(:strftime, '%d-%m-%Y %H:%M') } %>
+		<%= f.input :duration, as: :select, collection: (@courts.first.min_duration..11).step(@courts.first.min_duration), include_blank: false %>
+		<% unless @booking.new_record? %>
+		<%= f.input :price %>
+		<% end %>
+		<%= f.input :status, as: :select, collection: [[0, 'Unpaid'], [1, 'Paid']], label_method: :second, value_method: :first %>
+		<%= f.input :notes, as: :text, input_html: { rows: "10" } %>
+		<div class="form-actions">
+			<div class="row">
+				<div class="offset-md-3 col-md-9">
+					<%= f.button :submit, :class => 'btn btn-primary' %>
+					<% unless @booking.new_record? %>
+					<%= link_to "Cancel", admins_booking_path(@booking), :class => 'btn' %>
+					<% else %>
+					<%= link_to "Cancel", admins_bookings_path, :class => 'btn' %>
+					<% end %>
+				</div>
+			</div>
+		</div>
+	</div>
+<% end %>
+<%= content_for :tail do %>
+	<script>
+		$(document).on('ready page:load', function () {
+			flatpickr("#booking_date", {
+				enableTime: true,
+				allowInput: true,
+				dateFormat: "d-m-Y H:i",
+				onOpen: function (selectedDates, dateStr, instance) {
+					instance.setDate(instance.input.value, false);
+				},
+			});
+
+			$("#booking_court_id").on('change', function() {
+				$.ajax({
+					type: "GET",
+					url: "<%= update_select_duration_admins_bookings_url %>",
+					data: { court_id: $(this).val() },
+					success: function(data, textStatus, jqXHR){
+						// console.log('success');
+					}
+				});
+			});
+
+		});
+	</script>
+<% end %>

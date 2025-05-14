@@ -1,0 +1,15 @@
+<table class="table display product-overview mb-30">
+  <thead>
+    <tr>
+      <th class="text-center">Day</th>
+      <th>Start Time</th>
+      <th>End Time</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody id="costs" >
+    <% @costs.each do |cost| %>
+      <%= render 'cost', cost: cost %>
+    <% end %>
+  </tbody>
+</table>

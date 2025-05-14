@@ -1,0 +1,6 @@
+$("#business_hour_<%= @business_hour.id %>").remove();
+<% if @business_hour.court.business_hours.size < 7 %>
+$("#btn_create").removeClass('disabled');
+<% else %>
+$("#btn_create").addClass('disabled');
+<% end %>

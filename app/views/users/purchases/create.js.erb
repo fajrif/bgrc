@@ -1,0 +1,4 @@
+$("#forFlashMessage").html("<%= escape_javascript(flash_message) %>");
+<% if @productable.is_a? Booking %>
+$("#bookingsTable").html("<%= escape_javascript(render("users/bookings/table")) %>");
+<% end %>

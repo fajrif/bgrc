@@ -1,0 +1,27 @@
+<table class="table-responsive cart-wrap">
+		<thead>
+			<tr>
+				<th class="product-2">#Order ID</th>
+				<th class="product-2">Court</th>
+				<th class="product-2">Date</th>
+				<th class="product-2">Duration</th>
+				<th class="ptice">Price</th>
+				<th class="ptice">Status</th>
+			</tr>
+		</thead>
+		<tbody>
+			<% @bookings.each do |booking| %>
+				<tr>
+						<td><strong><%= truncate_paragraph(booking.try(:purchase).try(:order_id), 20) %></strong></td>
+						<td class="product">
+							<%= link_to booking.court.name, court_path(booking.court) %>
+						</td>
+						<td><%= booking.date.strftime('%A, %d-%m-%Y %H:%M') %></td>
+						<td><%= booking.duration_label %></td>
+						<td class="ptice"><%= booking.price_label %></td>
+						<td class="<%= booking.is_unpaid? ? 'text-red' : 'text-green' %>"><%= booking.status_label %></td>
+				</tr>
+			<% end %>
+		</tbody>
+</table>
+<%= paginate @bookings, theme: "osru" %>

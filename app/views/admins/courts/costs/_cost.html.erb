@@ -1,0 +1,14 @@
+<tr id="cost_<%= cost.id %>">
+	<td class="text-center"><strong><%= cost.day_name %></strong></td>
+	<td><%= cost.start_time %></td>
+	<td><%= cost.end_time %></td>
+	<td><%= cost.price_label %></td>
+	<td class="actions">
+		<%= link_to edit_admins_court_cost_path(cost.court.id, cost), "data-toggle" => "tooltip", :id => "btn_edit_#{cost.id}", :title => "Edit", :remote => true do %>
+			<i class="fa fa-pencil"></i>
+		<% end %>
+		<%= link_to admins_court_cost_path(cost.court.id, cost), :data => { :confirm => "Are you sure?" }, :method => :delete, :class => "text-inverse", :remote => true do %>
+			<i class="fa fa-trash"></i>
+		<% end %>
+	</td>
+</tr>

@@ -1,0 +1,9 @@
+$("#index_table").html("<%= escape_javascript(render("table")) %>");
+
+document.getElementById("new-form-placeholder").style.display = "none";
+
+<% if @business_hour.court.business_hours.size < 7 %>
+$("#btn_create").removeClass('disabled');
+<% else %>
+$("#btn_create").addClass('disabled');
+<% end %>

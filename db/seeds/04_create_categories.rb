@@ -16,3 +16,19 @@ Mobility.with_locale(:id) {
 }
 @cat2.save
 puts "Create Category: #{@cat2.name}"
+
+# Article Category 3
+@cat3 = Category.create(name: "Tennis")
+Mobility.with_locale(:id) {
+	@cat3.name = "Tenis"
+}
+@cat3.save
+puts "Create Category: #{@cat3.name}"
+
+# Article Category 4
+@cat4 = Category.create(name: "Pickleball")
+Mobility.with_locale(:id) {
+	@cat4.name = "Pickleball"
+}
+@cat4.save
+puts "Create Category: #{@cat4.name}"

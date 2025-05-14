@@ -1,0 +1,35 @@
+<div class="row">
+	<div class="col-md-6 col-sm-6 col-6">
+		<p><small><%= "Display total #{@users.count} users" %></small></p>
+	</div>
+</div>
+
+
+<table class="table display product-overview mb-30">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Full Name</th>
+      <th>Email</th>
+      <th>Register at</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% for user in @users %>
+      <tr>
+				<td><%= user.id %></td>
+				<td><strong><%= link_to user.full_name, admins_user_path(user) %></strong></td>
+				<td><%= user.email %></td>
+				<td><%= user.created_at.strftime('%d-%m-%Y %H:%M %p') %></td>
+        <td class="actions">
+					<%= link_to admins_user_path(user), "data-toggle" => "tooltip", :title => "Edit" do %>
+						<i class="fa fa-pencil"></i>
+					<% end %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<%= paginate @users %>

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_05_07_111140) do
+ActiveRecord::Schema[7.1].define(version: 2025_05_11_124334) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -118,8 +118,59 @@ ActiveRecord::Schema[7.1].define(version: 2025_05_07_111140) do
     t.index ["banner_section_id"], name: "index_banners_on_banner_section_id"
   end
 
+  create_table "bookings", force: :cascade do |t|
+    t.integer "user_id"
+    t.integer "court_id"
+    t.datetime "date"
+    t.datetime "end_date"
+    t.integer "duration", default: 1, null: false
+    t.string "status", default: "0", null: false
+    t.string "notes"
+    t.decimal "price", default: "0.0", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["court_id"], name: "index_bookings_on_court_id"
+    t.index ["user_id"], name: "index_bookings_on_user_id"
+  end
+
+  create_table "business_hours", force: :cascade do |t|
+    t.integer "court_id", default: 0, null: false
+    t.integer "day_code", default: 0, null: false
+    t.string "day_name", default: "", null: false
+    t.string "open", default: "06:00", null: false
+    t.string "close", default: "22:00", null: false
+    t.index ["court_id"], name: "index_business_hours_on_court_id"
+  end
+
   create_table "categories", force: :cascade do |t|
     t.jsonb "name", default: {}
+  end
+
+  create_table "costs", force: :cascade do |t|
+    t.integer "court_id", default: 0, null: false
+    t.integer "day_code", default: 0, null: false
+    t.string "day_name", default: "", null: false
+    t.string "start_time", default: "16:00", null: false
+    t.string "end_time", default: "22:00", null: false
+    t.decimal "price", default: "0.0", null: false
+    t.index ["court_id"], name: "index_costs_on_court_id"
+  end
+
+  create_table "courts", force: :cascade do |t|
+    t.string "name", default: "", null: false
+    t.bigint "sport_id"
+    t.integer "status", default: 0, null: false
+    t.integer "min_duration", default: 1, null: false
+    t.decimal "price", default: "0.0", null: false
+    t.string "location", default: "", null: false
+    t.jsonb "instructions", default: {}
+    t.jsonb "short_description", default: {}
+    t.jsonb "description", default: {}
+    t.jsonb "info", default: {}
+    t.string "google_maps", default: "", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["sport_id"], name: "index_courts_on_sport_id"
   end
 
   create_table "events", force: :cascade do |t|
@@ -179,6 +230,45 @@ ActiveRecord::Schema[7.1].define(version: 2025_05_07_111140) do
     t.index ["name"], name: "index_promos_on_name", unique: true
     t.index ["slug"], name: "index_promos_on_slug", unique: true
     t.index ["sport_id"], name: "index_promos_on_sport_id"
+  end
+
+  create_table "providers", force: :cascade do |t|
+    t.bigint "user_id"
+    t.string "provider"
+    t.string "uid"
+    t.string "access_token"
+    t.string "access_secret"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_providers_on_user_id"
+  end
+
+  create_table "purchases", force: :cascade do |t|
+    t.bigint "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "productable_type"
+    t.bigint "productable_id"
+    t.string "token"
+    t.string "status_code", default: "000"
+    t.string "status_message", default: "Initialize Object"
+    t.string "transaction_id"
+    t.string "masked_card"
+    t.string "order_id"
+    t.string "gross_amount"
+    t.string "payment_type"
+    t.string "transaction_time"
+    t.string "transaction_status"
+    t.string "fraud_status"
+    t.string "approval_code"
+    t.string "bank"
+    t.string "card_type"
+    t.string "save_token_id"
+    t.string "saved_token_id_expired_at"
+    t.string "channel_response_code"
+    t.string "channel_response_message"
+    t.index ["productable_type", "productable_id"], name: "index_purchases_on_productable"
+    t.index ["user_id"], name: "index_purchases_on_user_id"
   end
 
   create_table "questions", force: :cascade do |t|

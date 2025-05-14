@@ -1,0 +1,27 @@
+<div class="category-holder">
+	<div class="title-holder"><h3>Available E-Books</h3></div>
+	<div class="table-type-1 recent-order responsive-table">
+		<table>
+			<thead>
+				<tr>
+					<th>Product #</th>
+					<th>Title</th>
+					<th>Publisher</th>
+					<th></th>
+				</tr>
+			</thead>
+			<% @products.each do |p| %>
+				<% if p && !p.is_video?%>
+				<tr>
+					<td data-title="E-book #">
+						<%= image_tag p.image.variant(resize: "100x100").processed %>
+					</td>
+					<td data-title="Title"><%= p.name %></td>
+					<td data-title="Publisher"><%= p.publisher %></td>
+					<td><%= link_to "Download", url_for( p.file ), :target => :blank if p.file %></td>
+				</tr>
+				<% end %>
+			<% end %>
+		</table>
+	</div>
+</div>

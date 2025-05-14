@@ -89,7 +89,16 @@ module AdminHelper
 	end
 
 	def option_sections
-		['payment', 'sports']
+    [
+      "general",
+      "booking",
+      "payment",
+      "promo",
+      "packages",
+      "facilities",
+      "sports",
+      "location"
+    ]
 	end
 
 	def has_asset?(path)

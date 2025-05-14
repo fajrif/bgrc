@@ -1,0 +1,36 @@
+<p><small><%= "Display total #{@courts.count} courts" %></small></p>
+
+<table class="table display court-overview mb-30">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Image</th>
+      <th>Name</th>
+      <th>Location</th>
+      <th>Category</th>
+      <th>Featured</th>
+      <th>Price</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% for court in @courts %>
+      <tr>
+				<td><%= court.id %></td>
+				<td><%= image_tag court.images.first.variant(resize: "100x100").processed if court.images.first %></td>
+				<td><strong><%= link_to court.name, admins_court_path(court) %></strong></td>
+				<td><%= court.location %></td>
+				<td><%= court.categories.map(&:name).join(", ") %></td>
+				<td><%= court.featured_label %></td>
+				<td><%= court.price_label %></td>
+        <td class="actions">
+					<%= link_to admins_court_path(court), "data-toggle" => "tooltip", :title => "Edit" do %>
+						<i class="fa fa-pencil"></i>
+					<% end %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<%= paginate @courts %>

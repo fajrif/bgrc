@@ -1,0 +1,40 @@
+class Admins::PurchasesController < Admins::BaseController
+
+  def index
+		criteria = Purchase.joins(:user).where("full_name LIKE ?", "%#{params[:search]}%")
+		case params[:status_code]
+		when "Success"
+			criteria = criteria.where("status_code = 200")
+		when "Pending"
+			criteria = criteria.where("status_code = 201")
+		end
+    @purchases = criteria.page(params[:page]).per(500)
+
+    respond_to do |format|
+      format.html # index.html.erb
+      format.xml  { render :xml => @purchases }
+      format.js
+			format.xls { send_data Purchase.to_csv(@purchases, col_sep: "\t") }
+    end
+  end
+
+  def show
+		@purchase = Purchase.find(params[:id])
+  end
+
+  def destroy
+		@purchase = Purchase.find(params[:id])
+    @purchase.destroy
+    redirect_to admins_purchases_url, :notice => "Successfully destroyed purchase."
+  end
+
+  def settlement
+		@purchase = Purchase.find(params[:id])
+    if @purchase.make_settlement!
+			redirect_to admins_purchase_path(@purchase), :notice => "Successfully make settlement."
+		else
+			redirect_to admins_purchase_path(@purchase), :alert => "Unable to make settlement."
+		end
+  end
+
+end

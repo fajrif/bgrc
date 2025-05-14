@@ -1,0 +1,13 @@
+<tr id="business_hour_<%= business_hour.id %>">
+	<td class="text-center"><strong><%= business_hour.day_name %></strong></td>
+	<td><%= business_hour.open %></td>
+	<td><%= business_hour.close %></td>
+	<td class="actions">
+		<%= link_to edit_admins_court_business_hour_path(business_hour.court.id, business_hour), "data-toggle" => "tooltip", :id => "btn_edit_#{business_hour.id}", :title => "Edit", :remote => true do %>
+			<i class="fa fa-pencil"></i>
+		<% end %>
+		<%= link_to admins_court_business_hour_path(business_hour.court.id, business_hour), :data => { :confirm => "Are you sure?" }, :method => :delete, :class => "text-inverse", :remote => true do %>
+			<i class="fa fa-trash"></i>
+		<% end %>
+	</td>
+</tr>

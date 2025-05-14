@@ -1,0 +1,146 @@
+<div class="page-bar">
+	<div class="page-title-breadcrumb">
+		<div class=" pull-left">
+			<div class="page-title">Court Details</div>
+		</div>
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-12 col-sm-12">
+		<div class="card card-box">
+			<div class="card-body ">
+				<div class="form-horizontal">
+					<div class="form-body">
+						<div class="form-group row">
+							<label class="control-label col-md-3">ID</label>
+							<div class="col-md-5">
+								<%= @court.id %>
+							</div>
+						</div>
+						<div class="form-group row">
+							<label class="control-label col-md-3">Images</label>
+							<div class="col-md-5">
+								<% @court.images.each do |img| %>
+									<%= image_tag img.variant(resize: "379x252").processed %>
+									<%= link_to 'x', admins_court_delete_image_path(@court.id, img), class: 'btn btn-xs btn-danger', method: :delete, data: { confirm: 'Are you sure?' } %><br/>
+								<% end %>
+							</div>
+						</div>
+						<div class="form-group row">
+							<label class="control-label col-md-3">Name</label>
+							<div class="col-md-5">
+								<%= @court.name %>
+							</div>
+						</div>
+						<div class="form-group row">
+							<label class="control-label col-md-3">Category</label>
+							<div class="col-md-5">
+								<%= @court.categories.map(&:name) %>
+							</div>
+						</div>
+						<div class="form-group row">
+							<label class="control-label col-md-3">Info</label>
+							<div class="col-md-5">
+								<%= @court.info %>
+							</div>
+						</div>
+						<div class="form-group row">
+							<label class="control-label col-md-3">Instructions</label>
+							<div class="col-md-5">
+								<span class="text-red"><%= @court.instructions %></span>
+							</div>
+						</div>
+						<div class="form-group row">
+							<label class="control-label col-md-3">Description</label>
+							<div class="col-md-5">
+								<%= raw @court.description %>
+							</div>
+						</div>
+						<div class="form-group row">
+							<label class="control-label col-md-3">Price</label>
+							<div class="col-md-5">
+								<strong><%= @court.price_label %></strong>
+							</div>
+						</div>
+						<div class="form-group row">
+							<label class="control-label col-md-3">Min. Duration</label>
+							<div class="col-md-5">
+								<%= @court.min_duration %> Hour
+							</div>
+						</div>
+						<div class="form-group row">
+							<label class="control-label col-md-3">Status</label>
+							<div class="col-md-5">
+								<span class="<%= 'text-red' unless @court.is_available? %>"><%= @court.status_label %></strong>
+							</div>
+						</div>
+						<div class="form-group row">
+							<label class="control-label col-md-3">Featured</label>
+							<div class="col-md-5">
+								<span class="<%= 'text-red' unless @court.is_featured? %>"><%= @court.featured_label %></strong>
+							</div>
+						</div>
+						<div class="form-group row">
+							<label class="control-label col-md-3">Operational Hours</label>
+							<div class="col-md-5">
+								<%= raw @court.operational_hours_label %><br/>
+								<%= link_to "Configure operational hours (#{@court.business_hours.size})", admins_court_business_hours_path(@court.id) %>
+							</div>
+						</div>
+						<div class="form-group row">
+							<label class="control-label col-md-3">Extra Costs</label>
+							<div class="col-md-5">
+								<%= link_to "Set additional costs (#{@court.costs.size})", admins_court_costs_path(@court.id) %>
+							</div>
+						</div>
+						<div class="form-group row">
+							<label class="control-label col-md-3">Location</label>
+							<div class="col-md-5">
+								<%= @court.location %>
+							</div>
+						</div>
+						<div class="form-group row">
+							<label class="control-label col-md-3">Address</label>
+							<div class="col-md-5">
+								<%= @court.address %>
+							</div>
+						</div>
+						<div class="form-group row">
+							<label class="control-label col-md-3">Contact Name</label>
+							<div class="col-md-5">
+								<%= @court.contact_name %>
+							</div>
+						</div>
+						<div class="form-group row">
+							<label class="control-label col-md-3">Contact Email</label>
+							<div class="col-md-5">
+								<%= @court.contact_email %>
+							</div>
+						</div>
+						<div class="form-group row">
+							<label class="control-label col-md-3">Contact Phone</label>
+							<div class="col-md-5">
+								<%= @court.contact_phone %>
+							</div>
+						</div>
+						<div class="form-group row">
+							<label class="control-label col-md-3">Google Maps</label>
+							<div class="col-md-5">
+								<%= truncate_paragraph(@court.google_maps, 50) %>
+							</div>
+						</div>
+						<div class="form-actions">
+							<div class="row">
+								<div class="offset-md-3 col-md-9">
+									<%= link_to 'Edit', edit_admins_court_path(@court), :class => 'btn btn-warning' %>
+									<%= link_to 'Destroy', admins_court_path(@court), :data => { :confirm => 'Are you sure?' }, :method => :delete, :class => 'btn btn-danger' %>
+									<%= link_to 'View All', admins_courts_path, :class => 'btn' %>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

@@ -2017,7 +2017,7 @@ textarea.input-bg {
 }
 .dropdown-style-1 .dropdown-menu {
   margin-top: 2px;
-  min-width: 90px;
+  min-width: 100px;
   border-radius: 0;
   border: none;
   z-index: 444;
@@ -8142,7 +8142,7 @@ header a.logo {
   vertical-align: middle;
 }
 header a.logo img {
-  max-height: 46px;
+  max-height: 60px;
 }
 header .left-nav .sidebar-part1 a.logo img {
   max-height: inherit;
@@ -15067,7 +15067,7 @@ a img.aligncenter {
   background-color: #141414;
 }
 .footer-logo {
-  max-height: 58px;
+  /*max-height: 58px;*/
 }
 
 /* footer input */

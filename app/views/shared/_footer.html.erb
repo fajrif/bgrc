@@ -1,39 +1,65 @@
 <!-- start footer -->
-<footer class="footer-modern-dark bg-black text-white-2 padding-three-tb sm-padding-30px-tb">
-	<div class="footer-widget-area padding-40px-bottom sm-padding-30px-bottom">
-		<div class="container-xl">
-			<div class="row align-items-center">
-				<!-- start links -->
-				<div class="col-lg-6 col-md-6 social-style-2 text-center text-md-start">
-					<div class="footer-links">
-						<ul class="text-small margin-20px-top sm-no-margin-bottom text-uppercase p-0 mb-0 list-unstyled">
-						</ul>
-					</div>
-					<%= link_to root_url, class: "margin-20px-bottom sm-margin-40px-bottom d-inline-block" do %>
-						<%= image_tag("logo.png", class: "footer-logo", alt: "Bali Golf & Racket Club") %>
-					<% end %>
-				</div>
-				<!-- end links -->
-			</div>
-		</div>
-	</div>
-	<div class="container-xl">
-		<!-- start copyright -->
-		<div class="footer-bottom border-top border-color-medium-dark-gray padding-40px-top sm-padding-30px-top">
-			<div class="row row-cols-1 row-cols-md-2 align-items-center">
-				<div class="col text-md-start text-center text-medium">
-					<div class="social-icon-style-8 d-inline-block align-middle">
-						<ul class="medium-icon mb-0">
-							<li><a class="linkedin text-white-2" href="<%= configatron.social_linkedin_url %>" target="_blank"><i class="fa-brands fa-linkedin"></i></a></li>
-							<li><a class="instagram text-white-2" href="<%= configatron.social_instagram_url %>" target="_blank"><i class="fa-brands fa-instagram no-margin-right"></i></a></li>
-						</ul>
-					</div>
-				</div>
-				<div class="col text-md-end text-center text-medium">&copy; 2024 Bali Golf & Racket Club</div>
-			</div>
-		</div>
-		<!-- end copyright -->
-	</div>
+<footer class="footer-standard-dark bg-dark-footer text-white-2">
+    <div class="footer-widget-area padding-three-tb sm-padding-30px-tb">
+        <div class="container">
+            <div class="row row-cols-1 row-cols-lg-4 row-cols-sm-2">
+                <div class="col widget md-margin-30px-bottom text-center text-sm-start">
+                    <!-- start logo -->
+                    <%= link_to root_url, class: "margin-20px-bottom d-inline-block" do %>
+                      <%= image_tag("logo.png", class: "footer-logo", alt: "Bali Golf & Racket Club") %>
+                    <% end %>
+                    <!-- end logo -->
+                    <p class="d-inline-block text-medium w-95 lg-w-100 xs-w-95">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
+                    <!-- start social media -->
+                    <div class="social-icon-style-8 d-inline-block align-middle">
+                        <ul class="small-icon no-margin-bottom">
+                            <li><a class="facebook text-white-2" href="https://www.facebook.com/" target="_blank"><i class="fa-brands fa-facebook-f" aria-hidden="true"></i></a></li>
+                            <li><a class="twitter text-white-2" href="https://twitter.com/" target="_blank"><i class="fa-brands fa-twitter"></i></a></li>
+                            <li><a class="google text-white-2" href="https://plus.google.com" target="_blank"><i class="fa-brands fa-google-plus-g"></i></a></li>
+                            <li><a class="instagram text-white-2" href="https://instagram.com/" target="_blank"><i class="fa-brands fa-instagram no-margin-right" aria-hidden="true"></i></a></li>
+                        </ul>
+                    </div>
+                    <!-- end social media -->
+                </div>
+                <!-- start additional links -->
+                <div class="col widget padding-45px-left md-padding-15px-left md-margin-30px-bottom text-center text-sm-start">
+                    <div class="widget-title alt-font text-uppercase margin-10px-bottom font-weight-600">Links</div>
+                    <ul class="list-unstyled">
+                      <li><a href="#">Link lorem ipsum</a></li>
+                      <li><a href="#">Link lorem ipsum</a></li>
+                      <li><a href="#">Link lorem ipsum</a></li>
+                      <li><a href="#">Link lorem ipsum</a></li>
+                      <li><a href="#">Link lorem ipsum</a></li>
+                      <li><a href="#">Link lorem ipsum</a></li>
+                    </ul>
+                </div>
+                <!-- end additional links -->
+                <!-- start contact information -->
+                <div class="col widget padding-45px-left md-padding-15px-left xs-margin-30px-bottom text-center text-sm-start">
+                    <div class="widget-title alt-font text-uppercase margin-10px-bottom font-weight-600">Contact</div>
+                    <p class="d-block text-medium margin-15px-bottom w-80 sm-w-100">
+                      POFO Design Agency<br> 301 The Greenhouse, Custard Factory, London, E2 8DY.
+                    </p>
+                    <div class="text-medium">Email: <a href="mailto:sales@domain.com">sales@domain.com</a></div>
+                    <div class="text-medium">Phone: +00 (0) 000 000 0000</div>
+                </div>
+                <!-- end contact information -->
+            </div>
+        </div>
+    </div>
+    <div class="bg-dark-footer padding-20px-tb text-center sm-padding-30px-tb">
+        <div class="container">
+            <div class="row row-cols-1 row-cols-md-2 text-white-2">
+                <!-- start copyright -->
+                <div class="col text-small text-md-start text-center">&copy; 2024 Bali Golf & Racket Club</div>
+                <div class="col text-small text-md-end text-center">
+                    <a href="javascript:void(0);" class="text-white-2">Term and Condition</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="javascript:void(0);" class="text-white-2">Privacy Policy</a>
+                </div>
+                <!-- end copyright -->
+            </div>
+        </div>
+    </div>
 </footer>
 <!-- end footer -->
+
 

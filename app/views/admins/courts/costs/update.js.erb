@@ -1,0 +1,2 @@
+$("#cost_<%= @cost.id %>").replaceWith("<%= escape_javascript(render partial: 'cost', locals: {cost: @cost} ) %>")
+$("#edit-form-<%= @cost.id %>").remove()

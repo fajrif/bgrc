@@ -11,6 +11,7 @@ configatron.site_description = "Book Tennis — Bali Golf and Racket Club"
 # Social Media
 configatron.social_linkedin_url = ""
 configatron.social_instagram_url = ""
-
 configatron.admin_email = "info@baligolfandracketclub.com"
 configatron.no_reply_email = "no-reply@baligolfandracketclub.com"
+configatron.omniauth_google_api_id = "***REMOVED***"
+configatron.omniauth_google_api_secret = "***REMOVED***"

@@ -1,0 +1,22 @@
+<div class="col-lg-4 col-md-8 d-none d-lg-block">
+	<div class="wpo-single-sidebar">
+		<div class="wpo-service-widget widget">
+			<ul>
+				<li>
+					<a href="<%= users_account_path %>">View Profile</a>
+				</li>
+				<li>
+					<a href="<%= users_bookings_path %>">View Bookings</a>
+				</li>
+				<li>
+					<a href="<%= history_users_bookings_path %>">Booking History</a>
+				</li>
+				<li>
+					<%= link_to destroy_user_session_path, :method => :delete do %>
+						Log Out
+					<% end %>
+				</li>
+			</ul>
+		</div>
+	</div>
+</div>

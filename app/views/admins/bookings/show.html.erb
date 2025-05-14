@@ -1,0 +1,108 @@
+<div class="page-bar">
+	<div class="page-title-breadcrumb">
+		<div class=" pull-left">
+			<div class="page-title">Booking details</div>
+		</div>
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-12 col-sm-12">
+		<div class="card card-box">
+			<div class="card-body ">
+				<div class="form-horizontal">
+					<div class="form-body">
+						<div class="form-group row">
+							<label class="control-label col-md-3">ID</label>
+							<div class="col-md-5">
+								<%= @booking.id %>
+							</div>
+						</div>
+						<div class="form-group row">
+							<label class="control-label col-md-3">Order ID</label>
+							<div class="col-md-5">
+								<strong><%= @booking.order_id %></strong>
+							</div>
+						</div>
+						<div class="form-group row">
+							<label class="control-label col-md-3">Court</label>
+							<div class="col-md-5">
+								<% if current_admin.is_admin? %>
+									<strong><%= link_to @booking.try(:court).try(:name), admins_court_path(@booking.try(:court)) if @booking.court %></strong>
+								<% else %>
+									<strong><%= @booking.try(:court).try(:name) if @booking.court %></strong>
+								<% end %>
+							</div>
+						</div>
+						<div class="form-group row">
+							<label class="control-label col-md-3">User</label>
+							<div class="col-md-5">
+								<% if current_admin.is_admin? %>
+									<strong><%= link_to @booking.try(:user).try(:full_name), admins_user_path(@booking.try(:user)) if @booking.user %></strong>
+								<% else %>
+									<strong><%= @booking.try(:user).try(:full_name) if @booking.user %></strong>
+								<% end %>
+							</div>
+						</div>
+						<div class="form-group row">
+							<label class="control-label col-md-3">Date</label>
+							<div class="col-md-5">
+								<%= @booking.date.strftime('%A, %d-%m-%Y %H:%M %p') %>
+							</div>
+						</div>
+						<div class="form-group row">
+							<label class="control-label col-md-3">Duration</label>
+							<div class="col-md-5">
+								<%= @booking.duration_label %>
+							</div>
+						</div>
+						<div class="form-group row">
+							<label class="control-label col-md-3">End Date</label>
+							<div class="col-md-5">
+								<%= @booking.end_date.strftime('%A, %d-%m-%Y %H:%M %p') %>
+							</div>
+						</div>
+						<div class="form-group row">
+							<label class="control-label col-md-3">Price</label>
+							<div class="col-md-5">
+								<%= @booking.price_label %>
+							</div>
+						</div>
+						<div class="form-group row">
+							<label class="control-label col-md-3">Status</label>
+							<div class="col-md-5">
+								<span class="<%= @booking.is_unpaid? ? 'text-red' : 'text-green' %>"><%= @booking.status_label %></span>
+							</div>
+						</div>
+						<div class="form-group row">
+							<label class="control-label col-md-3">Notes</label>
+							<div class="col-md-5">
+								<%= @booking.notes %>
+							</div>
+						</div>
+						<div class="form-group row">
+							<label class="control-label col-md-3">Created at</label>
+							<div class="col-md-5">
+								<%= @booking.created_at.strftime('%A, %d-%m-%Y %H:%M %p') %>
+							</div>
+						</div>
+						<div class="form-group row">
+							<label class="control-label col-md-3">Email Notifications</label>
+							<div class="col-md-5">
+								<%= link_to 'Send', send_email_notification_admins_booking_path(@booking), :data => { :confirm => 'Are you sure want to send email to user and vendor?' }, :method => :post %>
+							</div>
+						</div>
+						<div class="form-actions">
+							<div class="row">
+								<div class="offset-md-3 col-md-9">
+									<%= link_to 'Edit', edit_admins_booking_path(@booking), :class => 'btn btn-warning' %>
+									<%= link_to 'Destroy', admins_booking_path(@booking), :data => { :confirm => 'Are you sure?' }, :method => :delete, :class => 'btn btn-danger' %>
+									<%= link_to 'View All', admins_bookings_path, :class => 'btn' %>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

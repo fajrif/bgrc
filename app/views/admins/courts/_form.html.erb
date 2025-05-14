@@ -1,0 +1,38 @@
+<%= simple_form_for [:admins, @court], :html => { :class => 'form-horizontal' } do |f| %>
+	<%= f.error_notification %>
+	<div class="form-body">
+		<%= f.input :images, as: :file, input_html: { multiple: true } %>
+		<%= f.input :name %>
+		<%= f.input :info, as: :text %>
+		<%= f.input :instructions, as: :text %>
+		<%= f.input :description, as: :text, input_html: { rows: "20" } %>
+		<%= f.input :price %>
+		<%= f.input :min_duration %>
+		<%= f.association :categories, as: :select %>
+		<%= f.input :status, as: :select, collection: [[0, 'Available'], [1, 'Not Available']], label_method: :second, value_method: :first, include_blank: false %>
+		<%= f.input :featured, as: :select, collection: [[0, 'No'], [1, 'Yes']], label_method: :second, value_method: :first, include_blank: false %>
+		<%= f.input :location %>
+		<%= f.input :address %>
+		<%= f.input :google_maps %>
+		<%= f.input :contact_name %>
+		<%= f.input :contact_email, as: :text %>
+		<%= f.input :contact_phone %>
+		<div class="form-actions">
+			<div class="row">
+				<div class="offset-md-3 col-md-9">
+					<%= f.button :submit, :class => 'btn btn-primary' %>
+					<% unless @court.new_record? %>
+					<%= link_to "Cancel", admins_court_path(@court), :class => 'btn' %>
+					<% else %>
+					<%= link_to "Cancel", admins_courts_path, :class => 'btn' %>
+					<% end %>
+				</div>
+			</div>
+		</div>
+	</div>
+<% end %>
+
+<%= content_for :tail do %>
+	<script src="https://cdn.ckeditor.com/4.14.0/standard-all/ckeditor.js"></script>
+	<%= javascript_include_tag "court_desc.js" %>
+<% end %>
