@@ -1,34 +1,45 @@
-<div class="question-area section-padding pt-120">
-		<div class="container">
-				<div class="row">
-						<div class="col-lg-12">
-								<div class="question-touch">
-										<h2>Login</h2>
-										<p>
-											Login to Book Your Experience
-										</p>
-										<p>
-											<%= link_to user_google_oauth2_omniauth_authorize_path, :method => :post, :class => "theme-btn btn-big white" do %>
-												<i class="fa fa-google"></i> Sign in with Google
-											<% end %>
-										</p>
-										<%= simple_form_for(resource, :as => resource_name, :url => session_path(resource_name), :html => { :class => "contact-validation-active" }) do |f| %>
-											<%= f.input :email, label: false, placeholder: "Email Address" %>
-											<%= f.input :password, label: false, placeholder: "Password" %>
-											<div class="col-lg-12 mb-45">
-												<%- if devise_mapping.recoverable? && controller_name != 'passwords' && controller_name != 'registrations' %>
-													<%= link_to "Forgot your password?", new_password_path(resource_name) %><br />
-												<% end %>
-												<%- if devise_mapping.registerable? && controller_name != 'registrations' %>
-													No Account? <%= link_to "Create one", new_registration_path(resource_name) %>
-												<% end %>
-											</div>
-											<div class="submit-btn-wrapper">
-													<button type="submit" class="theme-btn btn-big default">Login</button>
-											</div>
-										<% end %>
-								</div>
-						</div>
-				</div>
-		</div>
-</div>
+<!-- start page title section -->
+<section class="wow animate__fadeIn bg-black padding-35px-tb page-title-small top-space">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-xl-8 col-md-6 text-center text-md-start">
+                <!-- start page title -->
+                <h1 class="alt-font text-white font-weight-600 mb-0 text-uppercase">Login</h1>
+                <!-- end page title -->
+            </div>
+        </div>
+    </div>
+</section>
+<!-- end page title section -->
+<!-- start subscribe style 01 section -->
+<section class="bg-light-gray wow animate__fadeIn">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 text-center">
+                <h4 class="alt-font font-weight-600 text-extra-dark-gray">Login to Book Your Experience</h4>
+                <p class="w-65 mx-auto md-w-100"> Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the standard dummy text.</p>
+                <p>
+                  <%= link_to user_google_oauth2_omniauth_authorize_path, :method => :post, :class => "theme-btn btn-big white" do %>
+                    <i class="fa fa-google"></i> Sign in with Google
+                  <% end %>
+                </p>
+                <%= simple_form_for(resource, :as => resource_name, :url => session_path(resource_name), :html => { :class => "position-relative" }) do |f| %>
+                  <%= f.input :email, label: false, placeholder: "Email Address" %>
+                  <%= f.input :password, label: false, placeholder: "Password" %>
+                  <div class="col-lg-12 mb-45">
+                    <%- if devise_mapping.recoverable? && controller_name != 'passwords' && controller_name != 'registrations' %>
+                      <%= link_to "Forgot your password?", new_password_path(resource_name) %><br />
+                    <% end %>
+                    <%- if devise_mapping.registerable? && controller_name != 'registrations' %>
+                      No Account? <%= link_to "Create one", new_registration_path(resource_name) %>
+                    <% end %>
+                  </div>
+                  <div class="submit-btn-wrapper">
+                      <button type="submit" class="theme-btn btn-big default">Login</button>
+                  </div>
+                <% end %>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- end subscribe style 01 section -->

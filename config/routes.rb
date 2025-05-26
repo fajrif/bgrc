@@ -5,8 +5,6 @@ Rails.application.routes.draw do
   # Can be used by load balancers and uptime monitors to verify that the app is live.
   #get "up" => "rails/health#show", as: :rails_health_check
 
-	mount PdfjsViewer::Rails::Engine => "/pdfjs", as: 'pdfjs'
-
   devise_for :user, :controllers => { :sessions => "users/sessions", :registrations => "users/registrations", :omniauth_callbacks => "users/omniauth_callbacks" }
   devise_scope :user do
     get 'users/sign_up_by_provider' => 'users/registrations#new_by_provider', :as => :new_user_registration_by_provider
@@ -87,15 +85,6 @@ Rails.application.routes.draw do
       resource :purchase, :only => [:create]
       get "purchase/:type/:id" => "purchases#new", :as => :new_purchase
 
-      # Carts & Orders
-      resource :cart, :only => [:show, :destroy], :controller => "cart" do
-        resources :line_items, :only => [:destroy], :controller => "cart/line_items" do
-          post 'create/:product_id' => "cart/line_items#create", on: :collection, as: :create
-          put 'add' => "cart/line_items#add", as: :add
-          put 'reduce' => "cart/line_items#reduce", as: :reduce
-        end
-      end
-
       # Bookings
       resources :bookings, :except => [:edit, :update, :show] do
         collection do
@@ -107,13 +96,16 @@ Rails.application.routes.draw do
 		# For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 		# i18n Scope for id
 
-		resources :inquiries, :only => [:create]
-		resources :articles, :only => [:index, :show]
+		resources :packages, :only => [:index, :show]
 		resources :facilities, :only => [:index, :show]
 		resources :events, :only => [:index, :show]
 		resources :promos, :only => [:index, :show]
 		resources :sports, :only => [:show]
 
+    match 'contact', to: 'inquiries#show', via: :get, as: :get_contact
+    match 'contact', to: 'inquiries#create', via: :post, as: :contacts
+    match 'blog', to: 'articles#index', via: :get, as: :blogs
+    match 'blog/:id', to: 'articles#show', via: :get, as: :get_blog
     match 'about', to: 'home#about', via: :get, as: :about
     match 'terms', to: 'home#terms', via: :get, as: :terms
     match 'privacy', to: 'home#privacy', via: :get, as: :privacy

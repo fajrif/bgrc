@@ -42,7 +42,7 @@
                 </button>
                 <div class="navbar-collapse collapse justify-content-end" id="navbar-collapse-toggle-1">
                     <ul id="accordion" class="nav navbar-nav navbar-left no-margin alt-font text-small" data-in="animate__fadeIn" data-out="animate__fadeOut">
-                        <li><a href="#">Facilities</a></li>
+                        <li><a href="<%= facilities_path %>">Facilities</a></li>
                         <li class="dropdown simple-dropdown">
                           <a href="#">Sports</a><i class="fa-solid fa-angle-down dropdown-toggle" data-bs-toggle="dropdown" aria-hidden="true"></i>
                             <!-- start sub menu -->
@@ -53,12 +53,12 @@
                                 <li class="dropdown"><a href="#">Pickleball</a></li>
                             </ul>
                         </li>
-                        <li><a href="#">Packages</a></li>
-                        <li><a href="#">Promos</a></li>
-                        <li><a href="#">Our Events</a></li>
-                        <li><a href="#">About Us</a></li>
-                        <li><a href="#">Blogs</a></li>
-                        <li><a href="#">Contact</a></li>
+                        <li><a href="<%= packages_path %>">Packages</a></li>
+                        <li><a href="<%= promos_path %>">Promos</a></li>
+                        <li><a href="<%= events_path %>">Our Events</a></li>
+                        <li><a href="<%= about_path %>">About Us</a></li>
+                        <li><a href="<%= blogs_path %>">Blogs</a></li>
+                        <li><a href="<%= get_contact_path %>">Contact</a></li>
                     </ul>
                 </div>
             </div>
