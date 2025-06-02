@@ -2,7 +2,7 @@ class PromosController < ApplicationController
 
   def index
     criteria = Promo.all
-		@promos = criteria.page(params[:page]).per(12)
+		@promos = criteria.page(params[:page]).per(6)
 
 		@meta_title = "Our Promos"
 		@meta_desc = "promos"

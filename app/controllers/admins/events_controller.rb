@@ -63,7 +63,7 @@ class Admins::EventsController < Admins::BaseController
   private
 
   def params_event
-    params.require(:event).permit(:image, :name, :short_description, :description, :start_date, :end_date, :sport_id, images: [])
+    params.require(:event).permit(:image, :name, :short_description, :description, :start_date, :end_date, :featured, :sport_id, images: [])
   end
 
   def set_event

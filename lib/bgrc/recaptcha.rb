@@ -1,6 +1,6 @@
 require 'net/https'
 
-module BGRC
+module Bgrc
 	class Recaptcha
 
 		RECAPTCHA_MINIMUM_SCORE = 0.7
@@ -11,7 +11,7 @@ module BGRC
 			uri = URI.parse("https://www.google.com/recaptcha/api/siteverify?secret=#{secret_key}&response=#{token}")
 			response = Net::HTTP.get_response(uri)
 			json = JSON.parse(response.body)
-			json['success'] && json['score'] >= BGRC::Recaptcha::RECAPTCHA_MINIMUM_SCORE && json['action'] == recaptcha_action
+			json['success'] && json['score'] >= Bgrc::Recaptcha::RECAPTCHA_MINIMUM_SCORE && json['action'] == recaptcha_action
 		end
 
 		def self.verify_recaptcha_v2?(token, recaptcha_action)

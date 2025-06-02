@@ -1309,7 +1309,7 @@
 
 @media (min-width: 1199px) {
     /* page container */
-    .container, .container-lg, .container-md, .container-sm { max-width: 1170px; }
+    .container, .container-lg, .container-md, .container-sm { max-width: 1270px; }
 }
 
 @media (min-width: 1500px) {

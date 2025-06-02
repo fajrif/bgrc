@@ -34,6 +34,7 @@
 							<%= f.association :sport, as: :select %>
 							<%= f.input :start_date, as: :string, input_html: { class: "datetimepicker", value: get_input_date_value(f.object.start_date) } %>
               <%= f.input :end_date, as: :string, input_html: { class: "datetimepicker", value: get_input_date_value(f.object.end_date) } %>
+              <%= f.input :featured, as: :select, collection: [[1, 'Yes'], [0, 'No']], label_method: :second, value_method: :first %>
 						</div>
 					</div>
 				</div>

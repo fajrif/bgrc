@@ -173,7 +173,6 @@ nav.navbar.navbar-default ul.nav > li > button {
 nav.navbar.navbar-default ul.nav > li > button,
 nav.navbar.navbar-default ul.nav > li > a {
 	font-weight: 500;
-	text-transform: uppercase;
 }
 header nav .navbar-nav.text-normal > li > button,
 header nav .navbar-nav.text-normal > li > a {

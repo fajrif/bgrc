@@ -2,7 +2,7 @@ class EventsController < ApplicationController
 
   def index
     criteria = Event.all
-		@events = criteria.page(params[:page]).per(12)
+		@events = criteria.page(params[:page]).per(6)
 
 		@meta_title = "Our Events"
 		@meta_desc = "events"

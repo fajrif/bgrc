@@ -104,10 +104,10 @@ Rails.application.routes.draw do
 
     match 'contact', to: 'inquiries#show', via: :get, as: :get_contact
     match 'contact', to: 'inquiries#create', via: :post, as: :contacts
-    match 'blog', to: 'articles#index', via: :get, as: :blogs
-    match 'blog/:id', to: 'articles#show', via: :get, as: :get_blog
+    match 'blogs', to: 'articles#index', via: :get, as: :blogs
+    match 'blogs/:id', to: 'articles#show', via: :get, as: :get_blog
     match 'about', to: 'home#about', via: :get, as: :about
-    match 'terms', to: 'home#terms', via: :get, as: :terms
+    match 'disclaimer', to: 'home#disclaimer', via: :get, as: :disclaimer
     match 'privacy', to: 'home#privacy', via: :get, as: :privacy
     match 'faq', to: 'home#faq', via: :get, as: :faq
 		root :to => "home#index"

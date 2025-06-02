@@ -96,6 +96,18 @@ id:
     422_desc: "Perubahan yang Anda inginkan ditolak."
     500_title: "Halaman Error"
     500_desc: "Mohon maaf terjadi kesalahan pada halaman ini."
+  menu:
+    facilities: "Fasilitas"
+    sports: "Olah raga"
+    packages: "Paket"
+    promos: "Promosi"
+    events: "Event"
+    about: "Tentang Kami"
+    blogs: "Blog"
+    contact: "Kontak"
+    disclaimer: "Penyangkalan"
+    privacy_policy: "Kebijakan Privasi"
+    faq: "FAQ"
   global:
     dismiss: "Tutup"
     read_more: "Telusuri"

@@ -1,29 +1,20 @@
 <div class="row">
 	<div class="col-12 col-lg-12">
-		<h4 class="font-weight-400"><%= t('contacts.title') %></h4>
-	</div>
-	<div class="col-12 col-lg-12">
-		<%= flash_message2 %>
-		<%= simple_form_for @inquiry || Inquiry.new, url: inquiries_path, method: :post, remote: true do |f| %>
-			<div class="row">
-				<div class="col-12 col-md-6">
-					<%= f.input :name %>
-					<%= f.input :company_name %>
-					<%= f.input :email %>
-				</div>
-				<div class="col-12 col-md-6">
-					<%= f.input :phone %>
-					<%= f.input :message, as: :text, input_html: { rows: "8" }	%>
-					<% if @show_recaptcha_v2 %>
-						<input type="hidden" value="true" name="inquiry[use_v2]" id="inquiry_use_v2">
-						<%= raw BGRC::Recaptcha.recaptcha_v2_render %>
-					<% else %>
-						<%= raw BGRC::Recaptcha.recaptcha_execute('inquiry') %>
-					<% end %>
-					<div class="col-12 margin-30px-top">
-						<button type="submit" class="btn btn-large btn-iec btn-rounded"><%= t('global.submit') %></button>
-					</div>
-				</div>
+		<%= simple_form_for @inquiry, url: contacts_path, method: :post, remote: true do |f| %>
+      <div class="row justify-content-center">
+        <div class="col-lg-8 text-center">
+          <%= f.input :name, label: false, placeholder: "Name", input_html: { class: "input-border-bottom" } %>
+          <%= f.input :email, label: false, placeholder: "Email", input_html: { class: "input-border-bottom" } %>
+          <%= f.input :phone, label: false, placeholder: "Phone", input_html: { class: "input-border-bottom" } %>
+          <%= f.input :message, label: false, placeholder: "Message", input_html: { class: "input-border-bottom" } %>
+          <% if @show_recaptcha_v2 %>
+            <input type="hidden" value="true" name="inquiry[use_v2]" id="inquiry_use_v2">
+            <%= raw Bgrc::Recaptcha.recaptcha_v2_render %>
+          <% else %>
+            <%= raw Bgrc::Recaptcha.recaptcha_execute('inquiry') %>
+          <% end %>
+          <button type="submit" class="btn btn-light-gray btn-medium text-medium margin-30px-top sm-margin-three-top">send message</button>
+        </div>
 			</div>
 		<% end %>
 	</div>

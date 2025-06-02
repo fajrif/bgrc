@@ -1,5 +1,9 @@
 class InquiriesController < ApplicationController
 
+  def show
+		@inquiry = Inquiry.new
+  end
+
   def create
 		@success = false
 		@inquiry = Inquiry.new(params_inquiry)
@@ -7,14 +11,14 @@ class InquiriesController < ApplicationController
 		if @inquiry.valid?
 
 			unless @inquiry.use_v2.blank?
-				unless BGRC::Recaptcha.verify_recaptcha_v2?(params['g-recaptcha-response'], '_inquiry')
+				unless Bgrc::Recaptcha.verify_recaptcha_v2?(params['g-recaptcha-response'], '_inquiry')
 					flash[:alert] = t('global.recaptcha_failed')
 					@show_recaptcha_v2 = true
 				else
 					create_data
 				end
 			else
-				unless BGRC::Recaptcha.verify_recaptcha?(params[:recaptcha_token], '_inquiry')
+				unless Bgrc::Recaptcha.verify_recaptcha?(params[:recaptcha_token], '_inquiry')
 					flash[:alert] = t('global.recaptcha_failed')
 					@show_recaptcha_v2 = true
 				else

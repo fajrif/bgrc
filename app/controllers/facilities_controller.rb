@@ -2,7 +2,7 @@ class FacilitiesController < ApplicationController
 
   def index
     criteria = Facility.all
-		@facilities = criteria.page(params[:page]).per(12)
+		@facilities = criteria.page(params[:page]).per(6)
 
 		@meta_title = "Our Facilities"
 		@meta_desc = "Facilities"

@@ -2,14 +2,21 @@ class HomeController < ApplicationController
 
   def index
 		# get public home
+    @testimonials = Testimonial.first(6)
+    @facilities = Facility.first(3)
+    @sports = Sport.first(3)
+    @event = Event.featured_events.first
+    @promos = Promo.first(3)
+    @articles = Article.first(3)
+    @faqs = Question.where("section = ?", "general").limit(5)
   end
 
   def about
 		# get public about
   end
 
-  def terms
-		# get public terms
+  def disclaimer
+		# get public disclaimer
   end
 
   def privacy

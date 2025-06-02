@@ -38,4 +38,8 @@
 		<td><b>End Date</b></td>
     <td><%= @event.end_date.strftime('%d/%m/%Y %H:%M') %></td>
 	</tr>
+	<tr>
+		<td><b>Featured</b></td>
+    <td><%= @event.is_featured? ? "Yes" : "No" %></td>
+	</tr>
 </table>

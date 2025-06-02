@@ -52,6 +52,18 @@ en:
     422_desc: "The change you wanted was rejected."
     500_title: "Page Error"
     500_desc: "We're sorry, but something went wrong."
+  menu:
+    facilities: "Facilities"
+    sports: "Sports"
+    packages: "Packages"
+    promos: "Promos"
+    events: "Our Events"
+    about: "About Us"
+    blogs: "Blogs"
+    contact: "Contact"
+    disclaimer: "Disclaimer"
+    privacy_policy: "Privacy Policy"
+    faq: "FAQ"
   global:
     read_more: "Read More"
     recaptcha_failed: "Recaptcha verification failed"

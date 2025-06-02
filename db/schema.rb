@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_05_11_124334) do
+ActiveRecord::Schema[7.1].define(version: 2025_06_02_153158) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -181,6 +181,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_05_11_124334) do
     t.datetime "end_date"
     t.bigint "sport_id"
     t.jsonb "slug", default: {}
+    t.integer "featured", default: 0, null: false
     t.index ["name"], name: "index_events_on_name", unique: true
     t.index ["slug"], name: "index_events_on_slug", unique: true
     t.index ["sport_id"], name: "index_events_on_sport_id"

@@ -17,6 +17,9 @@
 					<td><%= image_tag event.image.variant(resize_to_limit: [100,100]) if event.image.attached? %></td>
 					<td>
 						<h5 class="fs-14 mb-1"><%= link_to event.name, admins_event_path(event.id), class: "text-body" %></h5>
+            <% if event.is_featured? %>
+              <p class="text-danger mb-0">Featured</p>
+            <% end %>
 					</td>
 					<td>
 						<h5 class="fs-14 mb-1"><%= event.sport.name %></h5>

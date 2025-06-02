@@ -1,36 +1,64 @@
 <%= render "home/banner" %>
 <!-- start contact section -->
 <section class="wow animate__fadeIn">
-    <div class="container">
-        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 justify-content-center">
-            <!-- start contact block -->
-            <div class="col text-center last-paragraph-no-margin md-margin-30px-bottom wow animate__fadeInUp">
-                <div class="padding-60px-all border-all border-color-medium-gray md-padding-20px-all sm-padding-30px-all">
-                    <div class="text-extra-dark-gray alt-font font-weight-600 text-uppercase">Bali</div>
-                    <p>401 Broadway, 24th Floor<br>Iceland, Iceland 10013.</p>
-                    <p><strong>P:</strong> + 1-800-222-000<br><strong>E:</strong> <a href="mailto:info@domain.com">info@domain.com</a></p>
+  <div class="container">
+    <h5 class="text-extra-dark-gray text-uppercase alt-font w-90 lg-w-95 md-w-100 mb-5">Location</h5>
+    <!-- start feature box -->
+    <div class="row row-cols-1 row-cols-lg-3 row-cols-sm-2 justify-content-center">
+        <!-- start features box item -->
+        <div class="col md-margin-50px-bottom sm-margin-40px-bottom wow animate__fadeInUp last-paragraph-no-margin">
+            <div class="feature-box-5 position-relative">
+                <i class="icon-map text-medium-gray icon-medium"></i>
+                <div class="feature-content">
+                    <p class="d-inline-block w-75 lg-w-100 xs-w-90"><%= raw(configatron.location_address) %></p>
                 </div>
             </div>
-            <!-- end contact block -->
-            <!-- start contact block -->
-            <div class="col text-center last-paragraph-no-margin md-margin-30px-bottom wow animate__fadeInUp" data-wow-delay="0.2s">
-                <div class="padding-60px-all border-all border-width-1 border-color-medium-gray md-padding-20px-all sm-padding-30px-all">
-                    <div class="text-extra-dark-gray alt-font font-weight-600 text-uppercase">Bali</div>
-                    <p>West 14th North Street,<br>Suite 21, Netherlands</p>
-                    <p><strong>P:</strong> + 1-800-222-000<br><strong>E:</strong> <a href="mailto:info@domain.com">info@domain.com</a></p>
-                </div>
-            </div>
-            <!-- end contact block -->
-            <!-- start contact block -->
-            <div class="col text-center last-paragraph-no-margin wow animate__fadeInUp" data-wow-delay="0.4s">
-                <div class="padding-60px-all border-all border-width-1 border-color-medium-gray md-padding-20px-all sm-padding-30px-all">
-                    <div class="text-extra-dark-gray alt-font font-weight-600 text-uppercase">Bali</div>
-                    <p>Maria Reichenbach,<br>Zürich 8022, Switzerland</p>
-                    <p><strong>P:</strong> + 1-800-222-000<br><strong>E:</strong> <a href="mailto:info@domain.com">info@domain.com</a></p>
-                </div>
-            </div>
-            <!-- end contact block -->
         </div>
+        <!-- end features box item -->
+        <!-- start features box item -->
+        <div class="col md-margin-50px-bottom sm-margin-40px-bottom wow animate__fadeInUp last-paragraph-no-margin" data-wow-delay="0.2s">
+            <div class="feature-box-5 position-relative">
+                <i class="icon-phone text-medium-gray icon-medium"></i>
+                <div class="feature-content">
+                    <p class="d-inline-block w-75 lg-w-100 xs-w-90">
+                      <strong>Phone:</strong> <%= configatron.company_phone1 %><br/>
+                      <strong>Mobile:</strong> <%= configatron.company_phone2 %>
+                    </p>
+                </div>
+            </div>
+        </div>
+        <!-- end features box item -->
+        <!-- start features box item -->
+        <div class="col wow animate__fadeInUp last-paragraph-no-margin" data-wow-delay="0.4s">
+            <div class="feature-box-5 position-relative">
+                <i class="icon-envelope text-medium-gray icon-medium"></i>
+                <div class="feature-content">
+                    <p class="d-inline-block w-75 lg-w-100 xs-w-90">
+                      <strong>Email:</strong> <%= configatron.admin_email %>
+                    </p>
+                </div>
+            </div>
+        </div>
+        <!-- end features box item -->
     </div>
+    <!-- end feature box -->
+  </div>
 </section>
 <!-- end contact section -->
+<!-- start map section -->
+<section class="p-0 one-second-screen md-h-400px sm-h-300px wow animate__fadeIn">
+  <iframe class="w-100 h-100" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3942.7868004742595!2d115.227!3d-8.80609!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2dd243daf154eb6f%3A0xaa5df7a8cd7e82f8!2sBali%20Beach%20Country%20Club!5e0!3m2!1sen!2sid!4v1748883655931!5m2!1sen!2sid" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+</section>
+<!-- end map section -->
+<!-- start form style 02 section -->
+<section class="half-section wow animate__fadeIn">
+    <div class="container" id="inquiry-form">
+      <%= render "form" %>
+    </div>
+</section>
+<!-- end form style 02 section -->
+<style>
+  .invalid-feedback {
+    text-align: start;
+  }
+</style>

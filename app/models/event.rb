@@ -5,6 +5,8 @@ class Event < ApplicationRecord
 	extend FriendlyId
   friendly_id :name, use: :slugged
 
+	scope :featured_events, -> { where("featured = 1") }
+
 	has_one_attached :image, dependent: :purge
 	has_many_attached :images, dependent: :purge
   belongs_to :sport
@@ -14,5 +16,9 @@ class Event < ApplicationRecord
 
 	def should_generate_new_friendly_id?
 		self.name_changed?
+	end
+
+	def is_featured?
+		self.featured == 1
 	end
 end

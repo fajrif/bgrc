@@ -1,4 +1,3 @@
-<!-- start info banner style 01 section -->
 <section class="pt-0 wow animate__fadeIn">
     <div class="container">
         <div class="row justify-content-center">
@@ -9,43 +8,22 @@
             </div>
         </div>
         <div class="row row-cols-1 row-cols-lg-3 row-cols-md-2 justify-content-center align-items-center">
+          <% @promos.each do |promo| %>
             <!-- start features box item -->
             <div class="col-sm-8 md-margin-30px-bottom wow animate__fadeInUp">
                 <div class="bg-white text-center">
-                    <a href="services-simple.html"><img src="https://placehold.co/750x500" alt=""></a>
+                    <%= link_to promo_path(promo) do %>
+                      <%= image_tag("https://placehold.co/750x500") %>
+                    <% end %>
                     <div class="padding-45px-all md-padding-30px-all bg-light-grey">
-                        <span class="text-extra-dark-gray font-weight-600 d-block alt-font margin-10px-bottom">Understand the situation</span>
-                        <p>Lorem Ipsum is simply text of the printing and typesetting industry. Lorem Ipsum has been standard dummy.</p>
-                        <a href="#" class="btn btn-small btn-rounded btn-transparent-dark-gray">Learn More</a>
+                      <span class="text-extra-dark-gray font-weight-600 d-block alt-font margin-10px-bottom"><%= promo.name %></span>
+                      <p><%= promo.short_description.truncate(150) %></p>
+                      <%= link_to "Learn More", promo_path(promo), class: "btn btn-small btn-transparent-dark-gray" %>
                     </div>
                 </div>
             </div>
             <!-- end features box item -->
-            <!-- start features box item -->
-            <div class="col-sm-8 md-margin-30px-bottom wow animate__fadeInUp" data-wow-delay="0.2s">
-                <div class="bg-white text-center">
-                    <a href="services-simple.html"><img src="https://placehold.co/750x500" alt=""></a>
-                    <div class="padding-45px-all md-padding-30px-all bg-light-grey">
-                        <span class="text-extra-dark-gray font-weight-600 d-block alt-font margin-10px-bottom">Bring the experience to life</span>
-                        <p>Lorem Ipsum is simply text of the printing and typesetting industry. Lorem Ipsum has been standard dummy.</p>
-                        <a href="#" class="btn btn-small btn-rounded btn-transparent-dark-gray">Learn More</a>
-                    </div>
-                </div>
-            </div>
-            <!-- end features box item -->
-            <!-- start features box item -->
-            <div class="col-sm-8 wow animate__fadeInUp" data-wow-delay="0.4s">
-                <div class="bg-white text-center">
-                    <a href="services-simple.html"><img src="https://placehold.co/750x500" alt=""></a>
-                    <div class="padding-45px-all md-padding-30px-all bg-light-grey">
-                        <span class="text-extra-dark-gray font-weight-600 d-block alt-font margin-10px-bottom">Strategise chart the course</span>
-                        <p>Lorem Ipsum is simply text of the printing and typesetting industry. Lorem Ipsum has been standard dummy.</p>
-                        <a href="#" class="btn btn-small btn-rounded btn-transparent-dark-gray">Learn More</a>
-                    </div>
-                </div>
-            </div>
-            <!-- end features box item -->
+          <% end %>
         </div>
     </div>
 </section>
-<!-- end info banner style 01 section -->

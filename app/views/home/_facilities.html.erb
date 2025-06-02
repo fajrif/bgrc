@@ -1,4 +1,3 @@
-<!-- start services style 03 section -->
 <section class="wow animate__fadeIn">
     <div class="container">
         <div class="row justify-content-center">
@@ -8,35 +7,20 @@
                 </div>
             </div>
         </div>
-        <div class="row row-cols-1 row-cols-lg-3 row-cols-md-2 justify-content-center">
+        <div class="row row-cols-1 row-cols-lg-3 row-cols-md-2 justify-content-start">
+          <% @facilities.each do |facility| %>
             <!-- start services item -->
-            <div class="col-sm-9 md-margin-40px-bottom">
-                <div class="margin-ten-bottom overflow-hidden md-margin-30px-bottom">
-                  <a href="#"><img src="https://placehold.co/750x500" alt=""/></a>
-                </div>
-                <a href="#" class="alt-font margin-5px-bottom d-block text-extra-dark-gray font-weight-600 text-uppercase">Swimming Pool</a>
-                <p class="w-95 xl-w-100">Lorem Ipsum is simply text the printing and typesetting standard industry. Lorem Ipsum has been the industry's standard dummy text.</p>
+            <div class="col-sm-9 margin-40px-bottom">
+              <div class="overflow-hidden margin-20px-bottom">
+                <%= link_to facility_path(facility) do %>
+                  <%= image_tag("https://placehold.co/750x500") %>
+                <% end %>
+              </div>
+              <%= link_to facility.name, facility_path(facility), class: "alt-font margin-5px-bottom d-block text-extra-dark-gray font-weight-600 text-uppercase" %>
+              <p class="w-95 xl-w-100"><%= facility.short_description.truncate(150) %></p>
             </div>
             <!-- end services item -->
-            <!-- start services item -->
-            <div class="col-sm-9 md-margin-40px-bottom">
-                <div class="margin-ten-bottom overflow-hidden md-margin-30px-bottom">
-                  <a href="#"><img src="https://placehold.co/750x500" alt=""/></a>
-                </div>
-                <a href="#" class="alt-font margin-5px-bottom d-block text-extra-dark-gray font-weight-600 text-uppercase">Gym</a>
-                <p class="w-95 xl-w-100">Lorem Ipsum is simply text the printing and typesetting standard industry. Lorem Ipsum has been the industry's standard dummy text.</p>
-            </div>
-            <!-- end services item -->
-            <!-- start services item -->
-            <div class="col-sm-9">
-                <div class="margin-ten-bottom overflow-hidden md-margin-30px-bottom">
-                  <a href="#"><img src="https://placehold.co/750x500" alt=""/></a>
-                </div>
-                <a href="#" class="alt-font margin-5px-bottom d-block text-extra-dark-gray font-weight-600 text-uppercase">Locker Room</a>
-                <p class="w-95 xl-w-100">Lorem Ipsum is simply text the printing and typesetting standard industry. Lorem Ipsum has been the industry's standard dummy text.</p>
-            </div>
-            <!-- end services item -->
+          <% end %>
         </div>
     </div>
 </section>
-<!-- end services style 03 section -->
