@@ -1,7 +1,7 @@
 class FacilitiesController < ApplicationController
+  before_action :set_banner, only: [:index]
 
   def index
-    @banner = BannerSection.where(name: "Facilities").first.banners.first
     criteria = Facility.all
 		@facilities = criteria.page(params[:page]).per(6)
 
@@ -13,6 +13,12 @@ class FacilitiesController < ApplicationController
 		@facility = Facility.friendly.find(params[:id])
 		@meta_title = @facility.name
 		@meta_desc = @facility.short_description
+  end
+
+  private
+
+  def set_banner
+    @banner = BannerSection.where(name: "Facilities").first.banners.first
   end
 
 end

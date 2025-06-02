@@ -3,7 +3,7 @@ class Event < ApplicationRecord
   translates :slug, :name, :short_description, :description
 
 	extend FriendlyId
-  friendly_id :name, use: :slugged
+  friendly_id :name, use: :mobility
 
 	scope :featured_events, -> { where("featured = 1") }
 

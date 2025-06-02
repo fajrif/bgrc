@@ -3,7 +3,7 @@ class Facility < ApplicationRecord
   translates :slug, :name, :short_description, :description
 
 	extend FriendlyId
-  friendly_id :name, use: :slugged
+  friendly_id :name, use: :mobility
 
 	has_one_attached :image, dependent: :purge
 	has_many_attached :images, dependent: :purge

@@ -3,7 +3,7 @@ class Article < ApplicationRecord
   translates :slug, :title, :short_description, :meta_title, :meta_description
 
 	extend FriendlyId
-  friendly_id :title, use: :slugged
+  friendly_id :title, use: :mobility
 
 	include PublishedExtension
 

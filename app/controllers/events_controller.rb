@@ -1,7 +1,7 @@
 class EventsController < ApplicationController
+  before_action :set_banner, only: [:index]
 
   def index
-    @banner = BannerSection.where(name: "Events").first.banners.first
     criteria = Event.all
 		@events = criteria.page(params[:page]).per(6)
 
@@ -15,4 +15,9 @@ class EventsController < ApplicationController
 		@meta_desc = @event.short_description
   end
 
+  private
+
+  def set_banner
+    @banner = BannerSection.where(name: "Events").first.banners.first
+  end
 end

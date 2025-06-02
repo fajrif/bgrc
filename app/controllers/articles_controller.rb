@@ -1,8 +1,8 @@
 class ArticlesController < ApplicationController
+  before_action :set_banner, only: [:index]
 
   def index
 		@categories = Category.all
-    @banner = BannerSection.where(name: "Articles").first.banners.first
 
 		begin
 			if @category = Category.find(params[:id])
@@ -26,6 +26,12 @@ class ArticlesController < ApplicationController
 		@meta_title = @article.meta_title unless @article.meta_title.blank?
 		@meta_desc = @article.meta_description unless @article.meta_description.blank?
 		@articles = Article.most_recent_articles(@article.id, 3)
+  end
+
+  private
+
+  def set_banner
+    @banner = BannerSection.where(name: "Articles").first.banners.first
   end
 
 end

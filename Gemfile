@@ -53,6 +53,7 @@ gem 'acts_as_tree'
 gem 'mobility', '~> 1.3.0.rc1'
 gem 'mobility-actiontext'
 gem 'friendly_id'
+gem 'friendly_id-mobility', '~> 1.0.4'
 gem 'email_validator'
 gem 'quilljs-rails', :git => 'https://github.com/abhinavmathur/quilljs-rails.git'
 

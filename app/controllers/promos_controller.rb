@@ -1,7 +1,7 @@
 class PromosController < ApplicationController
+  before_action :set_banner, only: [:index]
 
   def index
-    @banner = BannerSection.where(name: "Promos").first.banners.first
     criteria = Promo.all
 		@promos = criteria.page(params[:page]).per(6)
 
@@ -13,6 +13,12 @@ class PromosController < ApplicationController
 		@promo = Promo.friendly.find(params[:id])
 		@meta_title = @promo.name
 		@meta_desc = @promo.short_description
+  end
+
+  private
+
+  def set_banner
+    @banner = BannerSection.where(name: "Promos").first.banners.first
   end
 
 end
