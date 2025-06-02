@@ -1,3 +1,4 @@
+<% if @banner %>
 <!-- start banner section -->
 <section class="wow animate__fadeIn cover-background background-position-top top-space" style="background-image:url('<%= image_url("items/bg-black.png") %>');">
     <div class="opacity-medium bg-extra-dark-gray"></div>
@@ -5,13 +6,14 @@
         <div class="row align-items-center">
             <div class="col-12 d-flex flex-column text-center justify-content-center page-title-large padding-30px-tb">
                 <!-- start page title -->
-                <h1 class="alt-font text-white-2 font-weight-600">Lorem Ipsum</h1>
+                <h1 class="alt-font text-white-2 font-weight-600"><%= @banner.title %></h1>
                 <!-- end page title -->
                 <!-- start sub title -->
-                <span class="d-block text-white-2 opacity6 alt-font">Lorem Ipsum dolor si amet ...</span>
+                <span class="d-block text-white-2 opacity6 alt-font"><%= @banner.description.truncate(40) %></span>
                 <!-- end sub title -->
             </div>
         </div>
     </div>
 </section>
 <!-- end banner section -->
+<% end %>

@@ -2,6 +2,7 @@ class HomeController < ApplicationController
 
   def index
 		# get public home
+    @banner = BannerSection.where(name: "Home").first.banners.first
     @testimonials = Testimonial.first(6)
     @facilities = Facility.first(3)
     @sports = Sport.first(3)
@@ -13,6 +14,7 @@ class HomeController < ApplicationController
 
   def about
 		# get public about
+    @banner = BannerSection.where(name: "About").first.banners.first
   end
 
   def disclaimer

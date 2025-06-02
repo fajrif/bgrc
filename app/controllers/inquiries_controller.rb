@@ -2,6 +2,7 @@ class InquiriesController < ApplicationController
 
   def show
 		@inquiry = Inquiry.new
+    @banner = BannerSection.where(name: "Contact").first.banners.first
   end
 
   def create

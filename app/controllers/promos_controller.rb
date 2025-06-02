@@ -1,6 +1,7 @@
 class PromosController < ApplicationController
 
   def index
+    @banner = BannerSection.where(name: "Promos").first.banners.first
     criteria = Promo.all
 		@promos = criteria.page(params[:page]).per(6)
 

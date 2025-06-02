@@ -2,6 +2,7 @@ class ArticlesController < ApplicationController
 
   def index
 		@categories = Category.all
+    @banner = BannerSection.where(name: "Articles").first.banners.first
 
 		begin
 			if @category = Category.find(params[:id])

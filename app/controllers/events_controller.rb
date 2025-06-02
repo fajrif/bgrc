@@ -1,6 +1,7 @@
 class EventsController < ApplicationController
 
   def index
+    @banner = BannerSection.where(name: "Events").first.banners.first
     criteria = Event.all
 		@events = criteria.page(params[:page]).per(6)
 

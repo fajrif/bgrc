@@ -1,6 +1,7 @@
 class FacilitiesController < ApplicationController
 
   def index
+    @banner = BannerSection.where(name: "Facilities").first.banners.first
     criteria = Facility.all
 		@facilities = criteria.page(params[:page]).per(6)
 
