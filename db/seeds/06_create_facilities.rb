@@ -3,7 +3,7 @@ puts "create all facilities"
 
 # Swimming Pool
 facility = Facility.new(name: "Swimming Pool", short_description: FFaker::Lorem.paragraphs.join(" "), description: FFaker::Lorem.paragraphs.join(" "))
-facility.image.attach(io: Rails.root.join("vendor/assets/images/facilities/swimming-pool.jpg").open, filename: "swimming-pool.jpg")
+facility.image.attach(io: Rails.root.join("vendor/assets/images/banners/banner-grey.png").open, filename: "banner-grey.png")
 facility.save
 Mobility.with_locale(:id) {
 	facility.name = "Kolam Renang"
@@ -15,7 +15,7 @@ puts "Create facility: #{facility.name}"
 
 # GYM
 facility = Facility.new(name: "GYM", short_description: FFaker::Lorem.paragraphs.join(" "), description: FFaker::Lorem.paragraphs.join(" "))
-facility.image.attach(io: Rails.root.join("vendor/assets/images/facilities/gym.jpg").open, filename: "gym.jpg")
+facility.image.attach(io: Rails.root.join("vendor/assets/images/banners/banner-grey.png").open, filename: "banner-grey.png")
 facility.save
 Mobility.with_locale(:id) {
 	facility.name = "GYM"
@@ -27,7 +27,7 @@ puts "Create facility: #{facility.name}"
 
 # Sauna
 facility = Facility.new(name: "Sauna", short_description: FFaker::Lorem.paragraphs.join(" "), description: FFaker::Lorem.paragraphs.join(" "))
-facility.image.attach(io: Rails.root.join("vendor/assets/images/facilities/sauna.jpg").open, filename: "sauna.jpg")
+facility.image.attach(io: Rails.root.join("vendor/assets/images/banners/banner-grey.png").open, filename: "banner-grey.png")
 facility.save
 Mobility.with_locale(:id) {
 	facility.name = "Sauna"
@@ -39,7 +39,7 @@ puts "Create facility: #{facility.name}"
 
 # Locker Room
 facility = Facility.new(name: "Locker Room", short_description: FFaker::Lorem.paragraphs.join(" "), description: FFaker::Lorem.paragraphs.join(" "))
-facility.image.attach(io: Rails.root.join("vendor/assets/images/facilities/locker-room.jpg").open, filename: "locker-room.jpg")
+facility.image.attach(io: Rails.root.join("vendor/assets/images/banners/banner-grey.png").open, filename: "banner-grey.png")
 facility.save
 Mobility.with_locale(:id) {
 	facility.name = "Ruang Ganti"

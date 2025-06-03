@@ -182,6 +182,10 @@ header nav .navbar-nav.text-normal > li > a {
 	opacity: 1;
 }
 
+.letter-spacing-10px {
+  letter-spacing: 8px;
+}
+
 .padding-10px-lr-important {
 	padding-left: 10px !important;
 	padding-right: 10px !important;

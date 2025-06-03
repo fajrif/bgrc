@@ -17,11 +17,11 @@ sections.each do |section|
   num = rand(5) + 5
   num.times do
     _title = FFaker::Book.unique.title
-    faq = Question.new(title: _title, section: section)
+    faq = Question.new(title: "How to #{_title}", section: section)
     faq.description = FFaker::Lorem.paragraphs.join(" ")
     faq.save
     Mobility.with_locale(:id) {
-      faq.title = _title
+      faq.title = "Apakah #{_title}"
       faq.description = FFaker::Lorem.paragraphs.join(" ")
     }
     faq.save

@@ -1,6 +1,6 @@
 <% if @banner %>
 <!-- start banner section -->
-<section class="wow animate__fadeIn cover-background background-position-top top-space" style="background-image:url('<%= image_url("items/bg-black.png") %>');">
+<section class="wow animate__fadeIn cover-background background-position-top top-space" style="background-image:url('<%= url_for(@banner.image) %>');">
     <div class="opacity-medium bg-extra-dark-gray"></div>
     <div class="container position-relative">
         <div class="row align-items-center">

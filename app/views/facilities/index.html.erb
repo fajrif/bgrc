@@ -7,7 +7,7 @@
             <div class="col-sm-9 margin-40px-bottom">
               <div class="overflow-hidden margin-20px-bottom">
                 <%= link_to facility_path(facility) do %>
-                  <%= image_tag("https://placehold.co/750x500") %>
+                  <%= image_tag facility.image.variant(resize_to_fill: [750,500]) %>
                 <% end %>
               </div>
               <%= link_to facility.name, facility_path(facility), class: "alt-font margin-5px-bottom d-block text-extra-dark-gray font-weight-600 text-uppercase" %>

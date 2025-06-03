@@ -210,6 +210,7 @@ module AdminHelper
 	def is_admins_sports_page?
 		controller.controller_name == "sports" ||
 		controller.controller_name == "facilities" ||
+		controller.controller_name == "packages" ||
 		controller.controller_name == "events" ||
 		controller.controller_name == "promos"
 	end

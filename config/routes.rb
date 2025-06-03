@@ -76,6 +76,11 @@ Rails.application.routes.draw do
           delete "delete_attachment_image/:asset_id" => "promos#delete_attachment_image", :as => :delete_attachment_image
         end
       end
+			resources :packages do
+				member do
+          delete "delete_attachment_image/:asset_id" => "packages#delete_attachment_image", :as => :delete_attachment_image
+        end
+      end
 		end
 
     namespace :users do

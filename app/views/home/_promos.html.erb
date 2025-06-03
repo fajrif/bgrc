@@ -1,4 +1,4 @@
-<section class="pt-0 wow animate__fadeIn">
+<section class="wow animate__fadeIn">
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-lg-7 text-center">
@@ -11,14 +11,17 @@
           <% @promos.each do |promo| %>
             <!-- start features box item -->
             <div class="col-sm-8 md-margin-30px-bottom wow animate__fadeInUp">
-                <div class="bg-white text-center">
+                <div class="text-white">
                     <%= link_to promo_path(promo) do %>
-                      <%= image_tag("https://placehold.co/750x500") %>
+                      <%= image_tag promo.image.variant(resize_to_fill: [750,500]) %>
                     <% end %>
-                    <div class="padding-45px-all md-padding-30px-all bg-light-grey">
-                      <span class="text-extra-dark-gray font-weight-600 d-block alt-font margin-10px-bottom"><%= promo.name %></span>
+                    <div class="padding-25px-all bg-medium-grey">
+                      <span class="font-weight-600 d-block alt-font text-uppercase margin-10px-bottom"><%= promo.name %></span>
+                      <hr/>
+                      <span class="font-weight-500 d-block alt-font margin-10px-bottom text-uppercase"><%= promo.sport.name %></span>
                       <p><%= promo.short_description.truncate(150) %></p>
-                      <%= link_to "Learn More", promo_path(promo), class: "btn btn-small btn-transparent-dark-gray" %>
+                      <p class="text-medium">Valid: <%= promo.valid_date %></p>
+                      <%= link_to "Read More", promo_path(promo), class: "btn btn-medium btn-light-gray w-100" %>
                     </div>
                 </div>
             </div>

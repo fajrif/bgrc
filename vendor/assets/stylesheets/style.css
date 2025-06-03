@@ -62,7 +62,7 @@ Table of contents:
 	--light-blue-color: #7D9AD9;
 	--very-light-blue-color: #CCDBFD;
 	--grey-color: #E7E7E7;
-	--medium-grey-color: #4F4F4F;
+	--medium-grey-color: #A3A3A3;
 	--light-grey-color: #F5F5F5;
 	--very-light-grey-color: #E3E3E0;
 }
@@ -1734,7 +1734,7 @@ textarea.input-bg {
   display: inline-block;
   border: 1px solid transparent;
   color: inherit;
-  letter-spacing: 0;
+  letter-spacing: 2px;
   line-height: inherit;
   border-radius: 0;
   text-transform: uppercase;
@@ -1832,7 +1832,7 @@ textarea.input-bg {
 }
 .btn.btn-light-gray:hover,
 .btn.btn-light-gray:focus {
-  background: transparent;
+  background: #f5f5f5;
 }
 .btn.btn-yellow {
   background: var(--base-color);

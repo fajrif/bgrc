@@ -21,4 +21,8 @@ class Event < ApplicationRecord
 	def is_featured?
 		self.featured == 1
 	end
+
+  def valid_date
+    "#{self.start_date.strftime('%d/%m/%Y')} - #{self.end_date.strftime('%d/%m/%Y')}"
+  end
 end

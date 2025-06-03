@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_06_02_153158) do
+ActiveRecord::Schema[7.1].define(version: 2025_06_03_102822) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -218,6 +218,19 @@ ActiveRecord::Schema[7.1].define(version: 2025_06_02_153158) do
     t.string "message", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "packages", force: :cascade do |t|
+    t.jsonb "name", default: {}
+    t.jsonb "short_description", default: {}
+    t.jsonb "description", default: {}
+    t.datetime "start_date"
+    t.datetime "end_date"
+    t.bigint "sport_id"
+    t.jsonb "slug", default: {}
+    t.index ["name"], name: "index_packages_on_name", unique: true
+    t.index ["slug"], name: "index_packages_on_slug", unique: true
+    t.index ["sport_id"], name: "index_packages_on_sport_id"
   end
 
   create_table "promos", force: :cascade do |t|

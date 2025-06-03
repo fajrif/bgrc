@@ -3,7 +3,7 @@ puts "create all Blogs"
 
 # Create Article
 news1 = Article.new(title: "Bolsters Energy Efficiency Practices", category: @cat1)
-news1.image.attach(io: Rails.root.join("vendor/assets/images/news/news-1.png").open, filename: "news-1.png")
+news1.image.attach(io: Rails.root.join("vendor/assets/images/banners/banner-blog.png").open, filename: "banner-blog.png")
 news1.short_description = "As the global call for environmental sustainability grows louder, one of Indonesia’s largest copper and gold mining companies, has positioned itself at the forefront of energy innovation within the mining industry. In a notable move, is embracing renewable energy and reshaping its operation around responsible practices"
 news1.content = %q{
 <p>As the global call for environmental sustainability grows louder, one of Indonesia’s largest copper and gold mining companies, has positioned itself at the forefront of energy innovation within the mining industry. In a notable move, is embracing renewable energy and reshaping its operation around responsible practices.</p>
@@ -29,7 +29,7 @@ puts "Create Blog: #{news1.title}"
 
 # Create Article
 news2 = Article.new(title: "Bolsters renewable energy", category: @cat2)
-news2.image.attach(io: Rails.root.join("vendor/assets/images/news/news-4.png").open, filename: "news-4.png")
+news2.image.attach(io: Rails.root.join("vendor/assets/images/banners/banner-blog.png").open, filename: "banner-blog.png")
 news2.short_description = "As the global call for environmental sustainability grows louder, one of Indonesia’s largest copper and gold mining companies, has positioned itself at the forefront of energy innovation within the mining industry. In a notable move, is embracing renewable energy and reshaping its operation around responsible practices"
 news2.content = %q{
 <p>As the global call for environmental sustainability grows louder, one of Indonesia’s largest copper and gold mining companies, has positioned itself at the forefront of energy innovation within the mining industry. In a notable move, is embracing renewable energy and reshaping its operation around responsible practices.</p>
@@ -55,7 +55,7 @@ puts "Create Blog: #{news2.title}"
 
 # Create Article
 news3 = Article.new(title: "Bolsters renewable energy revive", category: @cat2)
-news3.image.attach(io: Rails.root.join("vendor/assets/images/news/news-4.png").open, filename: "news-4.png")
+news3.image.attach(io: Rails.root.join("vendor/assets/images/banners/banner-blog.png").open, filename: "banner-blog.png")
 news3.short_description = "As the global call for environmental sustainability grows louder, one of Indonesia’s largest copper and gold mining companies, has positioned itself at the forefront of energy innovation within the mining industry. In a notable move, is embracing renewable energy and reshaping its operation around responsible practices"
 news3.content = %q{
 <p>As the global call for environmental sustainability grows louder, one of Indonesia’s largest copper and gold mining companies, has positioned itself at the forefront of energy innovation within the mining industry. In a notable move, is embracing renewable energy and reshaping its operation around responsible practices.</p>

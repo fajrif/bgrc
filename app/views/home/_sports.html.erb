@@ -7,17 +7,17 @@
                 </div>
             </div>
         </div>
-        <div class="row row-cols-1 row-cols-lg-3 row-cols-md-2 justify-content-center">
+        <div class="row row-cols-1 row-cols-lg-4 row-cols-md-2 justify-content-center">
           <% @sports.each do |sport| %>
             <!-- start services item -->
             <div class="col-sm-9 md-margin-40px-bottom">
-                <div class="margin-ten-bottom overflow-hidden md-margin-30px-bottom">
+                <div class="overflow-hidden margin-20px-bottom">
                 <%= link_to sport_path(sport) do %>
-                  <%= image_tag("https://placehold.co/750x500") %>
+                  <%= image_tag sport.image.variant(resize_to_fill: [750,500]) %>
                 <% end %>
                 </div>
                 <%= link_to sport.name, sport_path(sport), class: "alt-font margin-5px-bottom d-block text-extra-dark-gray font-weight-600 text-uppercase" %>
-                <p class="w-95 xl-w-100"><%= sport.short_description.truncate(150) %></p>
+                <p class="text-medium"><%= sport.short_description.truncate(150) %></p>
             </div>
             <!-- end services item -->
           <% end %>

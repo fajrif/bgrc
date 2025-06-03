@@ -5,16 +5,16 @@
           <% @events.each do |event| %>
             <!-- start features box item -->
             <div class="col margin-30px-bottom wow animate__fadeInUp">
-                <div class="bg-white text-center">
-                    <%= link_to event_path(event) do %>
-                      <%= image_tag("https://placehold.co/750x500") %>
-                    <% end %>
-                    <div class="padding-45px-all md-padding-30px-all bg-light-grey">
-                      <span class="text-extra-dark-gray font-weight-600 d-block alt-font margin-10px-bottom"><%= event.name %></span>
-                      <p><%= event.short_description.truncate(150) %></p>
-                      <%= link_to "Learn More", event_path(event), class: "btn btn-small btn-transparent-dark-gray" %>
-                    </div>
+              <div class="bg-white">
+                <%= link_to event_path(event) do %>
+                  <%= image_tag event.image.variant(resize_to_fill: [750,500]) %>
+                <% end %>
+                <div class="padding-25px-all bg-light-grey">
+                  <span class="text-extra-dark-gray font-weight-600 d-block alt-font text-uppercase margin-10px-bottom"><%= event.name %></span>
+                  <p><%= event.short_description.truncate(100) %></p>
+                  <%= link_to "Learn More", event_path(event), class: "btn btn-small btn-transparent-dark-gray w-100" %>
                 </div>
+              </div>
             </div>
             <!-- end features box item -->
           <% end %>

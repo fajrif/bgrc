@@ -5,12 +5,17 @@
           <% @articles.each do |article| %>
             <!-- start blog item -->
             <div class="col-sm-9 margin-40px-bottom">
-                <div class="overflow-hidden margin-30px-bottom">
+                <div class="overflow-hidden margin-20px-bottom">
                 <%= link_to get_blog_path(article) do %>
-                  <%= image_tag("https://placehold.co/750x500") %>
+                  <%= image_tag article.image.variant(resize_to_fill: [750,500]) %>
                 <% end %>
                 </div>
                 <%= link_to article.title, get_blog_path(article), class: "alt-font margin-5px-bottom d-block text-extra-dark-gray font-weight-600 text-uppercase" %>
+                <span class="text-medium-gray text-uppercase text-small d-inline-block mb-2">
+                  <%= article.published_date.strftime('%d %b %Y') %>
+                  |
+                  <%= article.category.name %>
+                </span>
                 <p class="w-95 xl-w-100"><%= article.short_description.truncate(150) %></p>
             </div>
             <!-- end blog item -->

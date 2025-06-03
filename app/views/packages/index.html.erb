@@ -1,23 +1,16 @@
-<!-- start info banner style 01 section -->
-<section class="wow animate__fadeIn bg-light-grey">
+<%= render "home/banner" %>
+<section class="wow animate__fadeIn">
     <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-lg-7 text-center">
-                <div class="position-relative overflow-hidden w-100">
-                    <h5 class="alt-font font-weight-600 text-uppercase margin-50px-bottom">Packages</h5>
-                </div>
-            </div>
-        </div>
-        <div class="row row-cols-1 row-cols-lg-3 row-cols-md-2 justify-content-center align-items-center">
+        <div class="row row-cols-1 row-cols-lg-3 row-cols-md-2 justify-content-start align-items-center">
           <% @packages.each do |package| %>
             <!-- start features box item -->
-            <div class="col-sm-8 md-margin-30px-bottom wow animate__fadeInUp">
-                <div>
+            <div class="col margin-30px-bottom wow animate__fadeInUp">
+                <div class="text-white">
                     <%= link_to package_path(package) do %>
                       <%= image_tag package.image.variant(resize_to_fill: [750,500]) %>
                     <% end %>
-                    <div class="padding-25px-all bg-white">
-                      <span class="font-weight-600 d-block alt-font text-extra-dark-gray text-uppercase margin-10px-bottom"><%= package.name %></span>
+                    <div class="padding-25px-all bg-medium-grey">
+                      <span class="font-weight-600 d-block alt-font text-uppercase margin-10px-bottom"><%= package.name %></span>
                       <hr/>
                       <span class="font-weight-500 d-block alt-font margin-10px-bottom text-uppercase"><%= package.sport.name %></span>
                       <p><%= package.short_description.truncate(150) %></p>
@@ -29,6 +22,6 @@
             <!-- end features box item -->
           <% end %>
         </div>
+        <%= paginate @packages, theme: :pofo %>
     </div>
 </section>
-<!-- end info banner style 01 section -->
