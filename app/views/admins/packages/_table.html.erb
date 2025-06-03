@@ -17,9 +17,6 @@
 					<td><%= image_tag package.image.variant(resize_to_limit: [100,100]) if package.image.attached? %></td>
 					<td>
 						<h5 class="fs-14 mb-1"><%= link_to package.name, admins_package_path(package.id), class: "text-body" %></h5>
-            <% if package.is_featured? %>
-              <p class="text-danger mb-0">Featured</p>
-            <% end %>
 					</td>
 					<td>
 						<h5 class="fs-14 mb-1"><%= package.sport.name %></h5>
