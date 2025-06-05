@@ -336,7 +336,7 @@ header nav .navbar-nav.text-normal > li > a {
 	z-index: 10002 !important;
 }
 .dropdown-style-1 .btn.show {
-	color: var(--base-color);
+  color: var(--grey-color) !important;
 }
 .grecaptcha-badge {
 	display: none;

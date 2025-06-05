@@ -14,8 +14,12 @@
 											<%= f.input :password, label: false, placeholder: "Password" %>
 											<%= f.input :password_confirmation, label: false, placeholder: "Password confirmation" %>
 											<div class="col-lg-12 mb-20">
-												<%= flash[:recaptcha_error] %>
-												<%= recaptcha_tags %>
+                        <% if @show_recaptcha_v2 %>
+                          <input type="hidden" value="true" name="user[use_v2]" id="user_use_v2">
+                          <%= raw Bgrc::Recaptcha.recaptcha_v2_render %>
+                        <% else %>
+                          <%= raw Bgrc::Recaptcha.recaptcha_execute('registration') %>
+                        <% end %>
 											</div>
 											<div class="col-lg-12 mb-20">
 												<%- if controller_name != 'sessions' %>

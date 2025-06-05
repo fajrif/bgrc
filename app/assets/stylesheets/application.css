@@ -43,7 +43,7 @@
 }
 .alert-success {
 	--bs-alert-color: #fff;
-	--bs-alert-bg: var(--green-color);
+	--bs-alert-bg: var(--medium-green-color);
 	--bs-alert-border-color: var(--very-light-green-color);
 	--bs-alert-link-color: #fff;
 	margin-bottom: 2rem;

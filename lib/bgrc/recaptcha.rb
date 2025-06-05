@@ -6,7 +6,7 @@ module Bgrc
 		RECAPTCHA_MINIMUM_SCORE = 0.7
 
 		def self.verify_recaptcha?(token, recaptcha_action)
-			secret_key = ENV["RECAPTCHA_V3_SECRET_KEY"]
+      secret_key = configatron.recaptcha_v3_secret_key
 
 			uri = URI.parse("https://www.google.com/recaptcha/api/siteverify?secret=#{secret_key}&response=#{token}")
 			response = Net::HTTP.get_response(uri)
@@ -15,7 +15,7 @@ module Bgrc
 		end
 
 		def self.verify_recaptcha_v2?(token, recaptcha_action)
-			secret_key = ENV["RECAPTCHA_V2_SECRET_KEY"]
+      secret_key = configatron.recaptcha_v2_secret_key
 
 			uri = URI.parse("https://www.google.com/recaptcha/api/siteverify?secret=#{secret_key}&response=#{token}")
 			response = Net::HTTP.get_response(uri)
@@ -25,7 +25,7 @@ module Bgrc
 
 		def self.recaptcha_execute(action)
 			id = "recaptcha_token_#{SecureRandom.hex(10)}"
-			site_key = ENV["RECAPTCHA_V3_SITE_KEY"]
+      site_key = configatron.recaptcha_v3_site_key
 
 			return %Q{
 				<input name="recaptcha_token" type="hidden" id="#{id}"/>
@@ -41,7 +41,7 @@ module Bgrc
 
 		def self.recaptcha_v2_render
 			id = "recaptcha_widget_#{SecureRandom.hex(10)}"
-			site_key = ENV["RECAPTCHA_V2_SITE_KEY"]
+      site_key = configatron.recaptcha_v2_site_key
 
 			return %Q{
 				<div id="#{id}"></div>

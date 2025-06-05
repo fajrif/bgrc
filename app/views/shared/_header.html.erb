@@ -4,22 +4,26 @@
     <div class="top-header-area bg-black padding-10px-tb">
         <div class="container-lg">
             <div class="row align-items-center m-0">
-                <div class="col-md-6 ps-lg-0 text-uppercase alt-font d-flex align-items-center justify-content-center justify-content-md-start gap-2">
-                    <a href="#" class="text-small text-link-white-2 line-height-normal" title="Sign Up">Sign Up</a>
-                    |
-                    <a href="#" class="text-small text-link-white-2 line-height-normal" title="Login">Login</a>
-                </div>
-                <div class="col-md-6 pe-lg-0 d-none d-md-flex align-items-center justify-content-end">
+                <div class="col-6 ps-lg-0 align-items-center justify-content-start text-white-2">
                     <div class="btn-group dropdown-style-1">
                         <button type="button" class="btn dropdown-toggle sm-w-100" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                           <% if I18n.locale == :en %>
-                            <span class="icon-country usa"></span><span class="caret"></span>
+                            EN <span class="caret"></span>
                           <% elsif I18n.locale == :id %>
-                            <span class="icon-country indonesia"></span><span class="caret"></span>
+                            ID <span class="caret"></span>
                           <% end %>
                         </button>
                         <%= get_locale_current_page_route %>
                     </div>
+                </div>
+                <div class="col-6 pe-lg-0 text-uppercase alt-font d-flex align-items-center justify-content-end gap-2">
+                    <% if user_signed_in? %>
+                      <a href="<%= users_account_path %>" class="theme-btn blue">My Account</a>
+                    <% else %>
+                      <a href="<%= new_user_registration_path %>" class="text-small text-link-white-2 line-height-normal" title="Sign Up">Sign Up</a>
+                      |
+                      <a href="<%= new_user_session_path %>" class="text-small text-link-white-2 line-height-normal" title="Login">Login</a>
+                    <% end %>
                 </div>
             </div>
         </div>

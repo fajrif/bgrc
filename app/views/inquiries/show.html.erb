@@ -1,3 +1,7 @@
+<%= content_for :head do %>
+	<script src="https://www.google.com/recaptcha/api.js?render=<%= configatron.recaptcha_v3_site_key %>"></script>
+<% end %>
+
 <%= render "home/banner" %>
 <!-- start contact section -->
 <section class="wow animate__fadeIn">
