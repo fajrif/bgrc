@@ -122,8 +122,7 @@ video {
   width: 100%;
 }
 input,
-textarea,
-select {
+textarea {
   border: 1px solid var(--medium-grey-color);
   font-size: 14px;
   padding: 8px 15px;
@@ -9866,12 +9865,19 @@ nav.navbar.sidebar-nav
   -webkit-transition-duration: 0s;
   -o-transition-duration: 0s;
 }
+.dropdown-style-1 .dropdown-menu.my-account {
+  min-width: 150px;
+}
 .dropdown-style-1 .dropdown-menu > li > a {
   padding: 6px;
   font-size: 12px;
   font-weight: 400;
   display: block;
   line-height: normal;
+}
+.dropdown-style-1 .dropdown-menu.my-account > li > a {
+  padding: 10px;
+  font-size: 14px;
 }
 .dropdown-style-1 .dropdown-menu > li > a:hover,
 .dropdown-style-1 .dropdown-menu > li > a:focus {
@@ -14441,7 +14447,7 @@ figure {
 	padding: 5px 15px;
 }
 .tab-style3 .nav-tabs li a.nav-link.active {
-  color: var(--bgrc-dark-grey-color);
+  color: #000 !important;
 }
 .tab-style3 .nav-tabs > li > a.nav-link,
 .tab-style3 .nav-tabs > li > a.nav-link:focus,
@@ -14450,11 +14456,11 @@ figure {
   background-color: transparent;
   border: none;
   padding: 0;
+  font-size: 14px;
+  text-transform: uppercase;
 }
 .tab-style3 .nav-tabs li:has(a.nav-link.active) {
-  /*border-bottom: 1px solid var(--bgrc-dark-grey-color);*/
-	border-radius: 20px;
-	background-color: var(--bgrc-yellow-color);
+  border-bottom: 1px solid var(--bgrc-dark-grey-color);
 }
 .tab-style3 .nav-link:hover {
   color: var(--black-color);

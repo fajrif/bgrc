@@ -6,11 +6,13 @@ class User < ApplicationRecord
 
   include OmniauthableExtension
 
+	attr_accessor :use_v2
+
 	has_many :purchases, :dependent => :destroy
 	has_many :providers, :dependent => :destroy
 	has_many :bookings
 
-	validates_presence_of :full_name, :email, :phone
+	validates_presence_of :full_name, :email, :phone, :dob, :gender, :nationality
 	validates :password, presence: true, on: :create
 	validates_uniqueness_of :email
 

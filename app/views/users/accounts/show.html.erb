@@ -1,54 +1,38 @@
-<!-- start of wpo-destination-single-section -->
-<section class="wpo-destination-single-section section-padding pt-120">
-		<div class="container">
-				<div class="row">
-						<%= render "sidebar" %>
-						<div class="col-lg-8 col-md-12">
-								<div class="wpo-destination-single-wrap">
-											<div class="question-touch" style="max-width:none;">
-												<h2 style="text-align:left;">My Account</h2>
-												<%= simple_form_for @user, :url => users_account_path, :html => { :method => :put } do |f| %>
-													<div class="row">
-														<div class="col-lg-12">
-															<%= f.input :full_name, label: false, placeholder: "Full name" %>
-														</div>
-														<div class="col-lg-12">
-															<%= f.input :email, label: false, placeholder: "Email address" %>
-														</div>
-														<div class="col-lg-6">
-															<%= f.input :phone, label: false, placeholder: "Phone" %>
-														</div>
-														<div class="col-lg-6">
-															<%= f.input :gender, as: :select, collection: [['1', 'Male'], ['0', 'Female']], label_method: :second, value_method: :first, label: false, placeholder: "Gender" %>
-														</div>
-														<%= f.simple_fields_for :address do |a| %>
-															<div class="col-lg-12">
-																<%= a.input :address, label: false, placeholder: "Address" %>
-															</div>
-															<div class="col-lg-6">
-																<%= a.input :province, label: false, placeholder: "Province" %>
-															</div>
-															<div class="col-lg-6">
-																<%= a.input :city, label: false, placeholder: "City" %>
-															</div>
-															<div class="col-lg-6">
-																<%= a.input :zipcode, label: false, placeholder: "Zipcode" %>
-															</div>
-															<div class="col-lg-6">
-																<%= a.input :country, label: false, placeholder: "Country" %>
-															</div>
-															<%= a.input :id, as: :hidden %>
-														<% end %>
-														<div class="submit-btn-wrapper text-center">
-																<button type="submit" class="theme-btn">Save Changes</button>
-														</div>
-													</div>
-												<% end %>
-										</div>
-								</div>
-						</div>
-				</div>
-		</div>
+<section class="half-section">
+    <div class="container">
+        <%= render "users/shared/sidebar" %>
+        <div class="row align-items-start">
+            <div class="col-lg-3 col-md-3 text-center md-margin-30px-bottom">
+                <%= image_tag("https://placehold.co/600x400", class: "border-radius-6 w-100") %>
+            </div>
+            <div class="col-lg-9 col-md-9 text-center text-md-start padding-eight-lr lg-padding-six-lr md-padding-15px-lr">
+                <h6 class="font-weight-600 text-uppercase margin-20px-bottom letter-spacing-8">My Account</h6>
+                <%= simple_form_for @user, :url => users_account_path, :html => { :method => :put } do |f| %>
+                  <div class="row">
+                    <div class="col-lg-12">
+                      <%= f.input :full_name, label: false, placeholder: "Full name" %>
+                    </div>
+                    <div class="col-lg-12">
+                      <%= f.input :email, label: false, placeholder: "Email address" %>
+                    </div>
+                    <div class="col-lg-12">
+                      <%= f.input :phone, label: false, placeholder: "Phone" %>
+                    </div>
+                    <div class="col-lg-12">
+                      <%= f.input :dob, as: :date, label: false %>
+                    </div>
+                    <div class="col-lg-6">
+                      <%= f.input :gender, as: :select, collection: [['1', 'Male'], ['0', 'Female']], label_method: :second, value_method: :first, label: false, placeholder: "Gender" %>
+                    </div>
+                    <div class="col-lg-6">
+                      <%= f.input :nationality, as: :select, label: false, collection: options_for_nationalities, prompt: "Choose your nationality" %>
+                    </div>
+                    <div class="submit-btn-wrapper text-center mt-2">
+                        <button type="submit" class="btn btn-light-gray btn-medium text-medium margin-30px-top sm-margin-three-top">save changes</button>
+                    </div>
+                  </div>
+                <% end %>
+            </div>
+        </div>
+    </div>
 </section>
-<!-- end of wpo-destination-single-section -->
-

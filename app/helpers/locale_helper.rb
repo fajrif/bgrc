@@ -17,7 +17,26 @@ module LocaleHelper
 			content_tag(:li) do
 				content_tag(:a, "Indonesia", href: id_path)
 			end
+		end
+	end
 
+	def get_current_user_menu_routes
+		content_tag(:ul, class: "dropdown-menu my-account") do
+			content_tag(:li) do
+				content_tag(:a, "My Account", href: users_account_path)
+			end +
+			content_tag(:li) do
+				content_tag(:a, "My Booking", href: users_bookings_path)
+			end +
+			content_tag(:li) do
+				content_tag(:a, "My Packages", href: users_packages_path)
+			end +
+			content_tag(:li) do
+				content_tag(:a, "Payments", href: users_payments_path)
+			end +
+			content_tag(:li) do
+				content_tag(:a, "Sign out", href: destroy_user_session_path, "data-method": :delete)
+			end
 		end
 	end
 

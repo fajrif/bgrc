@@ -124,7 +124,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_06_03_102822) do
     t.datetime "date"
     t.datetime "end_date"
     t.integer "duration", default: 1, null: false
-    t.string "status", default: "0", null: false
+    t.integer "status", default: 0, null: false
     t.string "notes"
     t.decimal "price", default: "0.0", null: false
     t.datetime "created_at", null: false
@@ -324,6 +324,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_06_03_102822) do
     t.string "encrypted_password", default: "", null: false
     t.string "reset_password_token"
     t.datetime "reset_password_sent_at"
+    t.datetime "remember_created_at"
     t.integer "sign_in_count", default: 0, null: false
     t.datetime "current_sign_in_at"
     t.datetime "last_sign_in_at"

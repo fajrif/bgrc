@@ -1,19 +1,24 @@
-<div class="question-area section-padding pt-120">
-		<div class="container">
-				<div class="row">
-						<div class="col-lg-12">
-								<div class="question-touch">
-										<h2>Join Flex</h2>
-										<p>
-											Join now to Book Your Experience
-										</p>
-										<%= simple_form_for(resource, :as => resource_name, :url => registration_path(resource_name), :html => { :class => "contact-validation-active" }) do |f| %>
+<%= content_for :head do %>
+	<script src="https://www.google.com/recaptcha/api.js?render=<%= configatron.recaptcha_v3_site_key %>"></script>
+<% end %>
+
+<section class="small-section wow animate__fadeIn">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10 text-center">
+                <div class="bg-light-gray padding-eight-all border-radius-6 w-70 lg-w-80 xs-w-100 mx-auto lg-padding-60px-all sm-padding-30px-all">
+                    <h5 class="font-weight-600 margin-40px-bottom sm-margin-15px-bottom letter-spacing-8">REGISTER</h5>
+                    <%= flash_message2 %>
+										<%= simple_form_for(resource, :as => resource_name, :url => registration_path(resource_name)) do |f| %>
 											<%= f.input :full_name, label: false, placeholder: "Full name" %>
 											<%= f.input :email, label: false, placeholder: "Email address" %>
 											<%= f.input :phone, label: false, placeholder: "Phone" %>
+                      <%= f.input :dob, as: :date, label: false %>
+                      <%= f.input :gender, as: :select, label: false, prompt: "Choose your gender", collection: [[1, "Male"],[0, "Female"]], value_method: :first, label_method: :last %>
+                      <%= f.input :nationality, as: :select, label: false, collection: options_for_nationalities, prompt: "Choose your nationality" %>
 											<%= f.input :password, label: false, placeholder: "Password" %>
 											<%= f.input :password_confirmation, label: false, placeholder: "Password confirmation" %>
-											<div class="col-lg-12 mb-20">
+											<div class="mb-4 text-center">
                         <% if @show_recaptcha_v2 %>
                           <input type="hidden" value="true" name="user[use_v2]" id="user_use_v2">
                           <%= raw Bgrc::Recaptcha.recaptcha_v2_render %>
@@ -21,30 +26,17 @@
                           <%= raw Bgrc::Recaptcha.recaptcha_execute('registration') %>
                         <% end %>
 											</div>
-											<div class="col-lg-12 mb-20">
+											<div class="mb-4">
+                        <button type="submit" class="btn btn-light-gray btn-medium text-medium margin-30px-top sm-margin-three-top">submit</button>
+											</div>
+											<div>
 												<%- if controller_name != 'sessions' %>
-													Alrady have an account? <%= link_to "Login", new_session_path(resource_name) %><br />
+													Alrady have an account? <%= link_to "Login", new_session_path(resource_name) %>
 												<% end %>
 											</div>
-											<div class="col-lg-12 mb-20">
-												<div class="submit-btn-wrapper">
-													<button type="submit" class="theme-btn default">Create Account</button>
-												</div>
-											</div>
-											<div class="col-lg-12" style="font-size: .85rem;">
-												By Clicking "Create Account" I agree to Flex’s TnC and <%= link_to "Privacy Policy", privacy_path %>.
-											</div>
 										<% end %>
-								</div>
-						</div>
-				</div>
-		</div>
-</div>
-
-<style>
-.g-recaptcha > div {
-	width: auto !important;
-	height: auto !important;
-	text-align: center;
-}
-</style>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

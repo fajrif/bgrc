@@ -1,0 +1,33 @@
+<div class="page-content">
+	<div class="container">
+		<div class="row">
+			<div class="col-md-6 col-sm-12">
+				<div class="category-holder">
+					<%= render "devise/shared/links" %>
+				</div>
+			</div>
+			<div class="col-md-6 col-sm-12">
+				<div class="category-holder">
+					<div class="title-holder"><h3>Resend confirmation instructions</h3></div>
+						<%= simple_form_for(resource, as: resource_name, url: confirmation_path(resource_name), html: { method: :post }) do |f| %>
+							<%= f.error_notification %>
+							<%= f.full_error :confirmation_token %>
+							<div class="row">
+								<%= f.input :email,
+														required: true,
+														autofocus: true,
+														value: (resource.pending_reconfirmation? ? resource.unconfirmed_email : resource.email),
+														input_html: { autocomplete: "email" },
+														wrapper_html: { class: 'form-group' } %>
+								<%= f.input :password_confirmation, label: "Confirm your new password", required: true, wrapper_html: { class: 'form-group' } %>
+								<div class="col-sm-12">
+									<%= f.button :submit, "Resend confirmation instructions", :class => 'btn link-btn btn-outline btn-rounded' %>
+								</div>
+							</div>
+						<% end %>
+				</div>
+			</div>
+			</div>
+		</div>
+	</div>
+</div>

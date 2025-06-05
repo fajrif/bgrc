@@ -25,4 +25,37 @@ module ApplicationHelper
 		end
   end
 
+  def options_for_nationalities
+    [
+      "Afghan",
+      "American",
+      "Brazilian",
+      "British",
+      "Bulgarian",
+      "Canadian",
+      "Cameroonian",
+      "Chinese",
+      "Danish",
+      "Dutch",
+      "Indian",
+      "Indonesian"
+    ]
+  end
+
+	def is_users_account_page?
+		controller.controller_name == "accounts"
+	end
+
+	def is_users_bookings_page?
+		controller.controller_name == "bookings"
+	end
+
+	def is_users_packages_page?
+		controller.controller_name == "packages"
+	end
+
+	def is_users_payment_page?
+		controller.controller_name == "payments"
+	end
+
 end

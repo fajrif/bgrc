@@ -1,5 +1,5 @@
 class Users::RegistrationsController < Devise::RegistrationsController
-  prepend_before_action :check_captcha, only: [:create] # Change this to be any actions you want to protect.
+  # prepend_before_action :check_captcha, only: [:create] # Change this to be any actions you want to protect.
   before_action :check_session_devise_omniauth_data, :only => [:new_by_provider, :create_by_provider]
   before_action :configure_permitted_parameters, if: :devise_controller?
 
@@ -44,6 +44,12 @@ class Users::RegistrationsController < Devise::RegistrationsController
     @resource.email = params[:user][:email]
     @resource.full_name = params[:user][:full_name]
     @resource.phone = params[:user][:phone]
+
+    # additional data
+    @resource.gender = 1
+    @resource.dob = 10.years.ago
+    @resource.nationality = "Indonesian"
+
     @resource.password = Devise.friendly_token[0,20]
     @resource.create_provider_from_omniauth!(session["devise.omniauth_data"])
     if @resource.save
@@ -78,15 +84,29 @@ protected
   end
 
 	def configure_permitted_parameters
-		devise_parameter_sanitizer.permit(:sign_up, keys: [:full_name, :phone])
+		devise_parameter_sanitizer.permit(:sign_up, keys: [:full_name, :phone, :dob, :gender, :nationality, :use_v2])
 	end
 
 	def check_captcha
-		unless verify_recaptcha
-			self.resource = resource_class.new sign_up_params
-			resource.validate # Look for any other validation errors besides reCAPTCHA
-			set_minimum_password_length
-			respond_with_navigational(resource) { render :new }
-		end
+    configure_permitted_parameters
+    build_resource(sign_up_params)
+    unless resource.use_v2.blank?
+      unless Bgrc::Recaptcha.verify_recaptcha_v2?(params['g-recaptcha-response'], '_registration')
+        invalid_recaptcha
+      end
+    else
+      unless Bgrc::Recaptcha.verify_recaptcha?(params[:recaptcha_token], '_registration')
+        invalid_recaptcha
+      end
+    end
 	end
+
+  def invalid_recaptcha
+    flash[:alert] = t('global.recaptcha_failed')
+    @show_recaptcha_v2 = true
+    self.resource = resource_class.new sign_up_params
+    resource.validate # Look for any other validation errors besides reCAPTCHA
+    set_minimum_password_length
+    respond_with_navigational(resource) { render :new }
+  end
 end

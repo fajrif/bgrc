@@ -96,6 +96,8 @@ Rails.application.routes.draw do
           get "history" => "bookings#history", :as => :history
         end
       end
+      resources :packages, :except => [:edit, :update, :show]
+      resources :payments, :only => [:index, :show]
     end
 
 		# For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html

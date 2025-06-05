@@ -1,5 +1,4 @@
 class Users::BookingsController < Users::BaseController
-	before_action :no_inner_banner
 
 	def index
 		current_user.remove_all_unpaid_bookings
@@ -38,12 +37,6 @@ class Users::BookingsController < Users::BaseController
 
 	def history
 		@bookings = current_user.paid_bookings.page(params[:page]).per(10)
-	end
-
-	private
-
-	def no_inner_banner
-		@inner_banner = true
 	end
 
 end
