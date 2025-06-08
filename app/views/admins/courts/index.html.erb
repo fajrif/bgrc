@@ -1,37 +1,29 @@
-<div class="page-bar">
-	<div class="page-title-breadcrumb">
-		<div class=" pull-left">
-			<div class="page-title">List of Courts</div>
-		</div>
-	</div>
-</div>
+<% title_page("Courts") %>
 <div class="row">
-	<div class="col-md-12 col-sm-12">
-		<div class="card card-box">
-			<div class="card-body ">
-				<div class="row">
-					<div class="col-md-6 col-sm-6 col-6">
-						<div class="btn-group">
-							<a href="<%= new_admins_court_path %>" class="btn btn-info">
-								Add New <i class="fa fa-plus"></i>
-							</a>
+	<div class="col-lg-12">
+		<div class="card">
+			<div class="card-header border-0">
+				<%= form_tag admins_courts_url, { :id => "index_search", :method => :get } do %>
+					<div class="row g-4 align-items-center">
+						<div class="col-md-4">
+							<div class="form-icon">
+								<%= text_field_tag :search, params[:search], :class => "form-control form-control-icon", :placeholder => "Search courts ..." %>
+								<i class="ri-search-line"></i>
+							</div>
+						</div>
+						<div class="col-sm-auto ms-auto">
+							<div class="hstack gap-2">
+								<a class="btn btn-success add-btn" href="<%= new_admins_court_path %>"><i class="ri-add-line align-bottom me-1"></i> Add court</a>
+							</div>
 						</div>
 					</div>
-					<div class="col-md-6 col-sm-6 col-6">
-						<div style="float:right;">
-							<%= form_tag admins_courts_url, { :id => "index_search", :method => :get } do %>
-								<%= text_field_tag :search, params[:search], :placeholder => "Search by name" %>
-							<% end %>
-						</div>
-					</div>
-				</div>
-				<div class="table-wrap" style="margin-top:20px;">
-					<div id="index_table" class="table-responsive">
-						<%= render 'table' %>
-					</div>
-				</div>
+				<% end %>
+			</div>
+			<div id="index_table" class="card-body">
+				<%= render 'table' %>
 			</div>
 		</div>
 	</div>
+	<!--end col-->
 </div>
-
+<!--end row-->

@@ -1,6 +1,8 @@
 class Court < ApplicationRecord
-	extend FriendlyId
+	extend Mobility
+  translates :info, :instructions, :description
 
+	extend FriendlyId
   friendly_id :name, use: :slugged
 
 	default_scope { order(created_at: :desc) }
@@ -19,7 +21,7 @@ class Court < ApplicationRecord
 	validates :min_duration, numericality: { less_than_or_equal_to: 6, only_integer: true }
 	validates :images, limit: { min: 1, max: 5 }
 
-	after_create :generate_business_hours, on: :create
+	after_create :generate_business_hours
 
 	def generate_business_hours
 		7.times do |num|
@@ -98,14 +100,6 @@ class Court < ApplicationRecord
 
 	def is_available?
 		self.status == 0
-	end
-
-	def is_featured?
-		self.featured == 1
-	end
-
-	def featured_label
-		self.is_featured? ? "Yes" : "No"
 	end
 
 	def status_label

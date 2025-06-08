@@ -8,6 +8,7 @@ class User < ApplicationRecord
 
 	attr_accessor :use_v2
 
+	has_one_attached :photo, dependent: :purge
 	has_many :purchases, :dependent => :destroy
 	has_many :providers, :dependent => :destroy
 	has_many :bookings
@@ -44,7 +45,7 @@ class User < ApplicationRecord
 	end
 
 	def current_bookings
-		self.bookings.where('date >= ? AND status = ?', Date.today, 0)
+		self.bookings #.where('date >= ? AND status = ?', Date.today, 0)
 	end
 
 	def paid_bookings

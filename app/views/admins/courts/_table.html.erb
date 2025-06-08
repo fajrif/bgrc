@@ -1,36 +1,53 @@
-<p><small><%= "Display total #{@courts.count} courts" %></small></p>
-
-<table class="table display court-overview mb-30">
-  <thead>
-    <tr>
-      <th>ID</th>
-      <th>Image</th>
-      <th>Name</th>
-      <th>Location</th>
-      <th>Category</th>
-      <th>Featured</th>
-      <th>Price</th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    <% for court in @courts %>
+<div class="table-card">
+  <table class="table table-hover table-striped align-middle mb-0">
+    <thead class="table-light">
       <tr>
-				<td><%= court.id %></td>
-				<td><%= image_tag court.images.first.variant(resize: "100x100").processed if court.images.first %></td>
-				<td><strong><%= link_to court.name, admins_court_path(court) %></strong></td>
-				<td><%= court.location %></td>
-				<td><%= court.categories.map(&:name).join(", ") %></td>
-				<td><%= court.featured_label %></td>
-				<td><%= court.price_label %></td>
-        <td class="actions">
-					<%= link_to admins_court_path(court), "data-toggle" => "tooltip", :title => "Edit" do %>
-						<i class="fa fa-pencil"></i>
-					<% end %>
-        </td>
+        <th class="text-center">ID</th>
+        <th>Image</th>
+        <th>Name</th>
+        <th>Location</th>
+        <th>Sport</th>
+        <th>Price</th>
+        <th></th>
       </tr>
-    <% end %>
-  </tbody>
-</table>
-
+    </thead>
+    <tbody>
+      <% for court in @courts %>
+        <tr>
+					<td class="text-center"><%= court.id %></td>
+					<td><%= image_tag court.images.first.variant(resize_to_limit: [100,100]) unless court.images.empty? %></td>
+          <td><strong><%= link_to court.name, admins_court_path(court) %></strong></td>
+          <td><%= court.location %></td>
+          <td><%= court.sport.name %></td>
+          <td><%= court.price_label %></td>
+          <td>
+						<div class="dropdown">
+							<button class="btn btn-soft-secondary btn-sm dropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+								<i class="ri-more-fill"></i>
+							</button>
+							<ul class="dropdown-menu dropdown-menu-end">
+								<li>
+									<%= link_to admins_court_path(court.id), class: "dropdown-item" do %>
+										<i class="ri-eye-fill align-bottom me-2 text-muted"></i> View
+									<% end %>
+								</li>
+								<li>
+									<%= link_to edit_admins_court_path(court.id), class: "dropdown-item edit-list" do %>
+										<i class="ri-pencil-fill align-bottom me-2 text-muted"></i> Edit
+									<% end %>
+								</li>
+								<li class="dropdown-divider"></li>
+								<li>
+									<%= link_to admins_court_path(court.id), :data => { :confirm => 'Are you sure?' }, :method => :delete, class: "dropdown-item remove-list" do %>
+										<i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i> Delete
+									<% end %>
+								</li>
+							</ul>
+						</div>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
 <%= paginate @courts %>

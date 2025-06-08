@@ -1,0 +1,159 @@
+<%= content_for :head do %>
+	<%= stylesheet_link_tag "main.css" %>
+<% end %>
+
+<!-- start story section -->
+<section class="pt-150 wow animate__fadeIn">
+  <div class="container">
+    <div class="row align-items-start">
+      <div class="col-lg-12 col-md-12 text-center text-md-start padding-three-lr">
+        <h5 class="alt-font text-extra-dark-gray mb-4 mx-5"><%= @sport.name %></h5>
+
+        <% if @court %>
+          <div class="pricing-area" id="schedule">
+            <div id="calendar"></div>
+            <%= simple_form_for(:booking, :url => users_bookings_url, :method => :post) do %>
+              <div class="text-center" style="margin-top:20px;">
+                <input id="court-id" type="hidden" value="<%= @court.id %>" name="court_id">
+                <input id="input-book" type="hidden" value="" name="dates">
+                <input id="input-duration" type="hidden" value="" name="duration">
+                <div id="calculate_table"></div>
+                <button id="btnSubmit" type="submit" class="btn btn-light-gray btn-medium text-medium disabled" disabled>Submit</button>
+              </div>
+            <% end %>
+          </div>
+        <% else %>
+          <h6 class="alt-font text-extra-dark-gray mb-4 mx-5">
+            Sorry! There are no available courts for this category
+          </h6>
+        <% end %>
+
+      </div>
+    </div>
+  </div>
+</section>
+<!-- end story section -->
+
+<%= content_for :tail do %>
+	<%= javascript_include_tag "fullcalendar.js" %>
+	<%= javascript_include_tag "moment-with-locales.min.js" %>
+	<%= stylesheet_link_tag "fullcalendar-custom.css" %>
+	<script>
+	var calendar;
+  document.addEventListener('DOMContentLoaded', function() {
+
+    var calendarEl = document.getElementById('calendar');
+
+    calendar = new FullCalendar.Calendar(calendarEl, {
+      headerToolbar: {
+        left: 'title',
+        right: 'today prev,next'
+      },
+			initialView: 'timeGridWeek',
+			initialDate: '<%= @date || Date.today.strftime("%Y-%m-%d") %>',
+			firstDay: moment().day(),
+      navLinks: false, // can click day/week names to navigate views
+      selectable: true,
+			selectAllow: function(arg) {
+				return isCrossDay(arg);
+			},
+			validRange: {
+				start: moment().format('YYYY-MM-DD'),
+				end: moment().add(14, 'days').format('YYYY-MM-DD')
+			},
+			eventLongPressDelay: 10,
+			eventTimeFormat: {
+				hour: '2-digit',
+				minute: '2-digit',
+				hour12: false
+			},
+      selectMirror: true,
+      allDaySlot: false,
+      selectOverlap: false,
+      eventOverlap: false,
+			slotDuration: '01:00',
+			slotMinTime: '<%= @court.get_min_open_time %>',
+      slotMaxTime: '<%= @court.get_max_open_time %>',
+      select: function(arg) {
+				createEvent(arg, calendar);
+      },
+      eventChange: function(changeInfo) {
+				if(isCrossDay(changeInfo.event)) {
+					if(changeInfo.event.title == changeInfo.oldEvent.title) {
+						createEvent(changeInfo.event, calendar);
+					}
+				} else {
+					changeInfo.revert();
+				}
+      },
+      eventClick: function(arg) {
+				if(arg.event.id == 'book1') {
+					arg.event.remove();
+					$('#btnSubmit').prop("disabled", true);
+					$('#btnSubmit').addClass("disabled");
+					$('#input-book').val('');
+					$('#input-duration').val('');
+					$('#calculate_table').empty();
+				}
+      },
+      editable: true,
+      dayMaxEvents: false, // allow "more" link when too many events
+			eventBackgroundColor: '#FFEBF2',
+			eventBorderColor: '#FF85AF',
+			eventTextColor: '#FF85AF',
+			selectConstraint: 'businessHours',
+			eventConstraint: 'businessHours',
+			businessHours: <%= @business_hours.html_safe %>,
+			events: <%= @events.html_safe %>
+    });
+
+		calendar.setOption('height', 'auto');
+    calendar.render();
+  });
+
+	function createEvent(arg, calendar) {
+			var startDay = moment(arg.start, "YYYY-MM-DD");
+			var endDay = moment(arg.end, "YYYY-MM-DD");
+			var duration = endDay.diff(startDay, 'hours');
+
+			var event = calendar.getEventById('book1');
+			if(event) {
+				event.remove();
+			}
+
+			calendar.addEvent({
+				id: 'book1',
+				title: 'Check price',
+				start: arg.start,
+				end: arg.end,
+				textColor: '#097B0A',
+				borderColor: '#5BF651',
+				color: '#ECFEED'
+			});
+
+			var formatDates = startDay.format('DD/MM/YYYY HH:mm');
+
+			$.ajax({
+				type: "GET",
+				url: "/courts/<%= @court.id %>/calculate_price",
+				data: {dates: formatDates, duration: duration},
+				success: function(data, textStatus, jqXHR){
+					// console.log(textStatus);
+					$('#input-book').val(formatDates);
+					$('#input-duration').val(duration);
+				},
+				error: function(jqXHR, textStatus, errorThrown){
+					console.log(textStatus);
+				}
+			});
+
+			calendar.unselect();
+	}
+
+	function isCrossDay(arg) {
+		var startDay = moment(arg.start, "YYYY-MM-DD");
+		var endDay = moment(arg.end, "YYYY-MM-DD");
+		return startDay.diff(endDay, 'days') == 0;
+	}
+	</script>
+<% end if @court %>

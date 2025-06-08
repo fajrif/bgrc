@@ -14,6 +14,7 @@
  *= require theme-vendors.min.css
  *= require bootstrap-select.min.css
  *= require font-icons.min.css
+ *= require flatpickr.min.css
  *= require style.css
  *= require custom.css
  *= require responsive.css

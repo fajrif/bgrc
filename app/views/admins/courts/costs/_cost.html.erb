@@ -1,14 +1,26 @@
 <tr id="cost_<%= cost.id %>">
-	<td class="text-center"><strong><%= cost.day_name %></strong></td>
+	<td><strong><%= cost.day_name %></strong></td>
 	<td><%= cost.start_time %></td>
 	<td><%= cost.end_time %></td>
 	<td><%= cost.price_label %></td>
 	<td class="actions">
-		<%= link_to edit_admins_court_cost_path(cost.court.id, cost), "data-toggle" => "tooltip", :id => "btn_edit_#{cost.id}", :title => "Edit", :remote => true do %>
-			<i class="fa fa-pencil"></i>
-		<% end %>
-		<%= link_to admins_court_cost_path(cost.court.id, cost), :data => { :confirm => "Are you sure?" }, :method => :delete, :class => "text-inverse", :remote => true do %>
-			<i class="fa fa-trash"></i>
-		<% end %>
+    <div class="dropdown">
+      <button class="btn btn-soft-secondary btn-sm dropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+        <i class="ri-more-fill"></i>
+      </button>
+      <ul class="dropdown-menu dropdown-menu-end">
+        <li>
+          <%= link_to edit_admins_court_cost_path(cost.court.id, cost), :class => "dropdown-item edit-list", :id => "btn_edit_#{cost.id}", :remote => true do %>
+            <i class="ri-pencil-fill align-bottom me-2 text-muted"></i> Edit
+          <% end %>
+        </li>
+        <li class="dropdown-divider"></li>
+        <li>
+          <%= link_to admins_court_cost_path(cost.court.id, cost), class: "dropdown-item remove-list", :data => { :confirm => 'Are you sure?' }, :method => :delete, :remote => true do %>
+            <i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i> Delete
+          <% end %>
+        </li>
+      </ul>
+    </div>
 	</td>
 </tr>

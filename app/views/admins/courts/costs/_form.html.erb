@@ -1,8 +1,8 @@
 <%= form_for(cost, as: :cost,
 						 url: cost.new_record? ? admins_court_costs_url(@court.id) : admins_court_cost_path(@court.id, cost),
 						 method: cost.new_record? ? :post : :put, remote: true) do |f| %>
-	<div class="form-body" style="padding-top:0px;">
-	 <div class="row">
+	<div class="">
+	 <div class="row mb-2">
 		 <div class="col-sm-3">
 			 <%= f.label :day_code %>
 			 <%= f.select(:day_code, options_for_select(Date::DAYNAMES.each_with_index.map { |x, i| [x, i] }, :selected => cost.day_code), {:include_blank => false}, {:class => "form-control"} ) %>
@@ -20,13 +20,11 @@
 			 <%= f.number_field :price, :class => "form-control" %>
 		 </div>
 	 </div>
-	 <div class="form-actions">
-		 <div class="row">
-			 <div class="offset-md-3 col-md-9">
-				 <%= f.submit class: 'btn btn-primary' %>
-				 <%= link_to 'Cancel', '', id: 'dismiss-form', class: 'btn btn-danger' %>
-			 </div>
-		 </div>
-	 </div>
+   <div class="row">
+     <div class="col-sm-12 text-end">
+       <%= f.submit 'Save', class: 'btn btn-secondary btn-sm' %>
+       <%= link_to 'Cancel', '', id: 'dismiss-form', class: 'btn btn-danger btn-sm' %>
+     </div>
+   </div>
 	</div>
 <% end %>

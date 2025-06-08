@@ -1,0 +1,76 @@
+<table class="table table-hover">
+	<tr>
+		<td style="width:15%;"><b>ID</b></td>
+		<td><%= @court.id %></td>
+	</tr>
+	<% unless @court.images.empty? %>
+	<tr>
+		<td><b>Images</b></td>
+		<td>
+      <% @court.images.each do |img| %>
+        <div class="d-flex align-items-center mb-2">
+          <%= image_tag img.variant(resize_to_limit: [100,100]) %>
+          <%= link_to admins_court_delete_image_path(@court.id, img.id), :class => "ms-2 btn btn-danger btn-sm", :data => { :confirm => 'Are You sure want to delete this image?' }, :method => :delete do %>
+            <i class="ri-delete-bin-fill"></i>
+          <% end %>
+        </div>
+      <% end %>
+		</td>
+	</tr>
+	<% end %>
+	<tr>
+		<td><b>Name</b></td>
+		<td><h5 class="fs-14 mb-0 text-body"><%= @court.name %></h5></td>
+	</tr>
+	<tr>
+		<td><b>Sport</b></td>
+    <td><%= @court.try(:sport).try(:name) %></td>
+	</tr>
+	<tr>
+		<td><b>Info</b></td>
+		<td><%= @court.info %></td>
+	</tr>
+	<tr>
+		<td><b>Instructions</b></td>
+		<td><%= @court.instructions %></td>
+	</tr>
+	<tr>
+		<td><b>Description</b></td>
+		<td><%= raw @court.description %></td>
+	</tr>
+	<tr>
+		<td><b>Price</b></td>
+		<td><%= @court.price_label %></td>
+	</tr>
+	<tr>
+		<td><b>Min. Duration</b></td>
+    <td><%= @court.min_duration %> Hour</td>
+	</tr>
+	<tr>
+		<td><b>Status</b></td>
+    <td>
+      <span class="<%= 'text-danger' unless @court.is_available? %>"><%= @court.status_label %></span>
+    </td>
+	</tr>
+	<tr>
+		<td><b>Operational Hours</b></td>
+    <td>
+      <%= raw @court.operational_hours_label %><br/>
+      <%= link_to "Configure operational hours (#{@court.business_hours.size})", admins_court_business_hours_path(@court.id) %>
+    </td>
+	</tr>
+	<tr>
+		<td><b>Extra Costs</b></td>
+    <td>
+      <%= link_to "Set additional costs (#{@court.costs.size})", admins_court_costs_path(@court.id) %>
+    </td>
+	</tr>
+	<tr>
+		<td><b>Location</b></td>
+		<td><%= @court.location %></td>
+	</tr>
+	<tr>
+		<td><b>Address</b></td>
+		<td><%= @court.address %></td>
+	</tr>
+</table>

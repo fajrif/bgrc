@@ -35,6 +35,7 @@ Table of contents:
     26. Footer
     27. Home page
     28. Others
+    29. Table
 */
 
 /* base color variable*/
@@ -1232,6 +1233,7 @@ label {
 .form-control {
   color: var(--bgrc-dark-grey-color);
 	font-weight: normal;
+  border-radius: 0;
 }
 
 /* input */
@@ -1320,7 +1322,7 @@ label {
   overflow: hidden;
   background: url("select-arrow.png") no-repeat 97% 50%;
   border: 1px solid #d1d1d1;
-	border-radius: 8px;
+	border-radius: 0;
   margin-bottom: 20px;
 }
 .select-style select {
@@ -1333,7 +1335,7 @@ label {
   -moz-appearance: none;
   appearance: none;
   cursor: pointer;
-	color: var(--medium-grey-color);
+	color: var(--bgrc-dark-grey-color);
 }
 .select-style select:focus {
   outline: none;
@@ -7856,11 +7858,13 @@ footer .small-icon li {
   top: 0;
 }
 .alert-dismissible .btn-close {
-  height: 100%;
-  background-size: 10px;
-  padding-top: 0;
-  padding-bottom: 0;
+  /*height: 100%;*/
+  /*background-size: 10px;*/
+  /*padding-top: 0;*/
+  /*padding-bottom: 0;*/
   outline: none;
+  padding: 1rem 1rem;
+  cursor: pointer;
 }
 .alert-dismissible .btn-close:focus {
   box-shadow: none;
@@ -13264,7 +13268,7 @@ figure {
 }
 .parallax-feature-box-bottom {
   position: absolute;
-  bottom: -150%;
+  /*bottom: -150%;*/
 }
 .parallax-feature-box {
   overflow: visible;
@@ -15979,4 +15983,18 @@ footer .instafeed-grid.gutter-extra-large {
   z-index: 999999;
   padding: 40px;
   display: none;
+}
+
+.table>:not(caption)>*>* {
+  font-size: smaller;
+  font-weight: 600;
+}
+.cursor-pointer {
+  cursor: pointer;
+}
+.cursor-pointer:hover {
+  color: var(--black-color);
+}
+.pt-150 {
+  padding-top: 150px;
 }

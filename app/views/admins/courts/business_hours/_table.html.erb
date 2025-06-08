@@ -1,15 +1,17 @@
-<table class="table display product-overview mb-30">
-  <thead>
-    <tr>
-      <th class="text-center">Day</th>
-      <th>Open</th>
-      <th>Close</th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody id="business_hours" >
-    <% @business_hours.each do |business_hour| %>
-      <%= render 'business_hour', business_hour: business_hour %>
-    <% end %>
-  </tbody>
-</table>
+<div class="table-card">
+  <table class="table table-hover table-striped align-middle mb-0">
+    <thead class="table-light">
+      <tr>
+        <th>Day</th>
+        <th>Open</th>
+        <th>Close</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody id="business_hours" >
+      <% @business_hours.each do |business_hour| %>
+        <%= render 'business_hour', business_hour: business_hour %>
+      <% end %>
+    </tbody>
+  </table>
+</div>

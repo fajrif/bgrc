@@ -1,0 +1,12 @@
+var event = calendar.getEventById('book1');
+event.setProp('title', '<%= @eventTitle %>');
+
+<% if params[:duration].to_i >= @court.min_duration %>
+	$("#calculate_table").html("<%= escape_javascript(render("calculate_table")) %>");
+	$('#btnSubmit').removeAttr("disabled");
+	$('#btnSubmit').removeClass("disabled");
+<% else %>
+	$("#calculate_table").html("<%= escape_javascript(render("cannot_book_duration")) %>");
+	$('#btnSubmit').prop("disabled", true);
+	$('#btnSubmit').addClass("disabled");
+<% end %>

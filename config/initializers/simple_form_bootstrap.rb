@@ -47,7 +47,23 @@ SimpleForm.setup do |config|
   # vertical forms
   #
   # vertical default_wrapper
-  config.wrappers :vertical_form, class: 'row' do |b|
+  config.wrappers :vertical_form, class: 'row mb-3' do |b|
+    b.use :html5
+    b.use :placeholder
+    b.optional :maxlength
+    b.optional :minlength
+    b.optional :pattern
+    b.optional :min_max
+    b.optional :readonly
+		b.wrapper :input_wrapper, tag: 'div', class: 'col-12' do |ba|
+			ba.use :label, class: 'form-label'
+			ba.use :input, class: 'form-control big-input', error_class: 'is-invalid'
+			ba.use :full_error, wrap_with: { class: 'invalid-feedback' }
+			ba.use :hint, wrap_with: { class: 'form-text' }
+		end
+  end
+
+  config.wrappers :vertical_form_no_margin, class: 'row' do |b|
     b.use :html5
     b.use :placeholder
     b.optional :maxlength
@@ -115,7 +131,16 @@ SimpleForm.setup do |config|
   end
 
   # vertical select input
-  config.wrappers :vertical_select, class: 'row' do |b|
+  config.wrappers :vertical_select, class: 'mb-3' do |b|
+    b.use :html5
+    b.optional :readonly
+    b.use :label, class: 'form-label'
+    b.use :input, class: 'form-select', error_class: 'is-invalid'
+    b.use :full_error, wrap_with: { class: 'invalid-feedback' }
+    b.use :hint, wrap_with: { class: 'form-text' }
+  end
+
+  config.wrappers :vertical_select_big, class: 'row' do |b|
     b.use :html5
     b.optional :readonly
 		b.wrapper :input_wrapper, tag: 'div', class: 'col-12' do |bi|

@@ -84,10 +84,14 @@ Rails.application.routes.draw do
 		end
 
     namespace :users do
-      resource :account, :only => [:show, :update]
+      resource :account, :only => [:show, :update] do
+				member do
+          delete "delete_photo/:asset_id" => "accounts#delete_photo", :as => :delete_photo
+        end
+      end
       resource :password, :only => [:edit, :update]
 
-      resource :purchase, :only => [:create]
+      post "purchase/:type/:id" => "purchases#create", :as => :purchase
       get "purchase/:type/:id" => "purchases#new", :as => :new_purchase
 
       # Bookings
@@ -117,6 +121,8 @@ Rails.application.routes.draw do
     match 'disclaimer', to: 'home#disclaimer', via: :get, as: :disclaimer
     match 'privacy', to: 'home#privacy', via: :get, as: :privacy
     match 'faq', to: 'home#faq', via: :get, as: :faq
+    match 'search', to: 'search#index', via: :get, as: :search
+    match 'courts/:id/calculate_price', to: 'courts#calculate_price', via: :get, as: :calculate_price
 		root :to => "home#index"
   end
 end

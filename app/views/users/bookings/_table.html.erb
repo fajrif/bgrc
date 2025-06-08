@@ -1,7 +1,6 @@
-<table class="table-responsive cart-wrap">
+<table class="table table-striped table-hover table-responsive">
 		<thead>
 			<tr>
-				<th class="images images-b">Court</th>
 				<th class="product-2">Name</th>
 				<th class="product-2">Date</th>
 				<th class="product-2">Duration</th>
@@ -13,14 +12,9 @@
 		<tbody>
 			<% @bookings.each do |booking| %>
 				<tr>
-						<td class="images">
-							<%= link_to court_path(booking.court) do %>
-								<%= image_tag(booking.court.images.first.variant(resize: "100x100").processed) if booking.court.images.first %>
-							<% end %>
-						</td>
 						<td class="product">
 								<ul>
-										<li class="first-cart"><%= link_to booking.court.name, court_path(booking.court) %></li>
+										<li class="first-cart"><%= booking.court.name %></li>
 								</ul>
 						</td>
 						<td><%= booking.date.strftime('%A, %d-%m-%Y %H:%M') %></td>

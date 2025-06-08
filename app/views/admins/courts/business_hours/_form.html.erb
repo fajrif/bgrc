@@ -1,8 +1,8 @@
 <%= form_for(business_hour, as: :business_hour,
 						 url: business_hour.new_record? ? admins_court_business_hours_url(@court.id) : admins_court_business_hour_path(@court.id, business_hour),
 						 method: business_hour.new_record? ? :post : :put, remote: true) do |f| %>
-	<div class="form-body" style="padding-top:0px;">
-	 <div class="row">
+	<div class="">
+	 <div class="row mb-2">
 		 <div class="col-sm-4">
 			 <%= f.label :day_code %>
 			 <%= f.select(:day_code, options_for_select(Date::DAYNAMES.each_with_index.map { |x, i| [x, i] }, :selected => business_hour.day_code), {:include_blank => false}, {:class => "form-control"} ) %>
@@ -16,13 +16,11 @@
 			 <%= f.select(:close, populate_array_of_time, {:include_blank => false}, {:class => "form-control"} ) %>
 		 </div>
 	 </div>
-	 <div class="form-actions">
-		 <div class="row">
-			 <div class="offset-md-3 col-md-9">
-				 <%= f.submit class: 'btn btn-primary' %>
-				 <%= link_to 'Cancel', '', id: 'dismiss-form', class: 'btn btn-danger' %>
-			 </div>
-		 </div>
-	 </div>
+   <div class="row">
+     <div class="col-sm-12 text-end">
+       <%= f.submit 'Save', class: 'btn btn-secondary btn-sm' %>
+       <%= link_to 'Cancel', '', id: 'dismiss-form', class: 'btn btn-danger btn-sm' %>
+     </div>
+   </div>
 	</div>
 <% end %>

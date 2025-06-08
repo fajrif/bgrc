@@ -1,0 +1,53 @@
+#calendar {
+	max-width: 1100px;
+	margin: 0 auto;
+}
+.fc-v-event .fc-event-main-frame {
+	text-align: center;
+}
+.fc-timegrid-event .fc-event-time {
+	font-size: .9em;
+	font-weight: 400;
+}
+.fc-theme-standard td, .fc-theme-standard th {
+	border: 1px solid #eaeaea;
+}
+.fc .fc-col-header-cell-cushion {
+	color: #000;
+	font-weight: 400;
+}
+.fc .fc-timegrid-slot {
+	height: 3em;
+}
+.fc .fc-button-primary {
+	color: #0028E6;
+	border-radius: 0px;
+	background-color: #fff;
+	border-color: #ddd;
+}
+.fc .fc-button-primary:hover {
+	background-color: #09237B;
+}
+.fc .fc-toolbar-title {
+	font-size: 1.3em;
+}
+.fc .fc-cell-shaded, .fc .fc-day-disabled {
+	background: rgb(208 208 208 / 20%);
+}
+.wpo-about-section-s3 .images > .flex-column > img,
+.wpo-about-section-s3 .images .small_image img{
+	height: 100%;
+	padding-bottom: 20px;
+}
+#calculate_table {
+	margin-bottom: 20px;
+	margin-left: 20px;
+	text-align: left;
+}
+#calculate_table ul {
+	list-style: none;
+}
+_::-webkit-full-page-media, _:future, :root .wpo-about-section-s3 .images > .flex-column > img,
+_::-webkit-full-page-media, _:future, :root .wpo-about-section-s3 .images .small_image img {
+	height: auto;
+}

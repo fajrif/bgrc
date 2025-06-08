@@ -5,7 +5,7 @@
                 <div class="bg-light-gray padding-eight-all border-radius-6 w-70 lg-w-80 xs-w-100 mx-auto lg-padding-60px-all sm-padding-30px-all">
                     <h5 class="font-weight-600 margin-40px-bottom sm-margin-15px-bottom letter-spacing-8">FORGOT PASSWORD</h5>
                     <%= flash_message2 %>
-										<%= simple_form_for(resource, :as => resource_name, :url => password_path(resource_name)) do |f| %>
+										<%= simple_form_for(resource, :as => resource_name, :url => password_path(resource_name), :wrapper => :vertical_form_no_margin) do |f| %>
                       <%= f.input :email, label: false, placeholder: "Email Address" %>
 											<div class="mb-4">
                         <button type="submit" class="btn btn-light-gray btn-medium text-medium margin-30px-top sm-margin-three-top">Send Instructions</button>

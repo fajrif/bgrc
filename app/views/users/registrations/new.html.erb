@@ -9,13 +9,13 @@
                 <div class="bg-light-gray padding-eight-all border-radius-6 w-70 lg-w-80 xs-w-100 mx-auto lg-padding-60px-all sm-padding-30px-all">
                     <h5 class="font-weight-600 margin-40px-bottom sm-margin-15px-bottom letter-spacing-8">REGISTER</h5>
                     <%= flash_message2 %>
-										<%= simple_form_for(resource, :as => resource_name, :url => registration_path(resource_name)) do |f| %>
+                    <%= simple_form_for(resource, :as => resource_name, :url => registration_path(resource_name), :wrapper => :vertical_form_no_margin) do |f| %>
 											<%= f.input :full_name, label: false, placeholder: "Full name" %>
 											<%= f.input :email, label: false, placeholder: "Email address" %>
 											<%= f.input :phone, label: false, placeholder: "Phone" %>
-                      <%= f.input :dob, as: :date, label: false %>
-                      <%= f.input :gender, as: :select, label: false, prompt: "Choose your gender", collection: [[1, "Male"],[0, "Female"]], value_method: :first, label_method: :last %>
-                      <%= f.input :nationality, as: :select, label: false, collection: options_for_nationalities, prompt: "Choose your nationality" %>
+                      <%= f.input :dob, as: :string, label: false, placeholder: "Date of Birth", input_html: { class: "datepicker", value: get_input_date_value(f.object.dob,'%d/%m/%Y') } %>
+                      <%= f.input :gender, as: :select, label: false, wrapper: :vertical_select_big, collection: [[1, "Male"],[0, "Female"]], value_method: :first, label_method: :last, prompt: "Choose your Gender" %>
+                      <%= f.input :nationality, as: :select, label: false, wrapper: :vertical_select_big, collection: options_for_nationalities, prompt: "Choose your Nationality" %>
 											<%= f.input :password, label: false, placeholder: "Password" %>
 											<%= f.input :password_confirmation, label: false, placeholder: "Password confirmation" %>
 											<div class="mb-4 text-center">

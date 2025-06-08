@@ -58,10 +58,9 @@
                         <a href="#"><%= t('menu.sports') %></a><i class="fa-solid fa-angle-down dropdown-toggle" data-bs-toggle="dropdown" aria-hidden="true"></i>
                           <!-- start sub menu -->
                           <ul class="dropdown-menu" role="menu">
-                              <li class="dropdown"><a href="#">Padel</a></li>
-                              <li class="dropdown"><a href="#">Golf</a></li>
-                              <li class="dropdown"><a href="#">Tennis</a></li>
-                              <li class="dropdown"><a href="#">Pickleball</a></li>
+                            <% Sport.all.each do |sport| %>
+                              <li class="dropdown"><%= link_to sport.name, sport_path(sport) %></li>
+                            <% end %>
                           </ul>
                       </li>
                       <li><a href="<%= packages_path %>"><%= t('menu.packages') %></a></li>

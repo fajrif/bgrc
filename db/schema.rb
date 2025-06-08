@@ -163,13 +163,15 @@ ActiveRecord::Schema[7.1].define(version: 2025_06_03_102822) do
     t.integer "min_duration", default: 1, null: false
     t.decimal "price", default: "0.0", null: false
     t.string "location", default: "", null: false
-    t.jsonb "instructions", default: {}
-    t.jsonb "short_description", default: {}
-    t.jsonb "description", default: {}
+    t.string "address", default: "", null: false
     t.jsonb "info", default: {}
-    t.string "google_maps", default: "", null: false
+    t.jsonb "instructions", default: {}
+    t.jsonb "description", default: {}
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "slug", default: ""
+    t.index ["name"], name: "index_courts_on_name", unique: true
+    t.index ["slug"], name: "index_courts_on_slug", unique: true
     t.index ["sport_id"], name: "index_courts_on_sport_id"
   end
 

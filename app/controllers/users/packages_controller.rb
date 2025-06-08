@@ -3,6 +3,7 @@ class Users::PackagesController < Users::BaseController
 	def index
 		#current_user.remove_all_unpaid_bookings
 		#@bookings = current_user.current_bookings
+		@packages = []
 	end
 
 	def create

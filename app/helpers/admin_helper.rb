@@ -33,7 +33,7 @@ module AdminHelper
     flash.each do |name, msg|
 			message += content_tag :div, :class => "alert alert-#{name.to_sym == :notice ? 'success' : 'danger'} alert-dismissible alert-label-icon label-arrow fade show" do
 				lbl = raw(msg)
-				lbl += content_tag(:button, nil, class: "btn-close", "data-bs-dismiss": "alert", "aria-label": "Close") do
+				lbl += content_tag(:a, nil, class: "btn-close", "data-bs-dismiss": "alert", "aria-label": "Close") do
 					content_tag(:i, nil, class: "fa-solid fa-close text-white-2")
 				end
 			end unless msg == true
@@ -100,6 +100,37 @@ module AdminHelper
       "location"
     ]
 	end
+
+	def populate_array_of_time
+		["06:00",
+		"07:00",
+		"08:00",
+		"09:00",
+		"10:00",
+		"11:00",
+		"12:00",
+		"13:00",
+		"14:00",
+		"15:00",
+		"16:00",
+		"17:00",
+		"18:00",
+		"19:00",
+		"20:00",
+		"21:00",
+		"22:00",
+		"23:00",
+		"00:00",
+		"01:00",
+		"02:00",
+		"03:00",
+		"04:00",
+		"05:00"]
+	end
+
+  def options_select_court
+    { "Court Only" => 1, "Court + Coach" => 2, "Group Lesson" => 3, "Adult Socials" => 4 }
+  end
 
 	def has_asset?(path)
 		(Rails.application.assets || ::Sprockets::Railtie.build_environment(Rails.application)).find_asset(path) != nil
@@ -209,6 +240,9 @@ module AdminHelper
 
 	def is_admins_sports_page?
 		controller.controller_name == "sports" ||
+		controller.controller_name == "courts" ||
+		controller.controller_name == "business_hours" ||
+		controller.controller_name == "costs" ||
 		controller.controller_name == "facilities" ||
 		controller.controller_name == "packages" ||
 		controller.controller_name == "events" ||

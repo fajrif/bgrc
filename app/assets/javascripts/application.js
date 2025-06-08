@@ -14,6 +14,7 @@
 //= require jquery-ui
 //= require jquery_ujs
 //= require jquery.remotipart
+//= require flatpickr.min.js
 //= require bootsnav.js
 //= require jquery.nav.js
 //= require hamburger-menu.js
@@ -31,4 +32,6 @@ jQuery(document).ready(function($){
 		});
 	}
 
+	// Flatpickr
+	$(".datepicker").flatpickr({"altInput":true, "altFormat": "d/m/Y", "enableTime": false, "disableMobile":true, "dateFormat":"d/m/Y"});
 });
