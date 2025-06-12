@@ -1,0 +1,61 @@
+<div class="table-card">
+	<table class="table table-hover table-striped align-middle mb-0">
+		<thead class="table-light">
+			<tr>
+				<th class="text-center">ID</th>
+				<th>Title</th>
+				<th>Price</th>
+				<th>Sport</th>
+				<th>Date</th>
+				<th>Action</th>
+			</tr>
+		</thead>
+		<tbody>
+			<% for adult_social in @adult_socials %>
+				<tr>
+					<td class="text-center"><%= adult_social.id %></td>
+					<td>
+						<h5 class="fs-14 mb-1"><%= link_to adult_social.title, admins_adult_social_path(adult_social.id), class: "text-body" %></h5>
+					</td>
+					<td>
+						<%= adult_social.price_label %>
+					</td>
+					<td>
+						<h5 class="fs-14 mb-1"><%= adult_social.sport.name %></h5>
+					</td>
+					<td>
+            <p class="text-muted mb-0">Date : <%= adult_social.start_date.strftime('%d/%m/%Y %H:%M') %></p>
+						<p class="text-muted mb-0">Duration : <%= adult_social.duration %></p>
+					</td>
+					<td>
+						<div class="dropdown">
+							<button class="btn btn-soft-secondary btn-sm dropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+								<i class="ri-more-fill"></i>
+							</button>
+							<ul class="dropdown-menu dropdown-menu-end">
+								<li>
+									<%= link_to admins_adult_social_path(adult_social.id), class: "dropdown-item" do %>
+										<i class="ri-eye-fill align-bottom me-2 text-muted"></i> View
+									<% end %>
+								</li>
+								<li>
+									<%= link_to edit_admins_adult_social_path(adult_social.id), class: "dropdown-item edit-list" do %>
+										<i class="ri-pencil-fill align-bottom me-2 text-muted"></i> Edit
+									<% end %>
+								</li>
+								<li class="dropdown-divider"></li>
+								<li>
+									<%= link_to admins_adult_social_path(adult_social.id), :data => { :confirm => 'Are you sure?' }, :method => :delete, class: "dropdown-item remove-list" do %>
+										<i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i> Delete
+									<% end %>
+								</li>
+							</ul>
+						</div>
+					</td>
+				</tr>
+			<% end %>
+		</tbody>
+	</table>
+</div>
+<!-- pagination -->
+<%= paginate @adult_socials %>

@@ -1,19 +1,6 @@
 # new Sport
 Sport.delete_all
 
-# Article Sport 1
-@sport1 = Sport.new(name: "Padel")
-@sport1.image.attach(io: Rails.root.join("vendor/assets/images/banners/banner-grey.png").open, filename: "banner-grey.png")
-@sport1.short_description = "Padel (Spanish: pádel), also sometimes called padel tennis, is a racket sport that originates from Mexico, typically played in doubles on an enclosed court slightly smaller than a doubles tennis court.[1] Although padel shares the same scoring system as tennis, the rules, strokes, and technique are different. The balls used are similar but with a little less pressure. The main differences are that the court has walls and the balls can be played off them in a similar way as in the game of squash and that solid, stringless bats are used. The height of the ball being served must be at or below the waist level."
-@sport1.description = "Padel tennis distinguishes itself not only through its gameplay but also through its unique style and atmosphere. Emerging from a blend of traditional tennis and squash, Padel offers a more relaxed and social environment compared to other racket sports. Unlike the formality often associated with tennis, Padel is characterised by its laid-back atmosphere, where players frequently enjoy casual wear and the presence of music on the courts. This casual ambiance contributes to the sport's growing popularity, attracting players of all ages and skill levels. The fast-paced nature of Padel, combined with its shorter court dimensions and the use of walls, fosters exciting and engaging gameplay, characterised by lengthy rallies and spirited crowd participation. The sport's allure lies not only in its accessibility but also in its ability to provide a fun and lively experience for players and spectators alike."
-@sport1.save
-Mobility.with_locale(:id) {
-  @sport1.short_description = "Padel (bahasa Spanyol: pádel), juga terkadang disebut tenis padel, adalah olahraga raket yang berasal dari Meksiko, biasanya dimainkan secara ganda di lapangan tertutup yang sedikit lebih kecil dari lapangan tenis ganda.[1] Meskipun padel memiliki sistem penilaian yang sama dengan tenis, aturan, pukulan, dan tekniknya berbeda. Bola yang digunakan serupa tetapi dengan sedikit tekanan yang lebih rendah. Perbedaan utamanya adalah lapangan memiliki dinding dan bola dapat dimainkan di sana dengan cara yang sama seperti dalam permainan squash dan menggunakan tongkat pemukul yang kokoh dan tanpa tali. Ketinggian bola yang diservis harus berada di atau di bawah pinggang."
-  @sport1.description = "Tenis Padel tidak hanya menonjolkan permainannya, tetapi juga gaya dan suasananya yang unik. Padel, yang merupakan perpaduan tenis tradisional dan squash, menawarkan lingkungan yang lebih santai dan sosial dibandingkan dengan olahraga raket lainnya. Tidak seperti formalitas yang sering dikaitkan dengan tenis, Padel dicirikan oleh suasananya yang santai, di mana para pemain sering kali menikmati pakaian kasual dan alunan musik di lapangan. Suasana kasual ini berkontribusi pada semakin populernya olahraga ini, yang menarik pemain dari segala usia dan tingkat keterampilan. Sifat Padel yang serba cepat, dipadukan dengan dimensi lapangan yang lebih pendek dan penggunaan dinding, mendorong permainan yang seru dan menarik, yang dicirikan oleh reli yang panjang dan partisipasi penonton yang bersemangat. Daya tarik olahraga ini tidak hanya terletak pada aksesibilitasnya, tetapi juga kemampuannya untuk memberikan pengalaman yang menyenangkan dan semarak bagi para pemain dan penonton."
-}
-@sport1.save
-puts "new Sport: #{@sport1.name}"
-
 # Article Sport 2
 @sport2 = Sport.new(name: "Golf")
 @sport2.image.attach(io: Rails.root.join("vendor/assets/images/banners/banner-grey.png").open, filename: "banner-grey.png")
@@ -39,6 +26,19 @@ Mobility.with_locale(:id) {
 }
 @sport3.save
 puts "new Sport: #{@sport3.name}"
+
+# Article Sport 1
+@sport1 = Sport.new(name: "Padel")
+@sport1.image.attach(io: Rails.root.join("vendor/assets/images/banners/banner-grey.png").open, filename: "banner-grey.png")
+@sport1.short_description = "Padel (Spanish: pádel), also sometimes called padel tennis, is a racket sport that originates from Mexico, typically played in doubles on an enclosed court slightly smaller than a doubles tennis court.[1] Although padel shares the same scoring system as tennis, the rules, strokes, and technique are different. The balls used are similar but with a little less pressure. The main differences are that the court has walls and the balls can be played off them in a similar way as in the game of squash and that solid, stringless bats are used. The height of the ball being served must be at or below the waist level."
+@sport1.description = "Padel tennis distinguishes itself not only through its gameplay but also through its unique style and atmosphere. Emerging from a blend of traditional tennis and squash, Padel offers a more relaxed and social environment compared to other racket sports. Unlike the formality often associated with tennis, Padel is characterised by its laid-back atmosphere, where players frequently enjoy casual wear and the presence of music on the courts. This casual ambiance contributes to the sport's growing popularity, attracting players of all ages and skill levels. The fast-paced nature of Padel, combined with its shorter court dimensions and the use of walls, fosters exciting and engaging gameplay, characterised by lengthy rallies and spirited crowd participation. The sport's allure lies not only in its accessibility but also in its ability to provide a fun and lively experience for players and spectators alike."
+@sport1.save
+Mobility.with_locale(:id) {
+  @sport1.short_description = "Padel (bahasa Spanyol: pádel), juga terkadang disebut tenis padel, adalah olahraga raket yang berasal dari Meksiko, biasanya dimainkan secara ganda di lapangan tertutup yang sedikit lebih kecil dari lapangan tenis ganda.[1] Meskipun padel memiliki sistem penilaian yang sama dengan tenis, aturan, pukulan, dan tekniknya berbeda. Bola yang digunakan serupa tetapi dengan sedikit tekanan yang lebih rendah. Perbedaan utamanya adalah lapangan memiliki dinding dan bola dapat dimainkan di sana dengan cara yang sama seperti dalam permainan squash dan menggunakan tongkat pemukul yang kokoh dan tanpa tali. Ketinggian bola yang diservis harus berada di atau di bawah pinggang."
+  @sport1.description = "Tenis Padel tidak hanya menonjolkan permainannya, tetapi juga gaya dan suasananya yang unik. Padel, yang merupakan perpaduan tenis tradisional dan squash, menawarkan lingkungan yang lebih santai dan sosial dibandingkan dengan olahraga raket lainnya. Tidak seperti formalitas yang sering dikaitkan dengan tenis, Padel dicirikan oleh suasananya yang santai, di mana para pemain sering kali menikmati pakaian kasual dan alunan musik di lapangan. Suasana kasual ini berkontribusi pada semakin populernya olahraga ini, yang menarik pemain dari segala usia dan tingkat keterampilan. Sifat Padel yang serba cepat, dipadukan dengan dimensi lapangan yang lebih pendek dan penggunaan dinding, mendorong permainan yang seru dan menarik, yang dicirikan oleh reli yang panjang dan partisipasi penonton yang bersemangat. Daya tarik olahraga ini tidak hanya terletak pada aksesibilitasnya, tetapi juga kemampuannya untuk memberikan pengalaman yang menyenangkan dan semarak bagi para pemain dan penonton."
+}
+@sport1.save
+puts "new Sport: #{@sport1.name}"
 
 # Article Sport 4
 @sport4 = Sport.new(name: "Pickleball")

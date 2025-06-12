@@ -3,7 +3,9 @@ class Booking < ApplicationRecord
 
 	belongs_to :user
 	belongs_to :court
+	belongs_to :coach, optional: true
 	has_one :purchase, as: :productable
+  has_many :add_ons
 
 	validates_presence_of :date
 

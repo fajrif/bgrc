@@ -1,0 +1,32 @@
+<%= simple_form_for @coach, url: (@coach.new_record? ? admins_coaches_path : admins_coach_path(@coach.id)), method: (@coach.new_record? ? :post : :put) do |f| %>
+	<div class="row">
+		<div class="col-lg-8">
+			<div class="card">
+				<div class="card-body">
+					<%= f.error_notification %>
+					<fieldset>
+						<%= f.input :photo, as: :file, input_html: { class: "mb-3", accept: "image/gif, image/png, image/jpg, image/jpeg, image/webp" } %>
+						<%= f.input :name, as: :string %>
+						<%= f.input :email, as: :string %>
+						<%= f.input :phone, as: :string %>
+						<%= f.input :gender, as: :select, collection: [['1', 'Male'], ['0', 'Female']], label_method: :second, value_method: :first %>
+					</fieldset>
+					<%= f.error :base %>
+					<div class="form-actions">
+						<%= f.button :submit, :class => 'btn btn-secondary' %>
+						<% unless @coach.new_record? %>
+							<%= link_to "Cancel", admins_coach_path(@coach.id), :class => 'btn btn-light' %>
+						<% else %>
+							<%= link_to "Cancel", admins_coaches_path, :class => 'btn btn-light' %>
+						<% end %>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-lg-4">
+			<div class="row">
+				<%= render "admins/shared/error_messages", :target => @coach, col: 'col-lg-12' %>
+			</div>
+		</div>
+	</div>
+<% end %>

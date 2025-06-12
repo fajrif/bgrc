@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_06_03_102822) do
+ActiveRecord::Schema[7.1].define(version: 2025_06_12_173909) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -53,6 +53,15 @@ ActiveRecord::Schema[7.1].define(version: 2025_06_03_102822) do
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
+  create_table "add_ons", force: :cascade do |t|
+    t.bigint "booking_id"
+    t.bigint "item_id"
+    t.integer "quantity", default: 1, null: false
+    t.decimal "price", default: "0.0", null: false
+    t.index ["booking_id"], name: "index_add_ons_on_booking_id"
+    t.index ["item_id"], name: "index_add_ons_on_item_id"
+  end
+
   create_table "addresses", force: :cascade do |t|
     t.integer "order_no", default: 0, null: false
     t.jsonb "name", default: {}
@@ -81,6 +90,20 @@ ActiveRecord::Schema[7.1].define(version: 2025_06_03_102822) do
     t.datetime "updated_at", null: false
     t.integer "role_id", default: 0, null: false
     t.index ["email"], name: "index_admins_on_email", unique: true
+  end
+
+  create_table "adult_socials", force: :cascade do |t|
+    t.bigint "sport_id"
+    t.jsonb "title", default: {}
+    t.jsonb "short_description", default: {}
+    t.jsonb "description", default: {}
+    t.datetime "start_date"
+    t.integer "duration", default: 0, null: false
+    t.integer "gender", default: 0, null: false
+    t.integer "invitation_only", default: 0, null: false
+    t.integer "size", default: 0, null: false
+    t.decimal "price", default: "0.0", null: false
+    t.index ["sport_id"], name: "index_adult_socials_on_sport_id"
   end
 
   create_table "articles", force: :cascade do |t|
@@ -129,6 +152,9 @@ ActiveRecord::Schema[7.1].define(version: 2025_06_03_102822) do
     t.decimal "price", default: "0.0", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "court_type"
+    t.integer "class_type", default: 0, null: false
+    t.integer "coach_id"
     t.index ["court_id"], name: "index_bookings_on_court_id"
     t.index ["user_id"], name: "index_bookings_on_user_id"
   end
@@ -144,6 +170,13 @@ ActiveRecord::Schema[7.1].define(version: 2025_06_03_102822) do
 
   create_table "categories", force: :cascade do |t|
     t.jsonb "name", default: {}
+  end
+
+  create_table "coaches", force: :cascade do |t|
+    t.string "name", default: "", null: false
+    t.string "email", default: "", null: false
+    t.string "phone", default: "", null: false
+    t.integer "gender", default: 1, null: false
   end
 
   create_table "costs", force: :cascade do |t|
@@ -220,6 +253,11 @@ ActiveRecord::Schema[7.1].define(version: 2025_06_03_102822) do
     t.string "message", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "items", force: :cascade do |t|
+    t.string "name", default: "", null: false
+    t.decimal "price", default: "0.0", null: false
   end
 
   create_table "packages", force: :cascade do |t|

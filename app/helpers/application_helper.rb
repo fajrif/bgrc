@@ -25,6 +25,22 @@ module ApplicationHelper
 		end
   end
 
+  def options_for_court_type
+    [
+      [0, "Court Only"],
+      [1, "Court + Coach"],
+      [2, "Group Lessons"],
+      [3, "Adult Socials"]
+    ]
+  end
+
+  def options_for_class_name
+    [
+      [0, "2 People, Semi Private"],
+      [1, "4 People, Semi Private"]
+    ]
+  end
+
   def options_for_nationalities
     [
       "Afghan",

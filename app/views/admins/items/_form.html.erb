@@ -1,0 +1,29 @@
+<%= simple_form_for @item, url: (@item.new_record? ? admins_items_path : admins_item_path(@item.id)), method: (@item.new_record? ? :post : :put) do |f| %>
+	<div class="row">
+		<div class="col-lg-8">
+			<div class="card">
+				<div class="card-body">
+					<%= f.error_notification %>
+					<fieldset>
+						<%= f.input :name, as: :string %>
+						<%= f.input :price, as: :string %>
+					</fieldset>
+					<%= f.error :base %>
+					<div class="form-actions">
+						<%= f.button :submit, :class => 'btn btn-secondary' %>
+						<% unless @item.new_record? %>
+							<%= link_to "Cancel", admins_item_path(@item.id), :class => 'btn btn-light' %>
+						<% else %>
+							<%= link_to "Cancel", admins_items_path, :class => 'btn btn-light' %>
+						<% end %>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-lg-4">
+			<div class="row">
+				<%= render "admins/shared/error_messages", :target => @item, col: 'col-lg-12' %>
+			</div>
+		</div>
+	</div>
+<% end %>

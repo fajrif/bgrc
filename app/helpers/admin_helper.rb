@@ -235,7 +235,9 @@ module AdminHelper
   end
 
   def is_admins_users_page?
-		controller.controller_name == "users"
+		controller.controller_name == "users" ||
+		controller.controller_name == "bookings" ||
+		controller.controller_name == "coaches"
   end
 
 	def is_admins_sports_page?
@@ -246,11 +248,13 @@ module AdminHelper
 		controller.controller_name == "facilities" ||
 		controller.controller_name == "packages" ||
 		controller.controller_name == "events" ||
+		controller.controller_name == "adult_socials" ||
 		controller.controller_name == "promos"
 	end
 
 	def is_admins_others_page?
 		controller.controller_name == "testimonials" ||
+		controller.controller_name == "items" ||
 		controller.controller_name == "questions"
 	end
 
