@@ -128,10 +128,6 @@ module AdminHelper
 		"05:00"]
 	end
 
-  def options_select_court
-    { "Court Only" => 1, "Court + Coach" => 2, "Group Lesson" => 3, "Adult Socials" => 4 }
-  end
-
 	def has_asset?(path)
 		(Rails.application.assets || ::Sprockets::Railtie.build_environment(Rails.application)).find_asset(path) != nil
 	end

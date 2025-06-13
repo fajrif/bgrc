@@ -1,13 +1,13 @@
 <%= form_tag search_url, { :id => "search_form", :method => :get } do %>
   <div class="row">
     <div class="col-lg-5 d-flex align-items-center">
-      <%= hidden_field_tag 'sport', 'golf' %>
       <%= text_field_tag :date, params[:date], :placeholder => "Select Date", :class => "datepicker form-control mb-0" %>
     </div>
     <div class="col-lg-5 d-flex align-items-center">
       <%= select_tag :court, options_for_select(options_select_court, params[:court]), :class => "form-select mb-0", :prompt => 'Select Court' %>
     </div>
     <div class="col-lg-2 text-center">
+      <%= hidden_field_tag 'sport_id', sport.id %>
       <button type="submit" class="btn btn-light-gray text-small">search</button>
     </div>
   </div>

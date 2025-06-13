@@ -3,11 +3,11 @@
 <% end %>
 
 <!-- start story section -->
-<section class="pt-150 wow animate__fadeIn">
+<section class="pt-200 pb-0 wow animate__fadeIn">
   <div class="container">
     <div class="row align-items-start">
       <div class="col-lg-12 col-md-12 text-center text-md-start padding-three-lr">
-        <h5 class="alt-font text-extra-dark-gray mb-4 mx-5"><%= @sport.name %></h5>
+        <h6 class="alt-font text-extra-dark-gray mb-0 mx-5"><%= @court.name %></h6>
 
         <% if @court %>
           <div class="pricing-area" id="schedule">
@@ -17,7 +17,7 @@
                 <input id="court-id" type="hidden" value="<%= @court.id %>" name="court_id">
                 <input id="input-book" type="hidden" value="" name="dates">
                 <input id="input-duration" type="hidden" value="" name="duration">
-                <div id="calculate_table"></div>
+                <div id="calculate_table" class="d-flex flex-column justify-content-center align-items-center"></div>
                 <button id="btnSubmit" type="submit" class="btn btn-light-gray btn-medium text-medium disabled" disabled>Submit</button>
               </div>
             <% end %>

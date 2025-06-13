@@ -1,14 +1,33 @@
 <%= form_tag search_url, { :id => "search_form", :method => :get } do %>
   <div class="row">
     <div class="col-lg-5 d-flex align-items-center">
-      <%= hidden_field_tag 'sport', 'padel' %>
       <%= text_field_tag :date, params[:date], :placeholder => "Select Date", :class => "datepicker form-control mb-0" %>
     </div>
     <div class="col-lg-5 d-flex align-items-center">
-      <%= select_tag :court, options_for_select(options_select_court, params[:court]), :class => "form-select mb-0", :prompt => 'Select Court' %>
+      <%= select_tag :court_type, options_for_select(options_select_court, params[:court_type]), :id => "select-court-#{sport.id}", :class => "form-select mb-0", :prompt => 'Select Court' %>
     </div>
     <div class="col-lg-2 text-center">
-      <button type="submit" class="btn btn-light-gray text-small">search</button>
+      <%= hidden_field_tag 'sport_id', sport.id %>
+      <button type="submit" class="btn btn-light-gray text-small">Search</button>
+    </div>
+  </div>
+  <div id="search_inner_<%= sport.id %>" style="<%= get_visible_fields(params[:court_type]) %>">
+    <div class="row mt-2">
+      <div class="col-lg-10 d-flex align-items-center">
+        <%= select_tag :court_id, options_from_collection_for_select(sport.courts, "id", "name_with_price", params[:court_id]), :class => "form-select mb-0", :include_blank => false %>
+      </div>
+      <div class="col-lg-2 text-center">
+      </div>
+    </div>
+    <div class="row mt-2">
+      <div class="col-lg-5 d-flex align-items-center">
+        <%= select_tag :class_type, options_for_select(options_select_class, params[:class_type]), :class => "form-select mb-0", :include_blank => false %>
+      </div>
+      <div class="col-lg-5 d-flex align-items-center">
+        <%= select_tag :coach_id, options_from_collection_for_select(Coach.all, "id", "name_with_price", params[:coach_id]), :class => "form-select mb-0", :prompt => 'Select Coach' %>
+      </div>
+      <div class="col-lg-2 text-center">
+      </div>
     </div>
   </div>
 <% end %>

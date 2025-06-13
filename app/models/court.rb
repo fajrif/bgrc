@@ -5,7 +5,7 @@ class Court < ApplicationRecord
 	extend FriendlyId
   friendly_id :name, use: :slugged
 
-	default_scope { order(created_at: :desc) }
+	default_scope { order(id: :asc) }
 
 	has_many :purchases, as: :productable
 	has_many :bookings
@@ -104,6 +104,10 @@ class Court < ApplicationRecord
 
 	def status_label
 		self.is_available? ? "Court is Available" : "This court temporary unavailable"
+	end
+
+	def name_with_price
+    "#{ self.name } (#{self.price_label})"
 	end
 
 	def price_label

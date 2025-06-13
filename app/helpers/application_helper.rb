@@ -25,20 +25,16 @@ module ApplicationHelper
 		end
   end
 
-  def options_for_court_type
-    [
-      [0, "Court Only"],
-      [1, "Court + Coach"],
-      [2, "Group Lessons"],
-      [3, "Adult Socials"]
-    ]
+  def options_select_court
+    { "Court Only" => 0, "Court + Coach" => 1, "Group Lesson" => 2, "Adult Socials" => 3 }
   end
 
-  def options_for_class_name
-    [
-      [0, "2 People, Semi Private"],
-      [1, "4 People, Semi Private"]
-    ]
+  def options_select_class
+    { "2 People, Semi Private" => 0, "4 People, Semi Private" => 1 }
+  end
+
+  def get_visible_fields(court_type)
+    (court_type == "0" || court_type == "1" || court_type == "2") ? 'display:block;' : 'display:none;'
   end
 
   def options_for_nationalities

@@ -23,7 +23,7 @@
                 <% else %>
                 <div id="tab3_sec<%= sport.id %>" class="tab-pane fade in <%= 'active show' if index == 0 %>">
                 <% end %>
-                  <%= render "search/search_form_#{sport.name.downcase}" %>
+                  <%= render "search/search_form_#{sport.name.downcase}", sport: sport %>
                 </div>
               <% end %>
             </div>
@@ -32,3 +32,20 @@
     </div>
 </section>
 <!-- end banner section -->
+<%= content_for :tail do %>
+  <script>
+    $(document).ready(function() {
+      <% Sport.all.each do |sport| %>
+        $('#select-court-<%= sport.id %>').change(function() {
+          var selectedValue = $(this).val();
+          console.log(selectedValue);
+          if(selectedValue == "" || selectedValue == 3){
+            $('#search_inner_<%= sport.id %>').hide();
+          } else {
+            $('#search_inner_<%= sport.id %>').show();
+          }
+        });
+      <% end %>
+    });
+  </script>
+<% end %>
