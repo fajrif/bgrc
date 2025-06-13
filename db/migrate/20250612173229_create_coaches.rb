@@ -5,6 +5,7 @@ class CreateCoaches < ActiveRecord::Migration[7.1]
       t.string :email, null: false, default: ""
       t.string :phone, null: false, default: ""
       t.integer :gender, null: false, default: 1
+			t.decimal :price, null: false, default: 0.0
     end
   end
 end

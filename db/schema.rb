@@ -155,6 +155,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_06_12_173909) do
     t.integer "court_type"
     t.integer "class_type", default: 0, null: false
     t.integer "coach_id"
+    t.decimal "price_coach", default: "0.0", null: false
     t.index ["court_id"], name: "index_bookings_on_court_id"
     t.index ["user_id"], name: "index_bookings_on_user_id"
   end
@@ -177,6 +178,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_06_12_173909) do
     t.string "email", default: "", null: false
     t.string "phone", default: "", null: false
     t.integer "gender", default: 1, null: false
+    t.decimal "price", default: "0.0", null: false
   end
 
   create_table "costs", force: :cascade do |t|
