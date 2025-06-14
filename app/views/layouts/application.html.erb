@@ -44,6 +44,11 @@
 </head>
 <body class="w-100">
 	<%= render "shared/header" %>
+  <div class="container">
+    <div id="forFlashMessage">
+      <%= flash_message2 %>
+    </div>
+  </div>
 	<%= yield %>
 	<%= render "shared/footer" %>
 	<%= javascript_include_tag 'application' %>

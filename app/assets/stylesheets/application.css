@@ -17,6 +17,7 @@
  *= require flatpickr.min.css
  *= require style.css
  *= require custom.css
+ *= require checkbox-bootstrap.css
  *= require responsive.css
  *= require_self
  */

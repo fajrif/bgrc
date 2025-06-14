@@ -5,6 +5,7 @@ class ApplicationController < ActionController::Base
 	layout :layout_by_resource
 
 	include Locale
+  helper :all
 
   protected
 

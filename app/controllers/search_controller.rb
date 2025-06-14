@@ -5,10 +5,12 @@ class SearchController < ApplicationController
 		# get public home
     unless params[:sport_id].blank?
       @sport = Sport.find(params[:sport_id])
-      if @court = @sport.courts.find(params[:court_id])
-        @business_hours = JSON[@court.business_hours.map{|bh| { daysOfWeek: [bh.day_code], startTime: bh.open, endTime: bh.close } }]
-        @bookings = @court.bookings.where("date >= ?", DateTime.now)
-        @events = JSON[@bookings.map{|b| {title: 'Booked', editable: false, start: b.date.strftime('%Y-%m-%d %H:%M'), end: b.end_date.strftime('%Y-%m-%d %H:%M') } }]
+      unless params[:court_id].blank?
+        if @court = @sport.courts.find(params[:court_id])
+          @business_hours = JSON[@court.business_hours.map{|bh| { daysOfWeek: [bh.day_code], startTime: bh.open, endTime: bh.close } }]
+          @bookings = @court.bookings.where("date >= ?", DateTime.now)
+          @events = JSON[@bookings.map{|b| {title: 'Booked', editable: false, start: b.date.strftime('%Y-%m-%d %H:%M'), end: b.end_date.strftime('%Y-%m-%d %H:%M') } }]
+        end
       end
     end
     unless params[:date].blank?

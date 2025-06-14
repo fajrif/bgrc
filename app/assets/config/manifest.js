@@ -14,3 +14,4 @@
 //= link fullcalendar.js
 //= link moment-with-locales.min.js
 //= link fullcalendar-custom.css
+//= link quantity_input.css

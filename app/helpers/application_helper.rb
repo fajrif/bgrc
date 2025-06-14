@@ -26,11 +26,11 @@ module ApplicationHelper
   end
 
   def options_select_court
-    { "Court Only" => 0, "Court + Coach" => 1, "Group Lesson" => 2, "Adult Socials" => 3 }
+    [["Court Only", 0], ["Court + Coach", 1], ["Group Lessons", 2], ["Adult Socials", 3]]
   end
 
   def options_select_class
-    { "2 People, Semi Private" => 0, "4 People, Semi Private" => 1 }
+    [["2 People, Semi Private", 0], ["4 People, Semi Private", 1]]
   end
 
   def get_visible_fields(court_type)

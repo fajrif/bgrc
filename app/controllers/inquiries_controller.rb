@@ -10,7 +10,6 @@ class InquiriesController < ApplicationController
 		@inquiry = Inquiry.new(params_inquiry)
 
 		if @inquiry.valid?
-
 			unless @inquiry.use_v2.blank?
 				unless Bgrc::Recaptcha.verify_recaptcha_v2?(params['g-recaptcha-response'], '_inquiry')
 					flash[:alert] = t('global.recaptcha_failed')
@@ -26,7 +25,6 @@ class InquiriesController < ApplicationController
 					create_data
 				end
 			end
-
 		else
 			flash[:alert] = t('inquiries.errors')
 		end

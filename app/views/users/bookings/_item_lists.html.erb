@@ -1,0 +1,27 @@
+<div class="col padding-25px-all">
+  <span class="d-block mb-2">Add Ons:</span>
+  <ul class="p-0 text-medium list-style-12">
+    <% Item.all.each do |item| %>
+      <li>
+        <div class="checkbox checkbox-inline checkbox-warning checkbox-sm">
+          <%= check_box_tag "item_#{item.id}", item.id, @booking.add_ons.where(item_id: item.id).exists?, {
+              class: "styled",
+              onchange: "$(this).data('params', 'selected=' + this.checked)",
+              data: { url: url_for(action: 'add_on', id: @booking.id, item_id: item.id), remote: true, method: :patch },
+            } %>
+          <label for="item_<%= item.id %>"> <%= item.name %> </label>
+        </div>
+      </li>
+    <% end %>
+  </ul>
+</div>
+<div class="col padding-25px-all text-end">
+  <% if @add_on = @booking.add_ons.where(item_id: 1).first %>
+  <span class="d-block mb-2">Quantity</span>
+  <div class="qty-input">
+    <%= link_to "", remove_quantity_users_booking_path(@booking, @add_on), class: "qty-count qty-count--minus", :method => :patch, :remote => true %>
+    <input class="product-qty" type="number" name="product-qty" min="1" max="6" value="<%= @add_on.quantity %>" disabled="disabled">
+    <%= link_to "", add_quantity_users_booking_path(@booking, @add_on), class: "qty-count qty-count--add", :method => :patch, :remote => true %>
+  </div>
+  <% end %>
+</div>

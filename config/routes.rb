@@ -98,9 +98,14 @@ Rails.application.routes.draw do
       get "purchase/:type/:id" => "purchases#new", :as => :new_purchase
 
       # Bookings
-      resources :bookings, :except => [:edit, :update, :show] do
+      resources :bookings, :except => [:edit, :update] do
         collection do
           get "history" => "bookings#history", :as => :history
+        end
+        member do
+          patch "add_on/:item_id" => "bookings#add_on", :as => :add_on
+          patch "add_quantity/:add_on_id" => "bookings#add_quantity", :as => :add_quantity
+          patch "remove_quantity/:add_on_id" => "bookings#remove_quantity", :as => :remove_quantity
         end
       end
       resources :packages, :except => [:edit, :update, :show]

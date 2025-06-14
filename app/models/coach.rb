@@ -8,6 +8,17 @@ class Coach < ApplicationRecord
 	validates_presence_of :name, :email, :phone, :price
 	validates_uniqueness_of :email
 
+	def calculate_price(duration, use_currency=true)
+    sum = 0
+    duration.times { sum+= self.price }
+
+		if use_currency
+			return total_price(sum)
+		else
+			return sum
+		end
+	end
+
 	def gender_label
 		self.gender == 0 ? "Female" : "Male"
 	end

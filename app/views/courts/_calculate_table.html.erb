@@ -1,9 +1,16 @@
-<p class="mb-4">
-  <strong>Your Booking details:</strong>
-</p>
-<ul class="mb-2">
-<li><strong>Court:</strong> <%= @court.name %></li>
-<li><strong>Date:</strong> <%= @dates %></li>
-<li><strong>Duration:</strong> <%= @duration %></li>
-<li><strong>Total Price:</strong> <%= @priceLabel %></li>
+<ul class="mb-2 text-medium ps-0">
+  <li class="mb-3"><strong>Your Booking details:</strong></li>
+  <li class="mb-2"><strong>Court:</strong> <%= @court.name %></li>
+  <li class="mb-2"><strong>Date:</strong> <%= @dates %></li>
+  <li class="mb-2"><strong>Duration:</strong> <%= @duration %></li>
+  <% if @court_type %>
+    <li class="mb-2"><strong>Court Type:</strong> <%= @court_type %></li>
+  <% end %>
+  <% if @class_type %>
+    <li class="mb-2"><strong>Class Name:</strong> <%= @class_type %></li>
+  <% end %>
+  <% if @coach %>
+    <li class="mb-2"><strong>Coach:</strong> <%= @coach.name_with_price %></li>
+  <% end %>
+  <li><strong>Total Price:</strong> <%= @priceLabel %></li>
 </ul>

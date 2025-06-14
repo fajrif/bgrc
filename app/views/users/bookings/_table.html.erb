@@ -1,38 +1,23 @@
 <table class="table table-striped table-hover table-responsive">
 		<thead>
 			<tr>
-				<th class="product-2">Name</th>
+				<th class="product-2">Order ID</th>
 				<th class="product-2">Date</th>
 				<th class="product-2">Duration</th>
-				<th class="ptice">Status</th>
-				<th class="ptice">Price</th>
-				<th class="remove remove-b">Action</th>
+				<th class="price">Status</th>
+				<th class="price">Price</th>
 			</tr>
 		</thead>
 		<tbody>
 			<% @bookings.each do |booking| %>
 				<tr>
 						<td class="product">
-								<ul>
-										<li class="first-cart"><%= booking.court.name %></li>
-								</ul>
+              <%= link_to booking.order_id, users_booking_path(booking.order_id), class: "text-black" %>
 						</td>
-						<td><%= booking.date.strftime('%A, %d-%m-%Y %H:%M') %></td>
+						<td><%= booking.date.strftime('%A %b %d, %Y %I:%M %p') %></td>
 						<td><%= booking.duration_label %></td>
 						<td class="<%= booking.is_unpaid? ? 'text-red' : 'text-green' %>"><%= booking.status_label %></td>
-						<td class="ptice"><%= booking.price_label %></td>
-						<td class="action">
-							<% if booking.is_unpaid? %>
-								<ul>
-									<li class="w-btn">
-										<%= link_to "Pay", users_new_purchase_path(booking.class.to_s.downcase, booking.id.to_s), :remote => true %>
-									</li>
-									<li class="w-btn">
-										<%= link_to "Cancel", users_booking_path(booking), method: :delete %>
-									</li>
-								</ul>
-							<% end %>
-						</td>
+						<td class="price"><%= booking.total_price_label %></td>
 				</tr>
 			<% end %>
 		</tbody>

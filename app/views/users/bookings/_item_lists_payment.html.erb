@@ -1,0 +1,10 @@
+<ul class="list-style-6 margin-50px-bottom text-medium">
+  <li><strong><%= @booking.get_court_type %></strong><span><%= @booking.price_label %></span></li>
+  <% if @booking.coach %>
+    <li><strong>Coach (<%= @booking.coach.name %>)</strong><span><%= @booking.price_coach_label %></strong></li>
+  <% end %>
+  <% @booking.add_ons.each do |add_on| %>
+    <li><strong><%= add_on.item_with_quantity %></strong><span><%= add_on.total_price_label %></span></li>
+  <% end %>
+  <li class="margin-30px-top font-weight-700"><strong>Total</strong><span><%= @booking.total_price_label %></strong></li>
+</ul>

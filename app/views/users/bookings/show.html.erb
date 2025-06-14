@@ -1,0 +1,57 @@
+<%= content_for :head do %>
+	<%= stylesheet_link_tag 'quantity_input.css' %>
+	<script type="text/javascript" src="<%= configatron.midtrans_js_file %>" data-client-key="<%= configatron.midtrans_client_key %>"></script>
+<% end %>
+
+<!-- start post content section -->
+<section>
+    <div class="container">
+        <div class="row justify-content-center">
+            <article class="col-lg-8 right-sidebar md-margin-60px-bottom sm-margin-40px-bottom">
+                <!-- start post item -->
+                <div class="col-12 blog-post-content margin-60px-bottom sm-margin-30px-bottom text-center text-md-start">
+                    <div class="blog-text border-all d-inline-block w-100">
+                        <div class="content padding-25px-all">
+                            <div class="text-medium margin-15px-bottom alt-font">
+                              <span>Order ID: <%= @booking.order_id %></span>
+                            </div>
+                            <h5 class="text-black text-uppercase alt-font letter-spacing-6 font-weight-600 margin-15px-bottom d-block">Booking Confirmation</h5>
+                            <div class="text-large text-black margin-25px-bottom font-weight-500">
+                              <span><%= @booking.date.strftime('%A %b %d, %Y %I:%M %p') %></span>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;<span><%= @booking.court.name %></span>
+                            </div>
+                            <p class="text-medium mb-2"><strong>Duration:</strong> <%= @booking.duration_label %></p>
+                            <p class="text-medium"><strong>Please note:</strong> Bookings cannot be canceled or refunded within 24 hours of your reserved court time.</p>
+                        </div>
+                        <div id="itemLists" class="row row-cols-2 m-0 border-top border-color-extra-light-gray">
+                          <% if @booking.is_unpaid? %>
+                            <%= render "item_lists" %>
+                          <% else %>
+                            <div class="content padding-25px-all">
+                              <p class="text-medium"><strong>Status Payment:</strong> PAID</p>
+                            </div>
+                          <% end %>
+                        </div>
+                    </div>
+                </div>
+                <!-- end post item -->
+            </article>
+            <aside class="col-lg-4">
+                <div class="margin-45px-bottom sm-margin-25px-bottom border padding-25px-all">
+                    <div class="text-extra-dark-gray margin-50px-bottom alt-font text-uppercase font-weight-600 text-medium aside-title"><span>Booking Details</span></div>
+                    <div id="itemListsPayment">
+                      <%= render "item_lists_payment" %>
+                    </div>
+                    <div class="d-flex flex-wrap justify-content-center gap-4">
+                    <% if @booking.is_unpaid? %>
+                      <%= link_to "Cancel", users_booking_path(@booking), class: "btn btn-light-gray btn-small text-medium", method: :delete %>
+                      <%= link_to "Pay", users_new_purchase_path(@booking.class.to_s.downcase, @booking.id.to_s), class: "btn btn-dark-gray btn-medium text-medium", :remote => true %>
+                    <% else %>
+                      <%= link_to "View Details", "#", class: "btn btn-light-gray btn-small text-medium" %>
+                    <% end %>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </div>
+</section>
+<!-- end blog content section -->
