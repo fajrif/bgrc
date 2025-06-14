@@ -98,6 +98,7 @@ jQuery(document).ready(function($){
 
 	// Flatpickr
 	$(".datetimepicker").flatpickr({"altInput":true, "altFormat": "d/m/Y H:i", "enableTime": true, "disableMobile":true, "dateFormat":"d/m/Y H:i"});
+	$(".datepicker").flatpickr({"altInput":true, "altFormat": "d/m/Y", "enableTime": false, "disableMobile":true, "dateFormat":"d/m/Y"});
 
 	// Choices
 	if($('.form-select').length > 0){

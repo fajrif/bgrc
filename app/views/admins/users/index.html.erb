@@ -1,32 +1,24 @@
-<div class="page-bar">
-	<div class="page-title-breadcrumb">
-		<div class=" pull-left">
-			<div class="page-title">List of Users Accounts</div>
-		</div>
-	</div>
-</div>
+<% title_page("Users") %>
 <div class="row">
-	<div class="col-md-12 col-sm-12">
-		<div class="card card-box">
-			<div class="card-body ">
-				<div class="row">
-					<div id="btn_export" class="col-md-9 col-sm-6 col-6">
-						<%= render 'btn_export' %>
+	<div class="col-lg-12">
+		<div class="card">
+			<div class="card-header border-0">
+				<%= form_tag admins_users_url, { :id => "index_search", :method => :get } do %>
+					<div class="row g-4 align-items-center">
+						<div class="col-md-4">
+							<div class="form-icon">
+								<%= text_field_tag :search, params[:search], :class => "form-control form-control-icon", :placeholder => "Search name ..." %>
+								<i class="ri-search-line"></i>
+							</div>
+						</div>
 					</div>
-					<div class="col-md-3 col-sm-6 col-6">
-					 <div style="float:right;">
-						 <%= form_tag admins_users_url, { :id => "index_search", :method => :get } do %>
-							 <%= text_field_tag :search, params[:search], :class => "form-control form-control-sm", :placeholder => "Search by name" %>
-						 <% end %>
-					 </div>
-					</div>
-				</div>
-				<div class="table-wrap" style="margin-top:20px;">
-					<div id="index_table" class="table-responsive">
-						<%= render 'table' %>
-					</div>
-				</div>
+				<% end %>
+			</div>
+			<div id="index_table" class="card-body">
+				<%= render 'table' %>
 			</div>
 		</div>
 	</div>
+	<!--end col-->
 </div>
+<!--end row-->

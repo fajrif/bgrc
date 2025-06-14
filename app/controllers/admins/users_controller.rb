@@ -22,7 +22,7 @@ class Admins::UsersController < Admins::BaseController
 
 	def update
 		@user = User.find(params[:id])
-		if @user.update_attributes(params_user)
+		if @user.update(params_user)
 			redirect_to admins_user_path(@user), :notice  => "Successfully updated user."
 		else
 			render :action => 'edit'
@@ -38,7 +38,7 @@ class Admins::UsersController < Admins::BaseController
   private
 
   def params_user
-    params.require(:user).permit(:email, :password, :password_confirmation, :full_name, :gender, :mobile_phone)
+    params.require(:user).permit(:email, :password, :password_confirmation, :full_name, :gender, :phone, :nationality, :dob)
   end
 
 end

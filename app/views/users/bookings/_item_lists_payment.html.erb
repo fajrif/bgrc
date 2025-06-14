@@ -8,3 +8,11 @@
   <% end %>
   <li class="margin-30px-top font-weight-700"><strong>Total</strong><span><%= @booking.total_price_label %></strong></li>
 </ul>
+<div class="d-flex flex-wrap justify-content-center gap-4">
+  <% if @booking.is_unpaid? %>
+    <%= link_to "Cancel", users_booking_path(@booking), class: "btn btn-light-gray btn-small text-medium", method: :delete %>
+    <%= link_to "Pay", users_new_purchase_path(@booking.class.to_s.downcase, @booking.id.to_s), class: "btn btn-dark-gray btn-medium text-medium", :remote => true %>
+  <% else %>
+    <%= link_to "View Details", "#", class: "btn btn-light-gray btn-small text-medium" %>
+  <% end %>
+</div>

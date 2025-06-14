@@ -1,0 +1,38 @@
+<table class="table table-hover">
+	<tr>
+		<td style="width:15%;"><b>ID</b></td>
+		<td><%= @user.id %></td>
+	</tr>
+	<tr>
+		<td><b>Email</b></td>
+		<td><%= @user.email %></td>
+	</tr>
+	<tr>
+		<td><b>Password</b></td>
+		<td>********</td>
+	</tr>
+	<tr>
+		<td><b>Full Name</b></td>
+		<td><%= @user.full_name %></td>
+	</tr>
+	<tr>
+		<td><b>Phone</b></td>
+		<td><%= @user.phone %></td>
+	</tr>
+	<tr>
+		<td><b>DOB</b></td>
+    <td><%= "#{@user.dob.strftime('%d/%m/%Y')} (#{@user.age} y/o)" unless @user.dob.blank? %></td>
+	</tr>
+	<tr>
+		<td><b>Gender</b></td>
+		<td><%= @user.gender_label %></td>
+	</tr>
+	<tr>
+		<td><b>Nationality</b></td>
+		<td><%= @user.nationality %></td>
+	</tr>
+	<tr>
+		<td><b>Register At</b></td>
+    <td><%= @user.created_at.strftime('%d-%m-%Y %H:%M %p') %></td>
+	</tr>
+</table>

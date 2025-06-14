@@ -31,10 +31,6 @@ class Users::PurchasesController < Users::BaseController
   def create
 		@purchase = Purchase.find_or_initialize_by(order_id: params[:order_id], token: params[:token], productable: @productable, user: current_user)
 
-		if @productable.is_a? Booking
-			@bookings = current_user.current_bookings
-		end
-
 		unless @purchase.status_code == "200" or @purchase.status_code == "201"
 			if @purchase.save_with_result(params)
 				# Custom
@@ -46,6 +42,10 @@ class Users::PurchasesController < Users::BaseController
 			else
 				flash[:alert] = "Some errors were found."
 			end
+		end
+
+		if @productable.is_a? Booking
+			@booking = @purchase.productable
 		end
 
     respond_to do |format|

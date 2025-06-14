@@ -31,7 +31,7 @@ module AdminHelper
 	def flash_message2
     message = ""
     flash.each do |name, msg|
-			message += content_tag :div, :class => "alert alert-#{name.to_sym == :notice ? 'success' : 'danger'} alert-dismissible alert-label-icon label-arrow fade show" do
+			message += content_tag :div, :class => "alert alert-#{name.to_sym == :notice ? 'success' : 'danger'} mb-0 alert-dismissible alert-label-icon label-arrow fade show" do
 				lbl = raw(msg)
 				lbl += content_tag(:a, nil, class: "btn-close", "data-bs-dismiss": "alert", "aria-label": "Close") do
 					content_tag(:i, nil, class: "fa-solid fa-close text-white-2")

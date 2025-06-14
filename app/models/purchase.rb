@@ -14,7 +14,7 @@ class Purchase < ApplicationRecord
 	after_initialize :init_record, if: :new_record?
 
 	def init_record
-		self.order_id = SecureRandom.base58(8) if self.order_id.blank?
+		self.order_id = self.productable.order_id
 		self.gross_amount = self.productable.total_price.to_i if self.gross_amount.blank?
 		self.token = ApiMidtrans.request_token(self) if self.token.blank?
 	end

@@ -1,29 +1,15 @@
+<% title_page("User Details") %>
 <div class="row">
 	<div class="col-md-12 col-sm-12">
-		<div class="borderBox light bordered card-box">
-			<div class="borderBox-title tabbable-line">
-				<div class="caption">
-					<span class="caption-subject font-dark bold">User Details</span>
-				</div>
-				<ul class="nav nav-tabs">
-					<li class="nav-item">
-						<a href="#borderBox_tab1" data-toggle="tab" class="active">User Profile</a>
-					</li>
-				</ul>
-			</div>
-			<div class="borderBox-body">
-				<div class="tab-content">
-					<div class="tab-pane active" id="borderBox_tab1">
-						<%= render "profile" %>
-					</div>
-				</div>
+		<div class="card card-box">
+			<div class="card-body">
+        <div>
+          <%= render "details" %>
+        </div>
 				<div class="form-actions">
-					<div class="row">
-						<div class="offset-md-3 col-md-9">
-							<%= link_to 'Destroy', admins_user_path(@user), :data => { :confirm => 'Are you sure?' }, :method => :delete, :class => 'btn btn-danger' %>
-							<%= link_to 'View All', admins_users_path, :class => 'btn' %>
-						</div>
-					</div>
+					<%= link_to 'Edit', edit_admins_user_path(@user.id), :class => 'btn btn-secondary' %>
+					<%= link_to 'Destroy', admins_user_path(@user.id), :confirm => 'Are you sure?', :method => :delete, :class => 'btn btn-danger' %>
+					<%= link_to 'View All', admins_users_path, :class => 'btn btn-light' %>
 				</div>
 			</div>
 		</div>
