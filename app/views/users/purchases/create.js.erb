@@ -1,3 +1,15 @@
 $("#forFlashMessage").html("<%= escape_javascript(flash_message2) %>");
 $("#itemLists").html("<%= escape_javascript(render("users/bookings/item_lists")) %>");
 $("#itemListsPayment").html("<%= escape_javascript(render("users/bookings/item_lists_payment")) %>");
+
+$('.modal-popup').magnificPopup({
+    type: 'inline',
+    preloader: false,
+    // modal: true,
+    blackbg: true,
+    callbacks: {
+        open: function () {
+            $('html').css('margin-right', 0);
+        }
+    }
+});

@@ -14,6 +14,6 @@
     <%= link_to "Pay", users_new_purchase_path(@booking.class.to_s.downcase, @booking.id.to_s), class: "btn btn-dark-gray btn-medium text-medium", :remote => true %>
   <% else %>
     <%= link_to "View Details", "#modal-popup", class: "btn btn-light-gray btn-small text-medium modal-popup" %>
-    <%= render "modal_details" %>
+    <%= render "users/bookings/modal_details" %>
   <% end %>
 </div>
