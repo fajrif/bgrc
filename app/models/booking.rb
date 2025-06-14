@@ -67,25 +67,21 @@ class Booking < ApplicationRecord
 	end
 
 	def send_email_notification!
-		# s1 = true
-		# s2 = true
-		# begin
-		# 	PurchaseMailer.with(booking: self).booking_purchase_email.deliver_now
-		# rescue Exception => e
-		# 	s1 = false
-		# 	puts e.message
-		# end
-		# begin
-		#  unless self.court.contact_email.blank?
-		# 	PurchaseMailer.with(booking: self).new_booking_email.deliver_now
-		#  else
-		# 	 s2 = false
-		#  end
-		# rescue Exception => e
-		# 	s2 = false
-		# 	puts e.message
-		# end
-		# return (s1 or s2)
+		s1 = true
+		s2 = true
+		begin
+			PurchaseMailer.with(booking: self).booking_purchase_email.deliver_now
+		rescue Exception => e
+			s1 = false
+			puts e.message
+		end
+		begin
+			PurchaseMailer.with(booking: self).new_booking_email.deliver_now
+		rescue Exception => e
+			s2 = false
+			puts e.message
+		end
+		return (s1 or s2)
 	end
 
 	# get all bookings by day only

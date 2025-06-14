@@ -59,9 +59,6 @@ class Purchase < ApplicationRecord
 	end
 
 	def process_after_success!
-		# if self.productable.is_a? Product
-		# 	# 	PurchaseMailer.with(purchase: self).new_purchase_email.deliver_now
-		# els
     if self.productable.is_a? Booking
 			self.productable.paid!
 			self.productable.send_email_notification!

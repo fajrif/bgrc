@@ -5,9 +5,11 @@ class Users::PurchasesController < Users::BaseController
 		begin
 			if request.format.js?
 				@purchase = Purchase.find_or_initialize_by(productable: @productable, user: current_user, status_code: "000")
-				unless @purchase.persisted?
-					@purchase.save!
+				if @purchase.persisted?
+          @purchase.destroy
 				end
+        @purchase = Purchase.new(productable: @productable, user: current_user, status_code: "000")
+        @purchase.save!
 
 				respond_to do |format|
 					format.html # new.html.erb
