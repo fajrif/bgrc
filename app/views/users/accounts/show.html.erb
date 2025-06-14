@@ -36,7 +36,7 @@
                     <%= f.input :gender, as: :select, label: false, wrapper: :vertical_select_big, collection: [['1', 'Male'], ['0', 'Female']], label_method: :second, value_method: :first, prompt: "Choose your Gender" %>
                   </div>
                   <div class="col-lg-6">
-                    <%= f.input :nationality, as: :select, label: false, collection: options_for_nationalities, prompt: "Choose your nationality" %>
+                    <%= f.input :nationality, as: :select, label: false, wrapper: :vertical_select_big, collection: options_for_nationalities, prompt: "Choose your nationality" %>
                   </div>
                   <div class="submit-btn-wrapper text-center mt-2">
                       <button type="submit" class="btn btn-light-gray btn-medium text-medium margin-30px-top sm-margin-three-top">save changes</button>
