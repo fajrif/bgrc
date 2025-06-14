@@ -43,14 +43,7 @@ Rails.application.routes.draw do
         resources :costs, :controller => "courts/costs"
         match 'delete_image/:id', to: 'courts#delete_image', via: :delete, as: :delete_image
       end
-      resources :bookings do
-        collection do
-          get "update_select_duration" => "bookings#update_select_duration", :as => :update_select_duration
-        end
-        member do
-          post "send_email_notification" => "bookings#send_email_notification", :as => :send_email_notification
-        end
-      end
+      resources :bookings, :only => [:index, :show, :destroy]
       resources :purchases, :only => [:index, :show, :destroy] do
         member do
           put "settlement" => "purchases#settlement", :as => :settlement

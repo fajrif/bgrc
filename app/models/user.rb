@@ -20,6 +20,8 @@ class User < ApplicationRecord
 	default_scope { order(created_at: :desc) }
 	scope :new_users, -> { where("created_at > ?", 1.week.ago) }
 
+  alias_attribute :name, :full_name
+
 	def gender_label
 		self.gender == 0 ? "Female" : "Male"
 	end

@@ -251,6 +251,7 @@ module AdminHelper
 	def is_admins_others_page?
 		controller.controller_name == "testimonials" ||
 		controller.controller_name == "items" ||
+		controller.controller_name == "purchases" ||
 		controller.controller_name == "questions"
 	end
 

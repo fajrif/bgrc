@@ -1,10 +1,4 @@
-<div class="page-bar">
-	<div class="page-title-breadcrumb">
-		<div class=" pull-left">
-			<div class="page-title">Purchase details</div>
-		</div>
-	</div>
-</div>
+<% title_page("Purchase details") %>
 <div class="row">
 	<div class="col-md-12 col-sm-12">
 		<div class="card card-box">
@@ -50,9 +44,7 @@
 						<div class="form-group row">
 							<label class="control-label col-md-3">Product Name</label>
 							<div class="col-md-5">
-								<% if @purchase.productable.is_a? Product %>
-									<%= link_to @purchase.productable.name_label, admins_product_path(@purchase.productable) %>
-								<% elsif @purchase.productable.is_a? Booking %>
+								<% if @purchase.productable.is_a? Booking %>
 									<%= link_to "Booked - #{@purchase.productable.name}", admins_booking_path(@purchase.productable) %>
 								<% end %>
 							</div>
@@ -153,17 +145,17 @@
 								<%= @purchase.created_at %>
 							</div>
 						</div>
-						<div class="form-actions">
-							<div class="row">
-								<div class="offset-md-3 col-md-9">
-									<%= link_to 'Destroy', admins_purchase_path(@purchase), :data => { :confirm => 'Are you sure?' }, :method => :delete, :class => 'btn btn-danger' %>
-									<%= link_to 'Settlement', settlement_admins_purchase_path(@purchase), :data => { :confirm => 'Are you sure want to settle this transaction?' }, :method => :put, :class => 'btn btn-warning' unless @purchase.status_code == "200" %>
-									<%= link_to 'View All', admins_purchases_path, :class => 'btn' %>
-								</div>
-							</div>
-						</div>
 					</div>
 				</div>
+        <div class="form-actions my-4">
+          <div class="row">
+            <div class="col-md-9">
+              <%= link_to 'Destroy', admins_purchase_path(@purchase), :data => { :confirm => 'Are you sure?' }, :method => :delete, :class => 'btn btn-danger' %>
+              <%= link_to 'Settlement', settlement_admins_purchase_path(@purchase), :data => { :confirm => 'Are you sure want to settle this transaction?' }, :method => :put, :class => 'btn btn-warning' unless @purchase.status_code == "200" %>
+              <%= link_to 'View All', admins_purchases_path, :class => 'btn btn-light' %>
+            </div>
+          </div>
+        </div>
 			</div>
 		</div>
 	</div>

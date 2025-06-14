@@ -2,7 +2,9 @@ class Users::BookingsController < Users::BaseController
 
 	def index
 		current_user.remove_all_unpaid_bookings
-		@bookings = current_user.current_bookings
+		criteria = current_user.current_bookings
+
+		@bookings = criteria.page(params[:page]).per(10)
 	end
 
 	def create

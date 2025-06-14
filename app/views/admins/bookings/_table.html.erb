@@ -1,34 +1,60 @@
-<p><small><%= "Display total #{@bookings.count} bookings" %></small></p>
-
-<table class="table display product-overview mb-30">
-  <thead>
-    <tr>
-      <th>User</th>
-      <th>Court</th>
-      <th>Date</th>
-      <th>Duration</th>
-      <th>Total Price</th>
-      <th>Status</th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    <% for booking in @bookings %>
-      <tr>
-				<td><strong><%= booking.try(:user).try(:full_name) %></strong></td>
-				<td><strong><%= booking.try(:court).try(:name) %></strong></td>
-				<td><%= booking.date.strftime('%A, %d-%m-%Y %H:%M %p') %></td>
-				<td><%= booking.duration_label %></td>
-				<td><%= booking.price_label %></td>
-				<td>
-					<span class="<%= booking.is_unpaid? ? 'text-red' : 'text-green' %>"><%= booking.status_label %></span>
-				</td>
-        <td class="actions">
-					<%= link_to admins_booking_path(booking), "data-toggle" => "tooltip", :title => "Edit" do %>
-						<i class="fa fa-pencil"></i>
-					<% end %>
-        </td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
+<div class="table-card">
+	<table class="table table-hover table-striped align-middle mb-0">
+		<thead class="table-light">
+			<tr>
+				<th class="text-center">ID</th>
+				<th>Order ID</th>
+				<th>User</th>
+				<th>Court</th>
+				<th>Class</th>
+				<th>Price</th>
+				<th>Action</th>
+			</tr>
+		</thead>
+		<tbody>
+			<% for booking in @bookings %>
+				<tr>
+					<td class="text-center"><%= booking.id %></td>
+					<td>
+						<h5 class="fs-14 mb-1"><%= link_to booking.order_id, admins_booking_path(booking.id), class: "text-body" %></h5>
+					</td>
+					<td><%= booking.try(:user).try(:name) %></td>
+          <td>
+						<h5 class="fs-14 mb-1 text-secondary"><%= booking.try(:court).try(:name) %></h5>
+						<p class="text-muted mb-0">Duration: <%= booking.duration_label %></p>
+          </td>
+          <td>
+						<p class="text-muted mb-0">Class Type: <%= booking.get_court_type %></p>
+						<p class="text-muted mb-0">Class Name: <%= booking.get_class_type %></p>
+          </td>
+          <td>
+						<h5 class="fs-14 mb-1"><%= booking.total_price_label %></h5>
+            <p class="<%= booking.is_unpaid? ? 'text-danger' : 'text-success' %> mb-0"><%= booking.status_label %></p>
+          </td>
+					<td>
+						<div class="dropdown">
+							<button class="btn btn-soft-secondary btn-sm dropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+								<i class="ri-more-fill"></i>
+							</button>
+							<ul class="dropdown-menu dropdown-menu-end">
+								<li>
+									<%= link_to admins_booking_path(booking.id), class: "dropdown-item" do %>
+										<i class="ri-eye-fill align-bottom me-2 text-muted"></i> View
+									<% end %>
+								</li>
+								<li class="dropdown-divider"></li>
+								<li>
+									<%= link_to admins_booking_path(booking.id), :data => { :confirm => 'Are you sure?' }, :method => :delete, class: "dropdown-item remove-list" do %>
+										<i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i> Delete
+									<% end %>
+								</li>
+							</ul>
+						</div>
+					</td>
+				</tr>
+			<% end %>
+		</tbody>
+	</table>
+</div>
+<!-- pagination -->
+<%= paginate @bookings %>

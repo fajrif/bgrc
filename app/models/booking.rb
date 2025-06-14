@@ -1,3 +1,5 @@
+require "rqrcode"
+
 class Booking < ApplicationRecord
 	default_scope { order(date: :desc) }
 
@@ -129,6 +131,18 @@ class Booking < ApplicationRecord
     when 1
       "4 People, Semi Private"
     end
+  end
+
+  def qrcode
+    qrcode = RQRCode::QRCode.new(self.order_id)
+    # NOTE: showing with default options specified explicitly
+    svg = qrcode.as_svg(
+      color: "000",
+      shape_rendering: "crispEdges",
+      module_size: 8,
+      standalone: true,
+      use_path: true
+    )
   end
 
 	def self.to_csv(data, options = {})

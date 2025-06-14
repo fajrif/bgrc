@@ -1,34 +1,27 @@
-<div class="page-bar">
-	<div class="page-title-breadcrumb">
-		<div class=" pull-left">
-			<div class="page-title">List of Purchases</div>
-		</div>
-	</div>
-</div>
+<% title_page("Purchases") %>
 <div class="row">
-	<div class="col-md-12 col-sm-12">
-		<div class="card card-box">
-			<div class="card-body ">
+	<div class="col-lg-12">
+		<div class="card">
+			<div class="card-header border-0">
 				<%= form_tag admins_purchases_url, { :id => "index_search", :method => :get } do %>
-				<div class="row">
-						<div class="col-md-2 col-sm-2 col-2">
-							<%= select_tag :status_code, options_for_select([ "All", "Success", "Pending" ], params[:status_code]), :class => "form-control", :onchange => "this.form.submit();" %>
-						</div>
-						<div class="col-md-4 col-sm-4 col-4">
-						</div>
-						<div class="col-md-6 col-sm-6 col-6">
-							<div style="float:right;">
-								<%= text_field_tag :search, params[:search], :class => "form-control", :placeholder => "Search by name" %>
+					<div class="row g-4 align-items-center">
+						<div class="col-md-4">
+							<div class="form-icon">
+								<%= text_field_tag :search, params[:search], :class => "form-control form-control-icon", :placeholder => "Search by name ..." %>
+								<i class="ri-search-line"></i>
 							</div>
 						</div>
-				</div>
-				<% end %>
-				<div class="table-wrap" style="margin-top:20px;">
-					<div id="index_table" class="table-responsive">
-						<%= render 'table' %>
+						<div class="col-md-3">
+							<%= select_tag :status_code, options_for_select([ "All", "Success", "Pending" ], params[:status_code]), :class => "form-control", :onchange => "this.form.submit();" %>
+						</div>
 					</div>
-				</div>
+				<% end %>
+			</div>
+			<div id="index_table" class="card-body">
+				<%= render 'table' %>
 			</div>
 		</div>
 	</div>
+	<!--end col-->
 </div>
+<!--end row-->

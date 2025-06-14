@@ -7538,7 +7538,7 @@ footer .small-icon li {
 .my-mfp-zoom-in.mfp-ready.mfp-bg,
 .my-mfp-slide-bottom.mfp-ready.mfp-bg {
   background: #000;
-  opacity: 0.93;
+  opacity: 0.73;
 }
 .mfp-bg,
 .mfp-wrap {
@@ -16013,4 +16013,8 @@ footer .instafeed-grid.gutter-extra-large {
   width: 60px;
   padding: 2px 8px;
   margin-right: 5px;
+}
+.table-booking td {
+  padding-bottom: 5px;
+  vertical-align: top;
 }

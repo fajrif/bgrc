@@ -1,0 +1,55 @@
+<!-- start modal pop-up -->
+<div id="modal-popup" class="col-12 col-lg-5 white-popup-block mfp-hide position-relative mx-auto bg-white text-center modal-popup-main padding-50px-all">
+  <h6 class="margin-15px-bottom">Hi <%= @booking.user.name %></h6>
+  <span class="text-extra-dark-gray alt-font text-large font-weight-600 margin-35px-bottom d-block">Your booking is confirmed!</span>
+  <div class="d-flex justify-content-center">
+    <table class="table-booking text-start text-medium">
+      <tr>
+        <td><b>Order ID</b></td>
+        <td>: <%= @booking.order_id %></td>
+      </tr>
+      <tr>
+        <td><b>Date & Time</b></td>
+        <td>: <%= @booking.date.strftime('%A %b %d, %Y %I:%M %p') %> - <%= @booking.end_date.strftime('%I:%M %p') %></td>
+      </tr>
+      <tr>
+        <td><b>Court</b></td>
+        <td>: <%= @booking.try(:court).try(:name) %></td>
+      </tr>
+      <tr>
+        <td><b>Booking Type</b></td>
+        <td>: <%= @booking.get_court_type %></td>
+      </tr>
+      <% if @booking.coach %>
+        <tr>
+          <td><b>Coach</b></td>
+          <td>: <%= @booking.try(:coach).try(:name) %></td>
+        </tr>
+      <% end %>
+      <% unless @booking.add_ons.empty? %>
+        <tr>
+          <td><b>Add Ons</b></td>
+          <td>
+            <% @booking.add_ons.each do |add_on| %>
+              <p class="mb-0">: <%= add_on.try(:item).try(:name) %> ( <%= add_on.quantity %>x ) - <%= add_on.total_price_label %></p>
+            <% end %>
+          </td>
+        </tr>
+      <% end %>
+    </table>
+  </div>
+  <hr class="margin-30px-tb"/>
+  <div class="padding-eight-lr">
+    <h6 class="mb-2">Show the QR Code upon arrival</h6>
+    <p class="text-medium">Use this QR code at the venue entrance to check in quickly.<br/> Don’t forget to arrive at least 10 minutes early!</p>
+    <div class="d-flex justify-content-center">
+      <%= @booking.qrcode.html_safe %>
+    </div>
+  </div>
+  <hr class="margin-30px-tb"/>
+  <div class="padding-eight-lr">
+    <p class="text-medium">We’ve sent your booking confirmation to <br/> your Email & WhatsApp.</p>
+    <%= link_to "Dismiss", "#", class: "btn btn-light-gray btn-small text-medium popup-modal-dismiss" %>
+  </div>
+</div>
+<!-- end modal pop-up -->

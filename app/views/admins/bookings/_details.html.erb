@@ -1,0 +1,59 @@
+<table class="table table-hover">
+	<tr>
+		<td style="width:15%;"><b>ID</b></td>
+		<td><%= @booking.id %></td>
+	</tr>
+	<tr>
+		<td><b>Order ID</b></td>
+		<td><h5 class="fs-14 mb-0 text-body"><%= @booking.order_id %></h5></td>
+	</tr>
+	<tr>
+		<td><b>User</b></td>
+    <td>
+      <%= link_to @booking.try(:user).try(:name), admins_user_path(@booking.try(:user)) %>
+    </td>
+	</tr>
+	<tr>
+		<td><b>Court</b></td>
+    <td>
+      <%= link_to @booking.try(:court).try(:name), admins_court_path(@booking.try(:court)) %><br/>
+      <%= @booking.try(:court).try(:sport).try(:name) %>
+    </td>
+	</tr>
+	<tr>
+		<td><b>Date</b></td>
+    <td><b><%= @booking.date.strftime('%A %b %d, %Y %I:%M %p') %> - <%= @booking.end_date.strftime('%I:%M %p') %></b></td>
+	</tr>
+	<tr>
+		<td><b>Duration</b></td>
+		<td><%= @booking.duration_label %> (<%= @booking.price_label %>)</td>
+	</tr>
+	<tr>
+		<td><b>Court Type</b></td>
+		<td><%= @booking.get_court_type %></td>
+	</tr>
+	<tr>
+		<td><b>Class Name</b></td>
+		<td><%= @booking.get_class_type %></td>
+	</tr>
+	<tr>
+		<td><b>Coach</b></td>
+		<td><%= @booking.try(:coach).try(:name) %> (<%= @booking.price_coach_label %>)</td>
+	</tr>
+	<tr>
+		<td><b>Payment Status</b></td>
+    <td><span class="<%= @booking.is_unpaid? ? 'text-danger' : 'text-success' %>"><%= @booking.status_label %></span></td>
+	</tr>
+	<tr>
+		<td><b>Payment Total</b></td>
+		<td><b><%= @booking.total_price_label %></b></td>
+	</tr>
+  <tr>
+    <td><b>Add Ons</b></td>
+    <td>
+      <% @booking.add_ons.each do |add_on| %>
+        <p class="text-primary mb-2"><%= add_on.try(:item).try(:name) %> ( <%= add_on.quantity %>x ) - <%= add_on.total_price_label %></p>
+      <% end %>
+    </td>
+  </tr>
+</table>
