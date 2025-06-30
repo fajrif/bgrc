@@ -12,7 +12,7 @@ class AddOn < ApplicationRecord
 	end
 
   def total_price
-    self.price * self.quantity
+    self.price * self.quantity * self.booking.duration
   end
 
   def item_with_quantity
@@ -20,7 +20,7 @@ class AddOn < ApplicationRecord
   end
 
 	def price_label
-		ActionController::Base.helpers.number_to_currency(self.price, unit: "Rp. ", separator: ",", delimiter: ".", precision: 0)
+		ActionController::Base.helpers.number_to_currency(self.price, unit: "Rp. ", separator: ",", delimiter: ".", precision: 0) + " / Hour"
 	end
 
 	def total_price_label

@@ -6,4 +6,4 @@ adm1 = Role.create(:name => "admin", :description => "System Administrator grant
 
 Admin.delete_all
 puts "create administrator"
-Admin.create(:full_name => "Administrator", :email => "admin@baligolfandracketclub.com", :password => "Secret1234!", :password_confirmation => "Secret1234!", role: adm1)
+Admin.create(:full_name => "Administrator", :email => "admin@balibeachcountryclub.com", :password => "Secret1234!", :password_confirmation => "Secret1234!", role: adm1)

@@ -30,7 +30,7 @@ class Booking < ApplicationRecord
     self.price_coach = self.coach.calculate_price(self.duration, false) if self.coach
     total_add_ons = 0
     self.add_ons.each do |add_on|
-      total_add_ons += add_on.total_price
+      total_add_ons += (add_on.total_price * self.duration)
     end
     self.total_price = self.price + self.price_coach + total_add_ons
 	end

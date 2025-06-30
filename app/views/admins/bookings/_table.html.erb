@@ -6,6 +6,7 @@
 				<th>Order ID</th>
 				<th>User</th>
 				<th>Court</th>
+				<th>Sport ID</th>
 				<th>Class</th>
 				<th>Price</th>
 				<th>Action</th>
@@ -23,6 +24,7 @@
 						<h5 class="fs-14 mb-1 text-secondary"><%= booking.try(:court).try(:name) %></h5>
 						<p class="text-muted mb-0">Duration: <%= booking.duration_label %></p>
           </td>
+					<td><%= booking.try(:court).try(:sport).try(:name) %></td>
           <td>
 						<p class="text-muted mb-0">Class Type: <%= booking.get_court_type %></p>
 						<p class="text-muted mb-0">Class Name: <%= booking.get_class_type %></p>

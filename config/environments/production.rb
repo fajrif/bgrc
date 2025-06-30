@@ -74,7 +74,7 @@ Rails.application.configure do
   # config.active_job.queue_adapter = :resque
   # config.active_job.queue_name_prefix = "bgrc_production"
 
-	config.action_mailer.default_url_options = { host: 'https://baligolfandracketclub.com/' }
+	config.action_mailer.default_url_options = { host: 'https://balibeachcountryclub.com/' }
 	config.action_mailer.perform_deliveries = true
   config.action_mailer.perform_caching = false
   # Don't care if the mailer can't send.
@@ -87,7 +87,7 @@ Rails.application.configure do
 		:enable_starttls_auto => true,
 		:user_name      => "apikey",
 		:password       => ENV["SENDGRID_SECRET_KEY"],
-		:domain         => "baligolfandracketclub.com"
+		:domain         => "balibeachcountryclub.com"
   }
 
   # Ignore bad email addresses and do not raise email delivery errors.

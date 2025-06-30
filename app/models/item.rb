@@ -6,7 +6,7 @@ class Item < ApplicationRecord
 	validates_uniqueness_of :name
 
 	def price_label
-		ActionController::Base.helpers.number_to_currency(self.price, unit: "Rp. ", separator: ",", delimiter: ".", precision: 0)
+		ActionController::Base.helpers.number_to_currency(self.price, unit: "Rp. ", separator: ",", delimiter: ".", precision: 0) + " / Hour"
 	end
 
 end

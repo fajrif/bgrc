@@ -6,7 +6,7 @@ c.sport = @sport3
 c.price = 100000
 c.location = "Kuta Selatan"
 c.address = "Jl. Pantai Mengiat No. 88 Kawasan Wisata ITDC Nusa Dua Lot"
-c.info = "Tennis Court A Indoor at Bali Golf & Racket Club"
+c.info = "Tennis Court A Indoor at Bali Beach Country Club"
 c.instructions = "To enter the premises, kindly please show your vaccine certificate to the security prior to entering. This is a strict regulation. Failure to show vaccine certificate will result in no entry for that person."
 c.description = %q{
 <p><strong>House Rules:</strong>Rackets and balls are not provided. Please bring your own.</p>
@@ -30,7 +30,7 @@ c.sport = @sport3
 c.price = 100000
 c.location = "Kuta Selatan"
 c.address = "Jl. Pantai Mengiat No. 88 Kawasan Wisata ITDC Nusa Dua Lot"
-c.info = "Tennis Court B Outdoor at Bali Golf & Racket Club"
+c.info = "Tennis Court B Outdoor at Bali Beach Country Club"
 c.instructions = "To enter the premises, kindly please show your vaccine certificate to the security prior to entering. This is a strict regulation. Failure to show vaccine certificate will result in no entry for that person."
 c.description = %q{
 <p><strong>House Rules:</strong>Rackets and balls are not provided. Please bring your own.</p>
@@ -54,7 +54,7 @@ c.sport = @sport1
 c.price = 150000
 c.location = "Kuta Selatan"
 c.address = "Jl. Pantai Mengiat No. 88 Kawasan Wisata ITDC Nusa Dua Lot"
-c.info = "Padel Court A at Bali Golf & Racket Club"
+c.info = "Padel Court A at Bali Beach Country Club"
 c.instructions = "To enter the premises, kindly please show your vaccine certificate to the security prior to entering. This is a strict regulation. Failure to show vaccine certificate will result in no entry for that person."
 c.description = %q{
 <p><strong>House Rules:</strong>Rackets and balls are not provided. Please bring your own.</p>
@@ -78,7 +78,7 @@ c.sport = @sport4
 c.price = 150000
 c.location = "Kuta Selatan"
 c.address = "Jl. Pantai Mengiat No. 88 Kawasan Wisata ITDC Nusa Dua Lot"
-c.info = "Pickleball Court A at Bali Golf & Racket Club"
+c.info = "Pickleball Court A at Bali Beach Country Club"
 c.instructions = "To enter the premises, kindly please show your vaccine certificate to the security prior to entering. This is a strict regulation. Failure to show vaccine certificate will result in no entry for that person."
 c.description = %q{
 <p><strong>House Rules:</strong>Rackets and balls are not provided. Please bring your own.</p>
