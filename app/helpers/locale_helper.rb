@@ -1,7 +1,7 @@
 module LocaleHelper
 
 	def get_locale_current_page_route
-		content_tag(:ul, class: "dropdown-menu") do
+		content_tag(:ul, class: "dropdown-menu box-shadow-light") do
 			path = request.path
 			if path == "/id"
 				en_path = "/"
@@ -21,7 +21,7 @@ module LocaleHelper
 	end
 
 	def get_current_user_menu_routes
-		content_tag(:ul, class: "dropdown-menu my-account") do
+		content_tag(:ul, class: "dropdown-menu box-shadow-light my-account") do
 			content_tag(:li) do
 				content_tag(:a, "My Account", href: users_account_path)
 			end +

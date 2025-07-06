@@ -43,14 +43,29 @@
 	<%= yield :head %>
 </head>
 <body class="w-100">
-	<%= render "shared/header" %>
-  <div class="container">
-    <div id="forFlashMessage" class="mb-4">
-      <%= flash_message2 %>
-    </div>
-  </div>
-	<%= yield %>
-	<%= render "shared/footer" %>
+  <!-- start countdown section -->
+  <section class="p-0 bg-extra-light-gray">
+      <div class="container-fluid">
+          <div class="row row-cols-1 row-cols-lg-2">
+              <div class="col minheight-fullscreen d-flex align-items-center p-0">
+                  <div class="padding-eight-all sm-padding-15px-all w-100">
+                    <div id="forFlashMessage" class="mb-4">
+                      <%= flash_message2 %>
+                    </div>
+                    <%= yield %>
+                  </div>
+              </div>
+              <div class="col minheight-fullscreen text-end p-0 contain-background d-none d-lg-block" style="background-image:url('<%= image_url('bg-login.png') %>');">
+                <div class="padding-10px-all">
+                  <%= link_to root_path, class: "logo" do %>
+                    <%= image_tag("logo2.png", class: "logo", alt: "Bali Beach Country Club") %>
+                  <% end %>
+                </div>
+              </div>
+          </div>
+      </div>
+  </section>
+  <!-- end countdown section -->
 	<%= javascript_include_tag 'application' %>
 	<%= yield :tail %>
 </body>

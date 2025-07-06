@@ -57,7 +57,7 @@
                       <li class="dropdown simple-dropdown">
                         <a href="#"><%= t('menu.sports') %></a><i class="fa-solid fa-angle-down dropdown-toggle" data-bs-toggle="dropdown" aria-hidden="true"></i>
                           <!-- start sub menu -->
-                          <ul class="dropdown-menu" role="menu">
+                          <ul class="dropdown-menu box-shadow-light" role="menu">
                             <% Sport.all.each do |sport| %>
                               <li class="dropdown"><%= link_to sport.name, sport_path(sport) %></li>
                             <% end %>

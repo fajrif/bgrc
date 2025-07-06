@@ -8823,8 +8823,7 @@ nav.navbar.bootsnav.menu-center ul.nav.navbar-center {
   left: 0;
   background: #fff;
   min-width: 220px;
-  padding: 0 0 15px;
-  box-shadow: none;
+  padding: 0 0;
 }
 nav.navbar.bootsnav .simple-dropdown .dropdown-menu > li {
   padding-left: 28px;
@@ -8834,7 +8833,7 @@ nav.navbar.bootsnav .simple-dropdown .dropdown-menu > li {
   font-size: 16px;
 }
 .simple-dropdown .dropdown-menu > li a {
-  padding: 2px 0 7px;
+  padding: 7px 0;
   overflow: hidden;
   position: relative;
   left: 0;
@@ -9638,7 +9637,6 @@ nav.navbar.navbar-default ul li.dropdown ul.dropdown-menu > li:last-child {
 nav.navbar.navbar-default ul li.dropdown .dropdown-menu li > a:hover {
   color: #000;
   background: transparent;
-  left: 5px;
 }
 nav.navbar.navbar-default ul li.dropdown .dropdown-menu li.active > a {
   color: #000;

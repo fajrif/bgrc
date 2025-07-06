@@ -10,11 +10,11 @@ class ApplicationController < ActionController::Base
   protected
 
   def layout_by_resource
-		if controller_path.include? "admin"
-			if devise_controller?
+		if devise_controller?
+			if controller_path.include? "admin"
 				"login"
 			else
-				"admin"
+				"login_user"
 			end
     else
       "application"
