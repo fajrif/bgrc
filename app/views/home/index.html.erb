@@ -5,7 +5,7 @@
 <%= render "facilities" unless @facilities.empty? %>
 <%= render "location" %>
 <%= render "sports" unless @sports.empty? %>
-<%= render "packages" %>
+<%= render "packages" unless @packages.empty? %>
 <%= render "featured_event" if @event %>
 <%= render "promos" unless @promos.empty? %>
 <%= render "blogs" unless @articles.empty? %>

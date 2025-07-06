@@ -17,14 +17,14 @@
                       <div class="panel-heading">
                         <a class="accordion-toggle collapsed" data-bs-toggle="collapse" data-bs-parent="#accordion-one" href="#accordion-faq-<%= faq.id %>" aria-expanded="false">
                           <div class="panel-title font-weight-500 text-uppercase position-relative padding-20px-right">
-                            <span><%= faq.title %></span>
+                            <h6 class="text-large"><%= faq.title %></h6>
                             <i class="ti-plus text-dark-gray"></i>
                           </div>
                         </a>
                       </div>
                       <div id="accordion-faq-<%= faq.id %>" data-bs-parent="#accordion-one" class="panel-collapse collapse">
                         <div class="panel-body">
-                          <p><%= faq.description %></p>
+                          <%= raw faq.description %>
                         </div>
                       </div>
                     </div>

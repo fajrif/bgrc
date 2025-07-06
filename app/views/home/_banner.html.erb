@@ -2,14 +2,14 @@
 <!-- start banner section -->
 <section class="wow animate__fadeIn cover-background background-position-top top-space" style="background-image:url('<%= url_for(@banner.image) %>');">
     <div class="opacity-medium bg-extra-dark-gray"></div>
-    <div class="container position-relative">
-        <div class="row align-items-center">
-            <div class="col-12 d-flex flex-column text-center justify-content-center page-title-large padding-30px-tb">
+    <div class="container-fluid padding-thirteen-lr small-screen sm-padding-15px-lr">
+        <div class="row h-100 align-items-end">
+            <div class="col-12 d-flex flex-column text-center justify-content-center page-title-large w-60 mx-auto lg-w-80">
                 <!-- start page title -->
                 <h1 class="alt-font text-white-2 font-weight-600"><%= @banner.title %></h1>
                 <!-- end page title -->
                 <!-- start sub title -->
-                <span class="d-block text-white-2 opacity6 alt-font"><%= @banner.description.truncate(40) %></span>
+                <span class="d-block text-white-2 opacity6 alt-font"><%= @banner.description.truncate(200) %></span>
                 <!-- end sub title -->
             </div>
         </div>

@@ -7,7 +7,7 @@
                 </div>
             </div>
         </div>
-        <div class="row row-cols-1 row-cols-lg-3 row-cols-md-2 justify-content-center align-items-center">
+        <div class="row row-cols-1 row-cols-lg-3 row-cols-md-2 justify-content-center align-items-start">
           <% @promos.each do |promo| %>
             <!-- start features box item -->
             <div class="col-sm-8 md-margin-30px-bottom wow animate__fadeInUp">
@@ -19,7 +19,7 @@
                       <span class="font-weight-600 d-block alt-font text-uppercase margin-10px-bottom"><%= promo.name %></span>
                       <hr/>
                       <span class="font-weight-500 d-block alt-font margin-10px-bottom text-uppercase"><%= promo.sport.name %></span>
-                      <p><%= promo.short_description.truncate(150) %></p>
+                      <p><%= promo.short_description.truncate(120) %></p>
                       <p class="text-medium">Valid: <%= promo.valid_date %></p>
                       <%= link_to "Read More", promo_path(promo), class: "btn btn-medium btn-light-gray w-100" %>
                     </div>

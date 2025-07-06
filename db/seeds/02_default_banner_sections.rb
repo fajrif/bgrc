@@ -13,3 +13,8 @@ puts "create all banner sections"
 @bs7 = BannerSection.create(name: "Promos")
 @bs8 = BannerSection.create(name: "Articles")
 @bs9 = BannerSection.create(name: "Packages")
+
+@bs10 = BannerSection.create(name: "Golf")
+@bs11 = BannerSection.create(name: "Tennis")
+@bs12 = BannerSection.create(name: "Padel")
+@bs13 = BannerSection.create(name: "Pickleball")

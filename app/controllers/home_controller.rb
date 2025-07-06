@@ -16,6 +16,7 @@ class HomeController < ApplicationController
   def about
 		# get public about
     @banner = BannerSection.where(name: "About").first.banners.first
+    @sports = Sport.first(4)
     @testimonials = Testimonial.first(6)
   end
 

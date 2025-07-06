@@ -2,9 +2,9 @@ Promo.delete_all
 puts "create all promos"
 
 # Promo
-_name = FFaker::Book.unique.title + " 1"
+_name = "Promo 1"
 promo = Promo.new(name: _name, short_description: FFaker::Lorem.paragraphs.join(" "), description: FFaker::Lorem.paragraphs.join(" "))
-promo.image.attach(io: Rails.root.join("vendor/assets/images/banners/banner-gold.png").open, filename: "banner-gold.png")
+promo.image.attach(io: Rails.root.join("vendor/assets/images/images/image-4.png").open, filename: "image-4.png")
 promo.start_date = Date.current
 promo.end_date = 1.day.from_now
 promo.sport = @sport1
@@ -18,9 +18,9 @@ promo.save
 puts "Create promo: #{promo.name}"
 
 # Promo
-_name = FFaker::Book.unique.title + " 2"
+_name = "Promo 2"
 promo = Promo.new(name: _name, short_description: FFaker::Lorem.paragraphs.join(" "), description: FFaker::Lorem.paragraphs.join(" "))
-promo.image.attach(io: Rails.root.join("vendor/assets/images/banners/banner-gold.png").open, filename: "banner-gold.png")
+promo.image.attach(io: Rails.root.join("vendor/assets/images/images/image-5.png").open, filename: "image-5.png")
 promo.start_date = Date.current
 promo.end_date = 2.day.from_now
 promo.sport = @sport1
@@ -34,9 +34,9 @@ promo.save
 puts "Create promo: #{promo.name}"
 
 # Promo
-_name = FFaker::Book.unique.title + " 3"
+_name = "Promo 3"
 promo = Promo.new(name: _name, short_description: FFaker::Lorem.paragraphs.join(" "), description: FFaker::Lorem.paragraphs.join(" "))
-promo.image.attach(io: Rails.root.join("vendor/assets/images/banners/banner-gold.png").open, filename: "banner-gold.png")
+promo.image.attach(io: Rails.root.join("vendor/assets/images/images/image-6.png").open, filename: "image-6.png")
 promo.start_date = Date.current
 promo.end_date = 1.day.from_now
 promo.sport = @sport2
