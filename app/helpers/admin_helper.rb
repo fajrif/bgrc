@@ -223,6 +223,14 @@ module AdminHelper
     controller.controller_name == "home" && controller.action_name == "index"
   end
 
+  def is_bookings_page?
+    controller.controller_name == "bookings" && controller.action_name == "index"
+  end
+
+  def is_calendar_page?
+    controller.controller_name == "bookings" && controller.action_name == "calendar"
+  end
+
 	def is_admins_dashboard_page?
 		controller.controller_name == "dashboard"
 	end
@@ -235,6 +243,10 @@ module AdminHelper
   def is_admins_banners_page?
 		controller.controller_name == "banners" ||
 		controller.controller_name == "banner_sections"
+  end
+
+  def is_admins_page?
+		controller.controller_name == "admins"
   end
 
   def is_admins_users_page?

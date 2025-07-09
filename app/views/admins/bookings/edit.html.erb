@@ -1,2 +1,8 @@
 <% title_page("Edit Booking") %>
+<% if @booking.purchase %>
+<!-- Warning Alert -->
+<div class="alert border-0 alert-warning" role="alert">
+  <strong> WARNING </strong> this booking created by user and have valid purchase ID
+</div>
+<% end %>
 <%= render "form" %>

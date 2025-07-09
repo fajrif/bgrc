@@ -3,31 +3,34 @@
 <% end %>
 
 <!-- start story section -->
-<section class="pt-200 pb-0 wow animate__fadeIn">
+<section class="pt-150 pb-0 wow animate__fadeIn">
   <div class="container">
     <div class="row align-items-start">
-      <div class="col-lg-12 col-md-12 text-center text-md-start padding-three-lr">
+      <div class="col-lg-8 col-md-8 text-center text-md-start padding-three-lr">
         <% if @court %>
-          <h6 class="alt-font text-extra-dark-gray mb-0 mx-5"><%= @court.name %></h6>
+          <h6 class="alt-font text-extra-dark-gray mb-0"><%= @court.name %></h6>
           <div class="pricing-area" id="schedule">
             <div id="calendar"></div>
-            <%= simple_form_for(:booking, :url => users_bookings_url, :method => :post) do %>
-              <div class="text-center" style="margin-top:20px;">
-                <input id="court-id" type="hidden" value="<%= @court.id %>" name="court_id">
-                <input id="input-book" type="hidden" value="" name="dates">
-                <input id="input-duration" type="hidden" value="" name="duration">
-                <input id="input-court-type" type="hidden" value="<%= params[:court_type] %>" name="court_type">
-                <input id="input-class-type" type="hidden" value="<%= params[:class_type] %>" name="class_type">
-                <input id="input-coach-id" type="hidden" value="<%= params[:coach_id] %>" name="coach_id">
-                <div id="calculate_table" class="d-flex flex-column justify-content-center align-items-center"></div>
-                <button id="btnSubmit" type="submit" class="btn btn-light-gray btn-medium text-medium disabled" disabled>Submit</button>
-              </div>
-            <% end %>
           </div>
         <% else %>
           <h6 class="alt-font text-extra-dark-gray mb-4 mx-5">
             Sorry! There are no available courts for this category
           </h6>
+        <% end %>
+      </div>
+      <div class="col-lg-4 col-md-4 text-center text-md-start padding-three-lr">
+        <%= simple_form_for(:booking, :url => users_bookings_url, :method => :post) do %>
+          <div style="margin-top:20px;" class="ms-5">
+            <h6>Your Booking Details</h6>
+            <input id="court-id" type="hidden" value="<%= @court.id %>" name="court_id">
+            <input id="input-book" type="hidden" value="" name="dates">
+            <input id="input-duration" type="hidden" value="" name="duration">
+            <input id="input-court-type" type="hidden" value="<%= params[:court_type] %>" name="court_type">
+            <input id="input-class-type" type="hidden" value="<%= params[:class_type] %>" name="class_type">
+            <input id="input-coach-id" type="hidden" value="<%= params[:coach_id] %>" name="coach_id">
+            <div id="calculate_table"></div>
+            <button id="btnSubmit" type="submit" class="btn btn-light-gray btn-medium text-medium disabled" disabled>Submit</button>
+          </div>
         <% end %>
       </div>
     </div>
@@ -157,4 +160,13 @@
 		return startDay.diff(endDay, 'days') == 0;
 	}
 	</script>
+  <style>
+    .fc table {
+      font-size: 12px;
+    }
+    .fc .fc-button {
+      padding: 1px 8px;
+      font-size: 15px;
+    }
+  </style>
 <% end if @court %>

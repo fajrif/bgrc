@@ -69,7 +69,10 @@
 								<a href="<%= admins_coaches_path %>" class="nav-link <%= current_path?('coaches') %>">Coaches</a>
 							</li>
 							<li class="nav-item">
-                <a href="<%= admins_bookings_path %>" class="nav-link <%= current_path?('bookings') %>">Bookings</a>
+                <a href="<%= admins_bookings_path %>" class="nav-link <%= 'active' if is_bookings_page? %>">Bookings</a>
+							</li>
+							<li class="nav-item">
+                <a href="<%= calendar_admins_bookings_path %>" class="nav-link <%= 'active' if is_calendar_page? %>">Booking Calendar</a>
 							</li>
 						</ul>
 					</div>
@@ -97,9 +100,6 @@
 							</li>
 							<li class="nav-item">
 								<a href="<%= admins_promos_path %>" class="nav-link <%= current_path?('promos') %>">Promo</a>
-							</li>
-							<li class="nav-item">
-								<a href="<%= admins_adult_socials_path %>" class="nav-link <%= current_path?('adult_socials') %>">Adult Socials</a>
 							</li>
 						</ul>
 					</div>
@@ -131,7 +131,7 @@
 					</a>
 				</li>
 				<li class="nav-item">
-					<a class="nav-link menu-link <%= 'active' if is_admins_users_page? %>" href="<%= admins_admins_path %>">
+					<a class="nav-link menu-link <%= 'active' if is_admins_page? %>" href="<%= admins_admins_path %>">
 						<i class="ri-account-circle-line"></i> <span data-key="t-dashboards">Admins</span>
 					</a>
 				</li>

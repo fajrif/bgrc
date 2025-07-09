@@ -13271,7 +13271,7 @@ figure {
 }
 .parallax-feature-box-bottom {
   position: absolute;
-  /*bottom: -150%;*/
+  bottom: -240px;
 }
 .parallax-feature-box {
   overflow: visible;

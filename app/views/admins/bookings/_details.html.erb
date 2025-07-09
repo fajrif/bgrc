@@ -40,6 +40,12 @@
 		<td><b>Coach</b></td>
 		<td><%= @booking.try(:coach).try(:name) %> (<%= @booking.price_coach_label %>)</td>
 	</tr>
+  <% if @booking.purchase %>
+    <tr>
+      <td><b>Purchase ID</b></td>
+      <td><b><%= @booking.try(:purchase).try(:transaction_id) %></b></td>
+    </tr>
+  <% end %>
 	<tr>
 		<td><b>Payment Status</b></td>
     <td><span class="<%= @booking.is_unpaid? ? 'text-danger' : 'text-success' %>"><%= @booking.status_label %></span></td>
