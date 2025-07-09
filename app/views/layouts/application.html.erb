@@ -32,6 +32,7 @@
 	<link rel="apple-touch-icon" href="<%= image_url('favicon.png') %>" sizes="180x180">
 	<link rel="apple-touch-icon-precomposed" href="<%= image_url('favicon.png') %>" sizes="192x192">
 	<meta name="msapplication-TileImage" content="<%= image_url('favicon.png') %>">
+
 	<!-- fonts CDN -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -44,11 +45,13 @@
 </head>
 <body class="w-100">
 	<%= render "shared/header" %>
+  <% if flash.count > 0 %>
   <div class="container">
     <div id="forFlashMessage" class="mb-4">
       <%= flash_message2 %>
     </div>
   </div>
+  <% end %>
 	<%= yield %>
 	<%= render "shared/footer" %>
 	<%= javascript_include_tag 'application' %>

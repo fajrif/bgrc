@@ -15,3 +15,5 @@
 //= link moment-with-locales.min.js
 //= link fullcalendar-custom.css
 //= link quantity_input.css
+//= link admin/fullcalendar/index.global.min.js
+//= link admin/calendar.init.js

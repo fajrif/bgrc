@@ -42,6 +42,13 @@ module AdminHelper
     message.html_safe
   end
 
+	def colorize(object)
+		hash = object.hash # hash an object, returns a Fixnum
+		trimmed_hash = hash & 0xffffff # trim the hash to the size of 6 hex digits (& is bit-wise AND)
+		hex_code = "%06x" % trimmed_hash # format as at least 6 hex digits, pad with zeros
+		return "##{hex_code}"
+	end
+
 	def get_input_date_value(field, format='%d/%m/%Y %H:%M')
 		field.nil? ? '' : field.strftime(format)
 	end
