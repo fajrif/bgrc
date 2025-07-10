@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_07_09_130059) do
+ActiveRecord::Schema[7.1].define(version: 2025_07_10_104523) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -233,6 +233,21 @@ ActiveRecord::Schema[7.1].define(version: 2025_07_09_130059) do
     t.index ["slug", "sluggable_type", "scope"], name: "index_friendly_id_slugs_on_slug_and_sluggable_type_and_scope", unique: true
     t.index ["slug", "sluggable_type"], name: "index_friendly_id_slugs_on_slug_and_sluggable_type"
     t.index ["sluggable_type", "sluggable_id"], name: "index_friendly_id_slugs_on_sluggable_type_and_sluggable_id"
+  end
+
+  create_table "group_classes", force: :cascade do |t|
+    t.string "name", default: "", null: false
+    t.integer "min_duration", default: 1, null: false
+    t.integer "min_pax", default: 1, null: false
+    t.integer "max_pax", default: 1, null: false
+    t.integer "status", default: 1, null: false
+    t.decimal "price", default: "0.0", null: false
+    t.decimal "price_pax", default: "0.0", null: false
+    t.string "notes"
+    t.string "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "order_no"
   end
 
   create_table "inquiries", force: :cascade do |t|

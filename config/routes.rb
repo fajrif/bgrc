@@ -64,6 +64,7 @@ Rails.application.routes.draw do
           delete 'delete_image/:asset_id', to: 'sports#delete_image', via: :delete, as: :delete_image
         end
       end
+			resources :group_classes
 			resources :events do
 				member do
           delete "delete_attachment_image/:asset_id" => "events#delete_attachment_image", :as => :delete_attachment_image

@@ -1,0 +1,65 @@
+<%= simple_form_for @group_class, url: (@group_class.new_record? ? admins_group_classes_path : admins_group_class_path(@group_class)), method: (@group_class.new_record? ? :post : :put) do |f| %>
+	<div class="row">
+		<div class="col-lg-8">
+			<div class="card">
+				<div class="card-body">
+					<%= f.error_notification %>
+					<fieldset>
+						<%= f.input :name, as: :string %>
+            <div class="row">
+              <div class="col-md-6">
+                <%= f.input :min_duration %>
+              </div>
+              <div class="col-md-6">
+                <%= f.input :status, as: :select, collection: [[0, 'Unavailable'], [1, 'Available']], value_method: :first, label_method: :last %>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <%= f.input :min_pax %>
+              </div>
+              <div class="col-md-6">
+                <%= f.input :max_pax %>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <%= f.input :price, as: :string %>
+              </div>
+              <div class="col-md-6">
+                <%= f.input :price_pax, as: :string %>
+              </div>
+            </div>
+						<%= f.input :notes, as: :string %>
+						<%= f.input :description, input_html: { class: 'quill_container' } %>
+					</fieldset>
+					<%= f.error :base %>
+					<div class="form-actions">
+						<%= f.button :submit, :class => 'btn btn-secondary' %>
+						<% unless @group_class.new_record? %>
+							<%= link_to "Cancel", admins_group_class_path(@group_class), :class => 'btn btn-light' %>
+						<% else %>
+							<%= link_to "Cancel", admins_group_classes_path, :class => 'btn btn-light' %>
+						<% end %>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-lg-4">
+			<div class="row">
+				<%= render "admins/shared/error_messages", :target => @group_class, col: 'col-lg-12' %>
+			</div>
+		</div>
+	</div>
+<% end %>
+
+<%= content_for :tail do %>
+	<script src="https://cdn.quilljs.com/1.1.9/quill.js"></script>
+	<link href="https://cdn.quilljs.com/1.1.9/quill.snow.css" rel="stylesheet">
+	<style>
+		.group_class_description {
+			margin-bottom: 100px !important;
+		}
+	</style>
+<% end %>
+
