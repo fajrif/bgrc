@@ -11,7 +11,6 @@ class Sport < ApplicationRecord
 	has_many_attached :images, dependent: :purge
   has_many :events
   has_many :promos
-  has_many :adult_socials
   has_many :courts
 
 	validates_presence_of :name, :short_description, :description

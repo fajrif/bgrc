@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_06_13_204324) do
+ActiveRecord::Schema[7.1].define(version: 2025_07_09_130059) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -90,20 +90,6 @@ ActiveRecord::Schema[7.1].define(version: 2025_06_13_204324) do
     t.datetime "updated_at", null: false
     t.integer "role_id", default: 0, null: false
     t.index ["email"], name: "index_admins_on_email", unique: true
-  end
-
-  create_table "adult_socials", force: :cascade do |t|
-    t.bigint "sport_id"
-    t.jsonb "title", default: {}
-    t.jsonb "short_description", default: {}
-    t.jsonb "description", default: {}
-    t.datetime "start_date"
-    t.integer "duration", default: 0, null: false
-    t.integer "gender", default: 0, null: false
-    t.integer "invitation_only", default: 0, null: false
-    t.integer "size", default: 0, null: false
-    t.decimal "price", default: "0.0", null: false
-    t.index ["sport_id"], name: "index_adult_socials_on_sport_id"
   end
 
   create_table "articles", force: :cascade do |t|
@@ -193,6 +179,10 @@ ActiveRecord::Schema[7.1].define(version: 2025_06_13_204324) do
     t.index ["court_id"], name: "index_costs_on_court_id"
   end
 
+  create_table "court_types", force: :cascade do |t|
+    t.string "name", default: "", null: false
+  end
+
   create_table "courts", force: :cascade do |t|
     t.string "name", default: "", null: false
     t.bigint "sport_id"
@@ -200,15 +190,12 @@ ActiveRecord::Schema[7.1].define(version: 2025_06_13_204324) do
     t.integer "min_duration", default: 1, null: false
     t.decimal "price", default: "0.0", null: false
     t.string "location", default: "", null: false
-    t.string "address", default: "", null: false
     t.jsonb "info", default: {}
     t.jsonb "instructions", default: {}
     t.jsonb "description", default: {}
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "slug", default: ""
-    t.index ["name"], name: "index_courts_on_name", unique: true
-    t.index ["slug"], name: "index_courts_on_slug", unique: true
+    t.integer "court_type_id"
     t.index ["sport_id"], name: "index_courts_on_sport_id"
   end
 

@@ -3,21 +3,6 @@
 		<td style="width:15%;"><b>ID</b></td>
 		<td><%= @court.id %></td>
 	</tr>
-	<% unless @court.images.empty? %>
-	<tr>
-		<td><b>Images</b></td>
-		<td>
-      <% @court.images.each do |img| %>
-        <div class="d-flex align-items-center mb-2">
-          <%= image_tag img.variant(resize_to_limit: [100,100]) %>
-          <%= link_to admins_court_delete_image_path(@court.id, img.id), :class => "ms-2 btn btn-danger btn-sm", :data => { :confirm => 'Are You sure want to delete this image?' }, :method => :delete do %>
-            <i class="ri-delete-bin-fill"></i>
-          <% end %>
-        </div>
-      <% end %>
-		</td>
-	</tr>
-	<% end %>
 	<tr>
 		<td><b>Name</b></td>
 		<td><h5 class="fs-14 mb-0 text-body"><%= @court.name %></h5></td>
@@ -27,16 +12,12 @@
     <td><%= @court.try(:sport).try(:name) %></td>
 	</tr>
 	<tr>
-		<td><b>Info</b></td>
-		<td><%= @court.info %></td>
+		<td><b>Court Type</b></td>
+    <td><%= @court.try(:court_type).try(:name) %></td>
 	</tr>
 	<tr>
-		<td><b>Instructions</b></td>
-		<td><%= @court.instructions %></td>
-	</tr>
-	<tr>
-		<td><b>Description</b></td>
-		<td><%= raw @court.description %></td>
+		<td><b>Location</b></td>
+		<td><%= @court.location %></td>
 	</tr>
 	<tr>
 		<td><b>Price</b></td>
@@ -60,17 +41,24 @@
     </td>
 	</tr>
 	<tr>
-		<td><b>Extra Costs</b></td>
+		<td><b>Exceptional Costs</b></td>
     <td>
-      <%= link_to "Set additional costs (#{@court.costs.size})", admins_court_costs_path(@court.id) %>
+      <% @court.costs.each do |cost| %>
+        <%= "#{cost.day_name}: #{cost.start_time} - #{cost.end_time} (#{cost.price_label})" %><br/>
+      <% end %>
+      <%= link_to "Set exceptional costs (#{@court.costs.size})", admins_court_costs_path(@court.id) %>
     </td>
 	</tr>
 	<tr>
-		<td><b>Location</b></td>
-		<td><%= @court.location %></td>
+		<td><b>Info</b></td>
+		<td><%= @court.info %></td>
 	</tr>
 	<tr>
-		<td><b>Address</b></td>
-		<td><%= @court.address %></td>
+		<td><b>Instructions</b></td>
+		<td><%= @court.instructions %></td>
+	</tr>
+	<tr>
+		<td><b>Description</b></td>
+		<td><%= raw @court.description %></td>
 	</tr>
 </table>

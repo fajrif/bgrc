@@ -61,6 +61,7 @@ Rails.application.routes.draw do
 			resources :sports do
 				member do
           delete "delete_attachment_image/:asset_id" => "sports#delete_attachment_image", :as => :delete_attachment_image
+          delete 'delete_image/:asset_id', to: 'sports#delete_image', via: :delete, as: :delete_image
         end
       end
 			resources :events do
@@ -80,7 +81,6 @@ Rails.application.routes.draw do
       end
 			resources :coaches
 			resources :items
-			resources :adult_socials
 		end
 
     namespace :users do

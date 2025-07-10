@@ -53,11 +53,11 @@ class Admins::CourtsController < Admins::BaseController
   private
 
   def params_court
-    params.require(:court).permit(:name, :status, :sport_id, :min_duration, :instructions, :description, :price, :info, :location, :address, images: [])
+    params.require(:court).permit(:name, :status, :sport_id, :min_duration, :instructions, :description, :price, :info, :location, :court_type_id)
   end
 
   def set_court
-		@court = Court.friendly.find(params[:id])
+		@court = Court.find(params[:id])
   end
 
 end

@@ -1,0 +1,33 @@
+<!-- start portfolio section -->
+<section class="wow animate__fadeIn padding-90px-top bg-light-gray md-padding-50px-top sm-padding-30px-top">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center">
+              <h5 class="alt-font text-extra-dark-gray mb-4">GALLERY</h5>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12 filter-content overflow-hidden">
+                <ul class="hover-option6 lightbox-portfolio portfolio-wrapper grid grid-loading grid-3col xl-grid-3col lg-grid-3col md-grid-2col sm-grid-2col xs-grid-1col gutter-medium">
+                    <li class="grid-sizer"></li>
+                    <% @sport.images.each do |image| %>
+                      <!-- start portfolio-item item -->
+                      <li class="grid-item wow animate__fadeInUp last-paragraph-no-margin">
+                          <figure>
+                              <div class="portfolio-img bg-extra-dark-gray position-relative text-center overflow-hidden">
+                                  <%= image_tag(image) %>
+                                  <div class="portfolio-icon">
+                                    <a class="gallery-link" title="<%= @sport.name %>" href="<%= url_for(image) %>"><i class="fa-solid fa-magnifying-glass text-extra-dark-gray" aria-hidden="true"></i></a>
+                                  </div>
+                              </div>
+                          </figure>
+                      </li>
+                      <!-- end portfolio item -->
+                    <% end %>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- end portfolio sections -->

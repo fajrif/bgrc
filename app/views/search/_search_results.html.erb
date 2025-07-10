@@ -8,7 +8,7 @@
     <div class="row align-items-start">
       <div class="col-lg-8 col-md-8 text-center text-md-start padding-three-lr">
         <% if @court %>
-          <h6 class="alt-font text-extra-dark-gray mb-0"><%= @court.name %></h6>
+          <h6 class="alt-font text-extra-dark-gray mb-0"><%= @court.name_label %></h6>
           <div class="pricing-area" id="schedule">
             <div id="calendar"></div>
           </div>
@@ -108,7 +108,7 @@
 			selectConstraint: 'businessHours',
 			eventConstraint: 'businessHours',
 			businessHours: <%= @business_hours.html_safe %>,
-			events: <%= @events.html_safe %>
+      events: <%= @events.html_safe %>,
     });
 
 		calendar.setOption('height', 'auto');
@@ -167,6 +167,9 @@
     .fc .fc-button {
       padding: 1px 8px;
       font-size: 15px;
+    }
+    .fc-v-event .fc-event-title {
+      line-height: normal;
     }
   </style>
 <% end if @court %>

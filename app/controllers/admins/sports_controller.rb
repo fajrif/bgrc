@@ -52,6 +52,14 @@ class Admins::SportsController < Admins::BaseController
 		redirect_to admins_sport_path(@sport.id)
 	end
 
+	def delete_image
+		if @image = ActiveStorage::Attachment.find(params[:asset_id])
+			flash[:notice] = "Successfully delete image gallery."
+      @image.purge
+    end
+    redirect_to admins_sport_path(@sport.id)
+	end
+
   private
 
   def params_sport

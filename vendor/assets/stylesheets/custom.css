@@ -176,7 +176,7 @@ nav.navbar.navbar-default ul.nav > li > a {
 }
 header nav .navbar-nav.text-normal > li > button,
 header nav .navbar-nav.text-normal > li > a {
-	font-size: 16px;
+	font-size: 14px;
 }
 .swiper-pagination-bullet:not(.swiper-pagination-bullet-active) {
 	opacity: 1;

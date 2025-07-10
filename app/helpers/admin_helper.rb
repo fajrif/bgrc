@@ -263,7 +263,6 @@ module AdminHelper
 		controller.controller_name == "facilities" ||
 		controller.controller_name == "packages" ||
 		controller.controller_name == "events" ||
-		controller.controller_name == "adult_socials" ||
 		controller.controller_name == "promos"
 	end
 

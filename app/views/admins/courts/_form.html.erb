@@ -5,13 +5,11 @@
 				<div class="card-body">
 					<%= f.error_notification %>
 					<fieldset>
-						<%= f.input :images, as: :file, input_html: { class: "mb-3", accept: "image/gif, image/png, image/jpg, image/jpeg, image/webp", multiple: true } %>
 						<%= f.input :name, as: :string %>
+            <%= f.input :location, as: :string %>
             <%= f.input :info, as: :text %>
             <%= f.input :instructions, as: :text %>
-            <%= f.input :description, as: :text, input_html: { rows: "20" } %>
-            <%= f.input :location, as: :string %>
-            <%= f.input :address, as: :text %>
+            <%= f.input :description, as: :text %>
 					</fieldset>
 					<%= f.error :base %>
 					<div class="form-actions">
@@ -35,6 +33,7 @@
 						</div>
 						<div class="card-body">
               <%= f.association :sport, as: :select %>
+              <%= f.association :court_type, as: :select %>
               <%= f.input :price %>
               <%= f.input :min_duration %>
               <%= f.input :status, as: :select, collection: [[0, 'Available'], [1, 'Not Available']], label_method: :second, value_method: :first, include_blank: false %>

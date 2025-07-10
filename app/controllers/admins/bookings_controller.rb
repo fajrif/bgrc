@@ -24,7 +24,7 @@ class Admins::BookingsController < Admins::BaseController
 		@year = params[:year] || Date.today.year
 
 		@bookings = @court.bookings.where("to_char(date, 'YYYYMM') = ?", "#{@year}#{@month.to_s.rjust(2, '0')}")
-    @events = JSON[@bookings.map{|b| {id: b.id, title: b.try(:user).try(:name), url: admins_booking_path(b), start: b.date.strftime('%Y-%m-%d %H:%M'), end: b.end_date.strftime('%Y-%m-%d %H:%M'), allDay: false, className: "bg-danger-subtle" } }]
+    @events = JSON[@bookings.map{|b| {id: b.id, title: b.order_name_label, url: admins_booking_path(b), start: b.date.strftime('%Y-%m-%d %H:%M'), end: b.end_date.strftime('%Y-%m-%d %H:%M'), allDay: false, className: "bg-danger-subtle" } }]
 
     respond_to do |format|
       format.html # index.html.erb

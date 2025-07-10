@@ -8830,7 +8830,7 @@ nav.navbar.bootsnav .simple-dropdown .dropdown-menu > li {
   padding-right: 28px;
 }
 .simple-dropdown .dropdown-menu > li > a {
-  font-size: 16px;
+  font-size: 14px;
 }
 .simple-dropdown .dropdown-menu > li a {
   padding: 7px 0;
@@ -11439,8 +11439,8 @@ header.sticky nav.navbar.brand-center ul.nav > li > a {
   /*-o-transition: all 0.3s ease 0s;*/
 }
 .portfolio-wrapper .grid-item figure .portfolio-img {
-	border-top-right-radius: 20px;
-	border-top-left-radius: 20px;
+	/*border-top-right-radius: 20px;*/
+	/*border-top-left-radius: 20px;*/
   /*transition: all 0.3s ease 0s;*/
   /*-webkit-transition: all 0.3s ease 0s;*/
   /*-moz-transition: all 0.3s ease 0s;*/
@@ -11801,7 +11801,7 @@ header.sticky nav.navbar.brand-center ul.nav > li > a {
 .hover-option6 .grid-item .portfolio-icon i.fa-magnifying-glass {
   font-size: 16px;
   position: relative;
-  top: 10px;
+  top: 8px;
 }
 .hover-option6 .grid-item .portfolio-icon a:hover,
 .hover-option6 .grid-item .portfolio-icon a:hover i {
@@ -11820,7 +11820,7 @@ header.sticky nav.navbar.brand-center ul.nav > li > a {
 }
 .hover-option6 .grid-item figure:hover img {
   cursor: default;
-  opacity: 0.15;
+  opacity: 0.5;
   transform: scale(1, 1);
   -webkit-transform: scale(1, 1);
   -moz-transform: scale(1, 1);

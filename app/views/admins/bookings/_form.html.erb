@@ -5,14 +5,14 @@
 				<div class="card-body">
 					<%= f.error_notification %>
 					<fieldset>
-						<%= f.association :user, as: :select %>
-						<%= f.association :court, as: :select %>
+						<%= f.association :user, as: :select, label_method: :name_with_email %>
+						<%= f.association :court, as: :select, label_method: :full_name_label %>
             <div class="row">
               <div class="col-md-6">
-                <%= f.input :date, as: :string, label: "Start Date", input_html: { class: "datetimepicker", value: get_input_date_value(f.object.date) } %>
+                <%= f.input :date, as: :string, label: "Start Date", input_html: { class: "datetimepicker2", value: get_input_date_value(f.object.date) } %>
               </div>
               <div class="col-md-6">
-                <%= f.input :end_date, as: :string, input_html: { class: "datetimepicker", value: get_input_date_value(f.object.end_date) } %>
+                <%= f.input :end_date, as: :string, input_html: { class: "datetimepicker2", value: get_input_date_value(f.object.end_date) } %>
               </div>
             </div>
             <div class="row mb-2">
@@ -67,4 +67,18 @@
 			</div>
 		</div>
 	</div>
+<% end %>
+
+<%= content_for :tail do %>
+<script>
+  jQuery(document).ready(function($){
+    $(".datetimepicker2").flatpickr({"altInput":true, "altFormat": "d/m/Y H:i", "enableTime": true, "minuteIncrement": 15, "disableMobile":true, "dateFormat":"d/m/Y H:i"});
+    // Find the minutes input and hide it
+    var minutesInputs = document.querySelectorAll(".flatpickr-time .numInputWrapper:nth-child(3)");
+    minutesInputs.forEach( ( item ) => { item.style.display = "none"; } );
+    // Optionally, hide the separator if it's not needed
+    var separators = document.querySelectorAll(".flatpickr-time-separator");
+    separators.forEach( ( item ) => { item.style.display = "none"; } );
+  });
+</script>
 <% end %>

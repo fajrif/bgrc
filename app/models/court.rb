@@ -2,24 +2,16 @@ class Court < ApplicationRecord
 	extend Mobility
   translates :info, :instructions, :description
 
-	extend FriendlyId
-  friendly_id :name, use: :slugged
-
 	default_scope { order(id: :asc) }
 
-	has_many :purchases, as: :productable
 	has_many :bookings
 	has_many :business_hours, dependent: :destroy
 	has_many :costs, dependent: :destroy
   belongs_to :sport
-
-	has_many_attached :images
+  belongs_to :court_type
 
 	validates_presence_of :name, :price, :location
-	validates_uniqueness_of :name
-	validates :name, length: {minimum: 3, maximum: 50}
 	validates :min_duration, numericality: { less_than_or_equal_to: 6, only_integer: true }
-	validates :images, limit: { min: 1, max: 5 }
 
 	after_create :generate_business_hours
 
@@ -28,10 +20,6 @@ class Court < ApplicationRecord
 			self.business_hours.create(day_code: num)
 		end if self.business_hours.empty?
 	end
-
-	def should_generate_new_friendly_id?
-    name_changed?
-  end
 
 	def operational_hours_label
 		bh = self.business_hours
@@ -95,7 +83,11 @@ class Court < ApplicationRecord
 	end
 
 	def name_label
-		self.name
+    "#{self.sport.name} #{self.name} (#{self.court_type.name})"
+	end
+
+	def full_name_label
+    "#{self.name_label} [#{self.price_label}]"
 	end
 
 	def is_available?
@@ -107,7 +99,7 @@ class Court < ApplicationRecord
 	end
 
 	def name_with_price
-    "#{ self.name } (#{self.price_label})"
+    "#{ self.name } [#{self.price_label}]"
 	end
 
 	def price_label

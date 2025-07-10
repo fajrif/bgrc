@@ -5,6 +5,8 @@
 				<th class="text-center">ID</th>
 				<th>Image</th>
 				<th>Name</th>
+				<th class="text-center">Gallery</th>
+				<th class="text-center">Courts</th>
 				<th>Created At</th>
 				<th>Action</th>
 			</tr>
@@ -17,6 +19,8 @@
 					<td>
 						<h5 class="fs-14 mb-1"><%= link_to sport.name, admins_sport_path(sport.id), class: "text-body" %></h5>
 					</td>
+					<td class="text-center"><%= sport.images.size %></td>
+					<td class="text-center"><%= sport.courts.size %></td>
 					<td><%= sport.created_at.strftime('%d/%m/%Y %H:%M') %></td>
 					<td>
 						<div class="dropdown">

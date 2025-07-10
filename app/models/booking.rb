@@ -22,7 +22,13 @@ class Booking < ApplicationRecord
 
 	def ensure_end_date_has_value
 		# set 1 hour if end_date empty
-		self.end_date = self.date + self.duration.hour unless self.date.nil?
+    unless self.date.nil?
+      if self.end_date.nil?
+        self.end_date = self.date + self.duration.hour
+      else
+        self.duration = ((self.end_date - self.date) / 3600).round
+      end
+    end
 	end
 
 	def calculate_prices
@@ -61,6 +67,10 @@ class Booking < ApplicationRecord
 
 	def name
 		self.try(:court).try(:name)
+	end
+
+	def order_name_label
+    "#{self.try(:user).try(:name)} - #{self.order_id}"
 	end
 
 	def paid!

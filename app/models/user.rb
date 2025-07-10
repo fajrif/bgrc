@@ -26,6 +26,10 @@ class User < ApplicationRecord
 		self.gender == 0 ? "Female" : "Male"
 	end
 
+  def name_with_email
+    "ID: #{self.id} - #{self.full_name} (#{self.email})"
+  end
+
 	def age
 		if self.dob
 			now = Time.now.utc.to_date

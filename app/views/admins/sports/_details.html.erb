@@ -14,9 +14,32 @@
 		</td>
 	</tr>
 	<% end %>
+	<% unless @sport.images.empty? %>
+	<tr>
+		<td><b>Image Gallery</b></td>
+		<td>
+      <% @sport.images.each do |img| %>
+        <div class="d-flex align-items-center mb-2">
+          <%= image_tag img.variant(resize_to_limit: [100,100]) %>
+          <%= link_to delete_image_admins_sport_path(@sport.id, img.id), :class => "ms-2 btn btn-danger btn-sm", :data => { :confirm => 'Are You sure want to delete this image?' }, :method => :delete do %>
+            <i class="ri-delete-bin-fill"></i>
+          <% end %>
+        </div>
+      <% end %>
+		</td>
+	</tr>
+	<% end %>
 	<tr>
 		<td><b>Name</b></td>
 		<td><h5 class="fs-14 mb-0 text-body"><%= @sport.name %></h5></td>
+	</tr>
+	<tr>
+		<td><b>Image Gallery</b></td>
+		<td><%= @sport.images.size %></td>
+	</tr>
+	<tr>
+		<td><b>Courts</b></td>
+		<td><%= @sport.courts.size %></td>
 	</tr>
 	<tr>
 		<td><b>Short Description</b></td>

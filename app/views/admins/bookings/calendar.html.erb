@@ -5,13 +5,13 @@
             <div class="col-xl-3">
                 <div class="card card-h-100">
                     <div class="card-body">
-                        <button class="btn btn-primary w-100" id="btn-new-event"><i class="mdi mdi-plus"></i> Create New Booking</button>
+                        <a href="<%= new_admins_booking_path %>" class="btn btn-primary w-100"><i class="mdi mdi-plus"></i> Create New Booking</a>
                         <div>
                             <br/>
                             <p class="text-muted">Search by Court and Dates</p>
                             <%= form_tag calendar_admins_bookings_url, { :method => :get } do %>
                               <div class="form-search">
-                                <%= select_tag :court_id, options_from_collection_for_select(@courts, 'id', 'name', @court.id), class: "form-select mb-2" %>
+                                <%= select_tag :court_id, options_from_collection_for_select(@courts, 'id', 'name_label', @court.id), class: "form-select mb-2" %>
                                 <%= select_tag :month, options_for_select((1..12).map {|m| [Date::MONTHNAMES[m], m]}, @month), class: "form-select mb-2" %>
                                 <%= select_tag :year, options_for_select((Date.today.year-5..Date.today.year+1).to_a.reverse, @year), class: "form-select mb-2" %>
                                 <div class="text-center">

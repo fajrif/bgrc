@@ -3,10 +3,10 @@
     <thead class="table-light">
       <tr>
         <th class="text-center">ID</th>
-        <th>Image</th>
         <th>Name</th>
-        <th>Location</th>
         <th>Sport</th>
+        <th>Type</th>
+        <th>Location</th>
         <th>Price</th>
         <th></th>
       </tr>
@@ -15,10 +15,10 @@
       <% for court in @courts %>
         <tr>
 					<td class="text-center"><%= court.id %></td>
-					<td><%= image_tag court.images.first.variant(resize_to_limit: [100,100]) unless court.images.empty? %></td>
           <td><strong><%= link_to court.name, admins_court_path(court) %></strong></td>
-          <td><%= court.location %></td>
           <td><%= court.sport.name %></td>
+          <td><%= court.court_type.name %></td>
+          <td><%= court.location %></td>
           <td><%= court.price_label %></td>
           <td>
 						<div class="dropdown">
