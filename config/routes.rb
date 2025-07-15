@@ -19,7 +19,11 @@ Rails.application.routes.draw do
 			put "account/update_password" => "accounts#update_password", :as => :update_password
 
 			resources :admins
-      resources :users, :except => [:new, :create]
+      resources :users, :except => [:new, :create] do
+				collection do
+					get "export_all" => "users#export_all", :constraints => { :format => :xls }, :as => :export_all
+				end
+      end
 			resources :testimonials
 			resources :questions
 
@@ -46,12 +50,16 @@ Rails.application.routes.draw do
       resources :bookings do
 				collection do
 					get :calendar
+					get "export_all" => "bookings#export_all", :constraints => { :format => :xls }, :as => :export_all
 				end
       end
       resources :purchases, :only => [:index, :show, :destroy] do
         member do
           put "settlement" => "purchases#settlement", :as => :settlement
         end
+				collection do
+					get "export_all" => "purchases#export_all", :constraints => { :format => :xls }, :as => :export_all
+				end
       end
 			resources :facilities do
 				member do
@@ -128,6 +136,7 @@ Rails.application.routes.draw do
     match 'privacy', to: 'home#privacy', via: :get, as: :privacy
     match 'faq', to: 'home#faq', via: :get, as: :faq
     match 'search', to: 'search#index', via: :get, as: :search
+    match 'search_selection', to: 'search#search_selection', via: :get, as: :search_selection
     match 'courts/:id/calculate_price', to: 'courts#calculate_price', via: :get, as: :calculate_price
 		root :to => "home#index"
   end

@@ -12,7 +12,7 @@
                                  <tbody style="font-family:&quot;Helvetica Neue&quot;,Helvetica,Roboto,Arial,sans-serif">
                                     <tr style="font-family:&quot;Helvetica Neue&quot;,Helvetica,Roboto,Arial,sans-serif">
                                        <td style="display:block;font-family:&quot;Helvetica Neue&quot;,Helvetica,Roboto,Arial,sans-serif;border:0px none!important;padding:36px 48px 0 48px!important">
-                                          <h1 style="font-family:Helvetica,Arial,sans-serif;font-size:36px;font-weight:300;line-height:150%;margin:0px;text-align:left;color:rgb(55,118,240)">New Booking Confirmation</h1>
+                                          <h1 style="font-family:Helvetica,Arial,sans-serif;font-size:36px;font-weight:300;line-height:150%;margin:0px;text-align:left;color:rgb(80,80,80)">New Booking Confirmation</h1>
                                        </td>
                                     </tr>
                                  </tbody>
@@ -31,29 +31,39 @@
                                                    <td valign="top" style="padding:28px 48px;font-size:18px;font-family:Helvetica,Arial,sans-serif;border:0px none!important;background-color:rgb(255,255,255);color:rgb(80,80,80)">
                                                       <div style="font-family:Helvetica,Arial,sans-serif;font-size:18px;line-height:150%;text-align:left;color:rgb(80,80,80)">
 																												<p style="margin:0px 0px 16px;font-size:18px;font-family:Helvetica,Arial,sans-serif;color:rgb(80,80,80)">
-																													Hi! We are delighted to inform you that your venue has been booked
+																													We are delighted to inform you that your venue has been booked
 																													by <%= @user.full_name %>. We include full details below for your ease of reference.
                                                          </p>
-																												 <h2 style="display:block;font-family:&quot;Helvetica Neue&quot;,Helvetica,Roboto,Arial,sans-serif;font-size:18px;font-weight:bold;line-height:130%;margin:16px 0px 8px;text-align:left;color:rgb(80,80,80)"><%= "Order ##{@booking.order_id} (#{@booking.created_at.strftime('%d/%m/%Y')})" %></h2>
+																												 <h2 style="display:block;font-family:&quot;Helvetica Neue&quot;,Helvetica,Roboto,Arial,sans-serif;font-size:18px;font-weight:bold;line-height:130%;margin:16px 0px 8px;text-align:left;color:rgb(80,80,80)"><%= "Order ID ##{@booking.order_id}" %></h2>
                                                          <table cellspacing="0" cellpadding="6" style="width:100%;font-family:&quot;Helvetica Neue&quot;,Helvetica,Roboto,Arial,sans-serif;border-collapse:collapse;border:0px none rgb(229,229,229)!important;color:rgb(80,80,80)" border="1">
                                                             <thead style="font-family:&quot;Helvetica Neue&quot;,Helvetica,Roboto,Arial,sans-serif">
                                                                <tr style="font-family:&quot;Helvetica Neue&quot;,Helvetica,Roboto,Arial,sans-serif;color:rgb(80,80,80)">
                                                                   <th scope="col" style="text-align:left;border:1px solid rgb(80,80,80);font-size:18px;padding:12px;font-family:&quot;Helvetica Neue&quot;,Helvetica,Roboto,Arial,sans-serif;color:rgb(80,80,80)">Booking</th>
-                                                                  <th scope="col" style="text-align:left;border:1px solid rgb(80,80,80);font-size:18px;padding:12px;font-family:&quot;Helvetica Neue&quot;,Helvetica,Roboto,Arial,sans-serif;color:rgb(80,80,80)">Price</th>
+                                                                  <th scope="col" style="text-align:left;border:1px solid rgb(80,80,80);font-size:18px;padding:12px;font-family:&quot;Helvetica Neue&quot;,Helvetica,Roboto,Arial,sans-serif;color:rgb(80,80,80)">Total Price</th>
                                                                </tr>
                                                             </thead>
                                                             <tbody style="font-family:&quot;Helvetica Neue&quot;,Helvetica,Roboto,Arial,sans-serif">
                                                                <tr style="font-family:&quot;Helvetica Neue&quot;,Helvetica,Roboto,Arial,sans-serif;color:rgb(80,80,80)">
 																																 <td style="text-align:left;vertical-align:middle;font-family:&quot;Helvetica Neue&quot;,Helvetica,Roboto,Arial,sans-serif;word-wrap:break-word;border:1px solid rgb(80,80,80);padding:12px;font-size:18px;background-color:rgb(255,255,255);color:rgb(80,80,80)">
-																																	 <strong><%= @booking.court.name %></strong><br>
+																																	 <strong><%= @booking.court.name_label %></strong><br>
 																																	 <small style="font-family:&quot;Helvetica Neue&quot;,Helvetica,Roboto,Arial,sans-serif">
                                                                      Booking ID: <%= @booking.order_id %><br/>
 																																		 Booking Date: <%= @booking.date.strftime('%d/%m/%Y') %><br/>
                                                                      Booking Time: <%= @booking.date.strftime('%H:%M %p') %><br/>
-                                                                     Duration: <%= @booking.duration_label %>
+                                                                     Duration: <%= @booking.duration_label %><br/>
+                                                                     Court Type: <%= @court_type_label %><br/>
+                                                                     <%- if @booking.group_class -%>
+                                                                     Class Name: <%= @booking.group_class.name_with_pax(@booking.pax) %>
+                                                                     <%- end -%>
+                                                                     <%- unless @booking.add_ons.empty? -%>
+                                                                     <span style="font-weight:500">Add Ons:</span> <br/>
+                                                                     <% @booking.add_ons.each do |add_on| %>
+                                                                       <%= add_on.try(:item).try(:name) %>: <%= add_on.quantity %>x - <%= add_on.total_price_label %><br/>
+                                                                     <% end %>
+                                                                     <%- end -%>
 																																	 </small>
                                                                   </td>
-																																	<td style="text-align:left;vertical-align:middle;font-family:&quot;Helvetica Neue&quot;,Helvetica,Roboto,Arial,sans-serif;border:1px solid rgb(80,80,80);padding:12px;font-size:18px;background-color:rgb(255,255,255);color:rgb(80,80,80)"><span style="font-family:&quot;Helvetica Neue&quot;,Helvetica,Roboto,Arial,sans-serif"><%= @booking.total_price_label %></span></td>
+																																	<td style="text-align:left;vertical-align:top;font-family:&quot;Helvetica Neue&quot;,Helvetica,Roboto,Arial,sans-serif;border:1px solid rgb(80,80,80);padding:12px;font-size:18px;font-weight:500;background-color:rgb(255,255,255);color:rgb(80,80,80)"><span style="font-family:&quot;Helvetica Neue&quot;,Helvetica,Roboto,Arial,sans-serif"><%= @booking.total_price_label %></span></td>
                                                                </tr>
                                                             </tbody>
                                                          </table>
@@ -78,7 +88,7 @@
                                              <tbody style="font-family:Helvetica,Arial,sans-serif">
                                                 <tr style="font-family:Helvetica,Arial,sans-serif">
                                                    <td colspan="2" valign="middle" style="padding:0px 48px 48px;font-family:Arial;font-size:12px;line-height:125%;text-align:center;border:0px none!important;color:rgb(135,173,246)">
-                                                     <p style="line-height:1.5;font-size:12px;font-family:Helvetica,Arial,sans-serif;color:rgb(198,198,198)">“Good things come to those who sweat”<br>if you have any queries, please get in touch with us through <a href="mailto:<%= configatron.info_email %>" style="font-weight:normal;text-decoration:underline;font-family:Helvetica,Arial,sans-serif;color:rgb(55,118,240)" target="_blank"><%= configatron.info_email %></a>
+                                                     <p style="line-height:1.5;font-size:12px;font-family:Helvetica,Arial,sans-serif;color:rgb(198,198,198)">if you have any queries, please get in touch with us through <a href="mailto:<%= configatron.info_email %>" style="font-weight:normal;text-decoration:underline;font-family:Helvetica,Arial,sans-serif;color:rgb(55,118,240)" target="_blank"><%= configatron.info_email %></a>
                                                       </p>
                                                    </td>
                                                 </tr>

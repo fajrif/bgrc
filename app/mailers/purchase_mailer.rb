@@ -8,6 +8,7 @@ class PurchaseMailer < ApplicationMailer
 	def booking_purchase_email
 		begin
       @booking = params[:booking]
+      @court_type_label = get_court_type(@booking.court_type)
       @user = @booking.user
       mail(
         to: @user.email,
@@ -23,6 +24,7 @@ class PurchaseMailer < ApplicationMailer
 	def new_booking_email
 		begin
       @booking = params[:booking]
+      @court_type_label = get_court_type(@booking.court_type)
       @user = @booking.user
       mail(
         to: configatron.info_email,
@@ -34,5 +36,16 @@ class PurchaseMailer < ApplicationMailer
 			puts e.backtrace.inspect
 		end
 	end
+
+  private
+
+  def get_court_type(option)
+    case option.to_i
+    when 0
+      "Court Only"
+    when 1
+      "Court + Coach"
+    end
+  end
 
 end

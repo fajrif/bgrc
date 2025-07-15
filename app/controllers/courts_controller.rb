@@ -10,18 +10,19 @@ class CourtsController < ApplicationController
       @court_type = get_court_type(params[:court_type])
     end
 
-    unless params[:class_type].blank?
-      @class_type = get_class_type(params[:class_type])
+    unless params[:group_class_id].blank?
+      @group_class = GroupClass.find(params[:group_class_id])
+      unless params[:pax].blank?
+        @pax = params[:pax]
+      else
+        @pax = @group_class.min_pax
+      end
     end
 
-		price = @court.calculate_price(dates, duration, false)
-
-    unless params[:coach_id].blank?
-      if params[:coach_id].to_i > 0
-        @coach = Coach.find(params[:coach_id])
-        price_coach = @coach.calculate_price(duration, false)
-        price = price + price_coach
-      end
+    if params[:court_type] == "0"
+      price = @court.calculate_price(dates, duration, false)
+    else
+      price = @group_class.check_price(@pax, false)
     end
 
 		@priceLabel = price_label(price)
@@ -54,19 +55,6 @@ class CourtsController < ApplicationController
       "Court Only"
     when 1
       "Court + Coach"
-    when 2
-      "Group Lessons"
-    when 3
-      "Adult Socials"
-    end
-  end
-
-  def get_class_type(option)
-    case option.to_i
-    when 0
-      "2 People, Semi Private"
-    when 1
-      "4 People, Semi Private"
     end
   end
 

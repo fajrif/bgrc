@@ -1492,4 +1492,26 @@ A VERTICAL event
 .fc-theme-bootstrap5-shaded {
   background-color: var(--bs-gray-200);
 }
-
+.fc table {
+  font-size: 12px;
+}
+.fc .fc-toolbar-title {
+  font-size: 16px;
+  color: #000;
+}
+.fc .fc-button {
+  padding: 1px 8px;
+  font-size: 14px;
+}
+.fc-v-event .fc-event-title {
+  line-height: normal;
+}
+.fc .fc-toolbar.fc-header-toolbar {
+  margin-bottom: 0;
+}
+.fc .fc-button-primary {
+  color: #000;
+}
+.fc .fc-button-primary:hover {
+  background-color: #000;
+}

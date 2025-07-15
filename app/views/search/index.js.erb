@@ -1,0 +1,136 @@
+$("#searchResults").html("<%= escape_javascript(render("search_results")) %>");
+// Build query string from merged parameters
+<%
+  # Merge new param into current query string
+  new_params = request.query_parameters.merge(court_type_id: params[:court_type_id])
+  new_params = new_params.merge(court_id: params[:court_id])
+  query_string = new_params.to_query
+%>
+
+// Update browser URL without page reload
+history.replaceState(null, "", "<%= request.path %>?<%== query_string %>");
+
+// re-render Calendar
+var calendar;
+
+function createEvent(arg, calendar) {
+  var startDay = moment(arg.start, "YYYY-MM-DD");
+  var endDay = moment(arg.end, "YYYY-MM-DD");
+  var duration = endDay.diff(startDay, 'hours');
+
+  var event = calendar.getEventById('book1');
+  if(event) {
+    event.remove();
+  }
+
+  calendar.addEvent({
+    id: 'book1',
+    title: 'Check price',
+    start: arg.start,
+    end: arg.end,
+    textColor: '#097B0A',
+    borderColor: '#5BF651',
+    color: '#ECFEED'
+  });
+
+  var formatDates = startDay.format('DD/MM/YYYY HH:mm');
+
+  $.ajax({
+    type: "GET",
+    url: "/courts/<%= @court.id %>/calculate_price",
+    <%- if @group_class -%>
+    data: {dates: formatDates, duration: duration, court_type: <%= blank_or_not(@type, 0) %>, group_class_id: <%= @group_class.try(:id) %>, pax: <%= @pax %> },
+    <%- else -%>
+    data: {dates: formatDates, duration: duration, court_type: <%= blank_or_not(@type, 0) %> },
+    <%- end -%>
+    success: function(data, textStatus, jqXHR){
+      // console.log(textStatus);
+      $('#input-book').val(formatDates);
+      $('#input-duration').val(duration);
+    },
+    error: function(jqXHR, textStatus, errorThrown){
+      console.log(textStatus);
+    }
+  });
+
+  calendar.unselect();
+}
+
+function isCrossDay(arg) {
+  <%- if @group_class -%>
+  var start = arg.start
+  var end = arg.end
+  var diffInMs = end - start
+  var diffInHours = diffInMs / (1000 * 60 * 60)
+  return diffInHours === <%= @group_class.min_duration %>
+  <%- else -%>
+  var startDay = moment(arg.start, "YYYY-MM-DD");
+  var endDay = moment(arg.end, "YYYY-MM-DD");
+  return startDay.diff(endDay, 'days') == 0;
+  <%- end -%>
+}
+
+var calendarEl = document.getElementById('calendar');
+
+calendar = new FullCalendar.Calendar(calendarEl, {
+  headerToolbar: false,
+  initialView: 'timeGridWeek',
+  initialDate: '<%= @date %>',
+  firstDay: moment('<%= @date %>').day(),
+  navLinks: false, // can click day/week names to navigate views
+  selectable: true,
+  selectAllow: function(arg) {
+    return isCrossDay(arg);
+  },
+  validRange: {
+    start: moment('<%= @date %>').format('YYYY-MM-DD'),
+    end: moment('<%= @date %>').add(7, 'days').format('YYYY-MM-DD')
+  },
+  eventLongPressDelay: 10,
+  eventTimeFormat: {
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false
+  },
+  selectMirror: true,
+  allDaySlot: false,
+  selectOverlap: false,
+  eventOverlap: false,
+  slotDuration: '01:00',
+  slotMinTime: '<%= @court.get_min_open_time %>',
+  slotMaxTime: '<%= @court.get_max_open_time %>',
+  select: function(arg) {
+    createEvent(arg, calendar);
+  },
+  eventChange: function(changeInfo) {
+    if(isCrossDay(changeInfo.event)) {
+      if(changeInfo.event.title == changeInfo.oldEvent.title) {
+        createEvent(changeInfo.event, calendar);
+      }
+    } else {
+      changeInfo.revert();
+    }
+  },
+  eventClick: function(arg) {
+    if(arg.event.id == 'book1') {
+      arg.event.remove();
+      $('#btnSubmit').prop("disabled", true);
+      $('#btnSubmit').addClass("disabled");
+      $('#input-book').val('');
+      $('#input-duration').val('');
+      $('#calculate_table').html("<%= escape_javascript(render('calculate_info')) %>");
+    }
+  },
+  editable: true,
+  dayMaxEvents: false, // allow "more" link when too many events
+  eventBackgroundColor: '#FFEBF2',
+  eventBorderColor: '#FF85AF',
+  eventTextColor: '#FF85AF',
+  selectConstraint: 'businessHours',
+  eventConstraint: 'businessHours',
+  businessHours: <%= @business_hours.html_safe %>,
+  events: <%= @events.html_safe %>,
+});
+
+calendar.setOption('height', 'auto');
+calendar.render();

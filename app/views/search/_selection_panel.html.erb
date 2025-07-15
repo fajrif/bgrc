@@ -1,0 +1,26 @@
+<% if @type == "1" %>
+<div class="row mt-2">
+  <div class="col-lg-5 d-flex align-items-center">
+    <%= select_tag :group_class_id, options_from_collection_for_select(GroupClass.all, "id", "name", @group_class.try(:id)), :class => "form-select mb-0", :prompt => 'Select Class Name', data: { remote: true, url: search_selection_path(court_type: @type, sport_id: @sport.id), method: :get } %>
+  </div>
+  <div class="col-lg-5 d-flex align-items-center">
+    <% if @group_class %>
+      <%= select_tag :pax, options_for_select(options_select_pax(@group_class.min_pax, @group_class.max_pax, @group_class.has_additional_pax?), @pax), :class => "form-select mb-0", :include_blank => false, data: { remote: true, url: search_selection_path(court_type: @type, sport_id: @sport.id, group_class_id: @group_class.id), method: :get } %>
+    <% end %>
+  </div>
+  <div class="col-lg-2 text-center">
+  </div>
+</div>
+  <% if @group_class %>
+    <div class="row mt-2">
+      <div class="col-lg-12 d-flex align-items-center">
+        <div class="padding-10px-all">
+          <p class="fs-6 line-height-normal font-weight-600 mb-1">Price: <%= @group_class.check_price(@pax) %></p>
+          <p class="fs-6 line-height-normal mb-1"><strong>Additional Pax:</strong> <%= @group_class.has_additional_pax? ? @group_class.price_pax_label : '-' %></p>
+          <i class="text-small">Maximum <%= @group_class.max_pax %> Pax for <%= @group_class.duration_label %></i><br/>
+          <i class="text-small">** <%= @group_class.notes %></i>
+        </div>
+      </div>
+    </div>
+  <% end %>
+<% end %>

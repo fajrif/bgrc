@@ -6,7 +6,7 @@
 				<th>Order ID</th>
 				<th>User</th>
 				<th>Court</th>
-				<th>Sport ID</th>
+				<th>Sport</th>
 				<th>Class</th>
 				<th>Price</th>
 				<th>Action</th>
@@ -26,8 +26,10 @@
           </td>
 					<td><%= booking.try(:court).try(:sport).try(:name) %></td>
           <td>
-						<p class="text-muted mb-0">Class Type: <%= booking.get_court_type %></p>
-						<p class="text-muted mb-0">Class Name: <%= booking.get_class_type %></p>
+						<p class="text-muted mb-0">Court Type: <%= booking.get_court_type %></p>
+            <% if booking.group_class %>
+						<p class="text-muted mb-0">Class Name: <%= booking.group_class.name %></p>
+            <% end %>
           </td>
           <td>
 						<h5 class="fs-14 mb-1"><%= booking.total_price_label %></h5>

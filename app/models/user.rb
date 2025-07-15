@@ -63,12 +63,5 @@ class User < ApplicationRecord
 	end
 
 	def self.to_csv(data, options = {})
-		cols = ["ID", "Name", "Email", "Phone", "Registered At"]
-		CSV.generate(options) do |csv|
-			csv << cols
-			data.each do |user|
-				csv << [user.id, user.full_name, user.email, user.phone.to_s,user.created_at.strftime('%d-%m-%Y %H:%M')]
-			end
-		end
 	end
 end

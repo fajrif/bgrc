@@ -178,6 +178,7 @@ puts "Create Group Class: #{c.name}"
 c = GroupClass.new(name: "Adult Premium Social Class")
 c.price = 920000
 c.price_pax = 460000
+c.min_duration = 2
 c.min_pax = 2
 c.max_pax = 4
 c.notes = "Prices are inclusive of court fee, service fee and applicable taxes"
@@ -189,6 +190,7 @@ puts "Create Group Class: #{c.name}"
 c = GroupClass.new(name: "Adult Super Social Class")
 c.price = 760000
 c.price_pax = 380000
+c.min_duration = 2
 c.min_pax = 2
 c.max_pax = 6
 c.notes = "Prices are inclusive of court fee, service fee and applicable taxes"

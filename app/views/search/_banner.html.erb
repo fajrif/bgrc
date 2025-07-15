@@ -32,20 +32,3 @@
     </div>
 </section>
 <!-- end banner section -->
-<%= content_for :tail do %>
-  <script>
-    $(document).ready(function() {
-      <% Sport.all.each do |sport| %>
-        $('#select-court-<%= sport.id %>').change(function() {
-          var selectedValue = $(this).val();
-          console.log(selectedValue);
-          if(selectedValue == "" || selectedValue == 3){
-            $('#search_inner_<%= sport.id %>').hide();
-          } else {
-            $('#search_inner_<%= sport.id %>').show();
-          }
-        });
-      <% end %>
-    });
-  </script>
-<% end %>

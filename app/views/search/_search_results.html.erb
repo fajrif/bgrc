@@ -1,14 +1,19 @@
-<%= content_for :head do %>
-	<%= stylesheet_link_tag "main.css" %>
-<% end %>
-
 <!-- start story section -->
 <section class="pt-150 pb-0 wow animate__fadeIn">
   <div class="container">
     <div class="row align-items-start">
       <div class="col-lg-8 col-md-8 text-center text-md-start padding-three-lr">
         <% if @court %>
-          <h6 class="alt-font text-extra-dark-gray mb-0"><%= @court.name_label %></h6>
+          <div class="d-flex justify-content-between align-items-end mb-3">
+            <div>
+              <h6 class="text-large text-black mb-2"><%= @court.name_label %></h6>
+              <p class="text-medium text-black mb-0"><%= @displayDate %></p>
+            </div>
+            <div class="d-flex gap-2">
+              <%= select_tag :court_type_id, options_from_collection_for_select(@court_types, "id", "name", @court_type.id), class: "form-select mb-0", include_blank: false, data: { remote: true, url: search_path(date: @date, court_type: @type, sport_id: @sport.id, group_class_id: @group_class.try(:id), pax: @pax), method: :get } %>
+              <%= select_tag :court_id, options_from_collection_for_select(@courts, "id", "name", @court.id), class: "form-select mb-0", prompt: 'Select Court', data: { remote: true, url: search_path(date: @date, court_type: @type, sport_id: @sport.id, group_class_id: @group_class.try(:id), pax: @pax, court_type_id: @court_type.id), method: :get } %>
+            </div>
+          </div>
           <div class="pricing-area" id="schedule">
             <div id="calendar"></div>
           </div>
@@ -18,158 +23,27 @@
           </h6>
         <% end %>
       </div>
-      <div class="col-lg-4 col-md-4 text-center text-md-start padding-three-lr">
-        <%= simple_form_for(:booking, :url => users_bookings_url, :method => :post) do %>
-          <div style="margin-top:20px;" class="ms-5">
-            <h6>Your Booking Details</h6>
-            <input id="court-id" type="hidden" value="<%= @court.id %>" name="court_id">
-            <input id="input-book" type="hidden" value="" name="dates">
-            <input id="input-duration" type="hidden" value="" name="duration">
-            <input id="input-court-type" type="hidden" value="<%= params[:court_type] %>" name="court_type">
-            <input id="input-class-type" type="hidden" value="<%= params[:class_type] %>" name="class_type">
-            <input id="input-coach-id" type="hidden" value="<%= params[:coach_id] %>" name="coach_id">
-            <div id="calculate_table"></div>
-            <button id="btnSubmit" type="submit" class="btn btn-light-gray btn-medium text-medium disabled" disabled>Submit</button>
-          </div>
-        <% end %>
-      </div>
+      <% if @sport %>
+        <div class="col-lg-4 col-md-4 text-center text-md-start padding-three-lr">
+          <%= simple_form_for(:booking, :url => users_bookings_url, :method => :post) do %>
+            <div class="ms-4">
+              <h6 class="text-large text-black mb-3">Your Booking Details</h6>
+              <input id="date" type="hidden" value="<%= @date %>" name="date">
+              <input id="court-id" type="hidden" value="<%= @court.id %>" name="court_id">
+              <input id="input-book" type="hidden" value="" name="dates">
+              <input id="input-duration" type="hidden" value="" name="duration">
+              <input id="input-court-type" type="hidden" value="<%= @type %>" name="court_type">
+              <input id="input-group-class-id" type="hidden" value="<%= @group_class.try(:id) %>" name="group_class_id">
+              <input id="input-pax" type="hidden" value="<%= @pax %>" name="pax">
+              <div id="calculate_table">
+                <%= render "calculate_info" %>
+              </div>
+              <button id="btnSubmit" type="submit" class="btn btn-light-gray btn-medium text-medium disabled" disabled>Submit</button>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
     </div>
   </div>
 </section>
 <!-- end story section -->
-
-<%= content_for :tail do %>
-	<%= javascript_include_tag "fullcalendar.js" %>
-	<%= javascript_include_tag "moment-with-locales.min.js" %>
-	<%= stylesheet_link_tag "fullcalendar-custom.css" %>
-	<script>
-	var calendar;
-  document.addEventListener('DOMContentLoaded', function() {
-
-    var calendarEl = document.getElementById('calendar');
-
-    calendar = new FullCalendar.Calendar(calendarEl, {
-      headerToolbar: {
-        left: 'title',
-        right: 'today prev,next'
-      },
-			initialView: 'timeGridWeek',
-			initialDate: '<%= @date || Date.today.strftime("%Y-%m-%d") %>',
-			firstDay: moment().day(),
-      navLinks: false, // can click day/week names to navigate views
-      selectable: true,
-			selectAllow: function(arg) {
-				return isCrossDay(arg);
-			},
-			validRange: {
-				start: moment().format('YYYY-MM-DD'),
-				end: moment().add(14, 'days').format('YYYY-MM-DD')
-			},
-			eventLongPressDelay: 10,
-			eventTimeFormat: {
-				hour: '2-digit',
-				minute: '2-digit',
-				hour12: false
-			},
-      selectMirror: true,
-      allDaySlot: false,
-      selectOverlap: false,
-      eventOverlap: false,
-			slotDuration: '01:00',
-			slotMinTime: '<%= @court.get_min_open_time %>',
-      slotMaxTime: '<%= @court.get_max_open_time %>',
-      select: function(arg) {
-				createEvent(arg, calendar);
-      },
-      eventChange: function(changeInfo) {
-				if(isCrossDay(changeInfo.event)) {
-					if(changeInfo.event.title == changeInfo.oldEvent.title) {
-						createEvent(changeInfo.event, calendar);
-					}
-				} else {
-					changeInfo.revert();
-				}
-      },
-      eventClick: function(arg) {
-				if(arg.event.id == 'book1') {
-					arg.event.remove();
-					$('#btnSubmit').prop("disabled", true);
-					$('#btnSubmit').addClass("disabled");
-					$('#input-book').val('');
-					$('#input-duration').val('');
-					$('#calculate_table').empty();
-				}
-      },
-      editable: true,
-      dayMaxEvents: false, // allow "more" link when too many events
-			eventBackgroundColor: '#FFEBF2',
-			eventBorderColor: '#FF85AF',
-			eventTextColor: '#FF85AF',
-			selectConstraint: 'businessHours',
-			eventConstraint: 'businessHours',
-			businessHours: <%= @business_hours.html_safe %>,
-      events: <%= @events.html_safe %>,
-    });
-
-		calendar.setOption('height', 'auto');
-    calendar.render();
-  });
-
-	function createEvent(arg, calendar) {
-			var startDay = moment(arg.start, "YYYY-MM-DD");
-			var endDay = moment(arg.end, "YYYY-MM-DD");
-			var duration = endDay.diff(startDay, 'hours');
-
-			var event = calendar.getEventById('book1');
-			if(event) {
-				event.remove();
-			}
-
-			calendar.addEvent({
-				id: 'book1',
-				title: 'Check price',
-				start: arg.start,
-				end: arg.end,
-				textColor: '#097B0A',
-				borderColor: '#5BF651',
-				color: '#ECFEED'
-			});
-
-			var formatDates = startDay.format('DD/MM/YYYY HH:mm');
-
-			$.ajax({
-				type: "GET",
-				url: "/courts/<%= @court.id %>/calculate_price",
-        data: {dates: formatDates, duration: duration, court_type: <%= blank_or_not(params[:court_type], 0) %>, class_type: <%= blank_or_not(params[:class_type], 0) %>, coach_id: <%= blank_or_not(params[:coach_id], 0) %>},
-				success: function(data, textStatus, jqXHR){
-					// console.log(textStatus);
-					$('#input-book').val(formatDates);
-					$('#input-duration').val(duration);
-				},
-				error: function(jqXHR, textStatus, errorThrown){
-					console.log(textStatus);
-				}
-			});
-
-			calendar.unselect();
-	}
-
-	function isCrossDay(arg) {
-		var startDay = moment(arg.start, "YYYY-MM-DD");
-		var endDay = moment(arg.end, "YYYY-MM-DD");
-		return startDay.diff(endDay, 'days') == 0;
-	}
-	</script>
-  <style>
-    .fc table {
-      font-size: 12px;
-    }
-    .fc .fc-button {
-      padding: 1px 8px;
-      font-size: 15px;
-    }
-    .fc-v-event .fc-event-title {
-      line-height: normal;
-    }
-  </style>
-<% end if @court %>

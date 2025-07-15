@@ -17,14 +17,16 @@
                             </div>
                             <h5 class="text-black text-uppercase alt-font letter-spacing-6 font-weight-600 margin-15px-bottom d-block">Booking Confirmation</h5>
                             <div class="text-large text-black margin-25px-bottom font-weight-500">
-                              <span><%= @booking.date.strftime('%A %b %d, %Y %I:%M %p') %></span>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;<span><%= @booking.court.name %></span>
+                              <span><%= @booking.date.strftime('%A %b %d, %Y %I:%M %p') %></span>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;<span><%= @booking.court.name_label %></span>
                             </div>
                             <p class="text-medium mb-2"><strong>Duration:</strong> <%= @booking.duration_label %></p>
                             <p class="text-medium"><strong>Please note:</strong> Bookings cannot be canceled or refunded within 24 hours of your reserved court time.</p>
                         </div>
+                        <% unless @booking.group_class %>
                         <div id="itemLists" class="row row-cols-1 m-0 border-top border-color-extra-light-gray">
                           <%= render "item_lists" %>
                         </div>
+                        <% end %>
                     </div>
                 </div>
                 <!-- end post item -->

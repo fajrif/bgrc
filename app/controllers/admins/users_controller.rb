@@ -8,9 +8,17 @@ class Admins::UsersController < Admins::BaseController
       format.html # index.html.erb
       format.xml  { render :xml => @users }
       format.js
-			format.xls { send_data User.to_csv(@users, col_sep: "\t") }
+			format.xls { send_data helpers.generate_users_csv(@users), :filename => "Users-Data.xls" }
     end
   end
+
+	def export_all
+		@users = User.all
+
+    respond_to do |format|
+			format.xls { send_data helpers.generate_users_csv(@users), :filename => "Users-All.xls" }
+    end
+	end
 
   def show
 		@user = User.find(params[:id])

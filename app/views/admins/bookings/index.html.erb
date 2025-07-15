@@ -11,6 +11,17 @@
 								<i class="ri-search-line"></i>
 							</div>
 						</div>
+						<div class="col-sm-auto ms-auto">
+							<div class="dropdown">
+								<a href="#" class="btn btn-success dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+									<i class="ri-file-excel-line align-bottom me-1"></i> Export Data
+								</a>
+								<div class="dropdown-menu" style="">
+									<a id="btn-export-page" class="dropdown-item" href="#">Current Page</a>
+									<a class="dropdown-item" href="<%= export_all_admins_bookings_path(format: :xls) %>">All Pages</a>
+								</div>
+							</div>
+						</div>
 					</div>
 				<% end %>
 			</div>

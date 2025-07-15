@@ -9,9 +9,17 @@ class Admins::BookingsController < Admins::BaseController
       format.html # index.html.erb
       format.xml  { render :xml => @bookings }
       format.js
-	    format.xls { send_data Booking.to_csv(@bookings, col_sep: "\t") }
+			format.xls { send_data helpers.generate_bookings_csv(@bookings), :filename => "Bookings-Data.xls" }
     end
   end
+
+	def export_all
+		@bookings = Booking.all
+
+    respond_to do |format|
+			format.xls { send_data helpers.generate_bookings_csv(@bookings), :filename => "Bookings-All.xls" }
+    end
+	end
 
   def calendar
 		if params[:court_id]
@@ -39,35 +47,21 @@ class Admins::BookingsController < Admins::BaseController
 
   def create
     @booking = Booking.new(params_booking)
-    if @booking.save
-			redirect_to admins_booking_path(@booking.id), :notice => "Successfully created booking."
+    if @booking.valid?
+      if Booking.check_available_dates?(@booking.court.id, @booking.date.try(:strftime,'%d/%m/%Y %H:%M'), @booking.duration)
+        if @booking.save
+          redirect_to admins_booking_path(@booking.id), :notice => "Successfully created booking."
+        else
+          render :action => 'new'
+        end
+      else
+        flash.now[:alert] = 'Booking date not available'
+        render :action => 'new'
+      end
     else
       render :action => 'new'
     end
   end
-
-	# def create
-	# 	# Find associated court
-	# 	@court = Court.find(params[:court_id])
-	# 	dates = params[:dates]
-	# 	duration = params[:duration]
-
-	# 	if dates.blank? or duration.blank?
-	# 		redirect_to search_path, :alert => "Please select the timetable below and press the submit button."
-	# 	else
-	# 		if Booking.check_available_dates?(@court.id, dates, duration)
-	# 			@booking = Booking.new(court: @court, user: current_user, date: DateTime::strptime(dates,"%d/%m/%Y %H:%M"), duration: duration, court_type: params[:court_type], class_type: params[:class_type], coach_id: params[:coach_id])
-	# 			if @booking.save
-	# 				# Save and redirect to booking show path
-  #         redirect_to users_booking_path(@booking.order_id), :notice => "Court booking added to your booking schedules!"
-	# 			else
-	# 				redirect_to search_path, :alert => "Oops cannot booking this court!"
-	# 			end
-	# 		else
-	# 			redirect_to search_path, :alert => "Oops sorry booking dates not available"
-	# 		end
-	# 	end
-	# end
 
   def show
   end
@@ -76,9 +70,14 @@ class Admins::BookingsController < Admins::BaseController
   end
 
   def update
-    if @booking.update(params_booking)
-			redirect_to admins_booking_path(@booking.id), :notice  => "Successfully updated booking."
+    if Booking.check_available_dates?(@booking.court.id, @booking.date.try(:strftime,'%d/%m/%Y %H:%M'), @booking.duration, @booking.id)
+      if @booking.update(params_booking)
+        redirect_to admins_booking_path(@booking.id), :notice  => "Successfully updated booking."
+      else
+        render :action => 'edit'
+      end
     else
+      flash.now[:alert] = 'Booking date not available'
       render :action => 'edit'
     end
   end

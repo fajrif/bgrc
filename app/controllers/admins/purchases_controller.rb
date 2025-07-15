@@ -14,9 +14,17 @@ class Admins::PurchasesController < Admins::BaseController
       format.html # index.html.erb
       format.xml  { render :xml => @purchases }
       format.js
-			format.xls { send_data Purchase.to_csv(@purchases, col_sep: "\t") }
+			format.xls { send_data helpers.generate_purchases_csv(@purchases), :filename => "Purchases-Data.xls" }
     end
   end
+
+	def export_all
+		@purchases = Purchase.all
+
+    respond_to do |format|
+			format.xls { send_data helpers.generate_purchases_csv(@purchases), :filename => "Purchases-All.xls" }
+    end
+	end
 
   def show
 		@purchase = Purchase.find(params[:id])

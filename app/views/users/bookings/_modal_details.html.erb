@@ -14,12 +14,18 @@
       </tr>
       <tr>
         <td><b>Court</b></td>
-        <td>: <%= @booking.try(:court).try(:name) %></td>
+        <td>: <%= @booking.try(:court).try(:name_label) %></td>
       </tr>
       <tr>
         <td><b>Booking Type</b></td>
         <td>: <%= @booking.get_court_type %></td>
       </tr>
+      <% if @booking.group_class %>
+        <tr>
+          <td><b>Class Name</b></td>
+          <td>: <%= @booking.group_class.name_with_pax(@booking.pax) %></td>
+        </tr>
+      <% end %>
       <% if @booking.coach %>
         <tr>
           <td><b>Coach</b></td>
@@ -39,7 +45,7 @@
     </table>
   </div>
   <hr class="margin-30px-tb"/>
-  <div class="padding-eight-lr">
+  <div class="padding-two-lr">
     <h6 class="mb-2">Show the QR Code upon arrival</h6>
     <p class="text-medium">Use this QR code at the venue entrance to check in quickly.<br/> Don’t forget to arrive at least 10 minutes early!</p>
     <div class="d-flex justify-content-center">

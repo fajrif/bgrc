@@ -17,12 +17,16 @@ class Users::BookingsController < Users::BaseController
 			redirect_to search_path, :alert => "Please select the timetable below and press the submit button."
 		else
 			if Booking.check_available_dates?(@court.id, dates, duration)
-				@booking = Booking.new(court: @court, user: current_user, date: DateTime::strptime(dates,"%d/%m/%Y %H:%M"), duration: duration, court_type: params[:court_type], class_type: params[:class_type], coach_id: params[:coach_id])
+				@booking = Booking.new(court: @court, user: current_user, date: DateTime::strptime(dates,"%d/%m/%Y %H:%M"), duration: duration, court_type: params[:court_type])
+        unless params[:group_class_id].blank?
+          @booking.group_class_id = params[:group_class_id]
+          @booking.pax = params[:pax]
+        end
 				if @booking.save
 					# Save and redirect to booking show path
           redirect_to users_booking_path(@booking.order_id), :notice => "Court booking added to your booking schedules!"
 				else
-					redirect_to search_path, :alert => "Oops cannot booking this court!"
+					redirect_to search_path, :alert => "Oops cannot booking this court! please search again."
 				end
 			else
 				redirect_to search_path, :alert => "Oops sorry booking dates not available"

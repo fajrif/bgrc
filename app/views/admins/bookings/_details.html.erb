@@ -32,14 +32,18 @@
 		<td><b>Court Type</b></td>
 		<td><%= @booking.get_court_type %></td>
 	</tr>
+  <% if @booking.group_class %>
 	<tr>
 		<td><b>Class Name</b></td>
-		<td><%= @booking.get_class_type %></td>
+		<td><%= @booking.group_class.name_with_pax(@booking.pax) %></td>
 	</tr>
+  <% end %>
+  <% if @booking.coach %>
 	<tr>
 		<td><b>Coach</b></td>
 		<td><%= @booking.try(:coach).try(:name) %> (<%= @booking.price_coach_label %>)</td>
 	</tr>
+  <% end %>
   <% if @booking.purchase %>
     <tr>
       <td><b>Purchase ID</b></td>
@@ -54,6 +58,7 @@
 		<td><b>Payment Total</b></td>
 		<td><b><%= @booking.total_price_label %></b></td>
 	</tr>
+  <% unless @booking.add_ons.empty? %>
   <tr>
     <td><b>Add Ons</b></td>
     <td>
@@ -62,4 +67,5 @@
       <% end %>
     </td>
   </tr>
+  <% end %>
 </table>

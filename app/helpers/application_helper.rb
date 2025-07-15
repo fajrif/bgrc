@@ -26,7 +26,19 @@ module ApplicationHelper
   end
 
   def options_select_court
-    [["Court Only", 0], ["Court + Coach", 1], ["Group Lessons", 2], ["Adult Socials", 3]]
+    [["Court Only", 0], ["Court + Coach", 1]]
+  end
+
+  def options_select_pax(min_pax, max_pax, use_label_min_max=true)
+    arr = (min_pax..max_pax)
+    arr.map.with_index do |p,i|
+      _text = "#{p} pax "
+      if use_label_min_max
+        _text += "(Minimum)" if p == arr.first
+        _text += "(Maximum)" if p == arr.last
+      end
+      [_text, p]
+    end
   end
 
   def options_select_class
@@ -34,7 +46,7 @@ module ApplicationHelper
   end
 
   def get_visible_fields(court_type)
-    (court_type == "0" || court_type == "1" || court_type == "2") ? 'display:block;' : 'display:none;'
+    court_type == "1" ? 'display:block;' : 'display:none;'
   end
 
   def options_for_nationalities

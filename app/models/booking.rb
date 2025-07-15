@@ -6,14 +6,16 @@ class Booking < ApplicationRecord
 	belongs_to :user
 	belongs_to :court
 	belongs_to :coach, optional: true
+	belongs_to :group_class, optional: true
 	has_one :purchase, as: :productable
   has_many :add_ons
 
 	validates_presence_of :date, :order_id
 	validates_uniqueness_of :order_id
+  validates :end_date, comparison: { greater_than: :date }
 
 	after_initialize :init_record, if: :new_record?
-	after_validation :ensure_end_date_has_value, :calculate_prices
+	before_validation :ensure_end_date_has_value, :calculate_prices
 
 	def init_record
     self.order_id = "BOK#{SecureRandom.base58(8)}#{Time.now.to_i}".upcase if self.order_id.blank?
@@ -32,13 +34,21 @@ class Booking < ApplicationRecord
 	end
 
 	def calculate_prices
-		self.price = self.court.calculate_price(self.date, self.duration, false) unless self.price_changed?
-    self.price_coach = self.coach.calculate_price(self.duration, false) if self.coach
-    total_add_ons = 0
-    self.add_ons.each do |add_on|
-      total_add_ons += (add_on.total_price * self.duration)
+    if self.group_class
+      unless self.price_changed?
+        _price = self.group_class.check_price(self.pax, false)
+        self.price = _price
+        self.total_price = _price
+      end
+    else
+      self.price = self.court.calculate_price(self.date, self.duration, false) unless self.price_changed?
+      self.price_coach = self.coach.calculate_price(self.duration, false) if self.coach
+      total_add_ons = 0
+      self.add_ons.each do |add_on|
+        total_add_ons += (add_on.total_price * self.duration)
+      end
+      self.total_price = self.price + self.price_coach + total_add_ons
     end
-    self.total_price = self.price + self.price_coach + total_add_ons
 	end
 
 	def is_unpaid?
@@ -127,10 +137,6 @@ class Booking < ApplicationRecord
       "Court Only"
     when 1
       "Court + Coach"
-    when 2
-      "Group Lessons"
-    when 3
-      "Adult Socials"
     end
   end
 
@@ -155,13 +161,4 @@ class Booking < ApplicationRecord
     )
   end
 
-	def self.to_csv(data, options = {})
-		cols = ["ID", "Order ID", "Court", "User", "Email", "Start Date", "End Date", "Duration", "Status", "Total Price"]
-		CSV.generate(options) do |csv|
-			csv << cols
-			data.each do |b|
-				csv << [b.id, b.order_id, b.court.name, b.user.full_name, b.user.email, b.date.strftime('%d-%m-%Y %H:%M'), b.end_date.strftime('%d-%m-%Y %H:%M'), b.duration, b.status_label, b.total_price_label]
-			end
-		end
-	end
 end

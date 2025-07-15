@@ -69,16 +69,4 @@ class Purchase < ApplicationRecord
 		ActionController::Base.helpers.number_to_currency(self.gross_amount, unit: "Rp. ", separator: ",", delimiter: ".", precision: 0)
 	end
 
-	def self.to_csv(data, type, options = {})
-		cols = ["ID", "Name", "Email", "Phone", "Gross Amount", "Payment Type", "Status", "Type", "Date"]
-		CSV.generate(options) do |csv|
-			csv << cols
-			data.each do |purchase|
-				csv << [purchase.id, purchase.user.full_name, purchase.user.email, purchase.user.phone.to_s,
-						purchase.price_label, purchase.payment_type, "( #{purchase.status_code} ) #{purchase.status_message}",
-						purchase.productable_type,
-						purchase.created_at.strftime('%d-%m-%Y %H:%M')]
-			end
-		end
-	end
 end
