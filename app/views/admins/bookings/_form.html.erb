@@ -16,11 +16,14 @@
               </div>
             </div>
             <div class="row mb-2">
-              <div class="col-md-6">
+              <div class="col-md-4">
                 <%= f.input :court_type, as: :select, collection: options_select_court %>
               </div>
-              <div class="col-md-6">
-                <%= f.input :class_type, as: :select, collection: options_select_class %>
+              <div class="col-md-4">
+                <%= f.association :group_class, as: :select, label_method: :name %>
+              </div>
+              <div class="col-md-4">
+                <%= f.input :pax %>
               </div>
             </div>
 					</fieldset>

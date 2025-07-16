@@ -104,7 +104,8 @@ jQuery(document).ready(function($){
 	if($('.form-select').length > 0){
 		$('.form-select').each(function(index, element) {
 			const choices = new Choices(element, {
-				searchEnabled: false
+        searchEnabled: false,
+        shouldSort: false
 			});
 		});
 	}

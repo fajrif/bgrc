@@ -1,23 +1,27 @@
-<table class="table table-striped table-hover table-responsive">
+<table class="table table-striped table-responsive">
 		<thead>
 			<tr>
-				<th class="product-2">Order ID</th>
-				<th class="product-2">Date</th>
-				<th class="product-2">Duration</th>
-				<th class="price">Status</th>
-				<th class="price">Price</th>
+				<th>Order ID</th>
+				<th>Date</th>
+				<th>Duration</th>
+				<th>Court</th>
+				<th>Class Name</th>
+				<th>Status</th>
+				<th>Price</th>
 			</tr>
 		</thead>
 		<tbody>
 			<% @bookings.each do |booking| %>
 				<tr>
-						<td class="product">
-              <%= link_to booking.order_id, users_booking_path(booking.order_id), class: "text-black" %>
+						<td>
+              <%= link_to booking.order_id, users_booking_path(booking.order_id), class: "text-black font-weight-500" %>
 						</td>
-						<td><%= booking.date.strftime('%A %b %d, %Y %I:%M %p') %></td>
+						<td><%= booking.date.strftime('%a %b %d, %Y %I:%M %p') %></td>
 						<td><%= booking.duration_label %></td>
-						<td class="<%= booking.is_unpaid? ? 'text-red' : 'text-green' %>"><%= booking.status_label %></td>
-						<td class="price"><%= booking.total_price_label %></td>
+						<td><%= booking.try(:court).try(:name_label) %></td>
+            <td><%= booking.try(:group_class).try(:name_with_pax, booking.pax) || '-' %></td>
+						<td class="<%= booking.is_unpaid? ? 'text-red' : 'text-green' %> font-weight-500"><%= booking.status_label %></td>
+						<td class="font-weight-500"><%= booking.total_price_label %></td>
 				</tr>
 			<% end %>
 		</tbody>

@@ -2,7 +2,7 @@
     <div class="container">
         <%= render "users/shared/sidebar" %>
         <div class="row align-items-start mb-4">
-            <div class="col-lg-12 col-md-12 text-center text-md-start padding-eight-lr lg-padding-six-lr md-padding-15px-lr">
+            <div class="col-lg-12 col-md-12 text-center text-md-start padding-five-lr lg-padding-six-lr md-padding-15px-lr">
                 <h6 class="font-weight-600 text-uppercase margin-20px-bottom letter-spacing-8">My Booking</h6>
 								<div id="bookingsTable">
                   <%= render "table" %>
@@ -12,3 +12,11 @@
         <%= paginate @bookings, theme: :pofo %>
     </div>
 </section>
+<%= content_for :tail do %>
+<style>
+  #bookingsTable .table td {
+    font-weight: 300;
+    font-size: 14px;
+  }
+</style>
+<% end %>
