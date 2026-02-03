@@ -19,6 +19,7 @@ Rails.application.routes.draw do
 			put "account/update_password" => "accounts#update_password", :as => :update_password
 
 			resources :admins
+			resources :snippets
       resources :users, :except => [:new, :create] do
 				collection do
 					get "export_all" => "users#export_all", :constraints => { :format => :xls }, :as => :export_all
@@ -103,15 +104,10 @@ Rails.application.routes.draw do
       post "purchase/:type/:id" => "purchases#create", :as => :purchase
       get "purchase/:type/:id" => "purchases#new", :as => :new_purchase
 
-      # Bookings
-      resources :bookings, :except => [:edit, :update] do
+      # Bookings (index, destroy stay authenticated; create/show/add_on moved to public)
+      resources :bookings, :only => [:index, :destroy] do
         collection do
           get "history" => "bookings#history", :as => :history
-        end
-        member do
-          patch "add_on/:item_id" => "bookings#add_on", :as => :add_on
-          patch "add_quantity/:add_on_id" => "bookings#add_quantity", :as => :add_quantity
-          patch "remove_quantity/:add_on_id" => "bookings#remove_quantity", :as => :remove_quantity
         end
       end
       resources :packages, :except => [:edit, :update, :show]
@@ -120,6 +116,18 @@ Rails.application.routes.draw do
 
 		# For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 		# i18n Scope for id
+
+		# Public booking routes (no auth required)
+		resources :bookings, only: [:create, :show, :destroy] do
+			member do
+				patch "add_on/:item_id" => "bookings#add_on", :as => :add_on
+				patch "add_quantity/:add_on_id" => "bookings#add_quantity", :as => :add_quantity
+				patch "remove_quantity/:add_on_id" => "bookings#remove_quantity", :as => :remove_quantity
+			end
+		end
+
+		# AJAX login for booking modal
+		post "ajax_login" => "ajax_sessions#create", :as => :ajax_login
 
 		resources :packages, :only => [:index, :show]
 		resources :facilities, :only => [:index, :show]

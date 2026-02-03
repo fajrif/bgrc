@@ -1,4 +1,4 @@
-<% if @booking.is_unpaid? %>
+<% if @booking.within_payment_window? %>
   <div class="col padding-25px-all">
     <div class="d-flex justify-content-between">
       <span class="d-block mb-2">Add Ons:</span>
@@ -18,9 +18,9 @@
           </div>
           <% if @add_on = @booking.add_ons.where(item_id: item.id).first %>
             <div class="qty-input">
-              <%= link_to "", remove_quantity_booking_path(@booking.order_id, @add_on), class: "qty-count qty-count--minus", :method => :patch, :remote => true %>
+              <%= link_to "", remove_quantity_booking_path(@booking.order_id, @add_on), class: "qty-count qty-count--minus", method: :patch, remote: true %>
               <input class="product-qty" type="number" name="product-qty" min="1" max="6" value="<%= @add_on.quantity %>" disabled="disabled">
-              <%= link_to "", add_quantity_booking_path(@booking.order_id, @add_on), class: "qty-count qty-count--add", :method => :patch, :remote => true %>
+              <%= link_to "", add_quantity_booking_path(@booking.order_id, @add_on), class: "qty-count qty-count--add", method: :patch, remote: true %>
             </div>
           <% end %>
         </div>
@@ -28,7 +28,14 @@
       <% end %>
     </ul>
   </div>
-<% else %>
+<% elsif @booking.payment_window_expired? || @booking.expired? %>
+  <div class="content padding-25px-all">
+    <p class="text-medium"><strong>Booked by:</strong> <%= @booking.user.full_name %></p>
+    <p class="text-medium"><strong>Email:</strong> <%= @booking.user.email %></p>
+    <p class="text-medium"><strong>Phone:</strong> <%= @booking.user.phone %></p>
+    <p class="text-medium"><strong>Status Payment:</strong> EXPIRED</p>
+  </div>
+<% elsif !@booking.is_unpaid? && @booking.user %>
   <div class="content padding-25px-all">
     <p class="text-medium"><strong>Booked by:</strong> <%= @booking.user.full_name %></p>
     <p class="text-medium"><strong>Email:</strong> <%= @booking.user.email %></p>

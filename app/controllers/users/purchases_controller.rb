@@ -3,6 +3,14 @@ class Users::PurchasesController < Users::BaseController
 
   def new
 		begin
+			if @productable.is_a?(Booking) && @productable.payment_window_expired?
+				flash.now[:alert] = "The time limit for payment has expired."
+				respond_to do |format|
+					format.js { render :error }
+				end
+				return
+			end
+
 			if request.format.js?
 				@purchase = Purchase.find_or_initialize_by(productable: @productable, user: current_user, status_code: "000")
 				if @purchase.persisted?

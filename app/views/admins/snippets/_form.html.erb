@@ -1,0 +1,33 @@
+<%= simple_form_for @snippet, url: (@snippet.new_record? ? admins_snippets_path : admins_snippet_path(@snippet.id)), method: (@snippet.new_record? ? :post : :put) do |f| %>
+	<div class="row">
+		<div class="col-lg-8">
+			<div class="card">
+				<div class="card-body">
+					<%= f.error_notification %>
+					<fieldset>
+						<%= f.input :key, as: :string %>
+						<%= f.input :title, as: :string %>
+						<div class="mb-3">
+							<label class="form-label">Content</label>
+							<%= f.rich_text_area :content, class: "form-control" %>
+						</div>
+					</fieldset>
+					<%= f.error :base %>
+					<div class="form-actions">
+						<%= f.button :submit, :class => 'btn btn-secondary' %>
+						<% unless @snippet.new_record? %>
+							<%= link_to "Cancel", admins_snippet_path(@snippet.id), :class => 'btn btn-light' %>
+						<% else %>
+							<%= link_to "Cancel", admins_snippets_path, :class => 'btn btn-light' %>
+						<% end %>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-lg-4">
+			<div class="row">
+				<%= render "admins/shared/error_messages", :target => @snippet, col: 'col-lg-12' %>
+			</div>
+		</div>
+	</div>
+<% end %>

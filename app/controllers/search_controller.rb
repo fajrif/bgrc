@@ -3,6 +3,7 @@ class SearchController < ApplicationController
 
   # get public search
   def index
+    Booking.expire_stale_bookings!
     @date = Date.today.strftime("%Y-%m-%d")
     unless params[:date].blank?
       @date = Date.parse(params[:date]).strftime("%Y-%m-%d")
@@ -25,7 +26,7 @@ class SearchController < ApplicationController
 
     if @court
       @business_hours = JSON[@court.business_hours.map{|bh| { daysOfWeek: [bh.day_code], startTime: bh.open, endTime: bh.close } }]
-      @bookings = @court.bookings.where("date >= ?", @date)
+      @bookings = @court.bookings.where("date >= ? AND status NOT IN (?, ?)", @date, Booking::EXPIRED, Booking::CANCELLED)
       @events = JSON[@bookings.map{|b| {title: 'Booked', editable: false, start: b.date.strftime('%Y-%m-%d %H:%M'), end: b.end_date.strftime('%Y-%m-%d %H:%M') } }]
     end
 

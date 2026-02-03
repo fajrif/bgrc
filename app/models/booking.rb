@@ -3,7 +3,12 @@ require "rqrcode"
 class Booking < ApplicationRecord
 	default_scope { order(date: :desc) }
 
-	belongs_to :user
+	UNPAID = 0
+	PAID = 1
+	EXPIRED = 2
+	CANCELLED = 3
+
+	belongs_to :user, optional: true
 	belongs_to :court
 	belongs_to :coach, optional: true
 	belongs_to :group_class, optional: true
@@ -20,6 +25,7 @@ class Booking < ApplicationRecord
 	def init_record
     self.order_id = "BOK#{SecureRandom.base58(8)}#{Time.now.to_i}".upcase if self.order_id.blank?
     self.coach_id = nil if self.coach_id.try(:zero?)
+    self.expires_at = Time.current + 10.minutes if self.expires_at.nil?
 	end
 
 	def ensure_end_date_has_value
@@ -52,7 +58,44 @@ class Booking < ApplicationRecord
 	end
 
 	def is_unpaid?
-		self.status.zero?
+		self.status == UNPAID
+	end
+
+	def payment_window_expired?
+		expires_at.present? && Time.current > expires_at && is_unpaid?
+	end
+
+	def within_payment_window?
+		is_unpaid? && !payment_window_expired?
+	end
+
+	def expired?
+		self.status == EXPIRED
+	end
+
+	def cancelled?
+		self.status == CANCELLED
+	end
+
+	def guest?
+		user_id.nil?
+	end
+
+	def time_remaining
+		return 0 unless expires_at.present?
+		remaining = (expires_at - Time.current).to_i
+		remaining > 0 ? remaining : 0
+	end
+
+	def expire!
+		self.status = EXPIRED
+		self.save!
+		send_expiry_email if self.user.present?
+	end
+
+	def cancel!
+		self.status = CANCELLED
+		self.save!
 	end
 
 	def duration_label
@@ -60,7 +103,12 @@ class Booking < ApplicationRecord
 	end
 
 	def status_label
-		self.status == 1 ? "Paid" : "Unpaid"
+		case self.status
+		when PAID then "Paid"
+		when EXPIRED then "Expired"
+		when CANCELLED then "Cancelled"
+		else "Unpaid"
+		end
 	end
 
 	def price_label
@@ -84,7 +132,7 @@ class Booking < ApplicationRecord
 	end
 
 	def paid!
-		self.status = 1
+		self.status = PAID
 		self.save!
 	end
 
@@ -115,7 +163,7 @@ class Booking < ApplicationRecord
 		duration.to_i.times do |i|
 			arr_dates << (DateTime::strptime(dates,"%d/%m/%Y %H:%M") + i.hour).strftime("%d/%m/%Y %H:%M")
 		end
-		books = Booking.where("id <> ? AND court_id = ? AND date BETWEEN ? AND ?", not_in_id, court_id, DateTime::strptime(dates,"%d/%m/%Y").beginning_of_day, DateTime::strptime(dates,"%d/%m/%Y").end_of_day)
+		books = Booking.where("id <> ? AND court_id = ? AND status NOT IN (?, ?) AND date BETWEEN ? AND ?", not_in_id, court_id, EXPIRED, CANCELLED, DateTime::strptime(dates,"%d/%m/%Y").beginning_of_day, DateTime::strptime(dates,"%d/%m/%Y").end_of_day)
 		unless books.empty?
 			arr = []
 			books.each do |b|
@@ -129,6 +177,12 @@ class Booking < ApplicationRecord
 			end
 		end
 		return status
+	end
+
+	def self.expire_stale_bookings!
+		Booking.unscoped.where(status: UNPAID).where("expires_at < ?", Time.current).find_each do |booking|
+			booking.expire!
+		end
 	end
 
   def get_court_type
@@ -159,6 +213,16 @@ class Booking < ApplicationRecord
       standalone: true,
       use_path: true
     )
+  end
+
+  private
+
+  def send_expiry_email
+    begin
+      PurchaseMailer.with(booking: self).booking_expired_email.deliver_now
+    rescue Exception => e
+      puts e.message
+    end
   end
 
 end

@@ -47,15 +47,19 @@ class User < ApplicationRecord
   end
 
 	def remove_all_unpaid_bookings
-		self.bookings.where('status = ? AND date < ?', 0, Date.today).delete_all
+		Booking.expire_stale_bookings!
 	end
 
 	def current_bookings
-		self.bookings #.where('date >= ? AND status = ?', Date.today, 0)
+		self.bookings
 	end
 
 	def paid_bookings
-		self.bookings.where(status: 1)
+		self.bookings.where(status: Booking::PAID)
+	end
+
+	def booking_history
+		self.bookings.where(status: [Booking::PAID, Booking::EXPIRED, Booking::CANCELLED])
 	end
 
 	def is_profile_completed?

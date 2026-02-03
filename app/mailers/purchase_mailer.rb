@@ -37,6 +37,22 @@ class PurchaseMailer < ApplicationMailer
 		end
 	end
 
+	def booking_expired_email
+		begin
+      @booking = params[:booking]
+      @court_type_label = get_court_type(@booking.court_type)
+      @user = @booking.user
+      mail(
+        to: @user.email,
+        subject: "BGRC - Booking Expired (#{@booking.order_id}) - #{@booking.created_at.strftime('%d/%m/%Y')}",
+        template_path: 'purchase_mailer',
+        template_name: 'booking_expired_email')
+		rescue Exception => e
+			puts e.message
+			puts e.backtrace.inspect
+		end
+	end
+
   private
 
   def get_court_type(option)

@@ -1,0 +1,35 @@
+<!-- Login Modal -->
+<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="loginModalLabel">Sign In to Complete Payment</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p class="text-medium mb-3">Please sign in or create an account to proceed with your payment.</p>
+
+        <div id="login-error" class="alert" style="display:none; background-color: #f8d7da; color: #721c24; padding: 10px; border-radius: 4px; margin-bottom: 15px;"></div>
+
+        <form id="ajax-login-form">
+          <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
+          <div class="mb-3">
+            <input type="email" class="form-control" id="login-email" name="email" required placeholder="Enter your email">
+          </div>
+          <div class="mb-3">
+            <input type="password" class="form-control" id="login-password" name="password" required placeholder="Enter your password">
+          </div>
+          <button type="submit" class="btn btn-dark-gray btn-medium text-medium w-100">Sign In</button>
+        </form>
+
+        <hr class="my-3"/>
+
+        <div class="text-center">
+          <p class="text-medium mb-0">Don't have an account?
+            <%= link_to "Register", new_user_registration_path, class: "text-decoration-underline" %>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

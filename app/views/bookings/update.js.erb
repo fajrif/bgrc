@@ -1,9 +1,6 @@
 $("#forFlashMessage").html("<%= escape_javascript(flash_message2) %>");
-$("#itemLists").html("<%= escape_javascript(render("users/bookings/item_lists")) %>");
-$("#itemListsPayment").html("<%= escape_javascript(render("users/bookings/item_lists_payment")) %>");
-
-// Hide countdown timer after payment
-$("#countdown-timer").hide();
+$("#itemLists").html("<%= escape_javascript(render("bookings/item_lists")) %>");
+$("#itemListsPayment").html("<%= escape_javascript(render("bookings/item_lists_payment")) %>");
 
 $('.modal-popup').magnificPopup({
     type: 'inline',

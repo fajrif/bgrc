@@ -14,7 +14,7 @@
 			<% @bookings.each do |booking| %>
 				<tr>
 						<td>
-              <%= link_to booking.order_id, users_booking_path(booking.order_id), class: "text-black font-weight-500" %>
+              <%= link_to booking.order_id, booking_path(booking.order_id), class: "text-black font-weight-500" %>
 						</td>
 						<td><%= booking.date.strftime('%a %b %d, %Y %I:%M %p') %></td>
 						<td><%= booking.duration_label %></td>

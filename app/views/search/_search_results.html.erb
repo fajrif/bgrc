@@ -25,7 +25,7 @@
       </div>
       <% if @sport %>
         <div class="col-lg-4 col-md-4 text-center text-md-start padding-three-lr">
-          <%= simple_form_for(:booking, :url => users_bookings_url, :method => :post) do %>
+          <%= simple_form_for(:booking, :url => bookings_url, :method => :post) do %>
             <div class="ms-4">
               <h6 class="text-large text-black mb-3">Your Booking Details</h6>
               <input id="date" type="hidden" value="<%= @date %>" name="date">

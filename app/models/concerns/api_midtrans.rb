@@ -39,13 +39,14 @@ class ApiMidtrans
 		request["Connection"] = "keep-alive"
 		request.body = json
 
-		req_options = {
-			use_ssl: uri.scheme == "https",
-		}
-
-		response = Net::HTTP.start(uri.hostname, uri.port, req_options) do |http|
-			http.request(request)
+		http = Net::HTTP.new(uri.hostname, uri.port)
+		http.use_ssl = (uri.scheme == "https")
+		# Disable SSL verification in development to avoid certificate issues
+		if Rails.env.development?
+			http.verify_mode = OpenSSL::SSL::VERIFY_NONE
 		end
+
+		response = http.request(request)
 
 		if response.code == "201"
 			token = JSON.parse(response.body)["token"]

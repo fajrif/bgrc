@@ -1,0 +1,49 @@
+<!-- Payment Status Badge -->
+<% if @booking.is_unpaid? %>
+  <div class="mb-3 p-2 text-center" style="background-color: <%= @booking.within_payment_window? ? '#fff3cd' : '#f8d7da' %>; border-radius: 6px; border: 1px solid <%= @booking.within_payment_window? ? '#ffc107' : '#dc3545' %>;">
+    <small style="color: <%= @booking.within_payment_window? ? '#856404' : '#721c24' %>; font-weight: 600;">
+      STATUS: <%= @booking.within_payment_window? ? 'AWAITING PAYMENT' : 'EXPIRED' %>
+    </small>
+  </div>
+<% elsif @booking.status == Booking::PAID %>
+  <div class="mb-3 p-2 text-center" style="background-color: #d4edda; border-radius: 6px; border: 1px solid #28a745;">
+    <small style="color: #155724; font-weight: 600;">STATUS: PAID ✓</small>
+  </div>
+<% end %>
+
+<ul class="list-style-6 margin-50px-bottom text-medium">
+  <li><strong><%= @booking.get_court_type %></strong><span><%= @booking.price_label %></span></li>
+  <% if @booking.group_class %>
+  <li><strong>Class Name</strong><span class="text-small"><%= @booking.group_class.name_with_pax(@booking.pax) %></span></li>
+  <% end %>
+  <% if @booking.coach %>
+    <li><strong>Coach (<%= @booking.coach.name %>)</strong><span><%= @booking.price_coach_label %></strong></li>
+  <% end %>
+  <% @booking.add_ons.each do |add_on| %>
+    <li><strong><%= add_on.item_with_quantity %></strong><span><%= add_on.total_price_label %></span></li>
+  <% end %>
+  <li class="margin-30px-top font-weight-700"><strong>Total</strong><span><%= @booking.total_price_label %></strong></li>
+</ul>
+<div class="d-flex flex-wrap justify-content-center gap-4">
+  <% if @booking.within_payment_window? %>
+    <%= link_to "Cancel", booking_path(@booking.order_id), class: "btn btn-light-gray btn-small text-medium", method: :delete %>
+    <% if user_signed_in? %>
+      <a href="#" class="btn btn-dark-gray btn-medium text-medium" data-bs-toggle="modal" data-bs-target="#disclaimerModal">Pay</a>
+    <% else %>
+      <a href="#" class="btn btn-dark-gray btn-medium text-medium" data-bs-toggle="modal" data-bs-target="#loginModal">Pay</a>
+    <% end %>
+  <% elsif @booking.payment_window_expired? || @booking.expired? %>
+    <div class="text-center w-100">
+      <p class="text-medium mb-2" style="color: #dc3545;"><strong>The time limit for payment has expired.</strong></p>
+      <%= link_to "Search Again", search_path(sport_id: @booking.court.sport_id), class: "btn btn-light-gray btn-small text-medium" %>
+    </div>
+  <% elsif @booking.cancelled? %>
+    <div class="text-center w-100">
+      <p class="text-medium mb-2" style="color: #6c757d;"><strong>This booking has been cancelled.</strong></p>
+      <%= link_to "Search Again", search_path(sport_id: @booking.court.sport_id), class: "btn btn-light-gray btn-small text-medium" %>
+    </div>
+  <% else %>
+    <%= link_to "View Details", "#modal-popup", class: "btn btn-light-gray btn-small text-medium modal-popup" %>
+    <%= render "bookings/modal_details" %>
+  <% end %>
+</div>

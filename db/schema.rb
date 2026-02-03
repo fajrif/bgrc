@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_07_15_112342) do
+ActiveRecord::Schema[7.1].define(version: 2025_07_16_000002) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -146,6 +146,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_07_15_112342) do
     t.string "order_id", default: "", null: false
     t.integer "group_class_id"
     t.integer "pax", default: 0, null: false
+    t.datetime "expires_at"
     t.index ["court_id"], name: "index_bookings_on_court_id"
     t.index ["user_id"], name: "index_bookings_on_user_id"
   end
@@ -345,6 +346,14 @@ ActiveRecord::Schema[7.1].define(version: 2025_07_15_112342) do
   create_table "roles", force: :cascade do |t|
     t.string "name", default: "", null: false
     t.string "description", default: "", null: false
+  end
+
+  create_table "snippets", force: :cascade do |t|
+    t.string "key", null: false
+    t.string "title", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["key"], name: "index_snippets_on_key", unique: true
   end
 
   create_table "sports", force: :cascade do |t|

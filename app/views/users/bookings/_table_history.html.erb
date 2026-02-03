@@ -12,14 +12,25 @@
 		<tbody>
 			<% @bookings.each do |booking| %>
 				<tr>
-						<td><strong><%= truncate_paragraph(booking.try(:purchase).try(:order_id), 20) %></strong></td>
+						<td><strong><%= booking.order_id %></strong></td>
 						<td class="product">
 							<%= link_to booking.court.name, court_path(booking.court) %>
 						</td>
 						<td><%= booking.date.strftime('%A, %d-%m-%Y %H:%M') %></td>
 						<td><%= booking.duration_label %></td>
 						<td class="ptice"><%= booking.price_label %></td>
-						<td class="<%= booking.is_unpaid? ? 'text-red' : 'text-green' %>"><%= booking.status_label %></td>
+						<td>
+							<% case booking.status %>
+							<% when Booking::PAID %>
+								<span style="color: #28a745; font-weight: bold;"><%= booking.status_label %></span>
+							<% when Booking::EXPIRED %>
+								<span style="color: #dc3545; font-weight: bold;"><%= booking.status_label %></span>
+							<% when Booking::CANCELLED %>
+								<span style="color: #6c757d; font-weight: bold;"><%= booking.status_label %></span>
+							<% else %>
+								<span style="color: #ffc107; font-weight: bold;"><%= booking.status_label %></span>
+							<% end %>
+						</td>
 				</tr>
 			<% end %>
 		</tbody>

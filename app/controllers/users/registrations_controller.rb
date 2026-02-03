@@ -73,7 +73,13 @@ protected
   end
 
   def after_sign_up_path_for(resource)
-    users_account_url
+    if session[:booking_return_url].present?
+      url = session[:booking_return_url]
+      session.delete(:booking_return_url)
+      url
+    else
+      users_account_url
+    end
   end
 
   def after_update_path_for(resource)

@@ -1,0 +1,123 @@
+<div marginwidth="0" marginheight="0" style="background-color:rgb(245,245,245)">
+   <div style="margin:0px;padding:70px 0px;width:100%;background-color:rgb(245,245,245)">
+      <table border="0" cellpadding="0" cellspacing="0" height="100%" width="100%" style="border:0px none!important">
+         <tbody>
+            <tr>
+               <td align="center" valign="top" style="border:0px none!important">
+                  <table border="0" cellpadding="0" cellspacing="0" width="600" style="width:700px;font-family:Helvetica,Arial,sans-serif;border:0px none rgb(220,220,220)!important;border-radius:21px!important;background-color:rgb(255,255,255)">
+                     <tbody style="font-family:Helvetica,Arial,sans-serif">
+                        <tr style="font-family:Helvetica,Arial,sans-serif">
+                           <td align="center" valign="top" style="font-family:Helvetica,Arial,sans-serif;border:0px none!important">
+                              <table border="0" cellpadding="0" cellspacing="0" width="600" style="border-top-style:none;border-right-style:none;border-left-style:none;border-width:0px;font-weight:bold;line-height:100%;vertical-align:middle;font-family:&quot;Helvetica Neue&quot;,Helvetica,Roboto,Arial,sans-serif;width:700px;border-radius:21px 21px 0px 0px!important;background-color:rgb(255,255,255);color:rgb(255,255,255)">
+                                 <tbody style="font-family:&quot;Helvetica Neue&quot;,Helvetica,Roboto,Arial,sans-serif">
+                                    <tr style="font-family:&quot;Helvetica Neue&quot;,Helvetica,Roboto,Arial,sans-serif">
+                                       <td style="display:block;font-family:&quot;Helvetica Neue&quot;,Helvetica,Roboto,Arial,sans-serif;border:0px none!important;padding:36px 48px 0 48px!important">
+                                         <h1 style="font-family:Helvetica,Arial,sans-serif;font-size:26px;font-weight:500;line-height:150%;margin:0px;text-align:center;color:rgb(80,80,80)">Hi <%= @user.full_name %></h1>
+                                       </td>
+                                    </tr>
+                                 </tbody>
+                              </table>
+                           </td>
+                        </tr>
+                        <tr style="font-family:Helvetica,Arial,sans-serif">
+                           <td align="center" valign="top" style="font-family:Helvetica,Arial,sans-serif;border:0px none!important">
+                              <table border="0" cellpadding="0" cellspacing="0" width="600" style="width:700px;font-family:Helvetica,Arial,sans-serif;border:0px none!important;background-color:rgb(255,255,255)">
+                                 <tbody style="font-family:Helvetica,Arial,sans-serif">
+                                    <tr style="font-family:Helvetica,Arial,sans-serif">
+                                       <td valign="top" style="font-family:Helvetica,Arial,sans-serif;border:0px none!important;background-color:rgb(255,255,255)">
+                                          <table border="0" cellpadding="20" cellspacing="0" width="100%" style="font-family:Helvetica,Arial,sans-serif;border:0px none!important;color:rgb(80,80,80)">
+                                             <tbody style="font-family:Helvetica,Arial,sans-serif">
+                                                <tr style="font-family:Helvetica,Arial,sans-serif;color:rgb(80,80,80)">
+                                                   <td valign="top" style="padding:10px 28px 48px 28px;font-size:18px;font-family:Helvetica,Arial,sans-serif;border:0px none!important;background-color:rgb(255,255,255);color:rgb(80,80,80)">
+                                                      <div style="font-family:Helvetica,Arial,sans-serif;font-size:18px;line-height:150%;text-align:left;color:rgb(80,80,80)">
+                                                        <p style="margin:0px 0px 26px;font-size:18px;text-align:center;font-family:Helvetica,Arial,sans-serif;color:rgb(220,53,69)">
+                                                          Your booking has expired
+                                                        </p>
+                                                        <p style="margin:0px 0px 26px;font-size:16px;text-align:center;font-family:Helvetica,Arial,sans-serif;color:rgb(80,80,80)">
+                                                          The 10-minute payment window has expired for the following booking. The court slot has been released and is now available for others to book.
+                                                        </p>
+                                                        <div style="display:flex;justify-content:center;margin-bottom:30px;">
+                                                          <table cellspacing="0" cellpadding="6" style="font-family:&quot;Helvetica Neue&quot;,Helvetica,Roboto,Arial,sans-serif;border-collapse:collapse;border:0px none rgb(229,229,229)!important;color:rgb(80,80,80)">
+                                                            <tbody style="font-family:&quot;Helvetica Neue&quot;,Helvetica,Roboto,Arial,sans-serif">
+                                                              <tr style="font-family:&quot;Helvetica Neue&quot;,Helvetica,Roboto,Arial,sans-serif;color:rgb(80,80,80)">
+                                                                <td style="text-align:left;vertical-align:middle;font-family:&quot;Helvetica Neue&quot;,Helvetica,Roboto,Arial,sans-serif;word-wrap:break-word;padding:0 12px;font-size:16px;background-color:rgb(255,255,255);color:rgb(80,80,80)">
+                                                                  Order ID:
+                                                                </td>
+                                                                <td style="text-align:left;vertical-align:middle;font-family:&quot;Helvetica Neue&quot;,Helvetica,Roboto,Arial,sans-serif;word-wrap:break-word;padding:0 12px;font-size:16px;background-color:rgb(255,255,255);color:rgb(80,80,80)">
+                                                                  <%= @booking.order_id %>
+                                                                </td>
+                                                              </tr>
+                                                              <tr style="font-family:&quot;Helvetica Neue&quot;,Helvetica,Roboto,Arial,sans-serif;color:rgb(80,80,80)">
+                                                                <td style="text-align:left;vertical-align:middle;font-family:&quot;Helvetica Neue&quot;,Helvetica,Roboto,Arial,sans-serif;word-wrap:break-word;padding:0 12px;font-size:16px;background-color:rgb(255,255,255);color:rgb(80,80,80)">
+                                                                  Date &amp; Time:
+                                                                </td>
+                                                                <td style="text-align:left;vertical-align:middle;font-family:&quot;Helvetica Neue&quot;,Helvetica,Roboto,Arial,sans-serif;word-wrap:break-word;padding:0 12px;font-size:16px;background-color:rgb(255,255,255);color:rgb(80,80,80)">
+                                                                  <%= @booking.date.strftime('%A %b %d, %Y %I:%M %p') %> - <%= @booking.end_date.strftime('%I:%M %p') %>
+                                                                </td>
+                                                              </tr>
+                                                              <tr style="font-family:&quot;Helvetica Neue&quot;,Helvetica,Roboto,Arial,sans-serif;color:rgb(80,80,80)">
+                                                                <td style="text-align:left;vertical-align:middle;font-family:&quot;Helvetica Neue&quot;,Helvetica,Roboto,Arial,sans-serif;word-wrap:break-word;padding:0 12px;font-size:16px;background-color:rgb(255,255,255);color:rgb(80,80,80)">
+                                                                  Court:
+                                                                </td>
+                                                                <td style="text-align:left;vertical-align:middle;font-family:&quot;Helvetica Neue&quot;,Helvetica,Roboto,Arial,sans-serif;word-wrap:break-word;padding:0 12px;font-size:16px;background-color:rgb(255,255,255);color:rgb(80,80,80)">
+                                                                  <%= @booking.court.name_label %>
+                                                                </td>
+                                                              </tr>
+                                                              <tr style="font-family:&quot;Helvetica Neue&quot;,Helvetica,Roboto,Arial,sans-serif;color:rgb(80,80,80)">
+                                                                <td style="text-align:left;vertical-align:middle;font-family:&quot;Helvetica Neue&quot;,Helvetica,Roboto,Arial,sans-serif;word-wrap:break-word;padding:0 12px;font-size:16px;background-color:rgb(255,255,255);color:rgb(80,80,80)">
+                                                                  Booking Type:
+                                                                </td>
+                                                                <td style="text-align:left;vertical-align:middle;font-family:&quot;Helvetica Neue&quot;,Helvetica,Roboto,Arial,sans-serif;word-wrap:break-word;padding:0 12px;font-size:16px;background-color:rgb(255,255,255);color:rgb(80,80,80)">
+                                                                  <%= @court_type_label %>
+                                                                </td>
+                                                              </tr>
+                                                            </tbody>
+                                                          </table>
+                                                        </div>
+                                                        <hr/>
+                                                        <div style="margin:20px 0;text-align:center;">
+                                                          <p style="margin:0px 0px 16px;font-size:16px;text-align:center;font-family:Helvetica,Arial,sans-serif;color:rgb(80,80,80)">
+                                                            Would you like to book again? Visit our website to search for available courts.
+                                                          </p>
+                                                        </div>
+                                                      </div>
+                                                   </td>
+                                                </tr>
+                                             </tbody>
+                                          </table>
+                                       </td>
+                                    </tr>
+                                 </tbody>
+                              </table>
+                           </td>
+                        </tr>
+                        <tr style="font-family:Helvetica,Arial,sans-serif">
+                           <td align="center" valign="top" style="font-family:Helvetica,Arial,sans-serif;border:0px none!important">
+                              <table border="0" cellpadding="10" cellspacing="0" width="600" style="width:700px;font-family:Helvetica,Arial,sans-serif;border:0px none!important;border-radius:0px 0px 21px 21px!important;background-color:rgb(255,255,255)">
+                                 <tbody style="font-family:Helvetica,Arial,sans-serif">
+                                    <tr style="font-family:Helvetica,Arial,sans-serif">
+                                       <td valign="top" style="padding:0px;font-family:Helvetica,Arial,sans-serif;border:0px none!important">
+                                          <table border="0" cellpadding="10" cellspacing="0" width="100%" style="font-family:Helvetica,Arial,sans-serif;border:0px none!important">
+                                             <tbody style="font-family:Helvetica,Arial,sans-serif">
+                                                <tr style="font-family:Helvetica,Arial,sans-serif">
+                                                   <td colspan="2" valign="middle" style="padding:0px 48px 48px;font-family:Arial;font-size:12px;line-height:125%;text-align:center;border:0px none!important;color:rgb(135,173,246)">
+                                                     <p style="line-height:1.5;font-size:12px;font-family:Helvetica,Arial,sans-serif;color:rgb(198,198,198)">if you have any queries, please get in touch with us through <a href="mailto:<%= configatron.info_email %>" style="font-weight:normal;text-decoration:underline;font-family:Helvetica,Arial,sans-serif;color:rgb(55,118,240)" target="_blank"><%= configatron.info_email %></a>
+                                                      </p>
+                                                   </td>
+                                                </tr>
+                                             </tbody>
+                                          </table>
+                                       </td>
+                                    </tr>
+                                 </tbody>
+                              </table>
+                           </td>
+                        </tr>
+                     </tbody>
+                  </table>
+               </td>
+            </tr>
+         </tbody>
+      </table>
+   </div>
+</div>

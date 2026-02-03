@@ -1,0 +1,269 @@
+<%= content_for :head do %>
+	<%= stylesheet_link_tag 'quantity_input.css' %>
+	<% if user_signed_in? && @booking.within_payment_window? %>
+		<script type="text/javascript" src="<%= configatron.midtrans_js_file %>" data-client-key="<%= configatron.midtrans_client_key %>"></script>
+	<% end %>
+<% end %>
+
+<!-- start post content section -->
+<section>
+    <div class="container">
+        <div class="row justify-content-center">
+            <article class="col-lg-8 right-sidebar md-margin-60px-bottom sm-margin-40px-bottom">
+                <!-- start post item -->
+                <div class="col-12 blog-post-content margin-60px-bottom sm-margin-30px-bottom text-center text-md-start">
+                    <div class="blog-text border-all d-inline-block w-100">
+                        <div class="content padding-25px-all">
+                            <div class="text-medium margin-15px-bottom alt-font">
+                              <span>Order ID: <%= @booking.order_id %></span>
+                            </div>
+                            <h5 class="text-black text-uppercase alt-font letter-spacing-6 font-weight-600 margin-15px-bottom d-block">Booking Confirmation</h5>
+                            <div class="text-large text-black margin-25px-bottom font-weight-500">
+                              <span><%= @booking.date.strftime('%A %b %d, %Y %I:%M %p') %></span>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;<span><%= @booking.court.name_label %></span>
+                            </div>
+                            <p class="text-medium mb-2"><strong>Duration:</strong> <%= @booking.duration_label %></p>
+
+                            <% if @booking.within_payment_window? %>
+                              <!-- Countdown Timer -->
+                              <div id="countdown-timer" data-expires-at="<%= @booking.expires_at.iso8601 %>" class="mb-3 p-3" style="background-color: #fff3cd; border: 2px solid #ffc107; border-radius: 8px;">
+                                <div class="text-center">
+                                  <p class="mb-2" style="font-size: 14px; color: #856404; font-weight: 500;">Time Remaining to Complete Payment</p>
+                                  <div id="timer-display" style="font-size: 48px; font-weight: bold; color: #dc3545; font-family: monospace; letter-spacing: 3px;">10:00</div>
+                                  <p class="mb-0 mt-2" style="font-size: 12px; color: #856404;">Your booking will be automatically cancelled if payment is not completed</p>
+                                </div>
+                              </div>
+                            <% elsif @booking.payment_window_expired? || @booking.expired? %>
+                              <div class="alert mb-3 p-3" style="background-color: #f8d7da; color: #721c24; border: 2px solid #dc3545; border-radius: 8px;">
+                                <div class="text-center">
+                                  <h6 style="color: #721c24; font-weight: bold; margin-bottom: 10px;">⏰ Payment Time Expired</h6>
+                                  <p class="mb-2"><strong>The 10-minute payment window has ended.</strong></p>
+                                  <p class="mb-0">This booking has been cancelled and the court slot is now available for others.</p>
+                                </div>
+                              </div>
+                              <div class="text-center mt-3">
+                                <a href="<%= search_path(sport_id: @booking.court.sport_id) %>" class="btn btn-primary" style="padding: 10px 30px;">Search for Available Courts</a>
+                              </div>
+                            <% end %>
+
+                            <% if @booking.is_unpaid? && !@booking.payment_window_expired? && !@booking.expired? %>
+                              <p class="text-medium"><strong>Please note:</strong> Bookings cannot be canceled or refunded within 24 hours of your reserved court time.</p>
+                            <% end %>
+                        </div>
+                        <% unless @booking.group_class %>
+                        <div id="itemLists" class="row row-cols-1 m-0 border-top border-color-extra-light-gray">
+                          <%= render "item_lists" %>
+                        </div>
+                        <% end %>
+                    </div>
+                </div>
+                <!-- end post item -->
+            </article>
+            <aside class="col-lg-4">
+                <div class="margin-45px-bottom sm-margin-25px-bottom border padding-25px-all">
+                    <div class="text-extra-dark-gray margin-50px-bottom alt-font text-uppercase font-weight-600 text-medium aside-title"><span>Booking Details</span></div>
+                    <div id="itemListsPayment">
+                      <%= render "item_lists_payment" %>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </div>
+</section>
+<!-- end blog content section -->
+
+<% unless user_signed_in? %>
+  <%= render "login_modal" %>
+<% end %>
+
+<% if user_signed_in? && @booking.within_payment_window? %>
+  <%= render "disclaimer_modal" %>
+<% end %>
+
+<% if @booking.within_payment_window? %>
+<style>
+  #page-lock-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 9999;
+    display: none;
+    justify-content: center;
+    align-items: center;
+  }
+
+  #page-lock-message {
+    background-color: white;
+    padding: 40px;
+    border-radius: 10px;
+    text-align: center;
+    max-width: 500px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  }
+
+  #page-lock-message h3 {
+    color: #dc3545;
+    margin-bottom: 20px;
+    font-size: 24px;
+  }
+
+  #page-lock-message p {
+    color: #333;
+    margin-bottom: 20px;
+    font-size: 16px;
+  }
+
+  .page-locked {
+    pointer-events: none;
+    opacity: 0.5;
+  }
+</style>
+
+<div id="page-lock-overlay">
+  <div id="page-lock-message">
+    <h3>⏰ Payment Time Expired</h3>
+    <p><strong>The 10-minute payment window has ended.</strong></p>
+    <p>This booking has been cancelled and the court slot is now available for others.</p>
+    <div class="spinner-border text-primary" role="status" style="margin: 20px 0;">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <p style="font-size: 14px; color: #666;">Refreshing page...</p>
+  </div>
+</div>
+
+<script>
+  (function() {
+    // Wait for DOM to be ready
+    function initTimer() {
+      var timerEl = document.getElementById('countdown-timer');
+      if (!timerEl) return;
+
+      var expiresAt = new Date(timerEl.getAttribute('data-expires-at')).getTime();
+      var displayEl = document.getElementById('timer-display');
+      var isExpired = false;
+
+      function lockPage() {
+        // Lock the page
+        var overlay = document.getElementById('page-lock-overlay');
+        if (overlay) overlay.style.display = 'flex';
+
+        var section = document.querySelector('section');
+        if (section) section.classList.add('page-locked');
+
+        // Reload page after 3 seconds
+        setTimeout(function() {
+          location.reload();
+        }, 3000);
+      }
+
+      function updateTimer() {
+        var now = new Date().getTime();
+        var remaining = Math.max(0, Math.floor((expiresAt - now) / 1000));
+        var minutes = Math.floor(remaining / 60);
+        var seconds = remaining % 60;
+
+        displayEl.textContent = String(minutes).padStart(2, '0') + ':' + String(seconds).padStart(2, '0');
+
+        // Change timer color based on time remaining
+        if (remaining <= 60) {
+          displayEl.style.color = '#dc3545'; // Red when less than 1 minute
+          displayEl.style.animation = 'pulse 1s infinite';
+        } else if (remaining <= 180) {
+          displayEl.style.color = '#fd7e14'; // Orange when less than 3 minutes
+        } else {
+          displayEl.style.color = '#ffc107'; // Yellow for normal time
+        }
+
+        if (remaining <= 0 && !isExpired) {
+          isExpired = true;
+          clearInterval(timerInterval);
+          lockPage();
+        }
+      }
+
+      updateTimer();
+      var timerInterval = setInterval(updateTimer, 1000);
+    }
+
+    // Initialize when DOM is ready
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initTimer);
+    } else {
+      initTimer();
+    }
+  })();
+</script>
+
+<style>
+  @keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+  }
+</style>
+<% end %>
+
+<% unless user_signed_in? %>
+<script>
+  (function() {
+    function initLoginForm() {
+      var form = document.getElementById('ajax-login-form');
+      if (!form) return;
+
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        var errorEl = document.getElementById('login-error');
+        if (errorEl) {
+          errorEl.style.display = 'none';
+          errorEl.textContent = '';
+        }
+
+        // Get form data
+        var formData = new FormData(form);
+        var urlEncodedData = new URLSearchParams(formData).toString();
+
+        // Make AJAX request
+        fetch('<%= ajax_login_path %>', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
+          },
+          body: urlEncodedData
+        })
+        .then(function(response) {
+          return response.json().then(function(data) {
+            return { ok: response.ok, data: data };
+          });
+        })
+        .then(function(result) {
+          if (result.ok && result.data.success) {
+            location.reload();
+          } else {
+            var msg = result.data.message || 'Invalid email or password.';
+            if (errorEl) {
+              errorEl.textContent = msg;
+              errorEl.style.display = 'block';
+            }
+          }
+        })
+        .catch(function(error) {
+          if (errorEl) {
+            errorEl.textContent = 'An error occurred. Please try again.';
+            errorEl.style.display = 'block';
+          }
+        });
+      });
+    }
+
+    // Initialize when DOM is ready
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initLoginForm);
+    } else {
+      initLoginForm();
+    }
+  })();
+</script>
+<% end %>
