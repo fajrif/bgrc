@@ -25,7 +25,10 @@ class Booking < ApplicationRecord
 	def init_record
     self.order_id = "BOK#{SecureRandom.base58(8)}#{Time.now.to_i}".upcase if self.order_id.blank?
     self.coach_id = nil if self.coach_id.try(:zero?)
-    self.expires_at = Time.now.utc + 10.minutes if self.expires_at.nil?
+    if self.expires_at.nil?
+      db_now = self.class.connection.select_value("SELECT NOW()")
+      self.expires_at = db_now.to_time + 10.minutes
+    end
 	end
 
 	def ensure_end_date_has_value
@@ -82,9 +85,11 @@ class Booking < ApplicationRecord
 	end
 
 	def time_remaining
-		return 0 unless expires_at.present?
-		remaining = (expires_at - Time.current).to_i
-		remaining > 0 ? remaining : 0
+		return 0 unless expires_at.present? && persisted?
+		result = self.class.connection.select_value(
+			"SELECT GREATEST(0, EXTRACT(EPOCH FROM (expires_at - NOW()))::integer) FROM bookings WHERE id = #{id}"
+		)
+		result.to_i
 	end
 
 	def expire!

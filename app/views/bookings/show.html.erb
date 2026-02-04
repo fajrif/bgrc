@@ -43,7 +43,7 @@
                     <div class="text-extra-dark-gray margin-50px-bottom alt-font text-uppercase font-weight-600 text-medium aside-title"><span>Booking Details</span></div>
                     <% if @booking.is_unpaid? %>
                       <!-- Countdown Timer (client-side only, outside AJAX-replaced area) -->
-                      <div id="countdown-timer" data-expires-at="<%= @booking.expires_at.utc.iso8601 %>" data-expire-url="<%= expire_booking_path(@booking.order_id) %>" class="mb-3 p-3" style="background-color: #fff3cd; border: 2px solid #ffc107; border-radius: 8px;">
+                      <div id="countdown-timer" data-time-remaining="<%= @booking.time_remaining %>" data-expire-url="<%= expire_booking_path(@booking.order_id) %>" class="mb-3 p-3" style="background-color: #fff3cd; border: 2px solid #ffc107; border-radius: 8px;">
                         <div class="text-center">
                           <p class="mb-2" style="font-size: 13px; color: #856404; font-weight: 500;">Time Remaining to Complete Payment</p>
                           <div id="timer-display" style="font-size: 38px; font-weight: bold; color: #dc3545; font-family: monospace; letter-spacing: 2px;">--:--</div>
@@ -148,9 +148,8 @@
       var timerEl = document.getElementById('countdown-timer');
       if (!timerEl) return;
 
-      var expiresAtStr = timerEl.getAttribute('data-expires-at');
+      var secondsLeft = parseInt(timerEl.getAttribute('data-time-remaining'), 10);
       var expireUrl = timerEl.getAttribute('data-expire-url');
-      var expiresAt = new Date(expiresAtStr).getTime();
       var displayEl = document.getElementById('timer-display');
       var isExpired = false;
 
@@ -197,28 +196,28 @@
       }
 
       function updateTimer() {
-        var now = new Date().getTime();
-        var remaining = Math.max(0, Math.floor((expiresAt - now) / 1000));
-        var minutes = Math.floor(remaining / 60);
-        var seconds = remaining % 60;
+        var minutes = Math.floor(secondsLeft / 60);
+        var seconds = secondsLeft % 60;
 
         displayEl.textContent = String(minutes).padStart(2, '0') + ':' + String(seconds).padStart(2, '0');
 
-        if (remaining <= 60) {
+        if (secondsLeft <= 60) {
           displayEl.style.color = '#dc3545';
           displayEl.style.animation = 'pulse 1s infinite';
-        } else if (remaining <= 180) {
+        } else if (secondsLeft <= 180) {
           displayEl.style.color = '#fd7e14';
         } else {
           displayEl.style.color = '#ffc107';
         }
 
-        if (remaining <= 0 && !isExpired) {
+        if (secondsLeft <= 0 && !isExpired) {
           isExpired = true;
           clearInterval(timerInterval);
           expireOnServer();
           showExpiredState();
         }
+
+        secondsLeft--;
       }
 
       updateTimer();
