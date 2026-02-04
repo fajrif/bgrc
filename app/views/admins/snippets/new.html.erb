@@ -1,2 +1,10 @@
+<%= content_for :head do %>
+	<link rel="stylesheet" type="text/css" href="https://unpkg.com/trix@2.0.8/dist/trix.css">
+<% end %>
+
+<%= content_for :tail do %>
+	<script type="text/javascript" src="https://unpkg.com/trix@2.0.8/dist/trix.umd.min.js"></script>
+<% end %>
+
 <% title_page("Create New Snippet") %>
 <%= render "form" %>
