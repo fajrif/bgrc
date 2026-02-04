@@ -123,6 +123,7 @@ Rails.application.routes.draw do
 				patch "add_on/:item_id" => "bookings#add_on", :as => :add_on
 				patch "add_quantity/:add_on_id" => "bookings#add_quantity", :as => :add_quantity
 				patch "remove_quantity/:add_on_id" => "bookings#remove_quantity", :as => :remove_quantity
+				post "expire" => "bookings#expire", :as => :expire
 			end
 		end
 

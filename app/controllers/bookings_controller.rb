@@ -1,6 +1,6 @@
 class BookingsController < ApplicationController
-  before_action :set_booking, only: [:show, :add_on, :add_quantity, :remove_quantity, :destroy]
-  before_action :verify_booking_access!, only: [:show, :add_on, :add_quantity, :remove_quantity, :destroy]
+  before_action :set_booking, only: [:show, :add_on, :add_quantity, :remove_quantity, :destroy, :expire]
+  before_action :verify_booking_access!, only: [:show, :add_on, :add_quantity, :remove_quantity, :destroy, :expire]
 
   def create
     Booking.expire_stale_bookings!
@@ -39,8 +39,6 @@ class BookingsController < ApplicationController
   end
 
   def show
-    Booking.expire_stale_bookings!
-
     # Associate guest booking with signed-in user
     if user_signed_in? && @booking.guest? && session_owns_booking?
       @booking.update(user: current_user)
@@ -51,8 +49,15 @@ class BookingsController < ApplicationController
     session[:booking_return_url] = request.fullpath
   end
 
+  def expire
+    if @booking.is_unpaid?
+      @booking.expire!
+    end
+    head :ok
+  end
+
   def add_on
-    if @booking.payment_window_expired?
+    if @booking.expired? || @booking.cancelled?
       head :unprocessable_entity
       return
     end
@@ -74,7 +79,7 @@ class BookingsController < ApplicationController
   end
 
   def add_quantity
-    if @booking.payment_window_expired?
+    if @booking.expired? || @booking.cancelled?
       head :unprocessable_entity
       return
     end
@@ -91,7 +96,7 @@ class BookingsController < ApplicationController
   end
 
   def remove_quantity
-    if @booking.payment_window_expired?
+    if @booking.expired? || @booking.cancelled?
       head :unprocessable_entity
       return
     end

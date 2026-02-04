@@ -1,13 +1,17 @@
 <!-- Payment Status Badge -->
 <% if @booking.is_unpaid? %>
-  <div class="mb-3 p-2 text-center" style="background-color: <%= @booking.within_payment_window? ? '#fff3cd' : '#f8d7da' %>; border-radius: 6px; border: 1px solid <%= @booking.within_payment_window? ? '#ffc107' : '#dc3545' %>;">
-    <small style="color: <%= @booking.within_payment_window? ? '#856404' : '#721c24' %>; font-weight: 600;">
-      STATUS: <%= @booking.within_payment_window? ? 'AWAITING PAYMENT' : 'EXPIRED' %>
+  <div id="payment-status-badge" class="mb-3 p-2 text-center" style="background-color: #fff3cd; border-radius: 6px; border: 1px solid #ffc107;">
+    <small style="color: #856404; font-weight: 600;">
+      STATUS: AWAITING PAYMENT
     </small>
   </div>
 <% elsif @booking.status == Booking::PAID %>
   <div class="mb-3 p-2 text-center" style="background-color: #d4edda; border-radius: 6px; border: 1px solid #28a745;">
     <small style="color: #155724; font-weight: 600;">STATUS: PAID ✓</small>
+  </div>
+<% elsif @booking.expired? %>
+  <div class="mb-3 p-2 text-center" style="background-color: #f8d7da; border-radius: 6px; border: 1px solid #dc3545;">
+    <small style="color: #721c24; font-weight: 600;">STATUS: EXPIRED</small>
   </div>
 <% end %>
 
@@ -25,14 +29,22 @@
   <li class="margin-30px-top font-weight-700"><strong>Total</strong><span><%= @booking.total_price_label %></strong></li>
 </ul>
 <div class="d-flex flex-wrap justify-content-center gap-4">
-  <% if @booking.within_payment_window? %>
-    <%= link_to "Cancel", booking_path(@booking.order_id), class: "btn btn-light-gray btn-small text-medium", method: :delete %>
-    <% if user_signed_in? %>
-      <a href="#" class="btn btn-dark-gray btn-medium text-medium" data-bs-toggle="modal" data-bs-target="#disclaimerModal">Pay</a>
-    <% else %>
-      <a href="#" class="btn btn-dark-gray btn-medium text-medium" data-bs-toggle="modal" data-bs-target="#loginModal">Pay</a>
-    <% end %>
-  <% elsif @booking.payment_window_expired? || @booking.expired? %>
+  <% if @booking.is_unpaid? %>
+    <div id="payment-actions">
+      <%= link_to "Cancel", booking_path(@booking.order_id), class: "btn btn-light-gray btn-small text-medium", method: :delete %>
+      <% if user_signed_in? %>
+        <a href="#" class="btn btn-dark-gray btn-medium text-medium" data-bs-toggle="modal" data-bs-target="#disclaimerModal">Pay</a>
+      <% else %>
+        <a href="#" class="btn btn-dark-gray btn-medium text-medium" data-bs-toggle="modal" data-bs-target="#loginModal">Pay</a>
+      <% end %>
+    </div>
+    <div id="expired-actions" style="display: none;">
+      <div class="text-center w-100">
+        <p class="text-medium mb-2" style="color: #dc3545;"><strong>The time limit for payment has expired.</strong></p>
+        <%= link_to "Search Again", search_path(sport_id: @booking.court.sport_id), class: "btn btn-light-gray btn-small text-medium" %>
+      </div>
+    </div>
+  <% elsif @booking.expired? %>
     <div class="text-center w-100">
       <p class="text-medium mb-2" style="color: #dc3545;"><strong>The time limit for payment has expired.</strong></p>
       <%= link_to "Search Again", search_path(sport_id: @booking.court.sport_id), class: "btn btn-light-gray btn-small text-medium" %>

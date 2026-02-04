@@ -25,7 +25,7 @@ class Booking < ApplicationRecord
 	def init_record
     self.order_id = "BOK#{SecureRandom.base58(8)}#{Time.now.to_i}".upcase if self.order_id.blank?
     self.coach_id = nil if self.coach_id.try(:zero?)
-    self.expires_at = Time.current + 10.minutes if self.expires_at.nil?
+    self.expires_at = Time.now.utc + 10.minutes if self.expires_at.nil?
 	end
 
 	def ensure_end_date_has_value
@@ -62,11 +62,11 @@ class Booking < ApplicationRecord
 	end
 
 	def payment_window_expired?
-		expires_at.present? && Time.current > expires_at && is_unpaid?
+		expired?
 	end
 
 	def within_payment_window?
-		is_unpaid? && !payment_window_expired?
+		is_unpaid?
 	end
 
 	def expired?
@@ -180,7 +180,7 @@ class Booking < ApplicationRecord
 	end
 
 	def self.expire_stale_bookings!
-		Booking.unscoped.where(status: UNPAID).where("expires_at < ?", Time.current).find_each do |booking|
+		Booking.unscoped.where(status: UNPAID).where("expires_at < NOW()").find_each do |booking|
 			booking.expire!
 		end
 	end
