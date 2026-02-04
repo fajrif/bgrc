@@ -30,16 +30,16 @@
   </div>
 <% elsif @booking.payment_window_expired? || @booking.expired? %>
   <div class="content padding-25px-all">
-    <p class="text-medium"><strong>Booked by:</strong> <%= @booking.user.full_name %></p>
-    <p class="text-medium"><strong>Email:</strong> <%= @booking.user.email %></p>
-    <p class="text-medium"><strong>Phone:</strong> <%= @booking.user.phone %></p>
+    <p class="text-medium"><strong>Booked by:</strong> <%= @booking.try(:user).try(:full_name) %></p>
+    <p class="text-medium"><strong>Email:</strong> <%= @booking.try(:user).try(:email) %></p>
+    <p class="text-medium"><strong>Phone:</strong> <%= @booking.try(:user).try(:phone) %></p>
     <p class="text-medium"><strong>Status Payment:</strong> EXPIRED</p>
   </div>
 <% elsif !@booking.is_unpaid? && @booking.user %>
   <div class="content padding-25px-all">
-    <p class="text-medium"><strong>Booked by:</strong> <%= @booking.user.full_name %></p>
-    <p class="text-medium"><strong>Email:</strong> <%= @booking.user.email %></p>
-    <p class="text-medium"><strong>Phone:</strong> <%= @booking.user.phone %></p>
+    <p class="text-medium"><strong>Booked by:</strong> <%= @booking.try(:user).try(:full_name) %></p>
+    <p class="text-medium"><strong>Email:</strong> <%= @booking.try(:user).try(:email) %></p>
+    <p class="text-medium"><strong>Phone:</strong> <%= @booking.try(:user).try(:phone) %></p>
     <p class="text-medium"><strong>Status Payment:</strong> PAID</p>
   </div>
 <% end %>
