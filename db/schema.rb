@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_07_16_000002) do
+ActiveRecord::Schema[7.1].define(version: 2026_04_21_032230) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -341,6 +341,14 @@ ActiveRecord::Schema[7.1].define(version: 2025_07_16_000002) do
     t.string "section", default: "", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "recurring_events", force: :cascade do |t|
+    t.string "title"
+    t.integer "court_id"
+    t.integer "day_of_week"
+    t.string "start_time"
+    t.string "end_time"
   end
 
   create_table "roles", force: :cascade do |t|

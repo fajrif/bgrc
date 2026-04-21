@@ -45,6 +45,10 @@ module ApplicationHelper
     [["2 People, Semi Private", 0], ["4 People, Semi Private", 1]]
   end
 
+  def options_select_pax_simple
+    (1..8).map { |p| ["#{p} Pax", p] }
+  end
+
   def get_visible_fields(court_type)
     court_type == "1" ? 'display:block;' : 'display:none;'
   end

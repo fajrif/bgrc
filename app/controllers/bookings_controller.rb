@@ -22,6 +22,8 @@ class BookingsController < ApplicationController
         )
         unless params[:group_class_id].blank?
           @booking.group_class_id = params[:group_class_id]
+        end
+        unless params[:pax].blank?
           @booking.pax = params[:pax]
         end
         if @booking.save

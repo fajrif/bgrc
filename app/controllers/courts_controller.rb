@@ -18,6 +18,9 @@ class CourtsController < ApplicationController
         @pax = @group_class.min_pax
       end
     end
+    if params[:court_type] == "0" && params[:pax].present?
+      @pax = params[:pax]
+    end
 
     if params[:court_type] == "0"
       price = @court.calculate_price(dates, duration, false)

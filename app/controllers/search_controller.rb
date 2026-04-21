@@ -25,9 +25,25 @@ class SearchController < ApplicationController
     end
 
     if @court
-      @business_hours = JSON[@court.business_hours.map{|bh| { daysOfWeek: [bh.day_code], startTime: bh.open, endTime: bh.close } }]
+      @business_hours = @court.business_hours.map{|bh| { daysOfWeek: [bh.day_code], startTime: bh.open, endTime: bh.close } }
       @bookings = @court.bookings.where("date >= ? AND status NOT IN (?, ?)", @date, Booking::EXPIRED, Booking::CANCELLED)
-      @events = JSON[@bookings.map{|b| {title: 'Booked', editable: false, start: b.date.strftime('%Y-%m-%d %H:%M'), end: b.end_date.strftime('%Y-%m-%d %H:%M') } }]
+      @events = @bookings.map{|b| {title: 'Booked', editable: false, start: b.date.strftime('%Y-%m-%d %H:%M'), end: b.end_date.strftime('%Y-%m-%d %H:%M') }}
+
+      @recurring_events = @court.recurring_events
+      @recurring_events.each do |re|
+        @events << {
+          title: re.title,
+          daysOfWeek: [re.day_of_week.to_s],
+          startTime: re.start_time,
+          endTime: re.end_time,
+          editable: false,
+          selectable: false,
+          className: 'recurring-event-block'
+        }
+      end
+
+      @events = @events.to_json
+      @business_hours = @business_hours.to_json
     end
 
     @selectedDate = DateTime.parse(@date).to_date
@@ -58,6 +74,9 @@ class SearchController < ApplicationController
       else
         @pax = @group_class.min_pax
       end
+    end
+    if @type == "0" || params[:court_type] == "0"
+      @pax = params[:pax].presence || @pax
     end
   end
 

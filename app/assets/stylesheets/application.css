@@ -51,7 +51,17 @@
 	margin-bottom: 2rem;
 }
 .btn-close {
-	--bs-btn-close-color: #fff;
-	opacity: 1;
-	background: none;
+ 	--bs-btn-close-color: #fff;
+ 	opacity: 1;
+ 	background: none;
+ }
+
+.recurring-event-block {
+  background-color: #6c757d !important;
+  border-color: #545b62 !important;
+  color: #fff !important;
+}
+
+.recurring-event-block .fc-event-main {
+  color: #fff !important;
 }

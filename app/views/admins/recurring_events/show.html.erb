@@ -1,0 +1,32 @@
+<% title_page("Recurring Event Details") %>
+<div class="row">
+	<div class="col-md-12 col-sm-12">
+		<div class="card card-box">
+			<div class="card-body">
+        <table class="table table-hover">
+          <tr>
+            <td style="width:15%;"><b>Court</b></td>
+            <td><%= link_to @recurring_event.court.name_label, admins_court_path(@recurring_event.court) %></td>
+          </tr>
+          <tr>
+            <td><b>Title</b></td>
+            <td><%= @recurring_event.title %></td>
+          </tr>
+          <tr>
+            <td><b>Day</b></td>
+            <td><%= @recurring_event.day_name %></td>
+          </tr>
+          <tr>
+            <td><b>Time</b></td>
+            <td><%= @recurring_event.start_time %> - <%= @recurring_event.end_time %></td>
+          </tr>
+        </table>
+				<div class="form-actions">
+					<%= link_to 'Edit', edit_admins_recurring_event_path(@recurring_event.id), :class => 'btn btn-primary' %>
+					<%= link_to 'Destroy', admins_recurring_event_path(@recurring_event.id), :confirm => 'Are you sure?', :method => :delete, :class => 'btn btn-danger' %>
+					<%= link_to 'View All', admins_recurring_events_path, :class => 'btn btn-light' %>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

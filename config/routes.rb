@@ -54,6 +54,7 @@ Rails.application.routes.draw do
 					get "export_all" => "bookings#export_all", :constraints => { :format => :xls }, :as => :export_all
 				end
       end
+      resources :recurring_events
       resources :purchases, :only => [:index, :show, :destroy] do
         member do
           put "settlement" => "purchases#settlement", :as => :settlement

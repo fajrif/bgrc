@@ -23,4 +23,14 @@
       </div>
     </div>
   <% end %>
+<% elsif @type == "0" %>
+<div class="row mt-2">
+  <div class="col-lg-5 d-flex align-items-center">
+    <%= select_tag :pax, options_for_select(options_select_pax_simple, @pax.try(:to_i)), :class => "form-select mb-0", :include_blank => false, id: "court_pax_select", data: { remote: true, url: search_selection_path(court_type: @type, sport_id: @sport.id), method: :get } %>
+  </div>
+  <div class="col-lg-5 d-flex align-items-center">
+  </div>
+  <div class="col-lg-2 text-center">
+  </div>
+</div>
 <% end %>

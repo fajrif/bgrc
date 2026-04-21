@@ -38,11 +38,14 @@ function createEvent(arg, calendar) {
   $.ajax({
     type: "GET",
     url: "/courts/<%= @court.id %>/calculate_price",
-    <%- if @group_class -%>
-    data: {dates: formatDates, duration: duration, court_type: <%= blank_or_not(@type, 0) %>, group_class_id: <%= @group_class.try(:id) %>, pax: <%= @pax %> },
-    <%- else -%>
-    data: {dates: formatDates, duration: duration, court_type: <%= blank_or_not(@type, 0) %> },
-    <%- end -%>
+    data: {
+      dates: formatDates,
+      duration: duration,
+      court_type: <%= blank_or_not(@type, 0) %><% if @group_class %>,
+      group_class_id: <%= @group_class.try(:id) %>,
+      pax: "<%= @pax %>"<% else %>,
+      pax: ($('#court_pax_select').length ? $('#court_pax_select').val() : "")<% end %>
+    },
     success: function(data, textStatus, jqXHR){
       // console.log(textStatus);
       $('#input-book').val(formatDates);

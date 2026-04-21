@@ -7,6 +7,7 @@ class Court < ApplicationRecord
 	has_many :bookings
 	has_many :business_hours, dependent: :destroy
 	has_many :costs, dependent: :destroy
+	has_many :recurring_events, dependent: :destroy
   belongs_to :sport
   belongs_to :court_type
 

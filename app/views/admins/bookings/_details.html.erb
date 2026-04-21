@@ -28,11 +28,17 @@
 		<td><b>Duration</b></td>
 		<td><%= @booking.duration_label %> (<%= @booking.price_label %>)</td>
 	</tr>
-	<tr>
-		<td><b>Court Type</b></td>
-		<td><%= @booking.get_court_type %></td>
-	</tr>
-  <% if @booking.group_class %>
+<tr>
+ 		<td><b>Court Type</b></td>
+ 		<td><%= @booking.get_court_type %></td>
+ 	</tr>
+  <% if @booking.pax && !@booking.group_class %>
+ 	<tr>
+ 		<td><b>Pax</b></td>
+ 		<td><%= @booking.pax %></td>
+ 	</tr>
+   <% end %>
+   <% if @booking.group_class %>
 	<tr>
 		<td><b>Class Name</b></td>
 		<td><%= @booking.group_class.name_with_pax(@booking.pax) %></td>

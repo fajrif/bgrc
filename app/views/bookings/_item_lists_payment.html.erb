@@ -17,6 +17,9 @@
 
 <ul class="list-style-6 margin-50px-bottom text-medium">
   <li><strong><%= @booking.get_court_type %></strong><span><%= @booking.price_label %></span></li>
+  <% if @booking.pax && !@booking.group_class %>
+  <li><strong>Pax</strong><span><%= @booking.pax %></span></li>
+  <% end %>
   <% if @booking.group_class %>
   <li><strong>Class Name</strong><span class="text-small"><%= @booking.group_class.name_with_pax(@booking.pax) %></span></li>
   <% end %>
