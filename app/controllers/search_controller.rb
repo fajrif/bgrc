@@ -76,7 +76,7 @@ class SearchController < ApplicationController
       end
     end
     if @type == "0" || params[:court_type] == "0"
-      @pax = params[:pax].presence || @pax
+      @pax = params[:pax].presence || @pax || 4
     end
   end
 

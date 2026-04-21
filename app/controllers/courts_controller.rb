@@ -18,8 +18,8 @@ class CourtsController < ApplicationController
         @pax = @group_class.min_pax
       end
     end
-    if params[:court_type] == "0" && params[:pax].present?
-      @pax = params[:pax]
+    if params[:court_type] == "0"
+      @pax = params[:pax].presence || 4
     end
 
     if params[:court_type] == "0"

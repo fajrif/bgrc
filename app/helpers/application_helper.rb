@@ -46,7 +46,7 @@ module ApplicationHelper
   end
 
   def options_select_pax_simple
-    (1..8).map { |p| ["#{p} Pax", p] }
+    (1..4).map { |p| ["#{p} Pax", p] }
   end
 
   def get_visible_fields(court_type)
