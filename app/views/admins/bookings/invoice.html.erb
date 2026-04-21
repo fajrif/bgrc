@@ -1,0 +1,133 @@
+<% title_page("Invoice - #{@booking.order_id}") %>
+
+<div class="row">
+  <div class="col-md-12">
+    <div class="card">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">INVOICE</h5>
+        <div>
+          <button class="btn btn-primary" onclick="window.print()">Print</button>
+          <%= link_to "Back to Booking", admins_booking_path(@booking), class: "btn btn-light" %>
+        </div>
+      </div>
+      <div class="card-body" id="invoice-content">
+        <div class="row mb-4">
+          <div class="col-md-6">
+            <h6 class="text-muted mb-2">BALI BEACH COUNTRY CLUB</h6>
+            <p class="mb-0 text-small">Jl. Pantai Kedungu, Tahuna</p>
+            <p class="mb-0 text-small">Bali, Indonesia</p>
+          </div>
+          <div class="col-md-6 text-md-end">
+            <h6 class="text-muted mb-2">INVOICE #<%= @booking.order_id %></h6>
+            <p class="mb-0 text-small">Date: <%= DateTime.now.strftime('%d/%m/%Y %H:%M') %></p>
+          </div>
+        </div>
+
+        <hr>
+
+        <div class="row mb-4">
+          <div class="col-md-6">
+            <h6 class="text-muted mb-2">BILL TO</h6>
+            <p class="mb-0"><strong><%= @booking.user.name %></strong></p>
+            <p class="mb-0 text-small"><%= @booking.user.email %></p>
+          </div>
+        </div>
+
+        <hr>
+
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>Description</th>
+              <th class="text-end">Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <strong>Court Booking</strong><br>
+                <span class="text-small"><%= @booking.court.name_label %></span><br>
+                <span class="text-small">Date: <%= @booking.date.strftime('%d/%m/%Y %H:%M') %> - <%= @booking.end_date.strftime('%H:%M') %></span><br>
+                <span class="text-small">Duration: <%= @booking.duration %> hour(s)</span><br>
+                <span class="text-small">Type: <%= @booking.get_court_type %></span>
+                <% if @booking.pax %>
+                <br><span class="text-small">Pax: <%= @booking.pax %></span>
+                <% end %>
+              </td>
+              <td class="text-end valign-middle">
+                <%= @booking.price_label %>
+              </td>
+            </tr>
+            <% if @booking.price_coach && @booking.price_coach > 0 %>
+            <tr>
+              <td>
+                <strong>Coach</strong><br>
+                <span class="text-small"><%= @booking.coach.name %></span>
+              </td>
+              <td class="text-end">
+                <%= @booking.price_coach_label %>
+              </td>
+            </tr>
+            <% end %>
+            <% if @booking.group_class %>
+            <tr>
+              <td>
+                <strong>Group Class</strong><br>
+                <span class="text-small"><%= @booking.group_class.name %></span>
+              </td>
+              <td class="text-end">
+                <%= @booking.price_label %>
+              </td>
+            </tr>
+            <% end %>
+            <% @booking.add_ons.each do |add_on| %>
+            <tr>
+              <td>
+                <strong><%= add_on.item_with_quantity %></strong>
+              </td>
+              <td class="text-end">
+                <%= add_on.total_price_label %>
+              </td>
+            </tr>
+            <% end %>
+          </tbody>
+          <tfoot>
+            <tr>
+              <th class="text-end">TOTAL</th>
+              <th class="text-end"><%= @booking.total_price_label %></th>
+            </tr>
+          </tfoot>
+        </table>
+
+        <div class="row mt-4">
+          <div class="col-md-12">
+            <div class="alert alert-success mb-0">
+              <strong>Payment Status: PAID (CASHIER)</strong>
+            </div>
+          </div>
+        </div>
+
+        <% if @booking.purchase %>
+        <div class="row mt-3">
+          <div class="col-md-12">
+            <p class="text-small text-muted">
+              Transaction ID: <%= @booking.purchase.transaction_id %><br>
+              Payment Method: CASHIER<br>
+              Paid At: <%= @booking.purchase.created_at.strftime('%d/%m/%Y %H:%M') %>
+            </p>
+          </div>
+        </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+@media print {
+  .no-print { display: none !important; }
+  body { font-size: 12px; }
+  .card { border: none !important; }
+  .card-header { display: none !important; }
+}
+</style>

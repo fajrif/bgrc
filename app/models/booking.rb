@@ -103,6 +103,20 @@ class Booking < ApplicationRecord
 		self.save!
 	end
 
+	def create_purchase_record!
+		Purchase.create!(
+			user: self.user,
+			productable: self,
+			token: "CASHIER-#{SecureRandom.base58(8)}",
+			status_code: "200",
+			status_message: "Cashier Payment",
+			transaction_id: "CASHIER-#{Time.now.to_i}",
+			gross_amount: self.total_price,
+			payment_type: "CASHIER",
+			transaction_status: "settlement"
+		)
+	end
+
 	def duration_label
 		"#{self.duration} hour".pluralize(self.duration)
 	end

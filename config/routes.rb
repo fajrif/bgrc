@@ -52,6 +52,11 @@ Rails.application.routes.draw do
 				collection do
 					get :calendar
 					get "export_all" => "bookings#export_all", :constraints => { :format => :xls }, :as => :export_all
+					get :cashier_booking
+					post :create_cashier_booking
+				end
+				member do
+					get :invoice
 				end
       end
       resources :recurring_events

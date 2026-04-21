@@ -1,0 +1,64 @@
+<% title_page("Cashier Booking") %>
+<div class="row">
+	<div class="col-md-12 col-sm-12">
+		<div class="card card-box">
+			<div class="card-body">
+        <%= form_for @booking, url: create_cashier_booking_admins_bookings_path, method: :post do |f| %>
+          <%= f.hidden_field :court_type, value: 0 %>
+
+          <div class="row mb-4">
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label class="form-label">Court</label>
+                <%= f.collection_select :court_id, @courts, :id, :name_label, { include_blank: "Select Court" }, class: "form-select" %>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label class="form-label">User</label>
+                <%= f.collection_select :user_id, @users, :id, :name_with_email, { include_blank: "Select User" }, class: "form-select" %>
+              </div>
+            </div>
+          </div>
+
+          <div class="row mb-4">
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label class="form-label">Start Date & Time</label>
+                <%= f.text_field :date, class: "form-control datetimepicker", placeholder: "Select date and time" %>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label class="form-label">Duration (hours)</label>
+                <%= f.number_field :duration, class: "form-control", value: 1, min: 1, max: 6 %>
+              </div>
+            </div>
+          </div>
+
+          <div class="row mb-4">
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label class="form-label">Pax (number of people)</label>
+                <%= f.number_field :pax, class: "form-control", value: 1, min: 1, max: 8 %>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <%= f.submit "Create Booking & Payment", class: "btn btn-success" %>
+            <%= link_to "Cancel", admins_bookings_path, class: "btn btn-light" %>
+          </div>
+        <% end %>
+			</div>
+		</div>
+	</div>
+</div>
+
+<%= content_for :tail do %>
+<script>
+  jQuery(document).ready(function($){
+    $(".datetimepicker").flatpickr({"altInput":true, "altFormat": "d/m/Y H:i", "enableTime": true, "minuteIncrement": 15, "disableMobile":true, "dateFormat":"d/m/Y H:i"});
+  });
+</script>
+<% end %>

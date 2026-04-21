@@ -1,5 +1,10 @@
 <% title_page("Edit Booking - Order ID: #{@booking.order_id}") %>
-<% if @booking.purchase %>
+<% if @booking.purchase && @booking.purchase.payment_type == "CASHIER" %>
+<!-- Warning Alert -->
+<div class="alert border-0 alert-success" role="alert">
+  <strong> CASHIER BOOKING </strong> - This booking was created at the cashier with payment
+</div>
+<% elsif @booking.purchase %>
 <!-- Warning Alert -->
 <div class="alert border-0 alert-warning" role="alert">
   <strong> WARNING </strong> this booking created by user and have valid purchase ID

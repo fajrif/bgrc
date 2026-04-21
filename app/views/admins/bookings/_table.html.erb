@@ -34,6 +34,9 @@
           <td>
 						<h5 class="fs-14 mb-1"><%= booking.total_price_label %></h5>
             <p class="<%= booking.is_unpaid? ? 'text-danger' : 'text-success' %> mb-0"><%= booking.status_label %></p>
+            <% if booking.purchase && booking.purchase.payment_type == "CASHIER" %>
+              <span class="badge bg-success">Cashier</span>
+            <% end %>
           </td>
 					<td>
 						<div class="dropdown">
@@ -44,6 +47,18 @@
 								<li>
 									<%= link_to admins_booking_path(booking.id), class: "dropdown-item" do %>
 										<i class="ri-eye-fill align-bottom me-2 text-muted"></i> View
+									<% end %>
+								</li>
+								<% if booking.purchase && booking.purchase.payment_type == "CASHIER" %>
+								<li>
+									<%= link_to invoice_admins_booking_path(booking.id), class: "dropdown-item" do %>
+										<i class="ri-file-text-fill align-bottom me-2 text-muted"></i> Invoice
+									<% end %>
+								</li>
+								<% end %>
+								<li>
+									<%= link_to edit_admins_booking_path(booking.id), class: "dropdown-item" do %>
+										<i class="ri-edit-fill align-bottom me-2 text-muted"></i> Edit
 									<% end %>
 								</li>
 								<li class="dropdown-divider"></li>

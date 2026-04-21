@@ -55,6 +55,10 @@
       <td><b>Purchase ID</b></td>
       <td><b><%= @booking.try(:purchase).try(:transaction_id) %></b></td>
     </tr>
+    <tr>
+      <td><b>Payment Method</b></td>
+      <td><span class="badge bg-<%= @booking.purchase.payment_type == 'CASHIER' ? 'success' : 'info' %>"><%= @booking.purchase.payment_type || 'N/A' %></span></td>
+    </tr>
   <% end %>
 	<tr>
 		<td><b>Payment Status</b></td>

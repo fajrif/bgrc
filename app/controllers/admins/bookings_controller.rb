@@ -1,6 +1,6 @@
 class Admins::BookingsController < Admins::BaseController
 	before_action :set_courts, only: [:calendar]
-	before_action :set_booking, except: [:index, :calendar, :new, :create]
+	before_action :set_booking, except: [:index, :calendar, :new, :create, :cashier_booking, :create_cashier_booking]
 
   def index
     criteria = Booking.where("order_id ILIKE ?", "%#{params[:search]}%")
@@ -63,6 +63,47 @@ class Admins::BookingsController < Admins::BaseController
     end
   end
 
+  def cashier_booking
+    @booking = Booking.new
+    @courts = Court.all
+    @users = User.all.order(name: :asc)
+    @sports = Sport.all
+  end
+
+  def create_cashier_booking
+    @booking = Booking.new(params_booking)
+    @booking.status = Booking::PAID
+
+    if @booking.valid?
+      if Booking.check_available_dates?(@booking.court.id, @booking.date.try(:strftime,'%d/%m/%Y %H:%M'), @booking.duration)
+        if @booking.save
+          @booking.create_purchase_record!
+          redirect_to invoice_admins_booking_path(@booking.id), :notice => "Successfully created cashier booking."
+        else
+          @courts = Court.all
+          @users = User.all.order(name: :asc)
+          @sports = Sport.all
+          render :cashier_booking
+        end
+      else
+        flash.now[:alert] = 'Booking date not available'
+        @courts = Court.all
+        @users = User.all.order(name: :asc)
+        @sports = Sport.all
+        render :cashier_booking
+      end
+    else
+      @courts = Court.all
+      @users = User.all.order(name: :asc)
+      @sports = Sport.all
+      render :cashier_booking
+    end
+  end
+
+  def invoice
+    @booking = Booking.find(params[:id])
+  end
+
   def show
   end
 
@@ -90,7 +131,7 @@ class Admins::BookingsController < Admins::BaseController
   private
 
   def params_booking
-    params.require(:booking).permit(:user_id, :court_id, :coach_id, :date, :duration, :end_date, :status, :court_type, :class_type)
+    params.require(:booking).permit(:user_id, :court_id, :coach_id, :date, :duration, :end_date, :status, :court_type, :class_type, :pax, :group_class_id)
   end
 
   def set_booking
