@@ -2,7 +2,7 @@
 	<script src="https://www.google.com/recaptcha/api.js?render=<%= configatron.recaptcha_v3_site_key %>"></script>
 <% end %>
 
-<%= render "home/banner" %>
+<%= render "shared/small_banner", title: "Contact", page_name: "Contact" %>
 <!-- start contact section -->
 <section class="wow animate__fadeIn">
   <div class="container">
@@ -12,7 +12,7 @@
         <!-- start features box item -->
         <div class="col md-margin-50px-bottom sm-margin-40px-bottom wow animate__fadeInUp last-paragraph-no-margin">
             <div class="feature-box-5 position-relative">
-                <i class="icon-map text-medium-gray icon-medium"></i>
+                <i class="icon-map text-medium icon-medium"></i>
                 <div class="feature-content">
                     <p class="d-inline-block w-75 lg-w-100 xs-w-90"><%= raw(configatron.location_address) %></p>
                 </div>
@@ -22,7 +22,7 @@
         <!-- start features box item -->
         <div class="col md-margin-50px-bottom sm-margin-40px-bottom wow animate__fadeInUp last-paragraph-no-margin" data-wow-delay="0.2s">
             <div class="feature-box-5 position-relative">
-                <i class="icon-phone text-medium-gray icon-medium"></i>
+                <i class="icon-phone text-medium icon-medium"></i>
                 <div class="feature-content">
                     <p class="d-inline-block w-75 lg-w-100 xs-w-90">
                       <strong>Phone:</strong> <%= configatron.company_phone1 %><br/>
@@ -35,7 +35,7 @@
         <!-- start features box item -->
         <div class="col wow animate__fadeInUp last-paragraph-no-margin" data-wow-delay="0.4s">
             <div class="feature-box-5 position-relative">
-                <i class="icon-envelope text-medium-gray icon-medium"></i>
+                <i class="icon-envelope text-medium icon-medium"></i>
                 <div class="feature-content">
                     <p class="d-inline-block w-75 lg-w-100 xs-w-90">
                       <strong>Email:</strong> <%= configatron.admin_email %>

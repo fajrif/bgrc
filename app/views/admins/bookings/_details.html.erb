@@ -62,7 +62,12 @@
   <% end %>
 	<tr>
 		<td><b>Payment Status</b></td>
-    <td><span class="<%= @booking.is_unpaid? ? 'text-danger' : 'text-success' %>"><%= @booking.status_label %></span></td>
+    <td>
+      <span class="<%= @booking.is_unpaid? ? 'text-danger' : 'text-success' %>"><%= @booking.status_label %></span>
+      <% if @booking.refunded? %>
+        <span class="badge bg-warning text-dark ms-1">Refunded</span>
+      <% end %>
+    </td>
 	</tr>
 	<tr>
 		<td><b>Payment Total</b></td>

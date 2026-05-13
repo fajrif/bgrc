@@ -34,5 +34,6 @@ jQuery(document).ready(function($){
 
 	// Flatpickr
 	$(".datepicker").flatpickr({"altInput":true, "altFormat": "d/m/Y", "enableTime": false, "disableMobile":true, "dateFormat":"d/m/Y"});
-	$(".datecourtpicker").flatpickr({"altInput":true, minDate: new Date(), "altFormat": "d/m/Y", "enableTime": false, "disableMobile":true, "dateFormat":"d/m/Y"});
+	var maxBookingDate = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000);
+	$(".datecourtpicker").flatpickr({"altInput":true, minDate: "today", maxDate: maxBookingDate, "altFormat": "d/m/Y", "enableTime": false, "disableMobile":true, "dateFormat":"d/m/Y"});
 });

@@ -1,0 +1,156 @@
+<!-- start page title -->
+<section class="page-title-small bg-extra-dark-gray">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-12 col-md-8">
+        <h6 class="alt-font text-white mb-1"><%= @group_class.name %></h6>
+        <% if @sport %>
+          <p class="text-medium text-small mb-0"><%= @sport.name %> &nbsp;&middot;&nbsp; <%= @group_class.category_label %></p>
+        <% end %>
+      </div>
+      <div class="col-12 col-md-4 text-md-end mt-2 mt-md-0">
+        <%= link_to "&#8592; All Classes".html_safe, group_classes_path, class: "btn btn-outline-light btn-small text-extra-small" %>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- end page title -->
+
+<section class="pt-2 pb-5">
+  <div class="container">
+    <div class="row">
+      <!-- class details -->
+      <div class="col-lg-5 col-md-6 mb-4 mb-md-0">
+        <h6 class="alt-font text-extra-dark-gray mb-3"><%= @group_class.name %></h6>
+
+        <% if @group_class.description.present? %>
+          <div class="text-medium mb-4"><%= raw @group_class.description %></div>
+        <% end %>
+
+        <table class="table table-borderless">
+          <tr>
+            <td class="text-medium ps-0" style="width:40%;">Category</td>
+            <td><span class="badge bg-secondary"><%= @group_class.category_label %></span></td>
+          </tr>
+          <% if @sport %>
+          <tr>
+            <td class="text-medium ps-0">Sport</td>
+            <td><%= @sport.name %></td>
+          </tr>
+          <% end %>
+          <tr>
+            <td class="text-medium ps-0">Duration</td>
+            <td><%= @group_class.duration_label %></td>
+          </tr>
+          <tr>
+            <td class="text-medium ps-0">Pax</td>
+            <td><%= @group_class.min_pax %>–<%= @group_class.max_pax %> pax</td>
+          </tr>
+          <tr>
+            <td class="text-medium ps-0">Base Price</td>
+            <td><strong><%= @group_class.check_price(@group_class.min_pax) %></strong></td>
+          </tr>
+          <% if @group_class.has_additional_pax? %>
+          <tr>
+            <td class="text-medium ps-0">Additional Pax</td>
+            <td><%= @group_class.price_pax_label %></td>
+          </tr>
+          <% end %>
+          <% if @group_class.notes.present? %>
+          <tr>
+            <td class="text-medium ps-0">Notes</td>
+            <td><%= @group_class.notes %></td>
+          </tr>
+          <% end %>
+        </table>
+      </div>
+
+      <!-- registration panel -->
+      <div class="col-lg-7 col-md-6">
+        <% if @group_class.is_prescheduled? %>
+          <%= render "search/prescheduled_class_panel" %>
+        <% else %>
+          <!-- non-prescheduled: pack size + pax form -->
+          <div class="card border-0 box-shadow p-4">
+            <h6 class="alt-font text-extra-dark-gray mb-3">Register for this Class</h6>
+
+            <% packs = @group_class.group_class_packs.to_a %>
+            <% pack_price_map = packs.each_with_object({}) { |p, h| h[p.sessions_count.to_s] = p.price_label } %>
+
+            <%= form_tag class_credit_purchases_path, method: :post do %>
+              <input type="hidden" name="class_credit_purchase[group_class_id]" value="<%= @group_class.id %>">
+
+              <% if packs.any? %>
+                <p class="fw-bold mb-2">Choose Pack Size</p>
+                <div class="mb-3">
+                  <% packs.each_with_index do |pack, i| %>
+                    <div class="d-flex align-items-center gap-2 mb-2">
+                      <input type="radio" name="class_credit_purchase[sessions_count]"
+                             id="pack_<%= pack.id %>" value="<%= pack.sessions_count %>"
+                             class="gc_pack_radio" <%= 'checked' if i == 0 %>
+                             style="width:18px;height:18px;flex-shrink:0;margin-bottom:0">
+                      <label for="pack_<%= pack.id %>" style="margin:0;cursor:pointer;">
+                        <%= pack.display_label %> — <%= pack.price_label %>
+                      </label>
+                    </div>
+                  <% end %>
+                </div>
+              <% else %>
+                <input type="hidden" name="class_credit_purchase[sessions_count]" value="1">
+              <% end %>
+
+              <% if @group_class.pax_managed? %>
+                <% pax_price_map = (@group_class.min_pax..@group_class.max_pax).each_with_object({}) { |p, h| h[p] = @group_class.check_price(p) } %>
+                <p class="fw-bold mb-2">Number of Pax</p>
+                <div class="mb-3">
+                  <%= select_tag "class_credit_purchase[pax]",
+                        options_for_select(options_select_pax(@group_class.min_pax, @group_class.max_pax), @group_class.min_pax),
+                        class: "form-select", id: "gc_pax_select" %>
+                </div>
+              <% end %>
+
+              <% initial_price = packs.any? ? packs.first.price_label : @group_class.check_price(@group_class.min_pax) %>
+              <% if packs.any? || @group_class.pax_managed? %>
+                <div class="d-flex justify-content-between align-items-center mb-3 p-3 bg-light rounded">
+                  <span class="text-medium text-small">Total Price</span>
+                  <strong id="gc_price_display" class="alt-font"><%= initial_price %></strong>
+                </div>
+                <script>
+                  (function() {
+                    var packPriceMap = <%= raw pack_price_map.to_json %>;
+                    var paxPriceMap  = <%= raw (defined?(pax_price_map) ? pax_price_map : {}).to_json %>;
+                    var display = document.getElementById('gc_price_display');
+
+                    document.querySelectorAll('.gc_pack_radio').forEach(function(radio) {
+                      radio.addEventListener('change', function() {
+                        if (display) display.textContent = packPriceMap[this.value] || '';
+                      });
+                    });
+
+                    var paxSel = document.getElementById('gc_pax_select');
+                    if (paxSel && display) {
+                      paxSel.addEventListener('change', function() {
+                        var checkedPack = document.querySelector('.gc_pack_radio:checked');
+                        if (checkedPack) {
+                          display.textContent = packPriceMap[checkedPack.value] || '';
+                        } else {
+                          display.textContent = paxPriceMap[parseInt(this.value)] || '';
+                        }
+                      });
+                    }
+                  })();
+                </script>
+              <% end %>
+
+              <p class="text-muted small mb-3">Credits valid for 2 months from purchase date.</p>
+
+              <button type="submit" class="btn btn-dark w-100 text-uppercase letter-spacing-1 text-extra-small text-white">
+                Register &amp; Buy Credits
+              </button>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</section>

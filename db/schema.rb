@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_04_21_032230) do
+ActiveRecord::Schema[7.1].define(version: 2026_05_13_090000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -147,6 +147,9 @@ ActiveRecord::Schema[7.1].define(version: 2026_04_21_032230) do
     t.integer "group_class_id"
     t.integer "pax", default: 0, null: false
     t.datetime "expires_at"
+    t.integer "class_credit_purchase_id"
+    t.integer "reschedule_count", default: 0, null: false
+    t.boolean "refunded", default: false, null: false
     t.index ["court_id"], name: "index_bookings_on_court_id"
     t.index ["user_id"], name: "index_bookings_on_user_id"
   end
@@ -162,6 +165,22 @@ ActiveRecord::Schema[7.1].define(version: 2026_04_21_032230) do
 
   create_table "categories", force: :cascade do |t|
     t.jsonb "name", default: {}
+  end
+
+  create_table "class_credit_purchases", force: :cascade do |t|
+    t.integer "user_id"
+    t.integer "group_class_id", null: false
+    t.integer "sessions_count", default: 1, null: false
+    t.decimal "price_paid", precision: 15, scale: 2, default: "0.0"
+    t.datetime "purchase_date"
+    t.integer "status", default: 0, null: false
+    t.string "order_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.datetime "expires_at"
+    t.datetime "initial_session_date"
+    t.index ["order_id"], name: "index_class_credit_purchases_on_order_id", unique: true
+    t.index ["user_id", "group_class_id"], name: "index_class_credit_purchases_on_user_id_and_group_class_id"
   end
 
   create_table "coaches", force: :cascade do |t|
@@ -202,6 +221,19 @@ ActiveRecord::Schema[7.1].define(version: 2026_04_21_032230) do
     t.index ["sport_id"], name: "index_courts_on_sport_id"
   end
 
+  create_table "event_rsvps", force: :cascade do |t|
+    t.bigint "recurring_event_id", null: false
+    t.string "full_name"
+    t.string "email"
+    t.string "phone"
+    t.date "dob"
+    t.string "gender"
+    t.text "address"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["recurring_event_id"], name: "index_event_rsvps_on_recurring_event_id"
+  end
+
   create_table "events", force: :cascade do |t|
     t.jsonb "name", default: {}
     t.jsonb "short_description", default: {}
@@ -211,6 +243,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_04_21_032230) do
     t.bigint "sport_id"
     t.jsonb "slug", default: {}
     t.integer "featured", default: 0, null: false
+    t.integer "capacity", default: 0
     t.index ["name"], name: "index_events_on_name", unique: true
     t.index ["slug"], name: "index_events_on_slug", unique: true
     t.index ["sport_id"], name: "index_events_on_sport_id"
@@ -238,6 +271,29 @@ ActiveRecord::Schema[7.1].define(version: 2026_04_21_032230) do
     t.index ["sluggable_type", "sluggable_id"], name: "index_friendly_id_slugs_on_sluggable_type_and_sluggable_id"
   end
 
+  create_table "group_class_packs", force: :cascade do |t|
+    t.bigint "group_class_id", null: false
+    t.integer "sessions_count", null: false
+    t.decimal "price", precision: 12, scale: 2, null: false
+    t.string "label"
+    t.integer "position", default: 0
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["group_class_id"], name: "index_group_class_packs_on_group_class_id"
+  end
+
+  create_table "group_class_schedules", force: :cascade do |t|
+    t.bigint "group_class_id", null: false
+    t.bigint "court_id", null: false
+    t.integer "day_of_week", null: false
+    t.string "start_time", null: false
+    t.string "end_time", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["court_id"], name: "index_group_class_schedules_on_court_id"
+    t.index ["group_class_id"], name: "index_group_class_schedules_on_group_class_id"
+  end
+
   create_table "group_classes", force: :cascade do |t|
     t.string "name", default: "", null: false
     t.integer "min_duration", default: 1, null: false
@@ -251,6 +307,12 @@ ActiveRecord::Schema[7.1].define(version: 2026_04_21_032230) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "order_no"
+    t.string "category"
+    t.integer "sport_id"
+    t.boolean "is_prescheduled", default: false
+    t.integer "min_pack_sessions", default: 1
+    t.integer "max_pack_sessions", default: 1
+    t.string "calendar_color", default: "#0d6efd"
   end
 
   create_table "inquiries", force: :cascade do |t|
@@ -349,6 +411,11 @@ ActiveRecord::Schema[7.1].define(version: 2026_04_21_032230) do
     t.integer "day_of_week"
     t.string "start_time"
     t.string "end_time"
+    t.date "specific_date"
+    t.text "description"
+    t.integer "capacity", default: 0
+    t.text "short_description"
+    t.boolean "active", default: true, null: false
   end
 
   create_table "roles", force: :cascade do |t|
@@ -413,4 +480,8 @@ ActiveRecord::Schema[7.1].define(version: 2026_04_21_032230) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "event_rsvps", "events", column: "recurring_event_id"
+  add_foreign_key "group_class_packs", "group_classes"
+  add_foreign_key "group_class_schedules", "courts"
+  add_foreign_key "group_class_schedules", "group_classes"
 end

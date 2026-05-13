@@ -12,6 +12,7 @@ class Booking < ApplicationRecord
 	belongs_to :court
 	belongs_to :coach, optional: true
 	belongs_to :group_class, optional: true
+	belongs_to :class_credit_purchase, optional: true
 	has_one :purchase, as: :productable
   has_many :add_ons
 
@@ -122,6 +123,7 @@ class Booking < ApplicationRecord
 	end
 
 	def status_label
+		return "Refunded" if refunded?
 		case self.status
 		when PAID then "Paid"
 		when EXPIRED then "Expired"
@@ -178,23 +180,44 @@ class Booking < ApplicationRecord
 	# check the date and time
 	def self.check_available_dates?(court_id, dates, duration, not_in_id=0)
 		status = true
-		arr_dates = []
-		duration.to_i.times do |i|
-			arr_dates << (DateTime::strptime(dates,"%d/%m/%Y %H:%M") + i.hour).strftime("%d/%m/%Y %H:%M")
-		end
-		books = Booking.where("id <> ? AND court_id = ? AND status NOT IN (?, ?) AND date BETWEEN ? AND ?", not_in_id, court_id, EXPIRED, CANCELLED, DateTime::strptime(dates,"%d/%m/%Y").beginning_of_day, DateTime::strptime(dates,"%d/%m/%Y").end_of_day)
+		parsed = DateTime::strptime(dates, "%d/%m/%Y %H:%M")
+		arr_dates = duration.to_i.times.map { |i| (parsed + i.hour).strftime("%d/%m/%Y %H:%M") }
+
+		books = Booking.where("id <> ? AND court_id = ? AND status NOT IN (?, ?) AND date BETWEEN ? AND ?",
+		                      not_in_id, court_id, EXPIRED, CANCELLED,
+		                      parsed.beginning_of_day, parsed.end_of_day)
 		unless books.empty?
 			arr = []
 			books.each do |b|
-				b.duration.times do |i|
-					arr << (b.date + i.hour).strftime("%d/%m/%Y %H:%M")
+				b.duration.times { |i| arr << (b.date + i.hour).strftime("%d/%m/%Y %H:%M") }
+			end
+			status = false unless (arr & arr_dates).empty?
+		end
+
+		if status
+			# Check RecurringEvents (court-blocking events/ceremonies)
+			blocks = RecurringEvent.where(active: true, court_id: court_id)
+			          .where("(specific_date IS NULL AND day_of_week = ?) OR specific_date = ?", parsed.wday, parsed.to_date)
+			# Also check GroupClassSchedules (prescheduled group class slots)
+			class_schedules = GroupClassSchedule.where(court_id: court_id, day_of_week: parsed.wday)
+			(blocks.to_a + class_schedules.to_a).each do |re|
+				re_start = parsed.strftime("%Y-%m-%d") + "T" + re.start_time
+				re_end   = parsed.strftime("%Y-%m-%d") + "T" + re.end_time
+				re_start_dt = DateTime.parse(re_start)
+				re_end_dt   = DateTime.parse(re_end)
+				re_slots = []
+				slot = re_start_dt
+				while slot < re_end_dt
+					re_slots << slot.strftime("%d/%m/%Y %H:%M")
+					slot += 1.hour
+				end
+				unless (re_slots & arr_dates).empty?
+					status = false
+					break
 				end
 			end
-			intersection = arr & arr_dates
-			unless intersection.empty?
-				status = false
-			end
 		end
+
 		return status
 	end
 

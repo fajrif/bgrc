@@ -1,0 +1,31 @@
+<!-- start banner section -->
+<section class="big-section wow animate__fadeIn cover-background background-position-top top-space overflow-visible" style="background-image:url('<%= image_url('banners/banner-home.png') %>');">
+    <div class="opacity-medium bg-extra-dark-gray"></div>
+    <div class="container position-relative">
+      <div class="row justify-content-center align-items-center">
+          <div class="col-12 position-relative bg-white box-shadow">
+            <form action="<%= search_path %>" method="GET">
+              <div class="d-flex flex-wrap align-items-stretch">
+                <div class="col-12 col-md-5 p-3" style="border-right: 1px solid #f0f0f0;">
+                  <p class="text-extra-small text-medium mb-1 text-uppercase letter-spacing-1">Select Category</p>
+                  <select name="sport_id" class="form-select border-0 p-0 alt-font text-medium" style="font-size:1rem;">
+                    <option value="" disabled selected>Choose your category here</option>
+                    <% Sport.all.order(:name).each do |sport| %>
+                      <option value="<%= sport.id %>"><%= sport.name %></option>
+                    <% end %>
+                  </select>
+                </div>
+                <div class="col-12 col-md-5 p-3" style="border-right: 1px solid #f0f0f0;">
+                  <p class="text-extra-small text-medium mb-1 text-uppercase letter-spacing-1">Select Date</p>
+                  <input type="text" name="date" class="datecourtpicker form-control border-0 p-0 alt-font text-medium mb-0" placeholder="Select date" style="font-size:1rem;" autocomplete="off">
+                </div>
+                <div class="col-12 col-md-2 d-flex align-items-center p-3">
+                  <button type="submit" class="btn btn-dark w-100 text-uppercase letter-spacing-2 text-extra-small text-white">Check Availability</button>
+                </div>
+              </div>
+            </form>
+          </div>
+      </div>
+    </div>
+</section>
+<!-- end banner section -->

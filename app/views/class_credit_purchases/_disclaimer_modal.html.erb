@@ -1,0 +1,69 @@
+<!-- Disclaimer Modal -->
+<div class="modal fade" id="creditDisclaimerModal" tabindex="-1" aria-labelledby="creditDisclaimerModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="creditDisclaimerModalLabel">Terms & Conditions</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <% if snippet = Snippet.find_by_key("cancellation_policy") %>
+          <h6 class="text-black font-weight-600 mb-2"><%= snippet.title %></h6>
+          <div class="text-medium mb-4"><%= snippet.content %></div>
+        <% end %>
+
+        <% if snippet = Snippet.find_by_key("refund_policy") %>
+          <h6 class="text-black font-weight-600 mb-2"><%= snippet.title %></h6>
+          <div class="text-medium mb-4"><%= snippet.content %></div>
+        <% end %>
+
+        <% if snippet = Snippet.find_by_key("terms_and_conditions") %>
+          <h6 class="text-black font-weight-600 mb-2"><%= snippet.title %></h6>
+          <div class="text-medium mb-4"><%= snippet.content %></div>
+        <% end %>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-light-gray btn-small text-medium" data-bs-dismiss="modal">Cancel</button>
+        <a href="#" id="btn-agree-pay-credits" class="btn btn-dark-gray btn-medium text-medium">I Agree & Pay</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function() {
+    function initCreditDisclaimerButton() {
+      var button = document.getElementById('btn-agree-pay-credits');
+      if (!button) return;
+
+      button.addEventListener('click', function(e) {
+        e.preventDefault();
+
+        var modalEl = document.getElementById('creditDisclaimerModal');
+        if (modalEl && typeof bootstrap !== 'undefined') {
+          var modal = bootstrap.Modal.getInstance(modalEl);
+          if (modal) modal.hide();
+        }
+
+        $.ajax({
+          url: '<%= initiate_payment_class_credit_purchase_path(@credit_purchase) %>',
+          type: 'GET',
+          dataType: 'script',
+          beforeSend: function(xhr) {
+            xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'));
+          },
+          error: function(xhr, status, error) {
+            console.error('Payment error:', error);
+            alert('An error occurred while processing payment. Please try again.');
+          }
+        });
+      });
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initCreditDisclaimerButton);
+    } else {
+      initCreditDisclaimerButton();
+    }
+  })();
+</script>

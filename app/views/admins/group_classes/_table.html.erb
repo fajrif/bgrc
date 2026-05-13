@@ -4,8 +4,11 @@
 			<tr>
 				<th class="text-center">ID</th>
 				<th>Name</th>
+				<th>Category</th>
+				<th>Sport</th>
 				<th>Price</th>
 				<th>Capacity</th>
+				<th class="text-center">Prescheduled</th>
 				<th class="text-center">Min.Duration</th>
 				<th>Action</th>
 			</tr>
@@ -17,13 +20,21 @@
 					<td>
 						<h5 class="fs-14 mb-1"><%= link_to gc.name, admins_group_class_path(gc), class: "text-body" %></h5>
 					</td>
+					<td><span class="badge bg-info-subtle text-info"><%= gc.category_label %></span></td>
+					<td><%= gc.try(:sport).try(:name) || "—" %></td>
 					<td>
 						<h5 class="fs-14 mb-1"><%= gc.price_label %></h5>
 						<span class="text-muted"><%= gc.price_pax_label %></span>
 					</td>
 					<td>
-						<span class="text-muted">Min: <%= gc.min_pax %></span>
-						<span class="text-muted">Max: <%= gc.max_pax %></span>
+						<span class="text-muted">Min: <%= gc.min_pax %> / Max: <%= gc.max_pax %></span>
+					</td>
+					<td class="text-center">
+						<% if gc.is_prescheduled? %>
+							<span class="badge bg-success">Yes</span>
+						<% else %>
+							<span class="badge bg-secondary">No</span>
+						<% end %>
 					</td>
           <td class="text-center"><%= gc.duration_label %></td>
 					<td>

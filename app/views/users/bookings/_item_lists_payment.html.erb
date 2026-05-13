@@ -18,5 +18,6 @@
   <% else %>
     <%= link_to "View Details", "#modal-popup", class: "btn btn-light-gray btn-small text-medium modal-popup" %>
     <%= render "users/bookings/modal_details" %>
+    <%= link_to "Invoice", invoice_booking_path(@booking), class: "btn btn-info btn-small text-medium" %>
   <% end %>
 </div>

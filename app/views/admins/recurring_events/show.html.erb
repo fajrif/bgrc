@@ -3,9 +3,15 @@
 	<div class="col-md-12 col-sm-12">
 		<div class="card card-box">
 			<div class="card-body">
+        <% if @recurring_event.image.attached? %>
+          <div class="mb-4">
+            <%= image_tag @recurring_event.image.variant(resize_to_fill: [300, 180]), class: "img-thumbnail rounded" %>
+          </div>
+        <% end %>
+
         <table class="table table-hover">
           <tr>
-            <td style="width:15%;"><b>Court</b></td>
+            <td style="width:20%;"><b>Court</b></td>
             <td><%= link_to @recurring_event.court.name_label, admins_court_path(@recurring_event.court) %></td>
           </tr>
           <tr>
@@ -13,14 +19,65 @@
             <td><%= @recurring_event.title %></td>
           </tr>
           <tr>
-            <td><b>Day</b></td>
-            <td><%= @recurring_event.day_name %></td>
+            <td><b>Schedule</b></td>
+            <td>
+              <% if @recurring_event.one_time? %>
+                <span class="badge bg-warning text-dark">One-time</span>
+                <%= @recurring_event.specific_date.strftime("%A, %d %b %Y") %>
+              <% else %>
+                <span class="badge bg-info text-dark">Recurring</span>
+                Every <%= @recurring_event.day_name %>
+              <% end %>
+            </td>
           </tr>
           <tr>
             <td><b>Time</b></td>
-            <td><%= @recurring_event.start_time %> - <%= @recurring_event.end_time %></td>
+            <td><%= @recurring_event.start_time %> – <%= @recurring_event.end_time %></td>
           </tr>
+          <tr>
+            <td><b>Status</b></td>
+            <td>
+              <% if @recurring_event.active? %>
+                <span class="badge bg-success-subtle text-success">Active</span>
+              <% else %>
+                <span class="badge bg-danger-subtle text-danger">Inactive</span>
+              <% end %>
+            </td>
+          </tr>
+          <tr>
+            <td><b>Capacity</b></td>
+            <td><%= @recurring_event.capacity == 0 ? "Unlimited" : "#{@recurring_event.event_rsvps.count} / #{@recurring_event.capacity}" %></td>
+          </tr>
+          <% if @recurring_event.short_description.present? %>
+          <tr>
+            <td><b>Short Desc</b></td>
+            <td><%= @recurring_event.short_description %></td>
+          </tr>
+          <% end %>
+          <% if @recurring_event.description.present? %>
+          <tr>
+            <td><b>Description</b></td>
+            <td><%= raw @recurring_event.description %></td>
+          </tr>
+          <% end %>
         </table>
+        <% if @recurring_event.event_rsvps.any? %>
+          <h6 class="mt-4 mb-2">RSVPs (<%= @recurring_event.event_rsvps.count %>)</h6>
+          <table class="table table-sm table-bordered">
+            <thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Gender</th><th>DOB</th></tr></thead>
+            <tbody>
+              <% @recurring_event.event_rsvps.each do |r| %>
+                <tr>
+                  <td><%= r.full_name %></td>
+                  <td><%= r.email %></td>
+                  <td><%= r.phone %></td>
+                  <td><%= r.gender %></td>
+                  <td><%= r.dob %></td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        <% end %>
 				<div class="form-actions">
 					<%= link_to 'Edit', edit_admins_recurring_event_path(@recurring_event.id), :class => 'btn btn-primary' %>
 					<%= link_to 'Destroy', admins_recurring_event_path(@recurring_event.id), :confirm => 'Are you sure?', :method => :delete, :class => 'btn btn-danger' %>

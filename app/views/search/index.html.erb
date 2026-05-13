@@ -57,6 +57,14 @@
 					changeInfo.revert();
 				}
       },
+      eventDidMount: function(arg) {
+        if (arg.event.extendedProps.signUpUrl) {
+          var hint = document.createElement('span');
+          hint.className = 'fc-signup-hint';
+          hint.textContent = 'Sign Up';
+          arg.el.querySelector('.fc-event-title') && arg.el.querySelector('.fc-event-title').appendChild(hint);
+        }
+      },
       eventClick: function(arg) {
 				if(arg.event.id == 'book1') {
 					arg.event.remove();
@@ -65,7 +73,13 @@
 					$('#input-book').val('');
 					$('#input-duration').val('');
           $('#calculate_table').html("<%= escape_javascript(render('calculate_info')) %>");
-				}
+				} else if(arg.event.extendedProps.signUpUrl) {
+          arg.jsEvent.preventDefault();
+          window.open(arg.event.extendedProps.signUpUrl, '_blank');
+        } else if(arg.event.extendedProps.classUrl) {
+          arg.jsEvent.preventDefault();
+          window.location.href = arg.event.extendedProps.classUrl;
+        }
       },
       editable: true,
       dayMaxEvents: false, // allow "more" link when too many events
@@ -104,13 +118,16 @@
 
 			var formatDates = startDay.format('DD/MM/YYYY HH:mm');
 
+			var coachId = $('#court_coach_select').length ? $('#court_coach_select').val() : "";
+			$('#input-coach-id').val(coachId);
+
 			$.ajax({
 				type: "GET",
 				url: "/courts/<%= @court.id %>/calculate_price",
         <%- if @group_class -%>
-        data: {dates: formatDates, duration: duration, court_type: <%= blank_or_not(@type, 0) %>, group_class_id: <%= @group_class.try(:id) %>, pax: <%= @pax %> },
+        data: {dates: formatDates, duration: duration, court_type: <%= blank_or_not(@type, 0) %>, group_class_id: <%= @group_class.try(:id) %>, pax: <%= @pax %>, coach_id: coachId },
         <%- else -%>
-        data: {dates: formatDates, duration: duration, court_type: <%= blank_or_not(@type, 0) %>, pax: ($('#court_pax_select').length ? $('#court_pax_select').val() : "") },
+        data: {dates: formatDates, duration: duration, court_type: <%= blank_or_not(@type, 0) %>, pax: ($('#court_pax_select').length ? $('#court_pax_select').val() : ""), coach_id: coachId },
         <%- end -%>
 				success: function(data, textStatus, jqXHR){
 					// console.log(textStatus);

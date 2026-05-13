@@ -59,9 +59,12 @@ class Purchase < ApplicationRecord
 	end
 
 	def process_after_success!
-    if self.productable.is_a? Booking
+    if self.productable.is_a?(Booking)
 			self.productable.paid!
 			self.productable.send_email_notification!
+    elsif self.productable.is_a?(ClassCreditPurchase)
+      self.productable.mark_paid!
+      self.productable.book_initial_session!
 		end
 	end
 

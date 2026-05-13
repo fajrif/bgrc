@@ -31,7 +31,12 @@ module AdminHelper
 	def flash_message2
     message = ""
     flash.each do |name, msg|
-			message += content_tag :div, :class => "alert alert-#{name.to_sym == :notice ? 'success' : 'danger'} mb-0 alert-dismissible alert-label-icon label-arrow fade show" do
+			css_class = case name.to_sym
+				when :notice then 'success'
+				when :warning then 'warning'
+				else 'danger'
+			end
+			message += content_tag :div, :class => "alert alert-#{css_class} mb-0 alert-dismissible alert-label-icon label-arrow fade show" do
 				lbl = raw(msg)
 				lbl += content_tag(:a, nil, class: "btn-close", "data-bs-dismiss": "alert", "aria-label": "Close") do
 					content_tag(:i, nil, class: "fa-solid fa-close text-white-2")
@@ -264,6 +269,8 @@ module AdminHelper
 		controller.controller_name == "group_classes" ||
 		controller.controller_name == "packages" ||
 		controller.controller_name == "events" ||
+		controller.controller_name == "recurring_events" ||
+		controller.controller_name == "event_rsvps" ||
 		controller.controller_name == "promos"
 	end
 

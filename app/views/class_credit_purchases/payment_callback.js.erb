@@ -1,0 +1,5 @@
+<% if flash[:notice] %>
+window.location.href = '<%= class_credit_purchase_path(@credit_purchase) %>';
+<% else %>
+alert('<%= escape_javascript(flash[:alert] || "Payment could not be processed. Please try again.") %>');
+<% end %>

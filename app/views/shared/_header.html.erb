@@ -5,16 +5,7 @@
         <div class="container-lg">
             <div class="row align-items-center m-0">
                 <div class="col-6 ps-lg-0 align-items-center justify-content-start text-white-2">
-                    <div class="btn-group dropdown-style-1">
-                        <button type="button" class="btn dropdown-toggle sm-w-100" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                          <% if I18n.locale == :en %>
-                            EN <span class="caret"></span>
-                          <% elsif I18n.locale == :id %>
-                            ID <span class="caret"></span>
-                          <% end %>
-                        </button>
-                        <%= get_locale_current_page_route %>
-                    </div>
+                    <a href="<%= search_path %>" class="btn btn-light btn-sm text-uppercase letter-spacing-2 text-extra-small  text-black">Book Now</a>
                 </div>
                 <div class="col-6 pe-lg-0 alt-font d-flex align-items-center justify-content-end gap-2">
                     <% if user_signed_in? %>
@@ -63,7 +54,7 @@
                             <% end %>
                           </ul>
                       </li>
-                      <li><a href="<%= packages_path %>"><%= t('menu.packages') %></a></li>
+                      <li><a href="<%= group_classes_path %>"><%= t('menu.packages') %></a></li>
                       <li><a href="<%= promos_path %>"><%= t('menu.promos') %></a></li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right no-margin alt-font text-normal w-40 md-w-100 justify-content-end" data-in="animate__fadeIn" data-out="animate__fadeOut">

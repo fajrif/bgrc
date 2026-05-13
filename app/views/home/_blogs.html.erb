@@ -17,7 +17,7 @@
                 <% end %>
                 </div>
                 <%= link_to article.title, get_blog_path(article), class: "alt-font margin-5px-bottom d-block text-extra-dark-gray font-weight-600 text-uppercase" %>
-                <span class="text-medium-gray text-uppercase text-small d-inline-block mb-2">
+                <span class="text-medium text-uppercase text-small d-inline-block mb-2">
                   <%= article.published_date.strftime('%d %b %Y') %>
                   |
                   <%= article.category.name %>

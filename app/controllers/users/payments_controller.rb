@@ -1,7 +1,7 @@
 class Users::PaymentsController < Users::BaseController
 
   def index
-    @payments = []
+    @purchases = current_user.purchases.order(created_at: :desc)
   end
 
   def show

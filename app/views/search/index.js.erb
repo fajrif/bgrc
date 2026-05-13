@@ -114,6 +114,14 @@ calendar = new FullCalendar.Calendar(calendarEl, {
       changeInfo.revert();
     }
   },
+  eventDidMount: function(arg) {
+    if (arg.event.extendedProps.signUpUrl) {
+      var hint = document.createElement('span');
+      hint.className = 'fc-signup-hint';
+      hint.textContent = 'Sign Up';
+      arg.el.querySelector('.fc-event-title') && arg.el.querySelector('.fc-event-title').appendChild(hint);
+    }
+  },
   eventClick: function(arg) {
     if(arg.event.id == 'book1') {
       arg.event.remove();
@@ -122,6 +130,12 @@ calendar = new FullCalendar.Calendar(calendarEl, {
       $('#input-book').val('');
       $('#input-duration').val('');
       $('#calculate_table').html("<%= escape_javascript(render('calculate_info')) %>");
+    } else if(arg.event.extendedProps.signUpUrl) {
+      arg.jsEvent.preventDefault();
+      window.open(arg.event.extendedProps.signUpUrl, '_blank');
+    } else if(arg.event.extendedProps.classUrl) {
+      arg.jsEvent.preventDefault();
+      window.location.href = arg.event.extendedProps.classUrl;
     }
   },
   editable: true,

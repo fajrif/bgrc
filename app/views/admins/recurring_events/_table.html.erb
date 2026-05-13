@@ -2,20 +2,44 @@
   <table class="table table-hover">
     <thead>
       <tr>
-        <th>Court</th>
+        <th style="width:80px;">Image</th>
         <th>Title</th>
-        <th>Day</th>
+        <th>Court</th>
+        <th>Schedule</th>
         <th>Time</th>
+        <th>Status</th>
         <th>Actions</th>
       </tr>
     </thead>
     <tbody>
       <% @recurring_events.each do |re| %>
         <tr>
+          <td>
+            <% if re.image.attached? %>
+              <%= image_tag re.image.variant(resize_to_fill: [70, 50]), class: "rounded", style: "width:70px;height:50px;object-fit:cover;" %>
+            <% else %>
+              <div class="rounded bg-light d-flex align-items-center justify-content-center text-muted" style="width:70px;height:50px;font-size:0.65rem;">No image</div>
+            <% end %>
+          </td>
+          <td><%= link_to re.title, admins_recurring_event_path(re) %></td>
           <td><%= re.court.name_label %></td>
-          <td><%= re.title %></td>
-          <td><%= re.day_name %></td>
-          <td><%= re.start_time %> - <%= re.end_time %></td>
+          <td>
+            <% if re.one_time? %>
+              <span class="badge bg-warning text-dark">One-time</span>
+              <%= re.specific_date.strftime("%d %b %Y") %>
+            <% else %>
+              <span class="badge bg-info text-dark">Recurring</span>
+              Every <%= re.day_name %>
+            <% end %>
+          </td>
+          <td><%= re.start_time %> – <%= re.end_time %></td>
+          <td>
+            <% if re.active? %>
+              <span class="badge bg-success-subtle text-success">Active</span>
+            <% else %>
+              <span class="badge bg-danger-subtle text-danger">Inactive</span>
+            <% end %>
+          </td>
           <td>
             <div class="hstack gap-2">
               <%= link_to 'Edit', edit_admins_recurring_event_path(re), class: "btn btn-sm btn-primary" %>
@@ -26,7 +50,7 @@
       <% end %>
       <% if @recurring_events.empty? %>
         <tr>
-          <td colspan="5" class="text-center text-muted">No recurring events found</td>
+          <td colspan="7" class="text-center text-muted">No recurring events found</td>
         </tr>
       <% end %>
     </tbody>

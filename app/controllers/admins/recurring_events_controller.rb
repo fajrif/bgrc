@@ -48,7 +48,7 @@ class Admins::RecurringEventsController < Admins::BaseController
   private
 
   def params_recurring_event
-    params.require(:recurring_event).permit(:title, :court_id, :day_of_week, :start_time, :end_time)
+    params.require(:recurring_event).permit(:title, :court_id, :day_of_week, :specific_date, :start_time, :end_time, :description, :short_description, :capacity, :image, :active)
   end
 
   def set_recurring_event

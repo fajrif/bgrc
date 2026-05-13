@@ -29,7 +29,7 @@ module LocaleHelper
 				content_tag(:a, "My Booking", href: users_bookings_path)
 			end +
 			content_tag(:li) do
-				content_tag(:a, "My Packages", href: users_packages_path)
+				content_tag(:a, "Class Credits", href: users_class_credits_path)
 			end +
 			content_tag(:li) do
 				content_tag(:a, "Payments", href: users_payments_path)

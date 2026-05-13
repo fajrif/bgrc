@@ -1,5 +1,5 @@
 <!-- start story section -->
-<section class="pt-150 pb-0 wow animate__fadeIn">
+<section class="pt-5 pb-0 wow animate__fadeIn">
   <div class="container">
     <div class="row align-items-start">
       <div class="col-lg-8 col-md-8 text-center text-md-start padding-three-lr">
@@ -10,11 +10,25 @@
               <p class="text-medium text-black mb-0"><%= @displayDate %></p>
             </div>
             <div class="d-flex gap-2">
-              <%= select_tag :court_type_id, options_from_collection_for_select(@court_types, "id", "name", @court_type.id), class: "form-select mb-0", include_blank: false, data: { remote: true, url: search_path(date: @date, court_type: @type, sport_id: @sport.id, group_class_id: @group_class.try(:id), pax: @pax), method: :get } %>
-              <%= select_tag :court_id, options_from_collection_for_select(@courts, "id", "name", @court.id), class: "form-select mb-0", prompt: 'Select Court', data: { remote: true, url: search_path(date: @date, court_type: @type, sport_id: @sport.id, group_class_id: @group_class.try(:id), pax: @pax, court_type_id: @court_type.id), method: :get } %>
+              <%= select_tag :court_type_id, options_from_collection_for_select(@court_types, "id", "name", @court_type.id), class: "form-select mb-0", include_blank: false, data: { remote: true, url: search_path(date: @date, sport_id: @sport.id, pax: @pax), method: :get } %>
+              <%= select_tag :court_id, options_from_collection_for_select(@courts, "id", "name", @court.id), class: "form-select mb-0", prompt: 'Select Court', data: { remote: true, url: search_path(date: @date, sport_id: @sport.id, pax: @pax, court_type_id: @court_type.id), method: :get } %>
             </div>
           </div>
           <div class="pricing-area" id="schedule">
+            <div class="d-flex flex-wrap gap-3 mb-3 small align-items-center">
+              <div class="d-flex align-items-center gap-1">
+                <span style="display:inline-block;width:14px;height:14px;background:#ECFEED;border:1.5px solid #5BF651;border-radius:2px;flex-shrink:0;"></span>
+                <span class="text-muted">Your Selection</span>
+              </div>
+              <div class="d-flex align-items-center gap-1">
+                <span style="display:inline-block;width:14px;height:14px;background:#FFEBF2;border:1.5px solid #FF85AF;border-radius:2px;flex-shrink:0;"></span>
+                <span class="text-muted">Booked</span>
+              </div>
+              <div class="d-flex align-items-center gap-1">
+                <span style="display:inline-block;width:14px;height:14px;background:rgba(108,117,125,1);border:1.5px solid rgba(84,91,98,1);border-radius:2px;flex-shrink:0;"></span>
+                <span class="text-muted">Blocked Event</span>
+              </div>
+            </div>
             <div id="calendar"></div>
           </div>
         <% else %>
@@ -27,13 +41,13 @@
         <div class="col-lg-4 col-md-4 text-center text-md-start padding-three-lr">
           <%= simple_form_for(:booking, :url => bookings_url, :method => :post) do %>
             <div class="ms-4">
+              <input type="hidden" id="court_pax_select" value="4">
               <h6 class="text-large text-black mb-3">Your Booking Details</h6>
               <input id="date" type="hidden" value="<%= @date %>" name="date">
               <input id="court-id" type="hidden" value="<%= @court.id %>" name="court_id">
               <input id="input-book" type="hidden" value="" name="dates">
               <input id="input-duration" type="hidden" value="" name="duration">
-              <input id="input-court-type" type="hidden" value="<%= @type %>" name="court_type">
-              <input id="input-group-class-id" type="hidden" value="<%= @group_class.try(:id) %>" name="group_class_id">
+              <input id="input-court-type" type="hidden" value="court_only" name="court_type">
               <input id="input-pax" type="hidden" value="<%= @pax %>" name="pax">
               <div id="calculate_table">
                 <%= render "calculate_info" %>

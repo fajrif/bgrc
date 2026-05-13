@@ -1,0 +1,54 @@
+<%= render "shared/small_banner", title: "Group Classes", page_name: "Group Classes" %>
+
+<section class="pt-5 pb-5">
+  <div class="container">
+    <!-- sport filter -->
+    <div class="d-flex flex-wrap gap-2 mb-4">
+      <%= link_to "All", group_classes_path, class: "btn btn-small #{params[:sport_id].blank? ? 'btn-dark' : 'btn-outline-dark'}" %>
+      <% @sports.each do |sport| %>
+        <%= link_to sport.name, group_classes_path(sport_id: sport.id),
+              class: "btn btn-small #{params[:sport_id].to_s == sport.id.to_s ? 'btn-dark' : 'btn-outline-dark'}" %>
+      <% end %>
+    </div>
+
+    <% if @group_classes.empty? %>
+      <div class="alert alert-light text-center py-5">
+        <p class="mb-0 text-medium">No classes available at this time.</p>
+      </div>
+    <% else %>
+      <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        <% @group_classes.each do |gc| %>
+          <div class="col">
+            <div class="card h-100 border-0 box-shadow">
+              <div class="card-body p-4">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                  <span class="badge bg-secondary text-uppercase letter-spacing-1" style="font-size:0.65rem;"><%= gc.category_label %></span>
+                  <% if gc.sport %>
+                    <span class="text-extra-small text-medium"><%= gc.sport.name %></span>
+                  <% end %>
+                </div>
+                <h6 class="alt-font text-extra-dark-gray mb-2"><%= gc.name %></h6>
+                <p class="text-medium text-small mb-3">
+                  <strong>Duration:</strong> <%= gc.duration_label %> &nbsp;&middot;&nbsp;
+                  <strong>Pax:</strong> <%= gc.min_pax %>–<%= gc.max_pax %> pax
+                </p>
+                <p class="font-weight-600 mb-1">
+                  From <%= gc.check_price(gc.min_pax) %>
+                  <% if gc.has_additional_pax? %>
+                    <span class="text-small text-medium">(+<%= gc.price_pax_label %> extra pax)</span>
+                  <% end %>
+                </p>
+                <% if gc.notes.present? %>
+                  <p class="text-small text-medium mb-3"><%= gc.notes %></p>
+                <% end %>
+              </div>
+              <div class="card-footer bg-white border-0 p-4 pt-0">
+                <%= link_to "View &amp; Register".html_safe, group_class_path(gc), class: "btn btn-dark btn-small w-100 text-uppercase letter-spacing-1 text-extra-small text-white" %>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+</section>

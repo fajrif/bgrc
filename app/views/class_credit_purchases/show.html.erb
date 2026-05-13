@@ -1,0 +1,78 @@
+<section class="half-section top-space">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-6 col-md-8">
+                <div class="border padding-40px-all text-center">
+                    <h5 class="alt-font font-weight-600 text-uppercase mb-4">Session Credit Purchase</h5>
+
+                    <% if @credit_purchase.paid? %>
+                        <div class="alert alert-success">
+                            Your session credits are active. You have <%= @credit_purchase.sessions_remaining %> session(s) remaining.
+                        </div>
+                    <% end %>
+
+                    <table class="table table-borderless text-start mb-4">
+                        <tr>
+                            <td class="text-muted">Order ID</td>
+                            <td class="fw-semibold"><%= @credit_purchase.order_id %></td>
+                        </tr>
+                        <tr>
+                            <td class="text-muted">Class</td>
+                            <td><%= @credit_purchase.group_class.name %></td>
+                        </tr>
+                        <tr>
+                            <td class="text-muted">Sessions Purchased</td>
+                            <td><%= @credit_purchase.sessions_count %> session(s)</td>
+                        </tr>
+                        <tr>
+                            <td class="text-muted">Sessions Remaining</td>
+                            <td><%= @credit_purchase.sessions_remaining %></td>
+                        </tr>
+                        <tr>
+                            <td class="text-muted">Total Price</td>
+                            <td class="fw-semibold"><%= @credit_purchase.price_label %></td>
+                        </tr>
+                        <tr>
+                            <td class="text-muted">Status</td>
+                            <td>
+                                <span class="badge <%= @credit_purchase.paid? ? 'bg-success' : 'bg-warning' %>">
+                                    <%= @credit_purchase.status_label %>
+                                </span>
+                            </td>
+                        </tr>
+                        <% if @credit_purchase.expires_at %>
+                        <tr>
+                            <td class="text-muted">Credits Valid Until</td>
+                            <td class="text-muted small"><strong><%= @credit_purchase.expires_at.strftime('%d %b %Y') %></strong></td>
+                        </tr>
+                        <% end %>
+                    </table>
+
+                    <% unless @credit_purchase.paid? %>
+                        <p class="text-muted small mb-3">Complete your payment to activate your session credits.</p>
+                        <button class="btn btn-dark text-white w-100 mb-2"
+                                data-bs-toggle="modal" data-bs-target="#creditDisclaimerModal">Pay Now</button>
+                    <% else %>
+                        <%= link_to "Book a Session", search_path, class: "btn btn-dark text-white w-100 mb-2" %>
+                    <% end %>
+
+                    <% if @credit_purchase.paid? %>
+                        <%= link_to "Back", users_class_credits_path, class: "btn btn-light mt-2 w-100" %>
+                    <% else %>
+                        <%= link_to "Cancel Order", users_class_credit_path(@credit_purchase),
+                              method: :delete,
+                              data: { confirm: "Are you sure you want to cancel order #{@credit_purchase.order_id}?" },
+                              class: "btn btn-light mt-2 w-100" %>
+                    <% end %>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<% unless @credit_purchase.paid? %>
+  <%= content_for :tail do %>
+    <script type="text/javascript" src="<%= configatron.midtrans_js_file %>" data-client-key="<%= configatron.midtrans_client_key %>"></script>
+  <% end %>
+  <%= render "disclaimer_modal" %>
+<% end %>

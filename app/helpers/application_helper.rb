@@ -26,7 +26,15 @@ module ApplicationHelper
   end
 
   def options_select_court
-    [["Court Only", 0], ["Court + Coach", 1]]
+    base = [["Court Only", "court_only"]]
+    categories_in_use = GroupClass.available.where.not(category: [nil, ""]).reorder(nil).distinct.pluck(:category)
+    category_options = GroupClass::CATEGORIES.select { |_label, slug| categories_in_use.include?(slug) }
+                                             .map { |label, slug| [label, slug] }
+    base + category_options
+  end
+
+  def court_type_is_class?(type)
+    type.present? && type != "court_only" && type != "0"
   end
 
   def options_select_pax(min_pax, max_pax, use_label_min_max=true)
@@ -50,7 +58,7 @@ module ApplicationHelper
   end
 
   def get_visible_fields(court_type)
-    court_type == "1" ? 'display:block;' : 'display:none;'
+    court_type_is_class?(court_type) ? 'display:block;' : 'display:none;'
   end
 
   def options_for_nationalities
@@ -84,6 +92,14 @@ module ApplicationHelper
 
 	def is_users_payment_page?
 		controller.controller_name == "payments"
+	end
+
+	def productable_type_label(type)
+		case type
+		when "Booking" then "Booking"
+		when "ClassCreditPurchase" then "ClassCredit"
+		else type
+		end
 	end
 
 end

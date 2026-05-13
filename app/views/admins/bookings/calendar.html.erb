@@ -5,7 +5,7 @@
             <div class="col-xl-3">
                 <div class="card card-h-100">
                     <div class="card-body">
-                        <a href="<%= new_admins_booking_path %>" class="btn btn-primary w-100"><i class="mdi mdi-plus"></i> Create New Booking</a>
+                        <a href="<%= cashier_booking_admins_bookings_path %>" class="btn btn-primary w-100"><i class="mdi mdi-plus"></i> Create New Booking</a>
                         <div>
                             <br/>
                             <p class="text-muted">Search by Court and Dates</p>
@@ -24,24 +24,46 @@
                 </div>
 
                 <div class="card">
+                    <div class="card-body">
+                        <h6 class="card-title mb-3">Color Legend</h6>
+                        <div class="d-flex align-items-center mb-2">
+                            <span class="badge bg-success me-2">&nbsp;&nbsp;&nbsp;</span>
+                            <span class="small">Booked &amp; Paid</span>
+                        </div>
+                        <div class="d-flex align-items-center mb-2">
+                            <span class="badge bg-warning me-2">&nbsp;&nbsp;&nbsp;</span>
+                            <span class="small">Awaiting Payment</span>
+                        </div>
+                        <div class="d-flex align-items-center mb-2">
+                            <span class="badge bg-danger me-2">&nbsp;&nbsp;&nbsp;</span>
+                            <span class="small">Blocked / Recurring Event</span>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <span class="badge bg-secondary me-2">&nbsp;&nbsp;&nbsp;</span>
+                            <span class="small">Cancelled / Expired</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
                     <div class="card-body bg-info-subtle">
                         <div class="d-flex">
                             <div class="flex-shrink-0">
                                 <i data-feather="calendar" class="text-info icon-dual-info"></i>
                             </div>
                             <div class="flex-grow-1 ms-3">
-                                <h6 class="fs-15">Welcome to your Booking Calendar!</h6>
-                                <p class="text-muted mb-0">Booking court will appear here. Click on a book event to see the details of user booking court.</p>
+                                <h6 class="fs-15">Booking Calendar Tips</h6>
+                                <p class="text-muted mb-0">Click on an empty slot to create a cashier booking. Drag an existing booking to reschedule it.</p>
                             </div>
                         </div>
                     </div>
                 </div>
-                <!--end card-->
             </div> <!-- end col-->
 
             <div class="col-xl-9">
                 <div class="card card-h-100">
                     <div class="card-body">
+                        <div id="reschedule-toast" class="alert alert-danger d-none mb-2" role="alert"></div>
                         <div id="calendar"></div>
                     </div>
                 </div>
@@ -57,12 +79,9 @@
 	<%= javascript_include_tag 'admin/calendar.init.js' %>
   <script>
     document.addEventListener("DOMContentLoaded", function () {
-        /* initialize the calendar */
-        var date = new Date();
-        var d = date.getDate();
-        var m = date.getMonth();
-        var y = date.getFullYear();
         var defaultEvents = <%= @events.html_safe %>;
+        var courtId = <%= @court.id %>;
+        var cashierBookingUrl = "<%= cashier_booking_admins_bookings_path %>";
 
         var calendarEl = document.getElementById('calendar');
 
@@ -78,8 +97,8 @@
 
         var calendar = new FullCalendar.Calendar(calendarEl, {
             timeZone: 'local',
-            editable: false,
-            droppable: false,
+            editable: true,
+            droppable: true,
             selectable: true,
             navLinks: true,
             initialView: getInitialView(),
@@ -93,10 +112,47 @@
                 calendar.changeView(newView);
             },
             events: defaultEvents,
+
+            select: function(info) {
+                var start = info.startStr.replace('T', ' ').substring(0, 16);
+                var url = cashierBookingUrl + "?date=" + encodeURIComponent(start) + "&court_id=" + courtId;
+                window.location.href = url;
+            },
+
+            eventDrop: function(info) {
+                rescheduleBooking(info.event, info.revert);
+            },
+
+            eventResize: function(info) {
+                rescheduleBooking(info.event, info.revert);
+            },
         });
 
         calendar.render();
 
+        function rescheduleBooking(event, revert) {
+            if (!event.id) { revert(); return; }
+            fetch("/admins/bookings/" + event.id + "/reschedule", {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRF-Token": document.querySelector('meta[name="csrf-token"]').content
+                },
+                body: JSON.stringify({ start: event.startStr, end: event.endStr })
+            })
+            .then(function(res) { return res.json(); })
+            .then(function(data) {
+                if (data.error) {
+                    document.getElementById('reschedule-toast').textContent = data.error;
+                    document.getElementById('reschedule-toast').classList.remove('d-none');
+                    setTimeout(function() {
+                        document.getElementById('reschedule-toast').classList.add('d-none');
+                    }, 4000);
+                    revert();
+                }
+            })
+            .catch(function() { revert(); });
+        }
     });
   </script>
 
@@ -104,5 +160,6 @@
     .form-search .choices {
       margin-bottom: 18px;
     }
+    .fc-bg-event.bg-danger { opacity: 0.25; }
   </style>
 <% end %>

@@ -9,6 +9,11 @@
 				<div class="form-actions">
 					<%= link_to 'Invoice', invoice_admins_booking_path(@booking.id), :class => 'btn btn-info' %>
 					<%= link_to 'Edit', edit_admins_booking_path(@booking.id), :class => 'btn btn-primary' %>
+					<% unless @booking.refunded? %>
+						<%= button_to 'Mark as Refunded', mark_refunded_admins_booking_path(@booking.id),
+								method: :patch, class: 'btn btn-warning',
+								data: { confirm: 'Mark this booking as refunded? This cannot be undone.' } %>
+					<% end %>
 					<%= link_to 'Destroy', admins_booking_path(@booking.id), :confirm => 'Are you sure?', :method => :delete, :class => 'btn btn-danger' %>
 					<%= link_to 'View All', admins_bookings_path, :class => 'btn btn-light' %>
 				</div>

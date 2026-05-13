@@ -33,6 +33,17 @@
 </ul>
 <div class="d-flex flex-wrap justify-content-center gap-4">
   <% if @booking.is_unpaid? %>
+    <% if @available_credit %>
+      <div class="alert alert-info mb-3">
+        <strong><%= @available_credit.sessions_remaining %> session credit(s) available</strong>
+        for <%= @booking.group_class.name %>
+        <small class="text-muted d-block">Expires <%= @available_credit.expires_at.strftime('%d %b %Y') %></small>
+      </div>
+      <%= button_to "Use 1 Session Credit", pay_with_credit_booking_path(@booking.order_id),
+            method: :post, class: "btn btn-success w-100 mb-2",
+            data: { confirm: "Use 1 session credit for this booking?" } %>
+      <p class="text-center text-muted small mb-3">— or pay with gateway below —</p>
+    <% end %>
     <div id="payment-actions">
       <%= link_to "Cancel", booking_path(@booking.order_id), class: "btn btn-light-gray btn-small text-medium", method: :delete %>
       <% if user_signed_in? %>
@@ -60,5 +71,6 @@
   <% else %>
     <%= link_to "View Details", "#modal-popup", class: "btn btn-light-gray btn-small text-medium modal-popup" %>
     <%= render "bookings/modal_details" %>
+    <%= link_to "Invoice", invoice_booking_path(@booking), class: "btn btn-info btn-small text-medium" %>
   <% end %>
 </div>

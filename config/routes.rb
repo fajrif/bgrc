@@ -54,12 +54,16 @@ Rails.application.routes.draw do
 					get "export_all" => "bookings#export_all", :constraints => { :format => :xls }, :as => :export_all
 					get :cashier_booking
 					post :create_cashier_booking
+					get :check_slot
 				end
 				member do
 					get :invoice
+					patch :reschedule
+					patch :mark_refunded
 				end
       end
       resources :recurring_events
+      resources :event_rsvps, only: [:index, :show, :destroy]
       resources :purchases, :only => [:index, :show, :destroy] do
         member do
           put "settlement" => "purchases#settlement", :as => :settlement
@@ -114,10 +118,16 @@ Rails.application.routes.draw do
       resources :bookings, :only => [:index, :destroy] do
         collection do
           get "history" => "bookings#history", :as => :history
+          get "calendar" => "bookings#calendar", :as => :calendar
+        end
+        member do
+          get :invoice
+          post :reschedule_to_credit
         end
       end
       resources :packages, :except => [:edit, :update, :show]
       resources :payments, :only => [:index, :show]
+      resources :class_credits, :only => [:index, :destroy], :controller => "class_credits"
     end
 
 		# For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
@@ -130,15 +140,29 @@ Rails.application.routes.draw do
 				patch "add_quantity/:add_on_id" => "bookings#add_quantity", :as => :add_quantity
 				patch "remove_quantity/:add_on_id" => "bookings#remove_quantity", :as => :remove_quantity
 				post "expire" => "bookings#expire", :as => :expire
+				get :invoice
+				post :pay_with_credit
 			end
 		end
 
 		# AJAX login for booking modal
 		post "ajax_login" => "ajax_sessions#create", :as => :ajax_login
 
+		resources :group_classes, :only => [:index, :show]
+		resources :recurring_events, :only => [:show] do
+      member { post :rsvp }
+    end
 		resources :packages, :only => [:index, :show]
 		resources :facilities, :only => [:index, :show]
-		resources :events, :only => [:index, :show]
+		resources :events, :only => [:index, :show] do
+      resources :event_rsvps, :only => [:create], :controller => "event_rsvps"
+    end
+    resources :class_credit_purchases, :only => [:create, :show] do
+      member do
+        get  :initiate_payment
+        post :payment_callback
+      end
+    end
 		resources :promos, :only => [:index, :show]
 		resources :sports, :only => [:show]
 

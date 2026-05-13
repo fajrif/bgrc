@@ -10,7 +10,7 @@
             <div class="col-md-6">
               <div class="mb-3">
                 <label class="form-label">Court</label>
-                <%= f.collection_select :court_id, @courts, :id, :name_label, { include_blank: "Select Court" }, class: "form-select" %>
+                <%= f.collection_select :court_id, @courts, :id, :name_label, { include_blank: "Select Court" }, class: "form-select", id: "cashier_court_id" %>
               </div>
             </div>
             <div class="col-md-6">
@@ -25,15 +25,20 @@
             <div class="col-md-6">
               <div class="mb-3">
                 <label class="form-label">Start Date & Time</label>
-                <%= f.text_field :date, class: "form-control datetimepicker", placeholder: "Select date and time" %>
+                <%= f.text_field :date, class: "form-control datetimepicker", placeholder: "Select date and time", id: "cashier_date", value: get_input_date_value(f.object.date) %>
               </div>
             </div>
             <div class="col-md-6">
               <div class="mb-3">
                 <label class="form-label">Duration (hours)</label>
-                <%= f.number_field :duration, class: "form-control", value: 1, min: 1, max: 6 %>
+                <%= f.number_field :duration, class: "form-control", value: 1, min: 1, max: 6, id: "cashier_duration" %>
               </div>
             </div>
+          </div>
+
+          <div id="slot-conflict-alert" class="alert alert-warning d-none mb-3">
+            <strong>&#9888; Double Booking Warning</strong>
+            <div id="slot-conflict-details" class="mt-1 small"></div>
           </div>
 
           <div class="row mb-4">
@@ -46,7 +51,7 @@
           </div>
 
           <div class="form-actions">
-            <%= f.submit "Create Booking & Payment", class: "btn btn-success" %>
+            <%= f.submit "Create Booking & Payment", class: "btn btn-success", id: "cashier-submit-btn" %>
             <%= link_to "Cancel", admins_bookings_path, class: "btn btn-light" %>
           </div>
         <% end %>
@@ -59,6 +64,34 @@
 <script>
   jQuery(document).ready(function($){
     $(".datetimepicker").flatpickr({"altInput":true, "altFormat": "d/m/Y H:i", "enableTime": true, "minuteIncrement": 15, "disableMobile":true, "dateFormat":"d/m/Y H:i"});
+
+    function checkSlotAvailability() {
+      var courtId  = $("#cashier_court_id").val();
+      var dateVal  = $("#cashier_date").val();
+      var duration = $("#cashier_duration").val();
+      if (!courtId || !dateVal || !duration) return;
+
+      $.ajax({
+        url: "<%= check_slot_admins_bookings_path %>",
+        data: { court_id: courtId, date: dateVal, duration: duration },
+        success: function(data) {
+          if (!data.available && data.conflicts.length > 0) {
+            var html = data.conflicts.map(function(c) {
+              return c.user_name + " &mdash; " + c.order_id + " (" + c.start + ", " + c.duration + "h)";
+            }).join("<br>");
+            $("#slot-conflict-details").html(html);
+            $("#slot-conflict-alert").removeClass("d-none");
+            $("#cashier-submit-btn").removeClass("btn-success").addClass("btn-warning");
+          } else {
+            $("#slot-conflict-alert").addClass("d-none");
+            $("#cashier-submit-btn").removeClass("btn-warning").addClass("btn-success");
+          }
+        }
+      });
+    }
+
+    $("#cashier_court_id, #cashier_duration").on("change", checkSlotAvailability);
+    $("#cashier_date").on("change", function() { setTimeout(checkSlotAvailability, 100); });
   });
 </script>
 <% end %>

@@ -1,0 +1,20 @@
+function ajaxPostResult(result) {
+  result['token'] = '<%= @purchase.token %>';
+  result['order_id'] = '<%= @purchase.order_id %>';
+  $.ajax({
+    url: '<%= payment_callback_class_credit_purchase_path(@credit_purchase) %>',
+    type: 'POST',
+    dataType: 'script',
+    beforeSend: function(xhr) {
+      xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'));
+    },
+    data: result
+  });
+}
+
+snap.pay('<%= @purchase.token %>', {
+  onSuccess: function(result) { ajaxPostResult(result); },
+  onPending: function(result) { ajaxPostResult(result); },
+  onError:   function(result) { ajaxPostResult(result); },
+  onClose:   function() { console.log('User closed Midtrans popup'); }
+});

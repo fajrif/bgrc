@@ -1,24 +1,41 @@
-<%= render "home/banner" %>
+<%= render "shared/small_banner", title: "Events", page_name: "Events" %>
 <section class="wow animate__fadeIn">
     <div class="container">
+      <% if @events.empty? %>
+        <div class="alert alert-light text-center py-5">
+          <p class="mb-0 text-medium">No upcoming events at this time. Check back soon!</p>
+        </div>
+      <% else %>
         <div class="row row-cols-1 row-cols-lg-3 row-cols-md-2 justify-content-start align-items-center">
           <% @events.each do |event| %>
-            <!-- start features box item -->
             <div class="col margin-30px-bottom wow animate__fadeInUp">
               <div class="bg-white">
-                <%= link_to event_path(event) do %>
-                  <%= image_tag event.image.variant(resize_to_fill: [750,500]) %>
+                <%= link_to recurring_event_path(event) do %>
+                  <% if event.image.attached? %>
+                    <%= image_tag event.image.variant(resize_to_fill: [750, 500]) %>
+                  <% else %>
+                    <div class="bg-light-grey d-flex align-items-center justify-content-center" style="height:200px;">
+                      <span class="text-medium text-small">No Image</span>
+                    </div>
+                  <% end %>
                 <% end %>
                 <div class="padding-25px-all bg-light-grey">
-                  <span class="text-extra-dark-gray font-weight-600 d-block alt-font text-uppercase margin-10px-bottom"><%= event.name %></span>
-                  <p><%= event.short_description.truncate(100) %></p>
-                  <%= link_to "Learn More", event_path(event), class: "btn btn-small btn-transparent-dark-gray w-100" %>
+                  <span class="text-extra-dark-gray font-weight-600 d-block alt-font text-uppercase margin-10px-bottom"><%= event.title %></span>
+                  <% if event.one_time? %>
+                    <p class="text-small text-medium mb-2"><%= event.specific_date.strftime("%A, %d %b %Y") %> &nbsp;&middot;&nbsp; <%= event.start_time %> – <%= event.end_time %></p>
+                  <% else %>
+                    <p class="text-small text-medium mb-2">Every <%= event.day_name %> &nbsp;&middot;&nbsp; <%= event.start_time %> – <%= event.end_time %></p>
+                  <% end %>
+                  <% if event.short_description.present? %>
+                    <p><%= event.short_description.truncate(100) %></p>
+                  <% end %>
+                  <%= link_to "Learn More", recurring_event_path(event), class: "btn btn-small btn-transparent-dark-gray w-100" %>
                 </div>
               </div>
             </div>
-            <!-- end features box item -->
           <% end %>
         </div>
         <%= paginate @events, theme: :pofo %>
+      <% end %>
     </div>
 </section>

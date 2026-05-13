@@ -1,0 +1,26 @@
+<% title_page("Event RSVPs") %>
+<div class="row">
+  <div class="col-lg-12">
+    <div class="card">
+      <div class="card-header border-0">
+        <%= form_tag admins_event_rsvps_url, method: :get, id: "index_search" do %>
+          <div class="row g-4 align-items-center">
+            <div class="col-md-5">
+              <%= select_tag :recurring_event_id,
+                    options_from_collection_for_select(@recurring_events, "id", "title", params[:recurring_event_id]),
+                    include_blank: "All Events",
+                    class: "form-select" %>
+            </div>
+            <div class="col-sm-auto">
+              <%= submit_tag "Filter", class: "btn btn-secondary" %>
+              <%= link_to "Clear", admins_event_rsvps_path, class: "btn btn-light" %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+      <div class="card-body">
+        <%= render 'table' %>
+      </div>
+    </div>
+  </div>
+</div>

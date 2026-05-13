@@ -1,6 +1,6 @@
 class BookingsController < ApplicationController
-  before_action :set_booking, only: [:show, :add_on, :add_quantity, :remove_quantity, :destroy, :expire]
-  before_action :verify_booking_access!, only: [:show, :add_on, :add_quantity, :remove_quantity, :destroy, :expire]
+  before_action :set_booking, only: [:show, :add_on, :add_quantity, :remove_quantity, :destroy, :expire, :invoice, :pay_with_credit]
+  before_action :verify_booking_access!, only: [:show, :add_on, :add_quantity, :remove_quantity, :destroy, :expire, :invoice, :pay_with_credit]
 
   def create
     Booking.expire_stale_bookings!
@@ -12,6 +12,11 @@ class BookingsController < ApplicationController
     if dates.blank? or duration.blank?
       redirect_to search_path, alert: "Please select the timetable below and press the submit button."
     else
+      parsed_date = DateTime.strptime(dates, "%d/%m/%Y %H:%M") rescue nil
+      if parsed_date && parsed_date > 14.days.from_now
+        redirect_to search_path, alert: "Bookings can only be made up to 14 days in advance. Please contact us via WhatsApp for special requests." and return
+      end
+
       if Booking.check_available_dates?(@court.id, dates, duration)
         @booking = Booking.new(
           court: @court,
@@ -26,6 +31,7 @@ class BookingsController < ApplicationController
         unless params[:pax].blank?
           @booking.pax = params[:pax]
         end
+        @booking.coach_id = params[:coach_id] if params[:coach_id].present?
         if @booking.save
           # Track guest bookings in session
           session[:guest_booking_order_ids] ||= []
@@ -49,6 +55,22 @@ class BookingsController < ApplicationController
     # Store location for Devise redirect after login
     store_location_for(:user, request.fullpath)
     session[:booking_return_url] = request.fullpath
+
+    @available_credit = find_valid_credit_for_booking(@booking) if @booking.group_class_id.present? && user_signed_in?
+  end
+
+  def pay_with_credit
+    return head(:forbidden) unless @booking.is_unpaid?
+    return head(:forbidden) unless @booking.group_class_id.present?
+
+    credit = find_valid_credit_for_booking(@booking)
+    if credit.nil?
+      redirect_to booking_path(@booking.order_id), alert: "No valid session credits available for this class." and return
+    end
+
+    @booking.update!(status: Booking::PAID, class_credit_purchase: credit)
+    @booking.send_email_notification!
+    redirect_to booking_path(@booking.order_id), notice: "Booking confirmed using 1 session credit."
   end
 
   def expire
@@ -122,7 +144,18 @@ class BookingsController < ApplicationController
     redirect_to search_path, alert: "Booking cancelled."
   end
 
+  def invoice
+  end
+
   private
+
+  def find_valid_credit_for_booking(booking)
+    return nil unless user_signed_in?
+    current_user.class_credit_purchases
+                .where(group_class_id: booking.group_class_id, status: ClassCreditPurchase::PAID)
+                .select(&:valid_credit?)
+                .first
+  end
 
   def set_booking
     @booking = Booking.find_by_order_id(params[:id])

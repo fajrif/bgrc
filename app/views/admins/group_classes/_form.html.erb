@@ -8,6 +8,16 @@
 						<%= f.input :name, as: :string %>
             <div class="row">
               <div class="col-md-6">
+                <%= f.input :category, as: :select,
+                      collection: GroupClass::CATEGORIES.map { |label, slug| [label, slug] },
+                      include_blank: "— Select Category —" %>
+              </div>
+              <div class="col-md-6">
+                <%= f.association :sport, as: :select, include_blank: "— Select Sport —" %>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
                 <%= f.input :min_duration %>
               </div>
               <div class="col-md-6">
@@ -30,6 +40,65 @@
                 <%= f.input :price_pax, as: :string %>
               </div>
             </div>
+
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label class="form-label">Calendar Color</label>
+                <div class="d-flex align-items-center gap-2">
+                  <%= f.input_field :calendar_color, as: :string, type: "color", class: "form-control form-control-color", style: "width:50px;height:38px;padding:2px;" %>
+                  <%= f.input_field :calendar_color, as: :string, class: "form-control font-monospace", style: "width:120px;", maxlength: 7, id: "gc_color_text" %>
+                </div>
+                <small class="text-muted">Shown on court booking calendar for prescheduled slots</small>
+              </div>
+            </div>
+            <script>
+              (function() {
+                var picker = document.querySelector('input[type=color][name="group_class[calendar_color]"]');
+                var text   = document.getElementById('gc_color_text');
+                if (picker && text) {
+                  picker.addEventListener('input', function() { text.value = this.value; });
+                  text.addEventListener('input', function() { if (/^#[0-9a-fA-F]{6}$/.test(this.value)) picker.value = this.value; });
+                }
+              })();
+            </script>
+
+            <div class="card bg-light mb-3">
+              <div class="card-body">
+                <div class="form-check mb-3">
+                  <%= f.check_box :is_prescheduled, class: "form-check-input" %>
+                  <%= f.label :is_prescheduled, "Prescheduled Class (fixed recurring session slots)", class: "form-check-label" %>
+                </div>
+
+                <p class="fw-semibold mb-2">Session Packs <small class="text-muted fw-normal">(define the specific packs users can buy)</small></p>
+                <div id="pack-rows">
+                  <%= f.fields_for :group_class_packs do |pf| %>
+                    <%= render "admins/group_classes/pack_row", pf: pf %>
+                  <% end %>
+                </div>
+                <button type="button" id="add-pack-row" class="btn btn-sm btn-outline-secondary mt-2">+ Add Pack</button>
+                <template id="pack-row-template">
+                  <%= f.fields_for :group_class_packs, GroupClassPack.new, child_index: "NEW_RECORD" do |pf| %>
+                    <%= render "admins/group_classes/pack_row", pf: pf %>
+                  <% end %>
+                </template>
+
+                <hr class="my-3">
+
+                <p class="fw-semibold mb-1">Class Schedule <small class="text-muted fw-normal">(for prescheduled classes — court + recurring day/time)</small></p>
+                <div id="schedule-rows">
+                  <%= f.fields_for :group_class_schedules do |sf| %>
+                    <%= render "admins/group_classes/schedule_row", sf: sf %>
+                  <% end %>
+                </div>
+                <button type="button" id="add-schedule-row" class="btn btn-sm btn-outline-secondary mt-2">+ Add Schedule</button>
+                <template id="schedule-row-template">
+                  <%= f.fields_for :group_class_schedules, GroupClassSchedule.new, child_index: "NEW_SCHED" do |sf| %>
+                    <%= render "admins/group_classes/schedule_row", sf: sf %>
+                  <% end %>
+                </template>
+              </div>
+            </div>
+
 						<%= f.input :notes, as: :string %>
 						<%= f.input :description, input_html: { class: 'quill_container' } %>
 					</fieldset>
@@ -54,6 +123,47 @@
 <% end %>
 
 <%= content_for :tail do %>
+  <script>
+    document.getElementById('add-pack-row').addEventListener('click', function() {
+      var template = document.getElementById('pack-row-template').innerHTML;
+      var index = new Date().getTime();
+      var html = template.replace(/NEW_RECORD/g, index);
+      document.getElementById('pack-rows').insertAdjacentHTML('beforeend', html);
+    });
+    document.getElementById('pack-rows').addEventListener('click', function(e) {
+      if (e.target.classList.contains('remove-pack-row')) {
+        var row = e.target.closest('.pack-row');
+        var idInput = row.querySelector('input[name*="[id]"]');
+        var destroyInput = row.querySelector('.pack-destroy');
+        if (idInput && idInput.value) {
+          destroyInput.value = '1';
+          row.style.display = 'none';
+        } else {
+          row.remove();
+        }
+      }
+    });
+
+    document.getElementById('add-schedule-row').addEventListener('click', function() {
+      var template = document.getElementById('schedule-row-template').innerHTML;
+      var index = new Date().getTime();
+      var html = template.replace(/NEW_SCHED/g, index);
+      document.getElementById('schedule-rows').insertAdjacentHTML('beforeend', html);
+    });
+    document.getElementById('schedule-rows').addEventListener('click', function(e) {
+      if (e.target.classList.contains('remove-schedule-row')) {
+        var row = e.target.closest('.schedule-row');
+        var idInput = row.querySelector('input[name*="[id]"]');
+        var destroyInput = row.querySelector('.schedule-destroy');
+        if (idInput && idInput.value) {
+          destroyInput.value = '1';
+          row.style.display = 'none';
+        } else {
+          row.remove();
+        }
+      }
+    });
+  </script>
 	<script src="https://cdn.quilljs.com/1.1.9/quill.js"></script>
 	<link href="https://cdn.quilljs.com/1.1.9/quill.snow.css" rel="stylesheet">
 	<style>

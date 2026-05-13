@@ -1,0 +1,166 @@
+<%# Rendered when @group_class.is_prescheduled? %>
+<div class="mt-3">
+  <% if @upcoming_sessions.present? %>
+    <p class="fw-bold mb-2">Upcoming Sessions — <%= @group_class.name %></p>
+    <div class="mb-3">
+      <% @upcoming_sessions.each do |session| %>
+        <div class="form-check border rounded p-2 mb-1 <%= session[:slots_remaining] == 0 ? 'bg-light text-muted' : '' %>">
+          <input class="form-check-input" type="radio" name="dates" id="session_<%= session[:datetime_str].gsub(/\W/,'') %>"
+                 value="<%= session[:datetime_str] %>"
+                 <%= 'disabled' if session[:slots_remaining] == 0 %>>
+          <label class="form-check-label w-100" for="session_<%= session[:datetime_str].gsub(/\W/,'') %>">
+            <%= session[:date_label] %>
+            &nbsp;&middot;&nbsp;
+            <%= session[:start_time] %> – <%= session[:end_time] %>
+            &nbsp;&middot;&nbsp;
+            <% if session[:slots_remaining] > 0 %>
+              <span class="text-success fw-semibold"><%= session[:slots_remaining] %> / <%= @group_class.max_pax %> slots available</span>
+            <% else %>
+              <span class="text-danger">Full</span>
+            <% end %>
+          </label>
+        </div>
+      <% end %>
+    </div>
+
+    <% packs = @group_class.group_class_packs.to_a %>
+    <% if packs.any? %>
+      <p class="fw-bold mb-2">Choose Pack Size</p>
+      <div class="mb-3">
+        <% packs.each_with_index do |pack, i| %>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="sessions_count"
+                   id="pack_<%= pack.id %>" value="<%= pack.sessions_count %>"
+                   data-price="<%= pack.price.to_f %>" <%= 'checked' if i == 0 %>>
+            <label class="form-check-label" for="pack_<%= pack.id %>">
+              <%= pack.display_label %> — <%= pack.price_label %>
+            </label>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+
+    <input type="hidden" name="duration" value="<%= @group_class.min_duration %>">
+    <input type="hidden" name="group_class_id" value="<%= @group_class.id %>">
+    <input type="hidden" name="court_type" value="<%= @type %>">
+    <input type="hidden" name="pax" value="<%= @group_class.min_pax %>">
+
+    <button type="button" id="btn-buy-credits" class="btn btn-dark mt-2" disabled>
+      Register &amp; Buy Credits
+    </button>
+    <p class="text-muted small mt-1">Select a session above to continue.</p>
+
+  <% else %>
+    <div class="alert alert-info">No upcoming sessions scheduled for this class in the next 14 days.</div>
+  <% end %>
+</div>
+
+<!-- Confirmation Modal -->
+<div class="modal fade" id="confirmPackageModal" tabindex="-1" aria-labelledby="confirmPackageModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="confirmPackageModalLabel">Confirm Purchase</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <table class="table table-borderless mb-0">
+          <tr>
+            <td class="text-muted">Class</td>
+            <td id="modal-class-name" class="fw-semibold"></td>
+          </tr>
+          <tr>
+            <td class="text-muted">Session Date</td>
+            <td id="modal-session-date"></td>
+          </tr>
+          <tr>
+            <td class="text-muted">Pack Size</td>
+            <td id="modal-pack-size"></td>
+          </tr>
+          <tr>
+            <td class="text-muted">Total Price</td>
+            <td id="modal-total-price" class="fw-semibold"></td>
+          </tr>
+          <tr>
+            <td class="text-muted">Credits Valid</td>
+            <td class="text-muted small">2 months from payment date</td>
+          </tr>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" id="btn-confirm-pay" class="btn btn-dark">Confirm &amp; Pay</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%= content_for :tail do %>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var sessionRadios  = document.querySelectorAll('input[name="dates"]');
+    var buyBtn         = document.getElementById('btn-buy-credits');
+    var confirmPayBtn  = document.getElementById('btn-confirm-pay');
+    var className   = "<%= j @group_class.name %>";
+    var pendingForm = null;
+
+    function formatRupiah(amount) {
+      return 'Rp. ' + amount.toLocaleString('id-ID');
+    }
+
+    function updateBuyBtn() {
+      var sessionSelected = Array.from(sessionRadios).some(r => r.checked);
+      if (buyBtn) buyBtn.disabled = !sessionSelected;
+    }
+
+    sessionRadios.forEach(function(r) { r.addEventListener('change', updateBuyBtn); });
+
+    if (buyBtn) {
+      buyBtn.addEventListener('click', function() {
+        var selectedDate = (document.querySelector('input[name="dates"]:checked') || {}).value;
+        var selectedPack = (document.querySelector('input[name="sessions_count"]:checked') || {}).value || '1';
+        var groupClassId = document.querySelector('input[name="group_class_id"]').value;
+
+        if (!selectedDate) { alert('Please select a session date.'); return; }
+
+        var packCount     = parseInt(selectedPack, 10);
+        var selectedRadio = document.querySelector('input[name="sessions_count"]:checked');
+        var totalPrice    = selectedRadio ? parseFloat(selectedRadio.dataset.price) : 0;
+        var packLabel     = packCount === 1 ? 'Single Session' : 'Pack of ' + packCount + ' Sessions';
+
+        document.getElementById('modal-class-name').textContent   = className;
+        document.getElementById('modal-session-date').textContent = selectedDate;
+        document.getElementById('modal-pack-size').textContent    = packLabel;
+        document.getElementById('modal-total-price').textContent  = formatRupiah(totalPrice);
+
+        pendingForm = { groupClassId: groupClassId, selectedPack: selectedPack, selectedDate: selectedDate };
+
+        var modal = new bootstrap.Modal(document.getElementById('confirmPackageModal'));
+        modal.show();
+      });
+    }
+
+    if (confirmPayBtn) {
+      confirmPayBtn.addEventListener('click', function() {
+        if (!pendingForm) return;
+
+        var form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '<%= class_credit_purchases_path %>';
+        [
+          ['authenticity_token', document.querySelector('meta[name="csrf-token"]').content],
+          ['class_credit_purchase[group_class_id]', pendingForm.groupClassId],
+          ['class_credit_purchase[sessions_count]', pendingForm.selectedPack],
+          ['class_credit_purchase[initial_session_date]', pendingForm.selectedDate]
+        ].forEach(function(pair) {
+          var input = document.createElement('input');
+          input.type = 'hidden'; input.name = pair[0]; input.value = pair[1];
+          form.appendChild(input);
+        });
+        document.body.appendChild(form);
+        form.submit();
+      });
+    }
+  });
+</script>
+<% end %>

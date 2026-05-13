@@ -489,3 +489,20 @@ video:focus { outline:none; }
 .paragraph-margin-bottom-10px p {
   margin-bottom: 10px;
 }
+
+.whatsapp-wrapper {
+	position: fixed;
+	right: 20px;
+	bottom: 40px;
+	overflow: hidden;
+	z-index: 9811 !important;
+	border-radius: 50px;
+	background: white;
+	box-shadow: 1px 1px 10px 1px #fff;
+}
+
+.whatsapp-wrapper>a>img {
+	width: 60px;
+	border: 2.5px solid #fff;
+	border-radius: 50%;
+}

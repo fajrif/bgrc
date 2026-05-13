@@ -2,7 +2,11 @@ class Admins::GroupClassesController < Admins::BaseController
 	before_action :set_group_class, except: [:index, :new, :create]
 
   def index
-    criteria = GroupClass.where("name ILIKE ?", "%#{params[:search]}%")
+    @sports = Sport.all
+    criteria = GroupClass.all
+    criteria = criteria.where("name ILIKE ?", "%#{params[:search]}%") if params[:search].present?
+    criteria = criteria.where(sport_id: params[:sport_id]) if params[:sport_id].present?
+    criteria = criteria.where(category: params[:category]) if params[:category].present?
 
     @group_classes = criteria.page(params[:page]).per(10)
 
@@ -48,7 +52,9 @@ class Admins::GroupClassesController < Admins::BaseController
   private
 
   def params_group_class
-    params.require(:group_class).permit(:name, :min_duration, :min_pax, :max_pax, :status, :price, :price_pax, :notes, :description)
+    params.require(:group_class).permit(:name, :min_duration, :min_pax, :max_pax, :status, :price, :price_pax, :notes, :description, :category, :sport_id, :is_prescheduled, :min_pack_sessions, :max_pack_sessions, :calendar_color,
+      group_class_packs_attributes: [:id, :sessions_count, :price, :label, :position, :_destroy],
+      group_class_schedules_attributes: [:id, :court_id, :day_of_week, :start_time, :end_time, :_destroy])
   end
 
   def set_group_class

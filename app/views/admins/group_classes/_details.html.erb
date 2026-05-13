@@ -1,12 +1,34 @@
 <table class="table table-hover">
 	<tr>
-		<td style="width:15%;"><b>ID</b></td>
+		<td style="width:20%;"><b>ID</b></td>
 		<td><%= @group_class.id %></td>
 	</tr>
 	<tr>
 		<td><b>Name</b></td>
 		<td><h5 class="fs-14 mb-0 text-body"><%= @group_class.name %></h5></td>
 	</tr>
+	<tr>
+		<td><b>Category</b></td>
+		<td><span class="badge bg-info-subtle text-info"><%= @group_class.category_label %></span></td>
+	</tr>
+	<tr>
+		<td><b>Sport</b></td>
+		<td><%= @group_class.try(:sport).try(:name) || "—" %></td>
+	</tr>
+	<tr>
+		<td><b>Prescheduled</b></td>
+		<td><%= @group_class.is_prescheduled? ? "Yes" : "No" %></td>
+	</tr>
+	<% if @group_class.group_class_packs.any? %>
+	<tr>
+		<td><b>Session Packs</b></td>
+		<td>
+			<% @group_class.group_class_packs.each do |pack| %>
+				<div><%= pack.display_label %> — <%= pack.price_label %></div>
+			<% end %>
+		</td>
+	</tr>
+	<% end %>
 	<tr>
 		<td><b>Min. Duration</b></td>
 		<td><%= @group_class.duration_label %></td>
@@ -40,3 +62,21 @@
 		<td><%= raw @group_class.description %></td>
 	</tr>
 </table>
+
+<% if @group_class.is_prescheduled? && @group_class.group_class_schedules.any? %>
+<h6 class="mt-4 mb-2">Class Schedule</h6>
+<table class="table table-sm table-bordered">
+  <thead>
+    <tr><th>Court</th><th>Day</th><th>Time</th></tr>
+  </thead>
+  <tbody>
+    <% @group_class.group_class_schedules.each do |s| %>
+      <tr>
+        <td><%= s.court.try(:name_label) %></td>
+        <td><%= s.day_name %></td>
+        <td><%= s.start_time %> – <%= s.end_time %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+<% end %>

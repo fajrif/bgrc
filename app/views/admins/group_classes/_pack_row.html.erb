@@ -1,0 +1,18 @@
+<div class="pack-row d-flex gap-2 align-items-end mb-2">
+  <%= pf.hidden_field :id %>
+  <div style="width:110px;">
+    <label class="form-label small mb-1">Sessions</label>
+    <%= pf.number_field :sessions_count, class: "form-control form-control-sm", min: 1, placeholder: "e.g. 5" %>
+  </div>
+  <div style="width:160px;">
+    <label class="form-label small mb-1">Price (Rp)</label>
+    <%= pf.text_field :price, class: "form-control form-control-sm", placeholder: "e.g. 500000" %>
+  </div>
+  <div class="flex-grow-1">
+    <label class="form-label small mb-1">Label (optional)</label>
+    <%= pf.text_field :label, class: "form-control form-control-sm", placeholder: "e.g. Value Pack" %>
+  </div>
+  <%= pf.hidden_field :position %>
+  <%= pf.check_box :_destroy, class: "d-none pack-destroy" %>
+  <button type="button" class="btn btn-sm btn-outline-danger mb-1 remove-pack-row" title="Remove">×</button>
+</div>

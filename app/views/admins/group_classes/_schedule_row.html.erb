@@ -1,0 +1,21 @@
+<div class="schedule-row d-flex gap-2 align-items-end mb-2">
+  <%= sf.hidden_field :id %>
+  <div style="width:200px;">
+    <%= sf.label :court_id, "Court" %>
+    <%= sf.collection_select :court_id, Court.all, :id, :name_label, { include_blank: "— Court —" }, class: "form-select form-select-sm" %>
+  </div>
+  <div style="width:160px;">
+    <%= sf.label :day_of_week, "Day" %>
+    <%= sf.select :day_of_week, GroupClassSchedule.days_for_select, { include_blank: "— Day —" }, class: "form-select form-select-sm" %>
+  </div>
+  <div style="width:110px;">
+    <%= sf.label :start_time, "Start" %>
+    <%= sf.text_field :start_time, class: "form-control form-control-sm", placeholder: "09:00" %>
+  </div>
+  <div style="width:110px;">
+    <%= sf.label :end_time, "End" %>
+    <%= sf.text_field :end_time, class: "form-control form-control-sm", placeholder: "10:00" %>
+  </div>
+  <%= sf.check_box :_destroy, class: "d-none schedule-destroy" %>
+  <button type="button" class="btn btn-sm btn-outline-danger mb-1 remove-schedule-row">&times;</button>
+</div>

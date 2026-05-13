@@ -1,34 +1,32 @@
+<% if @sport %>
 <!-- start banner section -->
-<section class="big-section wow animate__fadeIn cover-background background-position-top top-space overflow-visible" style="background-image:url('<%= image_url('banners/banner-home.png') %>');">
+<section class="big-section wow animate__fadeIn cover-background background-position-top overflow-visible" style="background-image:url('<%= image_url('banners/banner-home.png') %>');">
+    <div class="opacity-medium bg-extra-dark-gray"></div>
     <div class="container position-relative">
-      <div class="row justify-content-center align-items-center parallax-feature-box-bottom z-index-5 w-100 left-0 m-0">
-          <div class="col-12 col-lg-8 text-center text-md-start box-shadow position-relative bg-white padding-one-all padding-two-lr">
-            <div class="row justify-content-center">
-              <div class="col-12 text-center tab-style3" id="animated-tab1">
-                <ul class="nav nav-tabs margin-30px-bottom text-uppercase alt-font text-small font-weight-600 justify-content-center flex-column flex-md-row" style="border-color:#eee;">
-                  <% Sport.all.each_with_index do |sport, index| %>
-                    <% if @sport %>
-                      <li class="nav-item"><a href="#tab3_sec<%= sport.id %>" data-bs-toggle="tab" class="nav-link text-medium-gray <%= 'active' if @sport.id == sport.id %>"><%= sport.name %></a></li>
-                    <% else %>
-                      <li class="nav-item"><a href="#tab3_sec<%= sport.id %>" data-bs-toggle="tab" class="nav-link text-medium-gray <%= 'active' if index == 0 %>"><%= sport.name %></a></li>
+      <div class="row justify-content-center align-items-center">
+          <div class="col-12 position-relative bg-white box-shadow">
+            <form action="<%= search_path %>" method="GET">
+              <div class="d-flex flex-wrap align-items-stretch">
+                <div class="col-12 col-md-5 p-3" style="border-right: 1px solid #f0f0f0;">
+                  <p class="text-extra-small text-medium mb-1 text-uppercase letter-spacing-1">Select Category</p>
+                  <select name="sport_id" class="form-select border-0 p-0 alt-font text-medium" style="font-size:1rem;">
+                    <% Sport.all.order(:name).each do |sport| %>
+                      <option value="<%= sport.id %>" <%= 'selected' if sport.id == @sport.id %>><%= sport.name %></option>
                     <% end %>
-                  <% end %>
-                </ul>
-              </div>
-            </div>
-            <div class="tab-content">
-              <% Sport.all.each_with_index do |sport, index| %>
-                <% if @sport %>
-                <div id="tab3_sec<%= sport.id %>" class="tab-pane fade in <%= 'active show' if @sport.id == sport.id %>">
-                <% else %>
-                <div id="tab3_sec<%= sport.id %>" class="tab-pane fade in <%= 'active show' if index == 0 %>">
-                <% end %>
-                  <%= render "search/search_form_#{sport.name.downcase}", sport: sport %>
+                  </select>
                 </div>
-              <% end %>
-            </div>
+                <div class="col-12 col-md-5 p-3" style="border-right: 1px solid #f0f0f0;">
+                  <p class="text-extra-small text-medium mb-1 text-uppercase letter-spacing-1">Select Date</p>
+                  <input type="text" name="date" class="datecourtpicker form-control border-0 p-0 alt-font text-medium mb-0" placeholder="Select date" value="<%= Date.parse(@date).strftime('%d/%m/%Y') %>" style="font-size:1rem;" autocomplete="off">
+                </div>
+                <div class="col-12 col-md-2 d-flex align-items-center p-3">
+                  <button type="submit" class="btn btn-dark w-100 text-uppercase letter-spacing-2 text-extra-small text-white">Check Availability</button>
+                </div>
+              </div>
+            </form>
           </div>
       </div>
     </div>
 </section>
 <!-- end banner section -->
+<% end %>

@@ -8,6 +8,7 @@
 				<th>Class Name</th>
 				<th>Status</th>
 				<th>Price</th>
+				<th>Action</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -22,6 +23,19 @@
             <td><%= booking.try(:group_class).try(:name_with_pax, booking.pax) || '-' %></td>
 						<td class="<%= booking.is_unpaid? ? 'text-red' : 'text-green' %> font-weight-500"><%= booking.status_label %></td>
 						<td class="font-weight-500"><%= booking.total_price_label %></td>
+						<td>
+							<% hours_remaining = (booking.date - Time.current) / 1.hour %>
+							<% can_reschedule = booking.status == Booking::PAID &&
+										booking.group_class_id.present? &&
+										hours_remaining.between?(12, 24) &&
+										booking.reschedule_count < (configatron.max_reschedule_count || 2) %>
+							<% if can_reschedule %>
+								<%= button_to "Reschedule",
+											reschedule_to_credit_users_booking_path(booking),
+											method: :post, class: "btn btn-outline-warning btn-small",
+											data: { confirm: "Convert this session to a credit? You can rebook later." } %>
+							<% end %>
+						</td>
 				</tr>
 			<% end %>
 		</tbody>

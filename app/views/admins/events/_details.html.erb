@@ -42,4 +42,28 @@
 		<td><b>Featured</b></td>
     <td><%= @event.is_featured? ? "Yes" : "No" %></td>
 	</tr>
+	<tr>
+		<td><b>Capacity</b></td>
+    <td><%= @event.capacity.to_i == 0 ? "Unlimited" : "#{@event.event_rsvps.count} / #{@event.capacity} registered" %></td>
+	</tr>
 </table>
+
+<% if @event.event_rsvps.any? %>
+<h6 class="mt-4 mb-2">RSVP Registrants (<%= @event.event_rsvps.count %>)</h6>
+<table class="table table-sm table-bordered">
+  <thead>
+    <tr><th>#</th><th>Name</th><th>Email</th><th>Phone</th><th>Registered</th></tr>
+  </thead>
+  <tbody>
+    <% @event.event_rsvps.order(created_at: :asc).each_with_index do |rsvp, i| %>
+      <tr>
+        <td><%= i + 1 %></td>
+        <td><%= rsvp.name %></td>
+        <td><%= rsvp.email %></td>
+        <td><%= rsvp.phone.presence || "-" %></td>
+        <td><%= rsvp.created_at.strftime('%d/%m/%Y %H:%M') %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+<% end %>

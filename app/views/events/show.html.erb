@@ -2,32 +2,71 @@
     <div class="container">
         <div class="row align-items-center">
             <div class="col-lg-8 col-md-6 text-center text-md-start">
-                <!-- start page title -->
                 <h1 class="alt-font font-weight-600 mb-0 text-uppercase"><%= @event.name %></h1>
-                <!-- end page title -->
             </div>
             <div class="col-lg-4 col-md-6 breadcrumb alt-font text-small justify-content-center justify-content-md-end sm-margin-10px-top">
-                <!-- breadcrumb -->
                 <ul>
                   <li><a href="<%= root_url %>">Home</a></li>
                   <li><a href="<%= events_url %>"><%= t('menu.events') %></a></li>
                   <li class="text-dark-gray"><%= @event.name %></li>
                 </ul>
-                <!-- end breadcrumb -->
             </div>
         </div>
     </div>
 </section>
-<!-- start story section -->
+
 <section class="wow animate__fadeIn">
     <div class="container">
         <div class="row align-items-start">
-            <div class="col-lg-12 col-md-12 text-center text-md-start padding-three-lr wow animate__fadeInLeft" data-wow-delay="0.1s">
+            <div class="col-lg-8 col-md-12 text-center text-md-start padding-three-lr wow animate__fadeInLeft" data-wow-delay="0.1s">
               <h5 class="alt-font text-extra-dark-gray mb-4"><%= @event.name %></h5>
               <p><%= @event.short_description %></p>
               <p><%= @event.description %></p>
             </div>
+
+            <div class="col-lg-4 col-md-12 padding-three-lr">
+              <div class="border padding-30px-all">
+                <h6 class="alt-font font-weight-600 text-uppercase mb-3">Event Details</h6>
+                <p class="mb-1"><strong>Date:</strong> <%= @event.valid_date %></p>
+
+                <% if @event.capacity.to_i > 0 %>
+                  <% remaining = @event.slots_remaining %>
+                  <p class="mb-3">
+                    <strong>Availability:</strong>
+                    <% if remaining > 0 %>
+                      <span class="text-success"><%= remaining %> / <%= @event.capacity %> slots remaining</span>
+                    <% else %>
+                      <span class="text-danger">Event Full</span>
+                    <% end %>
+                  </p>
+                <% end %>
+
+                <% if flash[:alert] %>
+                  <div class="alert alert-danger small p-2 mb-3"><%= flash[:alert] %></div>
+                <% end %>
+                <% if flash[:notice] %>
+                  <div class="alert alert-success small p-2 mb-3"><%= flash[:notice] %></div>
+                <% end %>
+
+                <% if @event.capacity.to_i == 0 || !@event.full? %>
+                  <h6 class="alt-font font-weight-600 text-uppercase mb-3">Sign Up</h6>
+                  <%= form_for EventRsvp.new, url: event_event_rsvps_path(@event) do |f| %>
+                    <div class="mb-2">
+                      <%= f.text_field :name, class: "form-control form-control-sm", placeholder: "Full Name *" %>
+                    </div>
+                    <div class="mb-2">
+                      <%= f.email_field :email, class: "form-control form-control-sm", placeholder: "Email Address *" %>
+                    </div>
+                    <div class="mb-3">
+                      <%= f.phone_field :phone, class: "form-control form-control-sm", placeholder: "Phone Number" %>
+                    </div>
+                    <%= f.submit "Register Now", class: "btn btn-small btn-dark-gray text-white w-100" %>
+                  <% end %>
+                <% else %>
+                  <div class="alert alert-warning small p-2">This event is fully booked.</div>
+                <% end %>
+              </div>
+            </div>
         </div>
     </div>
 </section>
-<!-- end story section -->

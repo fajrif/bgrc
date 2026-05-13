@@ -8468,7 +8468,7 @@ header {
   margin-bottom: 8px;
 }
 header .top-header-area.bg-black a:hover {
-  color: var(--grey-color) !important;
+  color: #fff !important;
 }
 header .top-header-area .icon-social-very-small a:last-child i {
   margin-right: 0;
@@ -15991,6 +15991,7 @@ footer .instafeed-grid.gutter-extra-large {
 .table>:not(caption)>*>* {
   font-size: smaller;
   font-weight: 600;
+  line-height: normal;
 }
 .cursor-pointer {
   cursor: pointer;

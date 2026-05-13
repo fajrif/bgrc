@@ -1,8 +1,8 @@
-<%= render "search/banner" %>
+<%= render "search_bar" %>
+<%= render "facilities" unless @facilities.empty? %>
 <%= render "about" %>
 <%= render "image_separation" %>
 <%= render "testimonials" unless @testimonials.empty? %>
-<%= render "facilities" unless @facilities.empty? %>
 <%= render "location" %>
 <%= render "sports" unless @sports.empty? %>
 <%= render "packages" unless @packages.empty? %>

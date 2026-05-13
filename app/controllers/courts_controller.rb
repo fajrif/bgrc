@@ -28,6 +28,15 @@ class CourtsController < ApplicationController
       price = @group_class.check_price(@pax, false)
     end
 
+    if params[:coach_id].present?
+      @coach = Coach.find_by(id: params[:coach_id])
+      if @coach
+        coach_fee = @coach.calculate_price(duration, false) || 0
+        price += coach_fee
+        @coach_fee_label = price_label(coach_fee)
+      end
+    end
+
 		@priceLabel = price_label(price)
 		priceHuman = price_label(price, true)
 

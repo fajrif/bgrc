@@ -25,7 +25,12 @@
 						</td>
 						<td><%= booking.date.strftime('%A, %d-%m-%Y %H:%M') %></td>
 						<td><%= booking.duration_label %></td>
-						<td class="<%= booking.is_unpaid? ? 'text-red' : 'text-green' %>"><%= booking.status_label %></td>
+						<td class="<%= booking.is_unpaid? ? 'text-red' : 'text-green' %>">
+							<%= booking.status_label %>
+							<% if booking.class_credit_purchase&.expires_at %>
+								<br><small class="text-muted">Credits expire: <%= booking.class_credit_purchase.expires_at.strftime('%d %b %Y') %></small>
+							<% end %>
+						</td>
 						<td class="ptice"><%= booking.price_label %></td>
 						<td class="action">
 							<% if booking.is_unpaid? %>
