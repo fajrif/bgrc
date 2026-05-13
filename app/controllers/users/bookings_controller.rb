@@ -9,16 +9,30 @@ class Users::BookingsController < Users::BaseController
 
 	def calendar
 		Booking.expire_stale_bookings!
-		bookings = current_user.bookings.where(status: [Booking::UNPAID, Booking::PAID])
-		                                .where("date >= ?", Time.current)
-		@events = bookings.map do |b|
-			color = b.status == Booking::PAID ? "#198754" : "#ffc107"
-			{ id: b.id, title: b.court.try(:name_label) || b.order_id,
-				url: booking_path(b.order_id),
-				start: b.date.strftime('%Y-%m-%dT%H:%M'),
-				end: b.end_date.strftime('%Y-%m-%dT%H:%M'),
-				color: color, allDay: false }
-		end.to_json
+
+		start_date = params[:start].present? ? Date.parse(params[:start]) : Date.today
+		end_date   = params[:end].present?   ? Date.parse(params[:end])   : Date.today + 7.days
+		events = []
+
+		current_user.bookings
+		            .where(status: [Booking::UNPAID, Booking::PAID])
+		            .where("date >= ? AND date < ?", start_date, end_date)
+		            .includes(:court)
+		            .each do |b|
+			bg = b.status == Booking::PAID ? "#ECFEED" : "#ffc107"
+			br = b.status == Booking::PAID ? "#5BF651" : "#e6a800"
+			tx = b.status == Booking::PAID ? "#1a7a1a" : "#000"
+			events << { id: b.id, title: b.court.try(:name_label) || b.order_id,
+			            url: booking_path(b.order_id),
+			            start: b.date.strftime('%Y-%m-%dT%H:%M'),
+			            end: b.end_date.strftime('%Y-%m-%dT%H:%M'),
+			            backgroundColor: bg, borderColor: br, textColor: tx, allDay: false }
+		end
+
+		respond_to do |format|
+			format.html
+			format.json { render json: events }
+		end
 	end
 
 	def destroy

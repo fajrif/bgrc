@@ -1,18 +1,44 @@
+<%= content_for :head do %>
+  <%= stylesheet_link_tag "main.css" %>
+  <style>
+    #user-schedule-calendar .fc-button-primary {
+      background-color: #6c757d;
+      border-color: #6c757d;
+      color: #fff;
+    }
+    #user-schedule-calendar .fc-button-primary:hover {
+      background-color: #5a6268;
+      border-color: #545b62;
+      color: #fff;
+    }
+    #user-schedule-calendar .fc-button-primary:not(:disabled):active,
+    #user-schedule-calendar .fc-button-primary:not(:disabled).fc-button-active {
+      background-color: #495057;
+      border-color: #42484e;
+      color: #fff;
+    }
+    #user-schedule-calendar .fc-button-primary:focus {
+      box-shadow: 0 0 0 0.2rem rgba(108,117,125,0.5);
+    }
+  </style>
+<% end %>
+
 <section class="half-section">
     <div class="container">
         <%= render "users/shared/sidebar" %>
         <div class="row align-items-start mb-4">
             <div class="col-lg-12 col-md-12 text-center text-md-start padding-five-lr lg-padding-six-lr md-padding-15px-lr">
-                <h6 class="font-weight-600 text-uppercase margin-20px-bottom letter-spacing-8">My Schedule</h6>
+                <h6 class="font-weight-600 text-uppercase margin-20px-bottom letter-spacing-8">My Schedules</h6>
 
-                <div class="d-flex gap-3 mb-3">
-                    <a href="<%= users_bookings_path %>" class="btn btn-sm btn-outline-secondary">List View</a>
-                    <a href="<%= calendar_users_bookings_path %>" class="btn btn-sm btn-dark">Calendar View</a>
-                </div>
-
-                <div class="mb-3 d-flex gap-3">
-                    <span><span style="display:inline-block;width:14px;height:14px;background:#198754;border-radius:2px;"></span> Paid</span>
-                    <span><span style="display:inline-block;width:14px;height:14px;background:#ffc107;border-radius:2px;"></span> Awaiting Payment</span>
+                <div class="d-flex flex-wrap gap-3 mb-3 small align-items-center">
+                    <div class="d-flex align-items-center gap-1">
+                        <span style="display:inline-block;width:14px;height:14px;background:#ECFEED;border:1.5px solid #5BF651;border-radius:2px;flex-shrink:0;"></span>
+                        <span class="text-muted">Your Booking</span>
+                    </div>
+                    <div class="d-flex align-items-center gap-1">
+                        <span style="display:inline-block;width:14px;height:14px;background:#ffc107;border:1.5px solid #e6a800;border-radius:2px;flex-shrink:0;"></span>
+                        <span class="text-muted">Awaiting Payment</span>
+                    </div>
                 </div>
 
                 <div id="user-schedule-calendar"></div>
@@ -24,23 +50,34 @@
 <%= content_for :tail do %>
   <%= javascript_include_tag "fullcalendar.js" %>
   <%= javascript_include_tag "moment-with-locales.min.js" %>
+  <%= stylesheet_link_tag "fullcalendar-custom.css" %>
   <script>
     document.addEventListener('DOMContentLoaded', function() {
-      var events = <%= @events.html_safe %>;
       var calendarEl = document.getElementById('user-schedule-calendar');
       var calendar = new FullCalendar.Calendar(calendarEl, {
-        initialView: window.innerWidth < 768 ? 'listMonth' : 'dayGridMonth',
+        initialView: 'timeGridWeek',
+        initialDate: '<%= Date.today.strftime('%Y-%m-%d') %>',
         headerToolbar: {
           left: 'prev,next today',
           center: 'title',
-          right: 'dayGridMonth,timeGridWeek,listMonth'
+          right: ''
         },
-        navLinks: true,
+        navLinks: false,
+        allDaySlot: false,
+        slotDuration: '01:00',
+        slotMinTime: '06:00:00',
+        slotMaxTime: '23:00:00',
         eventTimeFormat: { hour: '2-digit', minute: '2-digit', hour12: false },
-        events: events,
+        events: '<%= calendar_users_bookings_path(format: :json) %>',
         eventClick: function(info) {
           info.jsEvent.preventDefault();
-          if (info.event.url) window.location.href = info.event.url;
+          if (info.event.url) {
+            window.location.href = info.event.url;
+          } else if (info.event.extendedProps.signUpUrl) {
+            window.open(info.event.extendedProps.signUpUrl, '_blank');
+          } else if (info.event.extendedProps.classUrl) {
+            window.location.href = info.event.extendedProps.classUrl;
+          }
         }
       });
       calendar.setOption('height', 'auto');

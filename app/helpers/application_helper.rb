@@ -42,8 +42,12 @@ module ApplicationHelper
     arr.map.with_index do |p,i|
       _text = "#{p} pax "
       if use_label_min_max
-        _text += "(Minimum)" if p == arr.first
-        _text += "(Maximum)" if p == arr.last
+        if arr.first == arr.last
+          _text += "(Maximum)"
+        else
+          _text += "(Minimum)" if p == arr.first
+          _text += "(Maximum)" if p == arr.last
+        end
       end
       [_text, p]
     end
@@ -83,7 +87,11 @@ module ApplicationHelper
 	end
 
 	def is_users_bookings_page?
-		controller.controller_name == "bookings"
+		controller.controller_name == "bookings" && controller.action_name != "calendar"
+	end
+
+	def is_users_schedule_page?
+		controller.controller_name == "bookings" && controller.action_name == "calendar"
 	end
 
 	def is_users_packages_page?

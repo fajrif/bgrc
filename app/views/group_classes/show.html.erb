@@ -44,7 +44,7 @@
           </tr>
           <tr>
             <td class="text-medium ps-0">Pax</td>
-            <td><%= @group_class.min_pax %>–<%= @group_class.max_pax %> pax</td>
+            <td><%= @group_class.min_pax == @group_class.max_pax ? "#{@group_class.min_pax} pax" : "#{@group_class.min_pax}–#{@group_class.max_pax} pax" %></td>
           </tr>
           <tr>
             <td class="text-medium ps-0">Base Price</td>

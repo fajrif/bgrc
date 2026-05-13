@@ -29,6 +29,9 @@ module LocaleHelper
 				content_tag(:a, "My Booking", href: users_bookings_path)
 			end +
 			content_tag(:li) do
+				content_tag(:a, "My Schedules", href: calendar_users_bookings_path)
+			end +
+			content_tag(:li) do
 				content_tag(:a, "Class Credits", href: users_class_credits_path)
 			end +
 			content_tag(:li) do
