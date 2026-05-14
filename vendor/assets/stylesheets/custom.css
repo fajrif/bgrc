@@ -28,6 +28,10 @@ header nav .navbar-nav > li > a {
 .text-grey {
 	color: var(--grey-color);
 }
+.btn-outline-warning {
+	--bs-btn-border-color: var(--bgrc-yellow-color);
+	--bs-btn-color: var(--bgrc-yellow-color);
+}
 .btn.btn-yellow {
 	background: var(--base-color);
 	border-color: var(--base-color);

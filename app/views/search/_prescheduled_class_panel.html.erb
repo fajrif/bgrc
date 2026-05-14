@@ -1,14 +1,17 @@
 <%# Rendered when @group_class.is_prescheduled? %>
-<div class="mt-3">
+<div class="card border-0 box-shadow p-4">
+  <h6 class="alt-font text-extra-dark-gray mb-3">Register for this Class</h6>
+
   <% if @upcoming_sessions.present? %>
-    <p class="fw-bold mb-2">Upcoming Sessions — <%= @group_class.name %></p>
+    <p class="fw-bold mb-2">Upcoming Sessions</p>
     <div class="mb-3">
       <% @upcoming_sessions.each do |session| %>
-        <div class="form-check border rounded p-2 mb-1 <%= session[:slots_remaining] == 0 ? 'bg-light text-muted' : '' %>">
-          <input class="form-check-input" type="radio" name="dates" id="session_<%= session[:datetime_str].gsub(/\W/,'') %>"
+        <div class="d-flex align-items-center gap-2 mb-2 <%= session[:slots_remaining] == 0 ? 'text-muted' : '' %>">
+          <input type="radio" name="dates" id="session_<%= session[:datetime_str].gsub(/\W/,'') %>"
                  value="<%= session[:datetime_str] %>"
-                 <%= 'disabled' if session[:slots_remaining] == 0 %>>
-          <label class="form-check-label w-100" for="session_<%= session[:datetime_str].gsub(/\W/,'') %>">
+                 <%= 'disabled' if session[:slots_remaining] == 0 %>
+                 style="width:18px;height:18px;flex-shrink:0;margin-bottom:0">
+          <label for="session_<%= session[:datetime_str].gsub(/\W/,'') %>" style="margin:0;cursor:pointer;">
             <%= session[:date_label] %>
             &nbsp;&middot;&nbsp;
             <%= session[:start_time] %> – <%= session[:end_time] %>
@@ -28,11 +31,15 @@
       <p class="fw-bold mb-2">Choose Pack Size</p>
       <div class="mb-3">
         <% packs.each_with_index do |pack, i| %>
-          <div class="form-check">
-            <input class="form-check-input" type="radio" name="sessions_count"
+          <div class="d-flex align-items-center gap-2 mb-2">
+            <input type="radio" name="sessions_count"
                    id="pack_<%= pack.id %>" value="<%= pack.sessions_count %>"
-                   data-price="<%= pack.price.to_f %>" <%= 'checked' if i == 0 %>>
-            <label class="form-check-label" for="pack_<%= pack.id %>">
+                   class="gc_presched_pack_radio"
+                   data-price="<%= pack.price.to_f %>"
+                   data-price-label="<%= pack.price_label %>"
+                   <%= 'checked' if i == 0 %>
+                   style="width:18px;height:18px;flex-shrink:0;margin-bottom:0">
+            <label for="pack_<%= pack.id %>" style="margin:0;cursor:pointer;">
               <%= pack.display_label %> — <%= pack.price_label %>
             </label>
           </div>
@@ -40,18 +47,40 @@
       </div>
     <% end %>
 
+    <% pax_choice = @group_class.min_pax != @group_class.max_pax %>
+    <% pax_price_map = (@group_class.min_pax..@group_class.max_pax).each_with_object({}) { |p, h| h[p] = @group_class.check_price(p) } %>
+
+    <% if pax_choice %>
+      <p class="fw-bold mb-2">Number of Pax</p>
+      <div class="mb-3">
+        <%= select_tag "pax",
+              options_for_select(options_select_pax(@group_class.min_pax, @group_class.max_pax), @group_class.min_pax),
+              class: "form-select", id: "gc_presched_pax_select" %>
+      </div>
+    <% end %>
+
+    <% initial_price = packs.any? ? packs.first.price_label : @group_class.check_price(@group_class.min_pax) %>
+    <% if packs.any? || pax_choice %>
+      <div class="d-flex justify-content-between align-items-center mb-3 p-3 bg-light rounded">
+        <span class="text-medium text-small">Total Price</span>
+        <strong id="gc_presched_price_display" class="alt-font"><%= initial_price %></strong>
+      </div>
+    <% end %>
+
     <input type="hidden" name="duration" value="<%= @group_class.min_duration %>">
     <input type="hidden" name="group_class_id" value="<%= @group_class.id %>">
     <input type="hidden" name="court_type" value="<%= @type %>">
-    <input type="hidden" name="pax" value="<%= @group_class.min_pax %>">
+    <% unless pax_choice %>
+      <input type="hidden" name="pax" value="<%= @group_class.min_pax %>">
+    <% end %>
 
-    <button type="button" id="btn-buy-credits" class="btn btn-dark mt-2" disabled>
+    <button type="button" id="btn-buy-credits" class="btn btn-dark w-100 text-uppercase letter-spacing-1 text-extra-small text-white" disabled>
       Register &amp; Buy Credits
     </button>
-    <p class="text-muted small mt-1">Select a session above to continue.</p>
+    <p class="text-muted small mt-2 mb-0">Select a session above to continue.</p>
 
   <% else %>
-    <div class="alert alert-info">No upcoming sessions scheduled for this class in the next 14 days.</div>
+    <div class="alert alert-info mb-0">No upcoming sessions scheduled for this class in the next 14 days.</div>
   <% end %>
 </div>
 
@@ -99,10 +128,14 @@
 <script>
   document.addEventListener('DOMContentLoaded', function() {
     var sessionRadios  = document.querySelectorAll('input[name="dates"]');
+    var packRadios     = document.querySelectorAll('.gc_presched_pack_radio');
+    var paxSelect      = document.getElementById('gc_presched_pax_select');
+    var priceDisplay   = document.getElementById('gc_presched_price_display');
     var buyBtn         = document.getElementById('btn-buy-credits');
     var confirmPayBtn  = document.getElementById('btn-confirm-pay');
-    var className   = "<%= j @group_class.name %>";
-    var pendingForm = null;
+    var className      = "<%= j @group_class.name %>";
+    var paxPriceMap    = <%= raw pax_price_map.to_json %>;
+    var pendingForm    = null;
 
     function formatRupiah(amount) {
       return 'Rp. ' + amount.toLocaleString('id-ID');
@@ -113,27 +146,41 @@
       if (buyBtn) buyBtn.disabled = !sessionSelected;
     }
 
+    function updatePriceDisplay() {
+      if (!priceDisplay) return;
+      var checkedPack = document.querySelector('.gc_presched_pack_radio:checked');
+      if (checkedPack) {
+        priceDisplay.textContent = checkedPack.dataset.priceLabel || '';
+      } else if (paxSelect) {
+        priceDisplay.textContent = paxPriceMap[parseInt(paxSelect.value, 10)] || '';
+      }
+    }
+
     sessionRadios.forEach(function(r) { r.addEventListener('change', updateBuyBtn); });
+    packRadios.forEach(function(r) { r.addEventListener('change', updatePriceDisplay); });
+    if (paxSelect) paxSelect.addEventListener('change', updatePriceDisplay);
 
     if (buyBtn) {
       buyBtn.addEventListener('click', function() {
         var selectedDate = (document.querySelector('input[name="dates"]:checked') || {}).value;
         var selectedPack = (document.querySelector('input[name="sessions_count"]:checked') || {}).value || '1';
+        var selectedPax  = paxSelect ? paxSelect.value : '<%= @group_class.min_pax %>';
         var groupClassId = document.querySelector('input[name="group_class_id"]').value;
 
         if (!selectedDate) { alert('Please select a session date.'); return; }
 
         var packCount     = parseInt(selectedPack, 10);
         var selectedRadio = document.querySelector('input[name="sessions_count"]:checked');
-        var totalPrice    = selectedRadio ? parseFloat(selectedRadio.dataset.price) : 0;
+        var packPrice     = selectedRadio ? parseFloat(selectedRadio.dataset.price) : null;
+        var totalPrice    = packPrice !== null ? packPrice : (paxPriceMap[parseInt(selectedPax, 10)] || '');
         var packLabel     = packCount === 1 ? 'Single Session' : 'Pack of ' + packCount + ' Sessions';
 
         document.getElementById('modal-class-name').textContent   = className;
         document.getElementById('modal-session-date').textContent = selectedDate;
         document.getElementById('modal-pack-size').textContent    = packLabel;
-        document.getElementById('modal-total-price').textContent  = formatRupiah(totalPrice);
+        document.getElementById('modal-total-price').textContent  = typeof totalPrice === 'number' ? formatRupiah(totalPrice) : totalPrice;
 
-        pendingForm = { groupClassId: groupClassId, selectedPack: selectedPack, selectedDate: selectedDate };
+        pendingForm = { groupClassId: groupClassId, selectedPack: selectedPack, selectedDate: selectedDate, selectedPax: selectedPax };
 
         var modal = new bootstrap.Modal(document.getElementById('confirmPackageModal'));
         modal.show();
@@ -151,7 +198,8 @@
           ['authenticity_token', document.querySelector('meta[name="csrf-token"]').content],
           ['class_credit_purchase[group_class_id]', pendingForm.groupClassId],
           ['class_credit_purchase[sessions_count]', pendingForm.selectedPack],
-          ['class_credit_purchase[initial_session_date]', pendingForm.selectedDate]
+          ['class_credit_purchase[initial_session_date]', pendingForm.selectedDate],
+          ['class_credit_purchase[pax]', pendingForm.selectedPax]
         ].forEach(function(pair) {
           var input = document.createElement('input');
           input.type = 'hidden'; input.name = pair[0]; input.value = pair[1];

@@ -47,6 +47,27 @@ class Users::BookingsController < Users::BaseController
 		@bookings = current_user.booking_history.page(params[:page]).per(10)
 	end
 
+  def return_credit
+    @booking = current_user.bookings.find(params[:id])
+
+    unless @booking.class_credit_purchase_id.present?
+      redirect_to users_bookings_path, alert: "Not a credit-based booking." and return
+    end
+
+    if @booking.created_at < 24.hours.ago
+      redirect_to users_bookings_path,
+        alert: "Reschedule window has expired. Credit-based bookings can only be cancelled within 24 hours of claiming." and return
+    end
+
+    if @booking.status == Booking::CANCELLED
+      redirect_to users_bookings_path, alert: "This booking is already cancelled." and return
+    end
+
+    @booking.update!(status: Booking::CANCELLED)
+    redirect_to users_class_credits_path,
+      notice: "Credit returned. You can claim another session for #{@booking.group_class.try(:name)}."
+  end
+
   def reschedule_to_credit
     @booking = current_user.bookings.find(params[:id])
 

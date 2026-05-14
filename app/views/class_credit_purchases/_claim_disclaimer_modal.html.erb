@@ -1,0 +1,53 @@
+<div class="modal fade" id="claimDisclaimerModal" tabindex="-1" aria-labelledby="claimDisclaimerLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="claimDisclaimerLabel">Confirm Session Claim</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p class="text-medium mb-3">
+          Please review the details before claiming this session. By proceeding, you agree to the following:
+        </p>
+
+        <h6 class="alt-font fw-bold mb-2">Rescheduling Policy</h6>
+        <ul class="text-medium small mb-3">
+          <li>You may reschedule (cancel and return the credit) within <strong>24 hours after this claim</strong>.</li>
+          <li>After the 24-hour window has passed, the session is <strong>locked</strong> and cannot be cancelled or rescheduled.</li>
+          <li>If you do not attend the session, your credit will be forfeited.</li>
+        </ul>
+
+        <h6 class="alt-font fw-bold mb-2">Court & Coach</h6>
+        <ul class="text-medium small mb-3">
+          <li>Your selected court and coach will be reserved exclusively for your session.</li>
+          <li>Please arrive 10 minutes before the scheduled start time.</li>
+        </ul>
+
+        <p class="text-muted small mb-0">By clicking "I Agree &amp; Claim", you confirm that you have read and accept the rescheduling rules above.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" id="btn-confirm-claim" class="btn btn-dark text-white">I Agree &amp; Claim</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var confirmBtn = document.getElementById('btn-confirm-claim');
+    if (confirmBtn) {
+      confirmBtn.addEventListener('click', function() {
+        var coachId = document.getElementById('claim-input-coach-id').value;
+        if (!coachId) {
+          alert('Please select a coach first.');
+          var modalEl = document.getElementById('claimDisclaimerModal');
+          var modal = bootstrap.Modal.getInstance(modalEl);
+          if (modal) modal.hide();
+          return;
+        }
+        document.getElementById('claim-form').submit();
+      });
+    }
+  });
+</script>

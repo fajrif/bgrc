@@ -6,9 +6,15 @@
                     <h5 class="alt-font font-weight-600 text-uppercase mb-4">Session Credit Purchase</h5>
 
                     <% if @credit_purchase.paid? %>
-                        <div class="alert alert-success">
-                            Your session credits are active. You have <%= @credit_purchase.sessions_remaining %> session(s) remaining.
-                        </div>
+                        <% if @credit_purchase.sessions_remaining > 0 %>
+                            <div class="alert alert-success">
+                                Your session credits are active. You have <%= @credit_purchase.sessions_remaining %> session(s) remaining.
+                            </div>
+                        <% else %>
+                            <div class="alert alert-secondary">
+                                You have used all your session credits.
+                            </div>
+                        <% end %>
                     <% end %>
 
                     <table class="table table-borderless text-start mb-4">
@@ -48,12 +54,24 @@
                         <% end %>
                     </table>
 
-                    <% unless @credit_purchase.paid? %>
+                    <% if !@credit_purchase.paid? %>
                         <p class="text-muted small mb-3">Complete your payment to activate your session credits.</p>
                         <button class="btn btn-dark text-white w-100 mb-2"
                                 data-bs-toggle="modal" data-bs-target="#creditDisclaimerModal">Pay Now</button>
-                    <% else %>
-                        <%= link_to "Book a Session", search_path, class: "btn btn-dark text-white w-100 mb-2" %>
+                    <% elsif @credit_purchase.sessions_remaining > 0 && !@credit_purchase.group_class.is_prescheduled? %>
+                        <%= link_to "Book a Session", book_session_class_credit_purchase_path(@credit_purchase),
+                              class: "btn btn-dark text-white w-100 mb-2" %>
+                    <% elsif @reschedulable_bookings.any? %>
+                        <% @reschedulable_bookings.each do |booking| %>
+                            <%= button_to "Reschedule — #{booking.date.strftime('%d %b %Y %H:%M')}",
+                                  return_credit_users_booking_path(booking),
+                                  method: :post,
+                                  class: "btn btn-outline-warning w-100 mb-2",
+                                  data: { confirm: "Cancel this session and return the credit? You can book a different date." } %>
+                            <p class="text-extra-small text-muted mb-2">
+                              Reschedule window until <%= (booking.created_at + 24.hours).strftime('%d %b %H:%M') %>
+                            </p>
+                        <% end %>
                     <% end %>
 
                     <% if @credit_purchase.paid? %>

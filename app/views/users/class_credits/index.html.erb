@@ -24,8 +24,8 @@
                                 <tr>
                                     <td class="font-weight-500">
                                         <%= link_to cp.order_id, class_credit_purchase_path(cp), class: "text-dark d-block" %>
-                                        <% if cp.paid? && cp.sessions_remaining > 0 %>
-                                            <%= link_to "Book a Session", search_path, class: "text-extra-small text-green" %>
+                                        <% if cp.paid? && cp.sessions_remaining > 0 && !cp.group_class.is_prescheduled? %>
+                                            <%= link_to "Book a Session", book_session_class_credit_purchase_path(cp), class: "text-extra-small text-green" %>
                                         <% elsif !cp.paid? %>
                                             <%= link_to "Complete Payment →", class_credit_purchase_path(cp), class: "text-extra-small text-warning fw-semibold d-block" %>
                                             <%= link_to "Cancel Order", users_class_credit_path(cp),

@@ -210,6 +210,20 @@ class Admins::BookingsController < Admins::BaseController
     redirect_to admins_booking_path(@booking), notice: "Booking marked as refunded."
   end
 
+  def cancel_credit_booking
+    unless @booking.class_credit_purchase_id.present?
+      redirect_to admins_booking_path(@booking),
+        alert: "This booking is not linked to a class credit." and return
+    end
+    if @booking.status == Booking::CANCELLED
+      redirect_to admins_booking_path(@booking),
+        alert: "This booking is already cancelled." and return
+    end
+    @booking.update!(status: Booking::CANCELLED)
+    redirect_to admins_user_path(@booking.user_id),
+      notice: "Booking cancelled. Credit returned to the user."
+  end
+
   def destroy
     @booking.destroy
     redirect_to admins_bookings_url, :notice => "Successfully destroyed booking."

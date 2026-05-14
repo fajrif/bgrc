@@ -60,6 +60,7 @@ Rails.application.routes.draw do
 					get :invoice
 					patch :reschedule
 					patch :mark_refunded
+					post :cancel_credit_booking
 				end
       end
       resources :recurring_events
@@ -123,6 +124,7 @@ Rails.application.routes.draw do
         member do
           get :invoice
           post :reschedule_to_credit
+          post :return_credit
         end
       end
       resources :packages, :except => [:edit, :update, :show]
@@ -161,6 +163,8 @@ Rails.application.routes.draw do
       member do
         get  :initiate_payment
         post :payment_callback
+        get  :book_session
+        post :claim_session
       end
     end
 		resources :promos, :only => [:index, :show]

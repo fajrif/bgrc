@@ -6,7 +6,59 @@
         <div>
           <%= render "details" %>
         </div>
-				<div class="form-actions">
+
+        <hr class="my-4">
+        <h5 class="mb-3">Class Credits</h5>
+        <% if @credit_purchases.any? %>
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Order ID</th>
+                <th>Class</th>
+                <th>Purchased</th>
+                <th>Sessions</th>
+                <th>Remaining</th>
+                <th>Expires</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @credit_purchases.each do |cp| %>
+                <tr>
+                  <td><%= cp.order_id %></td>
+                  <td><%= cp.group_class.try(:name) %></td>
+                  <td class="small text-muted"><%= cp.purchase_date.try(:strftime, '%d %b %Y') %></td>
+                  <td class="text-center"><%= cp.sessions_used %> / <%= cp.sessions_count %></td>
+                  <td class="text-center fw-semibold <%= cp.sessions_remaining > 0 ? 'text-success' : 'text-danger' %>">
+                    <%= cp.sessions_remaining %>
+                  </td>
+                  <td class="small text-muted"><%= cp.expires_at.try(:strftime, '%d %b %Y') || '—' %></td>
+                  <td>
+                    <% if cp.paid? %>
+                      <span class="badge bg-success">Paid</span>
+                    <% else %>
+                      <span class="badge bg-warning text-dark">Pending</span>
+                    <% end %>
+                  </td>
+                  <td>
+                    <% if cp.paid? && cp.sessions_remaining > 0 && !cp.group_class.is_prescheduled? %>
+                      <%= link_to "Book on Behalf",
+                            book_session_class_credit_purchase_path(cp),
+                            class: "btn btn-outline-primary btn-sm" %>
+                    <% else %>
+                      —
+                    <% end %>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        <% else %>
+          <p class="text-muted">This user has no class credit purchases.</p>
+        <% end %>
+
+				<div class="form-actions mt-4">
 					<%= link_to 'Edit', edit_admins_user_path(@user.id), :class => 'btn btn-secondary' %>
 					<%= link_to 'Destroy', admins_user_path(@user.id), :confirm => 'Are you sure?', :method => :delete, :class => 'btn btn-danger' %>
 					<%= link_to 'View All', admins_users_path, :class => 'btn btn-light' %>
