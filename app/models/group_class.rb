@@ -14,6 +14,7 @@ class GroupClass < ApplicationRecord
   belongs_to :sport, optional: true
   has_many :bookings
   has_many :class_credit_purchases
+  has_many :group_class_registrations
   has_many :group_class_schedules, dependent: :destroy
   has_many :group_class_packs, dependent: :destroy
   accepts_nested_attributes_for :group_class_schedules, allow_destroy: true, reject_if: :all_blank
@@ -41,7 +42,10 @@ class GroupClass < ApplicationRecord
                             session_date.end_of_day)
                      .where.not(status: [Booking::EXPIRED, Booking::CANCELLED])
                      .sum(:pax)
-    [max_pax - booked, 0].max
+    registered = group_class_registrations.where(session_date: session_date.beginning_of_day..session_date.end_of_day)
+                                          .active
+                                          .sum(:pax)
+    [max_pax - booked - registered, 0].max
   end
 
 	def name_label

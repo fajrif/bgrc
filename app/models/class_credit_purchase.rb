@@ -5,6 +5,7 @@ class ClassCreditPurchase < ApplicationRecord
   belongs_to :user, optional: true
   belongs_to :group_class
   has_many :bookings, foreign_key: :class_credit_purchase_id
+  has_many :group_class_registrations, dependent: :destroy
   has_one :purchase, as: :productable
 
   validates :sessions_count, numericality: { greater_than: 0 }
@@ -18,10 +19,15 @@ class ClassCreditPurchase < ApplicationRecord
   end
 
   def sessions_used
-    bookings.where.not(status: [Booking::EXPIRED, Booking::CANCELLED]).count
+    if group_class.is_prescheduled?
+      group_class_registrations.active.count
+    else
+      bookings.where.not(status: [Booking::EXPIRED, Booking::CANCELLED]).count
+    end
   end
 
   def sessions_remaining
+    return 0 if group_class.is_prescheduled?
     return 0 if credit_expired?
     [sessions_count - sessions_used, 0].max
   end
@@ -55,30 +61,29 @@ class ClassCreditPurchase < ApplicationRecord
   end
 
   def mark_paid!
-    months = configatron.credit_validity_months || 2
-    update!(status: PAID, expires_at: months.months.from_now)
+    attrs = { status: PAID }
+    unless group_class.is_prescheduled?
+      months = configatron.credit_validity_months || 2
+      attrs[:expires_at] = months.months.from_now
+    end
+    update!(attrs)
   end
 
   def book_initial_session!
     return unless initial_session_date && group_class
-    recurring = group_class.recurring_events.first
-    return unless recurring
-    court = recurring.court
-    duration = group_class.min_duration
-    date_str = initial_session_date.strftime("%d/%m/%Y %H:%M")
-    return unless Booking.check_available_dates?(court.id, date_str, duration)
+    return unless group_class.is_prescheduled?
 
-    Booking.create!(
+    schedule = group_class.group_class_schedules.first
+    return unless schedule
+
+    GroupClassRegistration.create!(
       user: user,
-      court: court,
       group_class: group_class,
       class_credit_purchase: self,
-      date: initial_session_date,
-      end_date: initial_session_date + duration.hours,
-      duration: duration,
-      pax: group_class.min_pax,
-      status: Booking::PAID,
-      court_type: 1
+      court: schedule.court,
+      session_date: initial_session_date,
+      pax: pax || group_class.min_pax,
+      status: GroupClassRegistration::REGISTERED
     )
   end
 

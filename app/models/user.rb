@@ -13,6 +13,7 @@ class User < ApplicationRecord
 	has_many :providers, :dependent => :destroy
 	has_many :bookings
 	has_many :class_credit_purchases
+	has_many :group_class_registrations
 
 	validates_presence_of :full_name, :email, :phone, :dob, :gender, :nationality
 	validates :password, presence: true, on: :create

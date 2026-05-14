@@ -26,6 +26,8 @@
                                         <%= link_to cp.order_id, class_credit_purchase_path(cp), class: "text-dark d-block" %>
                                         <% if cp.paid? && cp.sessions_remaining > 0 && !cp.group_class.is_prescheduled? %>
                                             <%= link_to "Book a Session", book_session_class_credit_purchase_path(cp), class: "text-extra-small text-green" %>
+                                        <% elsif cp.paid? && cp.group_class.is_prescheduled? %>
+                                            <span class="text-extra-small text-green fw-semibold">Registered</span>
                                         <% elsif !cp.paid? %>
                                             <%= link_to "Complete Payment →", class_credit_purchase_path(cp), class: "text-extra-small text-warning fw-semibold d-block" %>
                                             <%= link_to "Cancel Order", users_class_credit_path(cp),
@@ -38,7 +40,7 @@
                                     <td class="text-center"><%= cp.sessions_count %></td>
                                     <td class="text-center"><%= cp.sessions_used %></td>
                                     <td class="text-center font-weight-500 <%= cp.sessions_remaining > 0 ? 'text-green' : 'text-red' %>">
-                                        <%= cp.sessions_remaining %>
+                                        <%= cp.group_class.is_prescheduled? ? '—' : cp.sessions_remaining %>
                                     </td>
                                     <td><%= cp.price_label %></td>
                                     <td>

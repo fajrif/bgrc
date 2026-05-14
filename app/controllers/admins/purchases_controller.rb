@@ -32,6 +32,9 @@ class Admins::PurchasesController < Admins::BaseController
 
   def destroy
 		@purchase = Purchase.find(params[:id])
+    if @purchase.productable.is_a?(ClassCreditPurchase)
+      @purchase.productable.destroy!
+    end
     @purchase.destroy
     redirect_to admins_purchases_url, :notice => "Successfully destroyed purchase."
   end

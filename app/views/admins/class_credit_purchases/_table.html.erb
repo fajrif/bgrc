@@ -1,0 +1,48 @@
+<div class="row">
+  <div class="col-md-6 col-sm-6 col-6">
+    <p><small><%= "Display total #{@class_credit_purchases.count} class credit purchases" %></small></p>
+  </div>
+</div>
+
+<table class="table display product-overview mb-30">
+  <thead>
+    <tr>
+      <th>Order ID</th>
+      <th>User</th>
+      <th>Class</th>
+      <th>Sessions</th>
+      <th>Amount</th>
+      <th>Type</th>
+      <th>Status</th>
+      <th>Date</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @class_credit_purchases.each do |ccp| %>
+      <tr>
+        <td><strong><%= link_to ccp.order_id, admins_class_credit_purchase_path(ccp) %></strong></td>
+        <td><%= link_to ccp.user.try(:full_name) || "—", ccp.user ? admins_user_path(ccp.user) : "#" %></td>
+        <td><%= ccp.group_class.try(:name) %></td>
+        <td class="text-center"><%= ccp.sessions_used %> / <%= ccp.sessions_count %></td>
+        <td><%= ccp.price_label %></td>
+        <td><%= ccp.group_class&.is_prescheduled? ? "Prescheduled" : "Standard" %></td>
+        <td>
+          <% if ccp.paid? %>
+            <span class="badge bg-success">Paid</span>
+          <% else %>
+            <span class="badge bg-warning text-dark">Pending</span>
+          <% end %>
+        </td>
+        <td class="small"><%= ccp.created_at.strftime('%Y-%m-%d %H:%M') %></td>
+        <td class="actions">
+          <%= link_to admins_class_credit_purchase_path(ccp), "data-toggle" => "tooltip", title: "View" do %>
+            <i class="fa fa-eye"></i>
+          <% end %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<%= paginate @class_credit_purchases %>

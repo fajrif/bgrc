@@ -10,10 +10,17 @@ class ClassCreditPurchasesController < ApplicationController
     submitted_pax = params.dig(:class_credit_purchase, :pax).to_i
     submitted_pax = @group_class.min_pax if submitted_pax < @group_class.min_pax
 
+    parsed_initial_date = DateTime.strptime(@initial_session_date, "%d/%m/%Y %H:%M") rescue nil
+
+    if @group_class.is_prescheduled? && parsed_initial_date
+      remaining = @group_class.slots_remaining_for(parsed_initial_date.to_date)
+      if remaining < submitted_pax
+        redirect_to group_class_path(@group_class), alert: "Only #{remaining} slot(s) remaining for #{submitted_pax} pax on that date." and return
+      end
+    end
+
     pack = @group_class.group_class_packs.find_by(sessions_count: sessions_count)
     total_price = pack ? pack.price : (@group_class.check_price(submitted_pax, false) * sessions_count)
-
-    parsed_initial_date = DateTime.strptime(@initial_session_date, "%d/%m/%Y %H:%M") rescue nil
 
     @credit_purchase = ClassCreditPurchase.new(
       user: current_user,
@@ -22,7 +29,8 @@ class ClassCreditPurchasesController < ApplicationController
       price_paid: total_price,
       purchase_date: Time.current,
       status: ClassCreditPurchase::PENDING,
-      initial_session_date: parsed_initial_date
+      initial_session_date: parsed_initial_date,
+      pax: submitted_pax
     )
 
     if @credit_purchase.save
@@ -45,6 +53,7 @@ class ClassCreditPurchasesController < ApplicationController
     @reschedulable_bookings = @credit_purchase.bookings
                                 .where(status: Booking::PAID)
                                 .where("created_at > ?", 24.hours.ago)
+    @registration = @credit_purchase.group_class_registrations.active.first if @credit_purchase.group_class.is_prescheduled?
   end
 
   def initiate_payment

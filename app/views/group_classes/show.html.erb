@@ -88,6 +88,7 @@
                       <input type="radio" name="class_credit_purchase[sessions_count]"
                              id="pack_<%= pack.id %>" value="<%= pack.sessions_count %>"
                              class="gc_pack_radio" <%= 'checked' if i == 0 %>
+                             data-price-label="<%= pack.price_label %>"
                              style="width:18px;height:18px;flex-shrink:0;margin-bottom:0">
                       <label for="pack_<%= pack.id %>" style="margin:0;cursor:pointer;">
                         <%= pack.display_label %> — <%= pack.price_label %>
@@ -144,7 +145,7 @@
 
               <p class="text-muted small mb-3">Credits valid for 2 months from purchase date.</p>
 
-              <button type="submit" class="btn btn-dark w-100 text-uppercase letter-spacing-1 text-extra-small text-white">
+              <button type="button" id="btn-open-modal-np" class="btn btn-dark w-100 text-uppercase letter-spacing-1 text-extra-small text-white">
                 Register &amp; Buy Credits
               </button>
             <% end %>
@@ -154,3 +155,92 @@
     </div>
   </div>
 </section>
+
+<!-- Shared Confirmation Modal -->
+<div class="modal fade" id="confirmPackageModal" tabindex="-1" aria-labelledby="confirmPackageModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="confirmPackageModalLabel">Confirm Purchase</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <table class="table table-borderless mb-0">
+          <tr>
+            <td class="text-muted">Class</td>
+            <td class="fw-semibold"><%= @group_class.name %></td>
+          </tr>
+          <% if @group_class.is_prescheduled? %>
+          <tr>
+            <td class="text-muted">Session Date</td>
+            <td id="modal-session-date"></td>
+          </tr>
+          <% end %>
+          <tr>
+            <td class="text-muted">Pack Size</td>
+            <td id="modal-pack-size"></td>
+          </tr>
+          <tr>
+            <td class="text-muted">Total Price</td>
+            <td id="modal-total-price" class="fw-semibold"></td>
+          </tr>
+          <% unless @group_class.is_prescheduled? %>
+          <tr>
+            <td class="text-muted">Credits Valid</td>
+            <td class="text-muted small">2 months from payment date</td>
+          </tr>
+          <% end %>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" id="btn-confirm-pay" class="btn btn-dark">Confirm &amp; Pay</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<% unless @group_class.is_prescheduled? %>
+<%= content_for :tail do %>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var packPriceMap = <%= raw pack_price_map.to_json %>;
+    var paxSelect    = document.getElementById('gc_pax_select');
+    var buyBtn       = document.getElementById('btn-open-modal-np');
+    var confirmBtn   = document.getElementById('btn-confirm-pay');
+    var modalEl      = document.getElementById('confirmPackageModal');
+    var pendingForm  = null;
+
+    function formatRupiah(amount) {
+      return 'Rp. ' + amount.toLocaleString('id-ID');
+    }
+
+    if (buyBtn) {
+      buyBtn.addEventListener('click', function() {
+        var checkedPack = document.querySelector('.gc_pack_radio:checked');
+        var packCount   = checkedPack ? parseInt(checkedPack.value, 10) : 1;
+        var packLabel   = packCount === 1 ? 'Single Session' : 'Pack of ' + packCount + ' Sessions';
+        var totalPrice  = checkedPack ? (checkedPack.dataset.priceLabel || packPriceMap[checkedPack.value] || '') : '';
+
+        document.getElementById('modal-pack-size').textContent = packLabel;
+        document.getElementById('modal-total-price').textContent = totalPrice;
+
+        pendingForm = {};
+
+        if (modalEl) {
+          var modal = new bootstrap.Modal(modalEl);
+          modal.show();
+        }
+      });
+    }
+
+    if (confirmBtn) {
+      confirmBtn.addEventListener('click', function() {
+        var form = document.querySelector('form[action="<%= class_credit_purchases_path %>"]');
+        if (form) form.submit();
+      });
+    }
+  });
+</script>
+<% end %>
+<% end %>

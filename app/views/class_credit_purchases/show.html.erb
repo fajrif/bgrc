@@ -6,7 +6,12 @@
                     <h5 class="alt-font font-weight-600 text-uppercase mb-4">Session Credit Purchase</h5>
 
                     <% if @credit_purchase.paid? %>
-                        <% if @credit_purchase.sessions_remaining > 0 %>
+                        <% if @credit_purchase.group_class.is_prescheduled? && @registration %>
+                            <div class="alert alert-success">
+                                You are registered for <strong><%= @registration.session_date.strftime('%A, %d %b %Y %H:%M') %></strong>
+                                at <strong><%= @registration.court.name %></strong> (<%= @registration.pax %> pax).
+                            </div>
+                        <% elsif @credit_purchase.sessions_remaining > 0 %>
                             <div class="alert alert-success">
                                 Your session credits are active. You have <%= @credit_purchase.sessions_remaining %> session(s) remaining.
                             </div>
@@ -26,6 +31,20 @@
                             <td class="text-muted">Class</td>
                             <td><%= @credit_purchase.group_class.name %></td>
                         </tr>
+                        <% if @credit_purchase.group_class.is_prescheduled? && @registration %>
+                        <tr>
+                            <td class="text-muted">Session Date</td>
+                            <td><%= @registration.session_date.strftime('%A, %d %b %Y %H:%M') %></td>
+                        </tr>
+                        <tr>
+                            <td class="text-muted">Court</td>
+                            <td><%= @registration.court.name %></td>
+                        </tr>
+                        <tr>
+                            <td class="text-muted">Pax</td>
+                            <td><%= @registration.pax %></td>
+                        </tr>
+                        <% else %>
                         <tr>
                             <td class="text-muted">Sessions Purchased</td>
                             <td><%= @credit_purchase.sessions_count %> session(s)</td>
@@ -34,6 +53,7 @@
                             <td class="text-muted">Sessions Remaining</td>
                             <td><%= @credit_purchase.sessions_remaining %></td>
                         </tr>
+                        <% end %>
                         <tr>
                             <td class="text-muted">Total Price</td>
                             <td class="fw-semibold"><%= @credit_purchase.price_label %></td>
@@ -46,7 +66,7 @@
                                 </span>
                             </td>
                         </tr>
-                        <% if @credit_purchase.expires_at %>
+                        <% if @credit_purchase.expires_at && !@credit_purchase.group_class.is_prescheduled? %>
                         <tr>
                             <td class="text-muted">Credits Valid Until</td>
                             <td class="text-muted small"><strong><%= @credit_purchase.expires_at.strftime('%d %b %Y') %></strong></td>

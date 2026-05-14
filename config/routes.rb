@@ -73,6 +73,7 @@ Rails.application.routes.draw do
 					get "export_all" => "purchases#export_all", :constraints => { :format => :xls }, :as => :export_all
 				end
       end
+      resources :class_credit_purchases, :only => [:index, :show, :destroy]
 			resources :facilities do
 				member do
           delete "delete_attachment_image/:asset_id" => "facilities#delete_attachment_image", :as => :delete_attachment_image

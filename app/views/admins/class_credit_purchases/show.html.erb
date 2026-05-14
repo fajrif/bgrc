@@ -1,0 +1,137 @@
+<% title_page("Class Credit Purchase Details") %>
+<div class="row">
+  <div class="col-md-8 col-sm-12">
+    <div class="card card-box">
+      <div class="card-body">
+        <div class="form-horizontal">
+          <div class="form-body">
+            <div class="form-group row">
+              <label class="control-label col-md-4">Order ID</label>
+              <div class="col-md-8">
+                <strong><%= @class_credit_purchase.order_id %></strong>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="control-label col-md-4">User</label>
+              <div class="col-md-8">
+                <% if @class_credit_purchase.user %>
+                  <%= link_to @class_credit_purchase.user.full_name, admins_user_path(@class_credit_purchase.user) %>
+                <% else %>
+                  <span class="text-muted">—</span>
+                <% end %>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="control-label col-md-4">Group Class</label>
+              <div class="col-md-8">
+                <%= @class_credit_purchase.group_class.try(:name) || "—" %>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="control-label col-md-4">Type</label>
+              <div class="col-md-8">
+                <%= @class_credit_purchase.group_class&.is_prescheduled? ? "Prescheduled" : "Standard" %>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="control-label col-md-4">Sessions</label>
+              <div class="col-md-8">
+                <%= @class_credit_purchase.sessions_used %> / <%= @class_credit_purchase.sessions_count %>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="control-label col-md-4">Sessions Remaining</label>
+              <div class="col-md-8">
+                <span class="fw-semibold <%= @class_credit_purchase.sessions_remaining > 0 ? 'text-success' : 'text-danger' %>">
+                  <%= @class_credit_purchase.sessions_remaining %>
+                </span>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="control-label col-md-4">Price Paid</label>
+              <div class="col-md-8">
+                <%= @class_credit_purchase.price_label %>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="control-label col-md-4">Status</label>
+              <div class="col-md-8">
+                <% if @class_credit_purchase.paid? %>
+                  <span class="badge bg-success">Paid</span>
+                <% else %>
+                  <span class="badge bg-warning text-dark">Pending</span>
+                <% end %>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="control-label col-md-4">Expires At</label>
+              <div class="col-md-8">
+                <%= @class_credit_purchase.expires_at&.strftime('%d %b %Y') || "—" %>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="control-label col-md-4">Purchase Date</label>
+              <div class="col-md-8">
+                <%= @class_credit_purchase.purchase_date&.strftime('%d %b %Y %H:%M') || "—" %>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="control-label col-md-4">Initial Session Date</label>
+              <div class="col-md-8">
+                <%= @class_credit_purchase.initial_session_date&.strftime('%d %b %Y') || "—" %>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="control-label col-md-4">Pax</label>
+              <div class="col-md-8">
+                <%= @class_credit_purchase.pax || "—" %>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="control-label col-md-4">Created At</label>
+              <div class="col-md-8">
+                <%= @class_credit_purchase.created_at.strftime('%d %b %Y %H:%M') %>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <% if @class_credit_purchase.group_class_registrations.any? %>
+          <hr class="my-4">
+          <h5 class="mb-3">Registrations</h5>
+          <table class="table table-sm">
+            <thead>
+              <tr>
+                <th>Session Date</th>
+                <th>Court</th>
+                <th>Pax</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @class_credit_purchase.group_class_registrations.each do |reg| %>
+                <tr>
+                  <td><%= reg.session_date.strftime('%d %b %Y') %></td>
+                  <td><%= reg.court.try(:name) || "—" %></td>
+                  <td><%= reg.pax %></td>
+                  <td><%= reg.status_label %></td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        <% end %>
+
+        <div class="form-actions my-4">
+          <div class="row">
+            <div class="col-md-9">
+              <%= link_to 'Destroy', admins_class_credit_purchase_path(@class_credit_purchase),
+                  data: { confirm: 'Are you sure you want to delete this class credit purchase? This will also delete associated purchase record and registrations.' },
+                  method: :delete, class: 'btn btn-danger' %>
+              <%= link_to 'View All', admins_class_credit_purchases_path, class: 'btn btn-light' %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

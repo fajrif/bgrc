@@ -1,0 +1,28 @@
+<% title_page("Class Credit Purchases") %>
+<div class="row">
+  <div class="col-lg-12">
+    <div class="card">
+      <div class="card-header border-0">
+        <%= form_tag admins_class_credit_purchases_url, method: :get, id: "index_search" do %>
+          <div class="row g-4 align-items-center">
+            <div class="col-md-4">
+              <div class="form-icon">
+                <%= text_field_tag :search, params[:search], class: "form-control form-control-icon", placeholder: "Search by Order ID..." %>
+                <i class="ri-search-line"></i>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <%= select_tag :status, options_for_select([ "All", "Paid", "Pending" ], params[:status]), class: "form-control", onchange: "this.form.submit();" %>
+            </div>
+            <div class="col-md-3">
+              <%= select_tag :prescheduled, options_for_select([ "All Types", "Prescheduled", "Non-prescheduled" ], params[:prescheduled]), class: "form-control", onchange: "this.form.submit();" %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+      <div id="index_table" class="card-body">
+        <%= render 'table' %>
+      </div>
+    </div>
+  </div>
+</div>

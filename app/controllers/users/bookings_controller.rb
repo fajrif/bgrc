@@ -29,6 +29,25 @@ class Users::BookingsController < Users::BaseController
 			            backgroundColor: bg, borderColor: br, textColor: tx, allDay: false }
 		end
 
+		current_user.group_class_registrations.active
+		            .includes(:group_class)
+		            .where(session_date: start_date.beginning_of_day..end_date.end_of_day)
+		            .each do |reg|
+			gc = reg.group_class
+			color = gc.calendar_color.presence || '#0d6efd'
+			events << {
+				id: "reg-#{reg.id}",
+				title: gc.name,
+				url: class_credit_purchase_path(reg.class_credit_purchase),
+				start: reg.session_date.strftime('%Y-%m-%dT%H:%M'),
+				end: (reg.session_date + gc.min_duration.hours).strftime('%Y-%m-%dT%H:%M'),
+				backgroundColor: color,
+				borderColor: color,
+				textColor: '#fff',
+				allDay: false
+			}
+		end
+
 		respond_to do |format|
 			format.html
 			format.json { render json: events }

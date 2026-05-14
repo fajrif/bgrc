@@ -84,46 +84,6 @@
   <% end %>
 </div>
 
-<!-- Confirmation Modal -->
-<div class="modal fade" id="confirmPackageModal" tabindex="-1" aria-labelledby="confirmPackageModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="confirmPackageModalLabel">Confirm Purchase</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <table class="table table-borderless mb-0">
-          <tr>
-            <td class="text-muted">Class</td>
-            <td id="modal-class-name" class="fw-semibold"></td>
-          </tr>
-          <tr>
-            <td class="text-muted">Session Date</td>
-            <td id="modal-session-date"></td>
-          </tr>
-          <tr>
-            <td class="text-muted">Pack Size</td>
-            <td id="modal-pack-size"></td>
-          </tr>
-          <tr>
-            <td class="text-muted">Total Price</td>
-            <td id="modal-total-price" class="fw-semibold"></td>
-          </tr>
-          <tr>
-            <td class="text-muted">Credits Valid</td>
-            <td class="text-muted small">2 months from payment date</td>
-          </tr>
-        </table>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-        <button type="button" id="btn-confirm-pay" class="btn btn-dark">Confirm &amp; Pay</button>
-      </div>
-    </div>
-  </div>
-</div>
-
 <%= content_for :tail do %>
 <script>
   document.addEventListener('DOMContentLoaded', function() {
@@ -133,7 +93,6 @@
     var priceDisplay   = document.getElementById('gc_presched_price_display');
     var buyBtn         = document.getElementById('btn-buy-credits');
     var confirmPayBtn  = document.getElementById('btn-confirm-pay');
-    var className      = "<%= j @group_class.name %>";
     var paxPriceMap    = <%= raw pax_price_map.to_json %>;
     var pendingForm    = null;
 
@@ -175,7 +134,6 @@
         var totalPrice    = packPrice !== null ? packPrice : (paxPriceMap[parseInt(selectedPax, 10)] || '');
         var packLabel     = packCount === 1 ? 'Single Session' : 'Pack of ' + packCount + ' Sessions';
 
-        document.getElementById('modal-class-name').textContent   = className;
         document.getElementById('modal-session-date').textContent = selectedDate;
         document.getElementById('modal-pack-size').textContent    = packLabel;
         document.getElementById('modal-total-price').textContent  = typeof totalPrice === 'number' ? formatRupiah(totalPrice) : totalPrice;

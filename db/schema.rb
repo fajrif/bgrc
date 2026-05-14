@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_05_13_090000) do
+ActiveRecord::Schema[7.1].define(version: 2026_05_14_173032) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -179,6 +179,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_05_13_090000) do
     t.datetime "updated_at", null: false
     t.datetime "expires_at"
     t.datetime "initial_session_date"
+    t.integer "pax", default: 1, null: false
     t.index ["order_id"], name: "index_class_credit_purchases_on_order_id", unique: true
     t.index ["user_id", "group_class_id"], name: "index_class_credit_purchases_on_user_id_and_group_class_id"
   end
@@ -280,6 +281,22 @@ ActiveRecord::Schema[7.1].define(version: 2026_05_13_090000) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["group_class_id"], name: "index_group_class_packs_on_group_class_id"
+  end
+
+  create_table "group_class_registrations", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "group_class_id", null: false
+    t.bigint "class_credit_purchase_id"
+    t.bigint "court_id", null: false
+    t.datetime "session_date", null: false
+    t.integer "pax", default: 1, null: false
+    t.integer "status", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["class_credit_purchase_id"], name: "index_group_class_registrations_on_class_credit_purchase_id"
+    t.index ["court_id"], name: "index_group_class_registrations_on_court_id"
+    t.index ["group_class_id"], name: "index_group_class_registrations_on_group_class_id"
+    t.index ["user_id"], name: "index_group_class_registrations_on_user_id"
   end
 
   create_table "group_class_schedules", force: :cascade do |t|
@@ -482,6 +499,10 @@ ActiveRecord::Schema[7.1].define(version: 2026_05_13_090000) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "event_rsvps", "events", column: "recurring_event_id"
   add_foreign_key "group_class_packs", "group_classes"
+  add_foreign_key "group_class_registrations", "class_credit_purchases"
+  add_foreign_key "group_class_registrations", "courts"
+  add_foreign_key "group_class_registrations", "group_classes"
+  add_foreign_key "group_class_registrations", "users"
   add_foreign_key "group_class_schedules", "courts"
   add_foreign_key "group_class_schedules", "group_classes"
 end
