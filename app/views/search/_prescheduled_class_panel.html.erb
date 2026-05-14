@@ -9,6 +9,7 @@
         <div class="d-flex align-items-center gap-2 mb-2 <%= session[:slots_remaining] == 0 ? 'text-muted' : '' %>">
           <input type="radio" name="dates" id="session_<%= session[:datetime_str].gsub(/\W/,'') %>"
                  value="<%= session[:datetime_str] %>"
+                 data-slots-remaining="<%= session[:slots_remaining] %>"
                  <%= 'disabled' if session[:slots_remaining] == 0 %>
                  style="width:18px;height:18px;flex-shrink:0;margin-bottom:0">
           <label for="session_<%= session[:datetime_str].gsub(/\W/,'') %>" style="margin:0;cursor:pointer;">
@@ -56,6 +57,9 @@
         <%= select_tag "pax",
               options_for_select(options_select_pax(@group_class.min_pax, @group_class.max_pax), @group_class.min_pax),
               class: "form-select", id: "gc_presched_pax_select" %>
+        <small id="gc_presched_pax_warning" class="text-danger mt-1" style="display:none;">
+          Not enough slots available for this pax count on the selected date.
+        </small>
       </div>
     <% end %>
 
@@ -93,6 +97,7 @@
     var priceDisplay   = document.getElementById('gc_presched_price_display');
     var buyBtn         = document.getElementById('btn-buy-credits');
     var confirmPayBtn  = document.getElementById('btn-confirm-pay');
+    var paxWarning     = document.getElementById('gc_presched_pax_warning');
     var paxPriceMap    = <%= raw pax_price_map.to_json %>;
     var pendingForm    = null;
 
@@ -100,9 +105,26 @@
       return 'Rp. ' + amount.toLocaleString('id-ID');
     }
 
+    function getSelectedSlotsRemaining() {
+      var checked = document.querySelector('input[name="dates"]:checked');
+      return checked ? parseInt(checked.dataset.slotsRemaining, 10) : null;
+    }
+
+    function getSelectedPax() {
+      return paxSelect ? parseInt(paxSelect.value, 10) : <%= @group_class.min_pax %>;
+    }
+
     function updateBuyBtn() {
       var sessionSelected = Array.from(sessionRadios).some(r => r.checked);
-      if (buyBtn) buyBtn.disabled = !sessionSelected;
+      var slotsRemaining  = getSelectedSlotsRemaining();
+      var pax             = getSelectedPax();
+      var paxExceeds      = slotsRemaining !== null && pax > slotsRemaining;
+
+      if (buyBtn) buyBtn.disabled = !sessionSelected || paxExceeds;
+
+      if (paxWarning) {
+        paxWarning.style.display = paxExceeds ? 'block' : 'none';
+      }
     }
 
     function updatePriceDisplay() {
@@ -117,7 +139,7 @@
 
     sessionRadios.forEach(function(r) { r.addEventListener('change', updateBuyBtn); });
     packRadios.forEach(function(r) { r.addEventListener('change', updatePriceDisplay); });
-    if (paxSelect) paxSelect.addEventListener('change', updatePriceDisplay);
+    if (paxSelect) paxSelect.addEventListener('change', function() { updatePriceDisplay(); updateBuyBtn(); });
 
     if (buyBtn) {
       buyBtn.addEventListener('click', function() {

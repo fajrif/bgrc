@@ -5021,8 +5021,8 @@ a {
   border-color: #212529 !important;
 }
 .btn-dark.btn-animation:is(:hover, :focus, :active, :focus-visible) {
-  color: #212529;
-  background-color: rgba(33, 37, 41, 0.1);
+  color: #fff;
+  background-color: #212529;
 }
 
 .btn-group-vertical label {
