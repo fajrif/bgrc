@@ -210,9 +210,25 @@
     var confirmBtn   = document.getElementById('btn-confirm-pay');
     var modalEl      = document.getElementById('confirmPackageModal');
     var pendingForm  = null;
+    <% if @group_class.pax_managed? && !@group_class.group_class_packs.any? %>
+    var paxPriceMap  = <%= raw (@group_class.min_pax..@group_class.max_pax).each_with_object({}) { |p, h| h[p] = @group_class.check_price(p) }.to_json %>;
+    <% else %>
+    var paxPriceMap  = {};
+    <% end %>
 
     function formatRupiah(amount) {
       return 'Rp. ' + amount.toLocaleString('id-ID');
+    }
+
+    function getModalTotalPrice() {
+      var checkedPack = document.querySelector('.gc_pack_radio:checked');
+      if (checkedPack) {
+        return checkedPack.dataset.priceLabel || packPriceMap[checkedPack.value] || '';
+      }
+      if (paxSelect && Object.keys(paxPriceMap).length) {
+        return paxPriceMap[parseInt(paxSelect.value, 10)] || '';
+      }
+      return '';
     }
 
     if (buyBtn) {
@@ -220,16 +236,24 @@
         var checkedPack = document.querySelector('.gc_pack_radio:checked');
         var packCount   = checkedPack ? parseInt(checkedPack.value, 10) : 1;
         var packLabel   = packCount === 1 ? 'Single Session' : 'Pack of ' + packCount + ' Sessions';
-        var totalPrice  = checkedPack ? (checkedPack.dataset.priceLabel || packPriceMap[checkedPack.value] || '') : '';
 
         document.getElementById('modal-pack-size').textContent = packLabel;
-        document.getElementById('modal-total-price').textContent = totalPrice;
+        document.getElementById('modal-total-price').textContent = getModalTotalPrice();
 
         pendingForm = {};
 
         if (modalEl) {
           var modal = new bootstrap.Modal(modalEl);
           modal.show();
+        }
+      });
+    }
+
+    if (paxSelect && Object.keys(paxPriceMap).length) {
+      paxSelect.addEventListener('change', function() {
+        var modalVisible = modalEl && modalEl.classList.contains('show');
+        if (modalVisible) {
+          document.getElementById('modal-total-price').textContent = getModalTotalPrice();
         }
       });
     }
