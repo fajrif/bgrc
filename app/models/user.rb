@@ -53,7 +53,7 @@ class User < ApplicationRecord
 	end
 
 	def current_bookings
-		self.bookings
+		self.bookings.where(status: [Booking::UNPAID, Booking::PAID]).order(date: :asc)
 	end
 
 	def paid_bookings

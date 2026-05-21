@@ -23,6 +23,8 @@ class Admins::UsersController < Admins::BaseController
   def show
 		@user = User.find(params[:id])
 		@credit_purchases = @user.class_credit_purchases.includes(:group_class).order(created_at: :desc)
+    @bookings = @user.bookings.includes(:court, :group_class).order(created_at: :desc).limit(50)
+    @purchases = @user.purchases.order(created_at: :desc).limit(50)
   end
 
   def edit

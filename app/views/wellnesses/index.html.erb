@@ -1,0 +1,21 @@
+<%= render "shared/small_banner", title: "Wellness", page_name: "Wellness" %>
+<section class="wow animate__fadeIn">
+    <div class="container">
+        <div class="row row-cols-1 row-cols-lg-3 row-cols-md-2 justify-content-start">
+          <% @wellnesses.each do |wellness| %>
+            <!-- start wellness item -->
+            <div class="col-sm-9 margin-40px-bottom">
+              <div class="overflow-hidden margin-20px-bottom">
+                <%= link_to wellness_path(wellness) do %>
+                  <%= image_tag wellness.image.variant(resize_to_fill: [750,500]) if wellness.image.attached? %>
+                <% end %>
+              </div>
+              <%= link_to wellness.name, wellness_path(wellness), class: "alt-font margin-5px-bottom d-block text-extra-dark-gray font-weight-600 text-uppercase" %>
+              <p class="w-95 xl-w-100"><%= wellness.short_description.truncate(150) %></p>
+            </div>
+            <!-- end wellness item -->
+          <% end %>
+        </div>
+        <%= paginate @wellnesses, theme: :pofo %>
+    </div>
+</section>

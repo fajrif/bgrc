@@ -1,0 +1,26 @@
+<%= simple_form_for @wellness, url: (@wellness.new_record? ? admins_wellnesses_path : admins_wellness_path(@wellness.id)), method: (@wellness.new_record? ? :post : :put) do |f| %>
+	<div class="row">
+		<div class="col-lg-8">
+			<div class="card">
+				<div class="card-body">
+					<%= f.error_notification %>
+					<fieldset>
+						<%= f.input :image, as: :file, input_html: { class: "mb-3", accept: "image/gif, image/png, image/jpg, image/jpeg, image/webp" } %>
+						<%= f.input :name, as: :string %>
+						<%= f.input :short_description, as: :text %>
+						<%= f.input :description, as: :text %>
+					</fieldset>
+					<%= f.error :base %>
+					<div class="form-actions">
+						<%= f.button :submit, :class => 'btn btn-secondary' %>
+						<% unless @wellness.new_record? %>
+							<%= link_to "Cancel", admins_wellness_path(@wellness.id), :class => 'btn btn-light' %>
+						<% else %>
+							<%= link_to "Cancel", admins_wellnesses_path, :class => 'btn btn-light' %>
+						<% end %>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+<% end %>

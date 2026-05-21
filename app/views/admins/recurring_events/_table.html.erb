@@ -22,7 +22,7 @@
             <% end %>
           </td>
           <td><%= link_to re.title, admins_recurring_event_path(re) %></td>
-          <td><%= re.court.name_label %></td>
+          <td><%= re.courts.size %></td>
           <td>
             <% if re.one_time? %>
               <span class="badge bg-warning text-dark">One-time</span>
@@ -38,6 +38,9 @@
               <span class="badge bg-success-subtle text-success">Active</span>
             <% else %>
               <span class="badge bg-danger-subtle text-danger">Inactive</span>
+            <% end %>
+            <% if re.hide? %>
+              <span class="badge bg-secondary">Hidden</span>
             <% end %>
           </td>
           <td>

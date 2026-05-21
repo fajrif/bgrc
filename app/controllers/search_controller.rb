@@ -25,44 +25,81 @@ class SearchController < ApplicationController
     end
 
     if @court
+      view_start = Date.parse(@date)
+      view_end   = view_start + 6.days
+
       @business_hours = @court.business_hours.map{|bh| { daysOfWeek: [bh.day_code], startTime: bh.open, endTime: bh.close } }
       @bookings = @court.bookings.where("date >= ? AND status NOT IN (?, ?)", @date, Booking::EXPIRED, Booking::CANCELLED)
       @events = @bookings.map{|b| {title: 'Booked', editable: false, start: b.date.strftime('%Y-%m-%d %H:%M'), end: b.end_date.strftime('%Y-%m-%d %H:%M') }}
 
       @recurring_events = @court.recurring_events.where(active: true)
-      @recurring_events.each do |re|
-        event_data = {
-          title: re.title,
-          editable: false,
-          selectable: false,
-          className: 'recurring-event-block',
-          extendedProps: { signUpUrl: Rails.application.routes.url_helpers.recurring_event_path(id: re.id) }
-        }
-        if re.one_time?
-          event_data[:start] = "#{re.specific_date} #{re.start_time}"
-          event_data[:end]   = "#{re.specific_date} #{re.end_time}"
-        else
-          event_data[:daysOfWeek] = [re.day_of_week.to_s]
-          event_data[:startTime]  = re.start_time
-          event_data[:endTime]    = re.end_time
+
+      # Identify hide+one_time blocking events; add per-day timed blocks
+      blocking_events = @recurring_events.select { |re| re.hide? && re.one_time? }
+      blocked_slots = []
+
+      blocking_events.each do |re|
+        (view_start..view_end).each do |day|
+          next unless (re.specific_date..re.effective_end_date).cover?(day)
+          blocked_slots << { date: day, start: re.start_time, end: re.end_time }
+          @events << {
+            title: '', editable: false, selectable: false,
+            className: 'recurring-event-block',
+            start: "#{day} #{re.start_time}",
+            end:   "#{day} #{re.end_time}"
+          }
         end
-        @events << event_data
       end
 
+      overlaps_block = ->(date, ev_start, ev_end) {
+        blocked_slots.any? do |b|
+          b[:date] == date &&
+          Time.parse(b[:start]) < Time.parse(ev_end) &&
+          Time.parse(b[:end]) > Time.parse(ev_start)
+        end
+      }
+
+      # Non-blocking recurring events — skip any that time-overlap a blocked slot
+      @recurring_events.each do |re|
+        next if re.hide? && re.one_time?
+
+        event_data = {
+          title: re.hide? ? '' : re.title,
+          editable: false, selectable: false,
+          className: 'recurring-event-block',
+        }
+        event_data[:extendedProps] = { signUpUrl: Rails.application.routes.url_helpers.recurring_event_path(id: re.id) } unless re.hide?
+
+        if re.one_time?
+          next if overlaps_block.call(re.specific_date, re.start_time, re.end_time)
+          event_data[:start] = "#{re.specific_date} #{re.start_time}"
+          event_data[:end]   = "#{re.effective_end_date} #{re.end_time}"
+          @events << event_data
+        else
+          (view_start..view_end).each do |day|
+            next unless day.wday == re.day_of_week
+            next if overlaps_block.call(day, re.start_time, re.end_time)
+            @events << event_data.merge(start: "#{day} #{re.start_time}", end: "#{day} #{re.end_time}")
+          end
+        end
+      end
+
+      # Group class schedules — per-date, skip if time-overlaps a blocked slot
       @court.group_class_schedules.includes(:group_class).each do |gcs|
         color = gcs.group_class.calendar_color.presence || '#0d6efd'
-        @events << {
-          title: gcs.group_class.name,
-          editable: false,
-          selectable: false,
-          className: 'class-schedule-block',
-          backgroundColor: color,
-          borderColor: color,
-          daysOfWeek: [gcs.day_of_week.to_s],
-          startTime: gcs.start_time,
-          endTime: gcs.end_time,
-          extendedProps: { classUrl: Rails.application.routes.url_helpers.group_class_path(id: gcs.group_class.id) }
-        }
+        (view_start..view_end).each do |day|
+          next unless day.wday == gcs.day_of_week
+          next if overlaps_block.call(day, gcs.start_time, gcs.end_time)
+          @events << {
+            title: gcs.group_class.name,
+            editable: false, selectable: false,
+            className: 'class-schedule-block',
+            backgroundColor: color, borderColor: color,
+            start: "#{day} #{gcs.start_time}",
+            end:   "#{day} #{gcs.end_time}",
+            extendedProps: { classUrl: Rails.application.routes.url_helpers.group_class_path(id: gcs.group_class.id) }
+          }
+        end
       end
 
       @events = @events.to_json

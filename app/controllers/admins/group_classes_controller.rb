@@ -52,8 +52,8 @@ class Admins::GroupClassesController < Admins::BaseController
   private
 
   def params_group_class
-    params.require(:group_class).permit(:name, :min_duration, :min_pax, :max_pax, :status, :price, :price_pax, :notes, :description, :category, :sport_id, :is_prescheduled, :min_pack_sessions, :max_pack_sessions, :calendar_color,
-      group_class_packs_attributes: [:id, :sessions_count, :price, :label, :position, :_destroy],
+    params.require(:group_class).permit(:name, :min_duration, :min_pax, :max_pax, :status, :price, :price_pax, :notes, :description, :category, :sport_id, :is_prescheduled, :min_pack_sessions, :max_pack_sessions, :calendar_color, :credit_validity_months,
+      group_class_packs_attributes: [:id, :sessions_count, :price, :label, :validity_months, :position, :_destroy],
       group_class_schedules_attributes: [:id, :court_id, :day_of_week, :start_time, :end_time, :_destroy])
   end
 

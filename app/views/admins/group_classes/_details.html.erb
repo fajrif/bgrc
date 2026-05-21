@@ -23,10 +23,30 @@
 	<tr>
 		<td><b>Session Packs</b></td>
 		<td>
-			<% @group_class.group_class_packs.each do |pack| %>
-				<div><%= pack.display_label %> — <%= pack.price_label %></div>
-			<% end %>
+			<table class="table table-sm table-borderless mb-0">
+				<thead>
+					<tr>
+						<th class="ps-0 text-muted fw-normal small">Pack</th>
+						<th class="text-muted fw-normal small">Price</th>
+						<th class="text-muted fw-normal small">Validity</th>
+					</tr>
+				</thead>
+				<tbody>
+					<% @group_class.group_class_packs.order(:sessions_count).each do |pack| %>
+						<tr>
+							<td class="ps-0"><%= pack.display_label %></td>
+							<td><%= pack.price_label %></td>
+							<td class="text-muted"><%= pack.validity_label %></td>
+						</tr>
+					<% end %>
+				</tbody>
+			</table>
 		</td>
+	</tr>
+	<% else %>
+	<tr>
+		<td><b>Credit Validity</b></td>
+		<td><%= @group_class.validity_label %></td>
 	</tr>
 	<% end %>
 	<tr>

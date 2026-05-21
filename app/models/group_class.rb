@@ -28,6 +28,11 @@ class GroupClass < ApplicationRecord
     !is_prescheduled?
   end
 
+  def validity_label
+    months = credit_validity_months || configatron.credit_validity_months || 2
+    "#{months} #{months == 1 ? 'month' : 'months'}"
+  end
+
   def category_label
     CATEGORIES.key(category) || category.to_s.humanize
   end
@@ -79,14 +84,8 @@ class GroupClass < ApplicationRecord
 	def check_price(pax=nil, currency_label=true)
     _price = self.price
     unless pax.nil?
-      if self.has_additional_pax?
-        unless self.min_pax == pax.to_i
-          if self.id == 4
-            _price = self.price + (self.price_pax * pax.to_i)
-          else
-            _price = self.price_pax * pax.to_i
-          end
-        end
+      if self.has_additional_pax? && pax.to_i > self.min_pax
+        _price = self.price + (self.price_pax * (pax.to_i - self.min_pax))
       end
     end
     currency_label ? label_price(_price) : _price

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_05_14_173032) do
+ActiveRecord::Schema[7.1].define(version: 2026_05_20_102859) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -280,6 +280,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_05_14_173032) do
     t.integer "position", default: 0
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "validity_months"
     t.index ["group_class_id"], name: "index_group_class_packs_on_group_class_id"
   end
 
@@ -330,6 +331,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_05_14_173032) do
     t.integer "min_pack_sessions", default: 1
     t.integer "max_pack_sessions", default: 1
     t.string "calendar_color", default: "#0d6efd"
+    t.integer "credit_validity_months"
   end
 
   create_table "inquiries", force: :cascade do |t|
@@ -422,9 +424,18 @@ ActiveRecord::Schema[7.1].define(version: 2026_05_14_173032) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "recurring_event_courts", force: :cascade do |t|
+    t.bigint "recurring_event_id", null: false
+    t.bigint "court_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["court_id"], name: "index_recurring_event_courts_on_court_id"
+    t.index ["recurring_event_id", "court_id"], name: "index_rec_event_courts_unique", unique: true
+    t.index ["recurring_event_id"], name: "index_recurring_event_courts_on_recurring_event_id"
+  end
+
   create_table "recurring_events", force: :cascade do |t|
     t.string "title"
-    t.integer "court_id"
     t.integer "day_of_week"
     t.string "start_time"
     t.string "end_time"
@@ -433,6 +444,8 @@ ActiveRecord::Schema[7.1].define(version: 2026_05_14_173032) do
     t.integer "capacity", default: 0
     t.text "short_description"
     t.boolean "active", default: true, null: false
+    t.boolean "hide", default: false, null: false
+    t.date "end_date"
   end
 
   create_table "roles", force: :cascade do |t|
@@ -495,6 +508,17 @@ ActiveRecord::Schema[7.1].define(version: 2026_05_14_173032) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  create_table "wellnesses", force: :cascade do |t|
+    t.jsonb "name", default: {}
+    t.jsonb "short_description", default: {}
+    t.jsonb "description", default: {}
+    t.jsonb "slug", default: {}
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_wellnesses_on_name", unique: true
+    t.index ["slug"], name: "index_wellnesses_on_slug", unique: true
+  end
+
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "event_rsvps", "events", column: "recurring_event_id"
@@ -505,4 +529,6 @@ ActiveRecord::Schema[7.1].define(version: 2026_05_14_173032) do
   add_foreign_key "group_class_registrations", "users"
   add_foreign_key "group_class_schedules", "courts"
   add_foreign_key "group_class_schedules", "group_classes"
+  add_foreign_key "recurring_event_courts", "courts"
+  add_foreign_key "recurring_event_courts", "recurring_events"
 end

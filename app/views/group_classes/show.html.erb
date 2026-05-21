@@ -9,7 +9,7 @@
         <% end %>
       </div>
       <div class="col-12 col-md-4 text-md-end mt-2 mt-md-0">
-        <%= link_to "&#8592; All Classes".html_safe, group_classes_path, class: "btn btn-outline-light btn-small text-extra-small" %>
+        <%= link_to "&#8592; Back".html_safe, (@sport ? sport_path(@sport) : root_path), class: "btn btn-outline-light btn-small text-extra-small" %>
       </div>
     </div>
   </div>
@@ -75,7 +75,8 @@
             <h6 class="alt-font text-extra-dark-gray mb-3">Register for this Class</h6>
 
             <% packs = @group_class.group_class_packs.to_a %>
-            <% pack_price_map = packs.each_with_object({}) { |p, h| h[p.sessions_count.to_s] = p.price_label } %>
+            <% pack_price_map    = packs.each_with_object({}) { |p, h| h[p.sessions_count.to_s] = p.price_label } %>
+            <% pack_validity_map = packs.each_with_object({}) { |p, h| h[p.sessions_count.to_s] = p.validity_label } %>
 
             <%= form_tag class_credit_purchases_path, method: :post do %>
               <input type="hidden" name="class_credit_purchase[group_class_id]" value="<%= @group_class.id %>">
@@ -116,15 +117,23 @@
                   <span class="text-medium text-small">Total Price</span>
                   <strong id="gc_price_display" class="alt-font"><%= initial_price %></strong>
                 </div>
+              <% end %>
+
+              <p class="text-muted small mb-3">Credits valid for <span id="gc_validity_display"><%= packs.any? ? packs.first.validity_label : @group_class.validity_label %></span> from purchase date.</p>
+
+              <% if packs.any? || @group_class.pax_managed? %>
                 <script>
                   (function() {
-                    var packPriceMap = <%= raw pack_price_map.to_json %>;
-                    var paxPriceMap  = <%= raw (defined?(pax_price_map) ? pax_price_map : {}).to_json %>;
+                    var packPriceMap    = <%= raw pack_price_map.to_json %>;
+                    var packValidityMap = <%= raw pack_validity_map.to_json %>;
+                    var paxPriceMap     = <%= raw (defined?(pax_price_map) ? pax_price_map : {}).to_json %>;
                     var display = document.getElementById('gc_price_display');
+                    var validityDisplay = document.getElementById('gc_validity_display');
 
                     document.querySelectorAll('.gc_pack_radio').forEach(function(radio) {
                       radio.addEventListener('change', function() {
                         if (display) display.textContent = packPriceMap[this.value] || '';
+                        if (validityDisplay) validityDisplay.textContent = packValidityMap[this.value] || '';
                       });
                     });
 
@@ -142,8 +151,6 @@
                   })();
                 </script>
               <% end %>
-
-              <p class="text-muted small mb-3">Credits valid for 2 months from purchase date.</p>
 
               <button type="button" id="btn-open-modal-np" class="btn btn-dark w-100 text-uppercase letter-spacing-1 text-extra-small text-white">
                 Register &amp; Buy Credits
@@ -187,7 +194,7 @@
           <% unless @group_class.is_prescheduled? %>
           <tr>
             <td class="text-muted">Credits Valid</td>
-            <td class="text-muted small">2 months from payment date</td>
+            <td class="text-muted small"><span id="modal-credits-valid"><%= packs.any? ? packs.first.validity_label : @group_class.validity_label %></span> from payment date</td>
           </tr>
           <% end %>
         </table>
@@ -204,7 +211,8 @@
 <%= content_for :tail do %>
 <script>
   document.addEventListener('DOMContentLoaded', function() {
-    var packPriceMap = <%= raw pack_price_map.to_json %>;
+    var packPriceMap    = <%= raw pack_price_map.to_json %>;
+    var packValidityMap = <%= raw pack_validity_map.to_json %>;
     var paxSelect    = document.getElementById('gc_pax_select');
     var buyBtn       = document.getElementById('btn-open-modal-np');
     var confirmBtn   = document.getElementById('btn-confirm-pay');
@@ -239,6 +247,8 @@
 
         document.getElementById('modal-pack-size').textContent = packLabel;
         document.getElementById('modal-total-price').textContent = getModalTotalPrice();
+        var validityEl = document.getElementById('modal-credits-valid');
+        if (validityEl) validityEl.textContent = (checkedPack && packValidityMap[checkedPack.value]) || '';
 
         pendingForm = {};
 

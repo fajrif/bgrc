@@ -16,8 +16,8 @@
         <tr>
 					<td class="text-center"><%= court.id %></td>
           <td><strong><%= link_to court.name, admins_court_path(court) %></strong></td>
-          <td><%= court.sport.name %></td>
-          <td><%= court.court_type.name %></td>
+          <td><%= court.sport&.name %></td>
+          <td><%= court.court_type&.name %></td>
           <td><%= court.location %></td>
           <td><%= court.price_label %></td>
           <td>

@@ -161,7 +161,7 @@ class ClassCreditPurchasesController < ApplicationController
       date:                  parsed,
       end_date:              parsed + duration.hours,
       duration:              duration,
-      pax:                   @credit_purchase.group_class.min_pax,
+      pax:                   @credit_purchase.pax,
       court_type:            1,
       status:                Booking::PAID,
       price:                 0,

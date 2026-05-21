@@ -13,6 +13,9 @@ class BookingsController < ApplicationController
       redirect_to search_path, alert: "Please select the timetable below and press the submit button."
     else
       parsed_date = DateTime.strptime(dates, "%d/%m/%Y %H:%M") rescue nil
+      if parsed_date && parsed_date < Time.current
+        redirect_to search_path, alert: "Cannot book a time slot in the past." and return
+      end
       if parsed_date && parsed_date > 14.days.from_now
         redirect_to search_path, alert: "Bookings can only be made up to 14 days in advance. Please contact us via WhatsApp for special requests." and return
       end
@@ -47,8 +50,8 @@ class BookingsController < ApplicationController
   end
 
   def show
-    # Associate guest booking with signed-in user
-    if user_signed_in? && @booking.guest? && session_owns_booking?
+    # Associate guest booking with signed-in user (session check relaxed — URL is the security token)
+    if user_signed_in? && @booking.guest?
       @booking.update(user: current_user)
     end
 
@@ -166,8 +169,9 @@ class BookingsController < ApplicationController
   end
 
   def verify_booking_access!
-    return if @booking.nil?
+    return redirect_to(search_path, alert: "Booking not found.") if @booking.nil?
     return if user_signed_in? && @booking.user == current_user
+    return if user_signed_in? && @booking.guest?
     return if session_owns_booking?
     redirect_to search_path, alert: "You don't have access to this booking."
   end

@@ -63,7 +63,9 @@ Rails.application.routes.draw do
 					post :cancel_credit_booking
 				end
       end
-      resources :recurring_events
+      resources :recurring_events do
+        collection { get :check_overlaps }
+      end
       resources :event_rsvps, only: [:index, :show, :destroy]
       resources :purchases, :only => [:index, :show, :destroy] do
         member do
@@ -73,10 +75,17 @@ Rails.application.routes.draw do
 					get "export_all" => "purchases#export_all", :constraints => { :format => :xls }, :as => :export_all
 				end
       end
-      resources :class_credit_purchases, :only => [:index, :show, :destroy]
+      resources :class_credit_purchases, :only => [:index, :show, :destroy] do
+        member { post :book_on_behalf }
+      end
 			resources :facilities do
 				member do
           delete "delete_attachment_image/:asset_id" => "facilities#delete_attachment_image", :as => :delete_attachment_image
+        end
+      end
+      resources :wellnesses do
+        member do
+          delete "delete_attachment_image/:asset_id" => "wellnesses#delete_attachment_image", :as => :delete_attachment_image
         end
       end
 			resources :sports do
@@ -157,6 +166,7 @@ Rails.application.routes.draw do
     end
 		resources :packages, :only => [:index, :show]
 		resources :facilities, :only => [:index, :show]
+		resources :wellnesses, :only => [:index, :show]
 		resources :events, :only => [:index, :show] do
       resources :event_rsvps, :only => [:create], :controller => "event_rsvps"
     end
@@ -179,6 +189,7 @@ Rails.application.routes.draw do
     match 'disclaimer', to: 'home#disclaimer', via: :get, as: :disclaimer
     match 'privacy', to: 'home#privacy', via: :get, as: :privacy
     match 'faq', to: 'home#faq', via: :get, as: :faq
+    match 'restaurant', to: 'restaurant#index', via: :get, as: :restaurant
     match 'search', to: 'search#index', via: :get, as: :search
     match 'search_selection', to: 'search#search_selection', via: :get, as: :search_selection
     match 'courts/:id/calculate_price', to: 'courts#calculate_price', via: :get, as: :calculate_price

@@ -196,8 +196,9 @@ class Booking < ApplicationRecord
 
 		if status
 			# Check RecurringEvents (court-blocking events/ceremonies)
-			blocks = RecurringEvent.where(active: true, court_id: court_id)
-			          .where("(specific_date IS NULL AND day_of_week = ?) OR specific_date = ?", parsed.wday, parsed.to_date)
+			blocks = RecurringEvent.joins(:recurring_event_courts)
+			          .where(active: true, recurring_event_courts: { court_id: court_id })
+			          .where("(specific_date IS NULL AND day_of_week = ?) OR (specific_date IS NOT NULL AND ? BETWEEN specific_date AND COALESCE(end_date, specific_date))", parsed.wday, parsed.to_date)
 			# Also check GroupClassSchedules (prescheduled group class slots)
 			class_schedules = GroupClassSchedule.where(court_id: court_id, day_of_week: parsed.wday)
 			(blocks.to_a + class_schedules.to_a).each do |re|

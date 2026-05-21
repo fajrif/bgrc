@@ -83,7 +83,7 @@ calendar = new FullCalendar.Calendar(calendarEl, {
   navLinks: false, // can click day/week names to navigate views
   selectable: true,
   selectAllow: function(arg) {
-    return isCrossDay(arg);
+    return isCrossDay(arg) && arg.start >= new Date();
   },
   validRange: {
     start: moment('<%= @date %>').format('YYYY-MM-DD'),
@@ -106,7 +106,7 @@ calendar = new FullCalendar.Calendar(calendarEl, {
     createEvent(arg, calendar);
   },
   eventChange: function(changeInfo) {
-    if(isCrossDay(changeInfo.event)) {
+    if(isCrossDay(changeInfo.event) && changeInfo.event.start >= new Date()) {
       if(changeInfo.event.title == changeInfo.oldEvent.title) {
         createEvent(changeInfo.event, calendar);
       }

@@ -11,8 +11,12 @@
 
         <table class="table table-hover">
           <tr>
-            <td style="width:20%;"><b>Court</b></td>
-            <td><%= link_to @recurring_event.court.name_label, admins_court_path(@recurring_event.court) %></td>
+            <td style="width:20%;"><b>Courts</b></td>
+            <td>
+              <% @recurring_event.courts.each do |court| %>
+                <%= link_to court.name_label, admins_court_path(court) %><%= raw " &nbsp;" unless court == @recurring_event.courts.last %>
+              <% end %>
+            </td>
           </tr>
           <tr>
             <td><b>Title</b></td>
@@ -22,8 +26,13 @@
             <td><b>Schedule</b></td>
             <td>
               <% if @recurring_event.one_time? %>
-                <span class="badge bg-warning text-dark">One-time</span>
-                <%= @recurring_event.specific_date.strftime("%A, %d %b %Y") %>
+                <% if @recurring_event.end_date.present? %>
+                  <span class="badge bg-warning text-dark">One-time</span>
+                  <%= @recurring_event.specific_date.strftime("%d %b %Y") %> &ndash; <%= @recurring_event.end_date.strftime("%d %b %Y") %>
+                <% else %>
+                  <span class="badge bg-warning text-dark">One-time</span>
+                  <%= @recurring_event.specific_date.strftime("%A, %d %b %Y") %>
+                <% end %>
               <% else %>
                 <span class="badge bg-info text-dark">Recurring</span>
                 Every <%= @recurring_event.day_name %>
@@ -41,6 +50,9 @@
                 <span class="badge bg-success-subtle text-success">Active</span>
               <% else %>
                 <span class="badge bg-danger-subtle text-danger">Inactive</span>
+              <% end %>
+              <% if @recurring_event.hide? %>
+                <span class="badge bg-secondary ms-1">Hidden</span>
               <% end %>
             </td>
           </tr>

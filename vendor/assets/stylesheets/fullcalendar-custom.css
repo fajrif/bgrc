@@ -9,6 +9,10 @@
 	font-size: .9em;
 	font-weight: 400;
 }
+.recurring-event-block .fc-event-time,
+.class-schedule-block .fc-event-time {
+  display: none !important;
+}
 .fc-theme-standard td, .fc-theme-standard th {
 	border: 1px solid #eaeaea;
 }

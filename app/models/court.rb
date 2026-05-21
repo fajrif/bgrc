@@ -7,7 +7,8 @@ class Court < ApplicationRecord
 	has_many :bookings
 	has_many :business_hours, dependent: :destroy
 	has_many :costs, dependent: :destroy
-	has_many :recurring_events, dependent: :destroy
+  has_many :recurring_event_courts, dependent: :destroy
+  has_many :recurring_events, through: :recurring_event_courts
   has_many :group_class_schedules, dependent: :destroy
   belongs_to :sport
   belongs_to :court_type
@@ -85,7 +86,7 @@ class Court < ApplicationRecord
 	end
 
 	def name_label
-    "#{self.sport.name} #{self.name} (#{self.court_type.name})"
+    "#{self.sport&.name} #{self.name} (#{self.court_type&.name})"
 	end
 
 	def full_name_label

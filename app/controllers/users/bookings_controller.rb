@@ -106,7 +106,9 @@ class Users::BookingsController < Users::BaseController
         alert: "You have reached the maximum number of reschedules for this booking." and return
     end
 
-    months = configatron.credit_validity_months || 2
+    gc = GroupClass.find_by(id: @booking.group_class_id)
+    pack = gc&.group_class_packs&.find_by(sessions_count: 1)
+    months = pack&.validity_months || gc&.credit_validity_months || configatron.credit_validity_months || 2
     if @booking.class_credit_purchase.present?
       @booking.update!(status: Booking::CANCELLED, reschedule_count: @booking.reschedule_count + 1)
     else

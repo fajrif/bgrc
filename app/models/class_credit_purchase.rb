@@ -63,7 +63,8 @@ class ClassCreditPurchase < ApplicationRecord
   def mark_paid!
     attrs = { status: PAID }
     unless group_class.is_prescheduled?
-      months = configatron.credit_validity_months || 2
+      pack = group_class.group_class_packs.find_by(sessions_count: sessions_count)
+      months = pack&.validity_months || group_class.credit_validity_months || configatron.credit_validity_months || 2
       attrs[:expires_at] = months.months.from_now
     end
     update!(attrs)

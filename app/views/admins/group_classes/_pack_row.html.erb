@@ -8,6 +8,10 @@
     <label class="form-label small mb-1">Price (Rp)</label>
     <%= pf.text_field :price, class: "form-control form-control-sm", placeholder: "e.g. 500000" %>
   </div>
+  <div style="width:100px;">
+    <label class="form-label small mb-1">Valid (months)</label>
+    <%= pf.number_field :validity_months, class: "form-control form-control-sm", min: 1, placeholder: "default" %>
+  </div>
   <div class="flex-grow-1">
     <label class="form-label small mb-1">Label (optional)</label>
     <%= pf.text_field :label, class: "form-control form-control-sm", placeholder: "e.g. Value Pack" %>

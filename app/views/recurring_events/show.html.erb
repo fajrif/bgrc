@@ -19,8 +19,8 @@
 
         <table class="table table-borderless">
           <tr>
-            <td class="text-medium ps-0" style="width:40%;">Court</td>
-            <td><%= @recurring_event.court.try(:name_label) %></td>
+            <td class="text-medium ps-0" style="width:40%;">Courts</td>
+            <td><%= @recurring_event.courts.map(&:name_label).join(", ") %></td>
           </tr>
           <tr>
             <td class="text-medium ps-0">Schedule</td>

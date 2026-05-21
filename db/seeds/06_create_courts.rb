@@ -1,4 +1,6 @@
 # new Court
+RecurringEventCourt.delete_all
+GroupClassSchedule.delete_all
 Court.delete_all
 
 10.times do |num|
