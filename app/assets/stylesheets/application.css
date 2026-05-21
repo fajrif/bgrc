@@ -74,6 +74,24 @@
   text-decoration: underline;
 }
 
+.recurring-event-visible {
+  background-color: #6c757d !important;
+  border-color: #545b62 !important;
+  color: #fff !important;
+  cursor: pointer !important;
+}
+
+.recurring-event-visible .fc-event-main {
+  color: #fff !important;
+}
+
+.recurring-event-visible .fc-signup-hint {
+  font-weight: 800;
+  display: block;
+  margin-top: 2px;
+  text-decoration: underline;
+}
+
 .class-schedule-block {
   color: #fff !important;
   cursor: pointer !important;

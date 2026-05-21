@@ -30,6 +30,9 @@
             <% if booking.group_class %>
 						<p class="text-muted mb-0">Class Name: <%= booking.group_class.name %></p>
             <% end %>
+            <% if booking.cashier_booking? %>
+              <span class="badge bg-secondary">Cashier</span>
+            <% end %>
           </td>
           <td>
 						<h5 class="fs-14 mb-1"><%= booking.total_price_label %></h5>

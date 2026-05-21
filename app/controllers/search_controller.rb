@@ -63,18 +63,27 @@ class SearchController < ApplicationController
       @recurring_events.each do |re|
         next if re.hide? && re.one_time?
 
-        event_data = {
-          title: re.hide? ? '' : re.title,
-          editable: false, selectable: false,
-          className: 'recurring-event-block',
-        }
-        event_data[:extendedProps] = { signUpUrl: Rails.application.routes.url_helpers.recurring_event_path(id: re.id) } unless re.hide?
+        if re.hide?
+          event_data = {
+            title: '',
+            editable: false, selectable: false,
+            className: 'recurring-event-block',
+          }
+        else
+          event_data = {
+            title: re.title,
+            editable: false, selectable: false,
+            className: 'recurring-event-visible',
+            extendedProps: { signUpUrl: Rails.application.routes.url_helpers.recurring_event_path(id: re.id) }
+          }
+        end
 
         if re.one_time?
-          next if overlaps_block.call(re.specific_date, re.start_time, re.end_time)
-          event_data[:start] = "#{re.specific_date} #{re.start_time}"
-          event_data[:end]   = "#{re.effective_end_date} #{re.end_time}"
-          @events << event_data
+          (view_start..view_end).each do |day|
+            next unless (re.specific_date..re.effective_end_date).cover?(day)
+            next if overlaps_block.call(day, re.start_time, re.end_time)
+            @events << event_data.merge(start: "#{day} #{re.start_time}", end: "#{day} #{re.end_time}")
+          end
         else
           (view_start..view_end).each do |day|
             next unless day.wday == re.day_of_week

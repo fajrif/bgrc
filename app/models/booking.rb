@@ -118,6 +118,10 @@ class Booking < ApplicationRecord
 		)
 	end
 
+	def cashier_booking?
+		purchase&.payment_type == "CASHIER"
+	end
+
 	def duration_label
 		"#{self.duration} hour".pluralize(self.duration)
 	end

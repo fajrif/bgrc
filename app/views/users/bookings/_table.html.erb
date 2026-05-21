@@ -56,7 +56,12 @@
 						<td><%= booking.date.strftime('%a %b %d, %Y %I:%M %p') %></td>
 						<td><%= booking.duration_label %></td>
 						<td><%= booking.try(:court).try(:name_label) %></td>
-            <td><%= booking.try(:group_class).try(:name_with_pax, booking.pax) || '-' %></td>
+            <td>
+              <%= booking.try(:group_class).try(:name_with_pax, booking.pax) || '-' %>
+              <% if booking.cashier_booking? %>
+                <span class="badge bg-secondary ms-1">Cashier</span>
+              <% end %>
+            </td>
 						<td class="<%= booking.is_unpaid? ? 'text-red' : 'text-green' %> font-weight-500"><%= booking.status_label %></td>
 						<td class="font-weight-500"><%= booking.total_price_label %></td>
 				</tr>
