@@ -3,7 +3,7 @@ class Users::PurchasesController < Users::BaseController
 
   def new
 		begin
-			if @productable.is_a?(Booking) && @productable.payment_window_expired?
+			if (@productable.is_a?(Booking) || @productable.is_a?(GolfReservation)) && @productable.payment_window_expired?
 				flash.now[:alert] = "The time limit for payment has expired."
 				respond_to do |format|
 					format.js { render :error }
@@ -56,6 +56,8 @@ class Users::PurchasesController < Users::BaseController
 
 		if @productable.is_a? Booking
 			@booking = @purchase.productable
+		elsif @productable.is_a? GolfReservation
+			@golf_reservation = @purchase.productable
 		end
 
     respond_to do |format|

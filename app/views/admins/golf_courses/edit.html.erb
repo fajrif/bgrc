@@ -1,0 +1,4 @@
+<% title_page("Edit Golf Course") %>
+<%= form_for [:admins, @golf_course] do |f| %>
+  <%= render "form", f: f, golf_course: @golf_course %>
+<% end %>

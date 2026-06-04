@@ -112,6 +112,21 @@ Rails.application.routes.draw do
       end
 			resources :coaches
 			resources :items
+
+      resources :golf_courses do
+        resources :golf_business_hours, shallow: true
+        resources :golf_rates, shallow: true
+        resources :golf_items, shallow: true
+      end
+      resources :golf_reservations, :controller => "golf_reservations" do
+        collection do
+          get :calendar
+        end
+        member do
+          post :cancel
+          post :mark_paid
+        end
+      end
 		end
 
     namespace :users do
@@ -140,6 +155,9 @@ Rails.application.routes.draw do
       resources :packages, :except => [:edit, :update, :show]
       resources :payments, :only => [:index, :show]
       resources :class_credits, :only => [:index, :destroy], :controller => "class_credits"
+      resources :golf_reservations, :only => [:index, :destroy] do
+        collection { get :history }
+      end
     end
 
 		# For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
@@ -159,6 +177,16 @@ Rails.application.routes.draw do
 
 		# AJAX login for booking modal
 		post "ajax_login" => "ajax_sessions#create", :as => :ajax_login
+
+    # Golf
+    get  'golf',            to: 'golf#index', as: :golf
+    get  'golf/tee_times',  to: 'golf#tee_times', as: :golf_tee_times
+    resources :golf_reservations, only: [:new, :create, :show, :destroy] do
+      member do
+        patch "add_on/:golf_item_id" => "golf_reservations#add_on", as: :add_on
+        post  :expire
+      end
+    end
 
 		resources :group_classes, :only => [:index, :show]
 		resources :recurring_events, :only => [:show] do

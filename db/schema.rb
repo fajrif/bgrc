@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_05_20_102859) do
+ActiveRecord::Schema[7.1].define(version: 2026_06_01_000007) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -272,6 +272,87 @@ ActiveRecord::Schema[7.1].define(version: 2026_05_20_102859) do
     t.index ["sluggable_type", "sluggable_id"], name: "index_friendly_id_slugs_on_sluggable_type_and_sluggable_id"
   end
 
+  create_table "golf_add_ons", force: :cascade do |t|
+    t.bigint "golf_reservation_id", null: false
+    t.bigint "golf_item_id", null: false
+    t.integer "quantity", default: 1
+    t.decimal "price", precision: 15, scale: 2, default: "0.0"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["golf_item_id"], name: "index_golf_add_ons_on_golf_item_id"
+    t.index ["golf_reservation_id"], name: "index_golf_add_ons_on_golf_reservation_id"
+  end
+
+  create_table "golf_business_hours", force: :cascade do |t|
+    t.bigint "golf_course_id", null: false
+    t.integer "day_code", null: false
+    t.string "day_name"
+    t.string "open", default: "06:00"
+    t.string "close", default: "18:00"
+    t.boolean "closed", default: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["golf_course_id"], name: "index_golf_business_hours_on_golf_course_id"
+  end
+
+  create_table "golf_courses", force: :cascade do |t|
+    t.string "name", null: false
+    t.jsonb "description", default: {}
+    t.string "holes_available", default: "9,18"
+    t.integer "interval_minutes", default: 10
+    t.integer "max_players", default: 4
+    t.string "location"
+    t.string "slug"
+    t.integer "status", default: 0
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["slug"], name: "index_golf_courses_on_slug", unique: true
+  end
+
+  create_table "golf_items", force: :cascade do |t|
+    t.string "name", null: false
+    t.decimal "price", precision: 15, scale: 2, null: false
+    t.integer "price_type", default: 0
+    t.integer "status", default: 0
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "golf_course_id"
+    t.index ["golf_course_id"], name: "index_golf_items_on_golf_course_id"
+    t.index ["name"], name: "index_golf_items_on_name", unique: true
+  end
+
+  create_table "golf_rates", force: :cascade do |t|
+    t.bigint "golf_course_id", null: false
+    t.integer "holes", null: false
+    t.integer "day_type", default: 0, null: false
+    t.decimal "price", precision: 15, scale: 2, null: false
+    t.string "label"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["golf_course_id"], name: "index_golf_rates_on_golf_course_id"
+  end
+
+  create_table "golf_reservations", force: :cascade do |t|
+    t.bigint "user_id"
+    t.bigint "golf_course_id", null: false
+    t.datetime "tee_time", null: false
+    t.integer "players_count", default: 1, null: false
+    t.integer "holes", default: 18, null: false
+    t.integer "status", default: 0, null: false
+    t.string "order_id", null: false
+    t.datetime "expires_at"
+    t.decimal "green_fee", precision: 15, scale: 2, default: "0.0"
+    t.decimal "total_price", precision: 15, scale: 2, default: "0.0"
+    t.string "notes"
+    t.jsonb "player_names", default: []
+    t.boolean "refunded", default: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["golf_course_id"], name: "index_golf_reservations_on_golf_course_id"
+    t.index ["order_id"], name: "index_golf_reservations_on_order_id", unique: true
+    t.index ["user_id"], name: "index_golf_reservations_on_user_id"
+  end
+
   create_table "group_class_packs", force: :cascade do |t|
     t.bigint "group_class_id", null: false
     t.integer "sessions_count", null: false
@@ -522,6 +603,13 @@ ActiveRecord::Schema[7.1].define(version: 2026_05_20_102859) do
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "event_rsvps", "events", column: "recurring_event_id"
+  add_foreign_key "golf_add_ons", "golf_items"
+  add_foreign_key "golf_add_ons", "golf_reservations"
+  add_foreign_key "golf_business_hours", "golf_courses"
+  add_foreign_key "golf_items", "golf_courses"
+  add_foreign_key "golf_rates", "golf_courses"
+  add_foreign_key "golf_reservations", "golf_courses"
+  add_foreign_key "golf_reservations", "users"
   add_foreign_key "group_class_packs", "group_classes"
   add_foreign_key "group_class_registrations", "class_credit_purchases"
   add_foreign_key "group_class_registrations", "courts"

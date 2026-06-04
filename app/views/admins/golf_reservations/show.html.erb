@@ -1,0 +1,46 @@
+<% title_page("Golf Reservation #{ @golf_reservation.order_id }") %>
+<div class="row">
+  <div class="col-lg-7">
+    <div class="card mb-4">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0"><%= @golf_reservation.order_id %></h5>
+        <span class="badge <%= @golf_reservation.status == GolfReservation::PAID ? 'bg-success' : (@golf_reservation.status == GolfReservation::UNPAID ? 'bg-warning text-dark' : 'bg-secondary') %>">
+          <%= @golf_reservation.status_label %>
+        </span>
+      </div>
+      <div class="card-body">
+        <table class="table table-sm">
+          <tbody>
+            <tr><th>Customer</th><td><%= @golf_reservation.user&.name || "Guest" %></td></tr>
+            <tr><th>Email</th><td><%= @golf_reservation.user&.email || "—" %></td></tr>
+            <tr><th>Tee Time</th><td><%= @golf_reservation.tee_time_label %></td></tr>
+            <tr><th>Course</th><td><%= @golf_reservation.golf_course.name %></td></tr>
+            <tr><th>Holes</th><td><%= @golf_reservation.holes_label %></td></tr>
+            <tr><th>Players</th><td><%= @golf_reservation.players_count %></td></tr>
+            <% unless @golf_reservation.player_names.blank? || @golf_reservation.player_names.reject(&:blank?).empty? %>
+            <tr><th>Player Names</th><td><%= @golf_reservation.player_names.reject(&:blank?).join(", ") %></td></tr>
+            <% end %>
+            <tr><th>Green Fee</th><td><%= @golf_reservation.green_fee_label %></td></tr>
+            <% @golf_reservation.golf_add_ons.each do |ao| %>
+            <tr><th><%= ao.golf_item.name %></th><td><%= ao.total_price_label %></td></tr>
+            <% end %>
+            <tr><th>Total</th><td><strong><%= @golf_reservation.total_price_label %></strong></td></tr>
+            <tr><th>Notes</th><td><%= @golf_reservation.notes.presence || "—" %></td></tr>
+            <tr><th>Created</th><td><%= @golf_reservation.created_at.strftime("%d %b %Y %H:%M") %></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="card-footer d-flex gap-2">
+        <% unless @golf_reservation.cancelled? || @golf_reservation.expired? %>
+          <%= link_to "Cancel Reservation", cancel_admins_golf_reservation_path(@golf_reservation), method: :post,
+              data: { confirm: "Cancel this reservation?" }, class: "btn btn-danger btn-sm" %>
+        <% end %>
+        <% if @golf_reservation.is_unpaid? %>
+          <%= link_to "Mark as Paid (Cashier)", mark_paid_admins_golf_reservation_path(@golf_reservation), method: :post,
+              data: { confirm: "Mark this reservation as paid?" }, class: "btn btn-success btn-sm" %>
+        <% end %>
+        <%= link_to "Back to List", admins_golf_reservations_path, class: "btn btn-secondary btn-sm" %>
+      </div>
+    </div>
+  </div>
+</div>

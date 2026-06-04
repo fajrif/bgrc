@@ -1,0 +1,191 @@
+<%= content_for :head do %>
+  <% if user_signed_in? && @golf_reservation.is_unpaid? %>
+    <script type="text/javascript" src="<%= configatron.midtrans_js_file %>" data-client-key="<%= configatron.midtrans_client_key %>"></script>
+  <% end %>
+<% end %>
+
+<section>
+  <div class="container">
+    <div class="row justify-content-center">
+      <article class="col-lg-8 right-sidebar md-margin-60px-bottom sm-margin-40px-bottom">
+        <div class="col-12 blog-post-content margin-60px-bottom sm-margin-30px-bottom text-center text-md-start">
+          <div class="blog-text border-all d-inline-block w-100">
+            <div class="content padding-25px-all">
+              <div class="text-medium margin-15px-bottom alt-font">
+                <span>Order ID: <%= @golf_reservation.order_id %></span>
+              </div>
+              <h5 class="text-black text-uppercase alt-font letter-spacing-6 font-weight-600 margin-15px-bottom d-block">Golf Tee Time Confirmation</h5>
+              <div class="text-large text-black margin-15px-bottom font-weight-500">
+                <span><%= @golf_reservation.tee_time_label %></span>
+              </div>
+              <p class="text-medium mb-2"><strong>Course:</strong> <%= @golf_reservation.golf_course.name %></p>
+              <p class="text-medium mb-2"><strong>Holes:</strong> <%= @golf_reservation.holes_label %></p>
+              <p class="text-medium mb-2"><strong>Players:</strong> <%= @golf_reservation.players_count %></p>
+              <% unless @golf_reservation.player_names.blank? || @golf_reservation.player_names.reject(&:blank?).empty? %>
+                <p class="text-medium mb-2"><strong>Player Names:</strong> <%= @golf_reservation.player_names.reject(&:blank?).join(", ") %></p>
+              <% end %>
+              <% if @golf_reservation.notes.present? %>
+                <p class="text-medium mb-2"><strong>Notes:</strong> <%= @golf_reservation.notes %></p>
+              <% end %>
+
+              <% if @golf_reservation.is_unpaid? %>
+                <div id="cancellation-note">
+                  <p class="text-medium"><strong>Please note:</strong> Reservations cannot be canceled or refunded once payment is completed.</p>
+                </div>
+              <% end %>
+            </div>
+            <div id="itemLists" class="row row-cols-1 m-0 border-top border-color-extra-light-gray">
+              <%= render "item_lists" %>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <aside class="col-lg-4">
+        <div class="margin-45px-bottom sm-margin-25px-bottom border padding-25px-all">
+          <div class="text-extra-dark-gray margin-50px-bottom alt-font text-uppercase font-weight-600 text-medium aside-title"><span>Reservation Details</span></div>
+          <% if @golf_reservation.is_unpaid? %>
+            <div id="countdown-timer"
+                 data-time-remaining="<%= @golf_reservation.time_remaining %>"
+                 data-expire-url="<%= expire_golf_reservation_path(@golf_reservation.order_id) %>"
+                 class="mb-3 p-3"
+                 style="background-color:#fff3cd;border:2px solid #ffc107;border-radius:8px;">
+              <div class="text-center">
+                <p class="mb-2" style="font-size:13px;color:#856404;font-weight:500;">Time Remaining to Complete Payment</p>
+                <div id="timer-display" style="font-size:38px;font-weight:bold;color:#dc3545;font-family:monospace;letter-spacing:2px;">--:--</div>
+                <p class="mb-0 mt-2" style="font-size:11px;color:#856404;">Your reservation will be automatically cancelled if payment is not completed</p>
+              </div>
+            </div>
+            <div id="expired-message" style="display:none;">
+              <div class="mb-3 p-3" style="background-color:#f8d7da;color:#721c24;border:2px solid #dc3545;border-radius:8px;">
+                <div class="text-center">
+                  <h6 style="color:#721c24;font-weight:bold;margin-bottom:10px;">Payment Time Expired</h6>
+                  <p class="mb-2" style="font-size:13px;"><strong>The 10-minute payment window has ended.</strong></p>
+                  <p class="mb-0" style="font-size:12px;">This reservation has been cancelled.</p>
+                </div>
+              </div>
+            </div>
+          <% elsif @golf_reservation.expired? %>
+            <div class="mb-3 p-3" style="background-color:#f8d7da;color:#721c24;border:2px solid #dc3545;border-radius:8px;">
+              <div class="text-center">
+                <h6 style="color:#721c24;font-weight:bold;margin-bottom:10px;">Payment Time Expired</h6>
+                <p class="mb-2" style="font-size:13px;"><strong>The 10-minute payment window has ended.</strong></p>
+                <p class="mb-0" style="font-size:12px;">This reservation has been cancelled.</p>
+              </div>
+            </div>
+          <% end %>
+          <div id="itemListsPayment">
+            <%= render "item_lists_payment" %>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<% unless user_signed_in? %>
+  <%= render "bookings/login_modal" %>
+<% end %>
+
+<% if user_signed_in? && @golf_reservation.is_unpaid? %>
+  <%= render "golf_reservations/disclaimer_modal" %>
+<% end %>
+
+<% if @golf_reservation.is_unpaid? %>
+<style>
+  @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+</style>
+<script>
+(function() {
+  function initTimer() {
+    var timerEl = document.getElementById('countdown-timer');
+    if (!timerEl) return;
+    var secondsLeft = parseInt(timerEl.getAttribute('data-time-remaining'), 10);
+    var expireUrl = timerEl.getAttribute('data-expire-url');
+    var displayEl = document.getElementById('timer-display');
+    var isExpired = false;
+
+    function showExpiredState() {
+      timerEl.style.display = 'none';
+      var expiredMsg = document.getElementById('expired-message');
+      if (expiredMsg) expiredMsg.style.display = 'block';
+      var cancelNote = document.getElementById('cancellation-note');
+      if (cancelNote) cancelNote.style.display = 'none';
+      var paymentActions = document.getElementById('payment-actions');
+      if (paymentActions) paymentActions.style.display = 'none';
+      var expiredActions = document.getElementById('expired-actions');
+      if (expiredActions) expiredActions.style.display = 'block';
+      var statusBadge = document.getElementById('payment-status-badge');
+      if (statusBadge) {
+        statusBadge.style.backgroundColor = '#f8d7da';
+        statusBadge.style.borderColor = '#dc3545';
+        var small = statusBadge.querySelector('small');
+        if (small) { small.style.color = '#721c24'; small.textContent = 'STATUS: EXPIRED'; }
+      }
+      var itemLists = document.getElementById('itemLists');
+      if (itemLists) { itemLists.style.pointerEvents = 'none'; itemLists.style.opacity = '0.5'; }
+    }
+
+    function expireOnServer() {
+      var csrfToken = document.querySelector('meta[name="csrf-token"]');
+      fetch(expireUrl, {
+        method: 'POST',
+        headers: { 'X-CSRF-Token': csrfToken ? csrfToken.content : '', 'Content-Type': 'application/json' }
+      }).catch(function() {});
+    }
+
+    function updateTimer() {
+      var minutes = Math.floor(secondsLeft / 60);
+      var seconds = secondsLeft % 60;
+      displayEl.textContent = String(minutes).padStart(2, '0') + ':' + String(seconds).padStart(2, '0');
+      if (secondsLeft <= 60) { displayEl.style.color = '#dc3545'; displayEl.style.animation = 'pulse 1s infinite'; }
+      else if (secondsLeft <= 180) { displayEl.style.color = '#fd7e14'; }
+      else { displayEl.style.color = '#ffc107'; }
+      if (secondsLeft <= 0 && !isExpired) {
+        isExpired = true;
+        clearInterval(timerInterval);
+        expireOnServer();
+        showExpiredState();
+      }
+      secondsLeft--;
+    }
+
+    updateTimer();
+    var timerInterval = setInterval(updateTimer, 1000);
+  }
+
+  if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', initTimer); }
+  else { initTimer(); }
+})();
+</script>
+<% end %>
+
+<% unless user_signed_in? %>
+<script>
+(function() {
+  function initLoginForm() {
+    var form = document.getElementById('ajax-login-form');
+    if (!form) return;
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      var errorEl = document.getElementById('login-error');
+      if (errorEl) { errorEl.style.display = 'none'; errorEl.textContent = ''; }
+      var formData = new FormData(form);
+      fetch('<%= ajax_login_path %>', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content },
+        body: new URLSearchParams(formData).toString()
+      })
+      .then(function(r) { return r.json().then(function(d) { return { ok: r.ok, data: d }; }); })
+      .then(function(result) {
+        if (result.ok && result.data.success) { location.reload(); }
+        else { if (errorEl) { errorEl.textContent = result.data.message || 'Invalid email or password.'; errorEl.style.display = 'block'; } }
+      })
+      .catch(function() { if (errorEl) { errorEl.textContent = 'An error occurred. Please try again.'; errorEl.style.display = 'block'; } });
+    });
+  }
+  if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', initLoginForm); }
+  else { initLoginForm(); }
+})();
+</script>
+<% end %>

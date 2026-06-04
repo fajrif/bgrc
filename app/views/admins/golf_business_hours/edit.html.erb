@@ -1,0 +1,35 @@
+<% title_page("Edit Business Hours — #{@golf_business_hour.day_name}") %>
+<div class="row">
+  <div class="col-lg-5">
+    <div class="card">
+      <div class="card-body">
+        <%= form_for [:admins, @golf_business_hour] do |f| %>
+          <h5 class="mb-3"><%= @golf_business_hour.day_name %></h5>
+
+          <div class="mb-3">
+            <div class="form-check">
+              <%= f.check_box :closed, class: "form-check-input", id: "bh_closed" %>
+              <label class="form-check-label" for="bh_closed">Closed on this day</label>
+            </div>
+          </div>
+          <div class="mb-3" id="hours-fields">
+            <div class="row">
+              <div class="col-6">
+                <%= f.label :open, "Opening Time", class: "form-label" %>
+                <%= f.text_field :open, class: "form-control", placeholder: "06:00" %>
+              </div>
+              <div class="col-6">
+                <%= f.label :close, "Closing Time", class: "form-label" %>
+                <%= f.text_field :close, class: "form-control", placeholder: "18:00" %>
+              </div>
+            </div>
+          </div>
+          <div class="d-flex gap-2">
+            <%= f.submit "Update", class: "btn btn-primary" %>
+            <%= link_to "Cancel", admins_golf_course_path(@golf_course), class: "btn btn-secondary" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

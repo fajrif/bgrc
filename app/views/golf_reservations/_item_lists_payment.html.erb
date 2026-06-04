@@ -1,0 +1,62 @@
+<!-- Payment Status Badge -->
+<% if @golf_reservation.is_unpaid? %>
+  <div id="payment-status-badge" class="mb-3 p-2 text-center" style="background-color:#fff3cd;border-radius:6px;border:1px solid #ffc107;">
+    <small style="color:#856404;font-weight:600;">STATUS: AWAITING PAYMENT</small>
+  </div>
+<% elsif @golf_reservation.status == GolfReservation::PAID %>
+  <div class="mb-3 p-2 text-center" style="background-color:#d4edda;border-radius:6px;border:1px solid #28a745;">
+    <small style="color:#155724;font-weight:600;">STATUS: PAID ✓</small>
+  </div>
+<% elsif @golf_reservation.expired? %>
+  <div class="mb-3 p-2 text-center" style="background-color:#f8d7da;border-radius:6px;border:1px solid #dc3545;">
+    <small style="color:#721c24;font-weight:600;">STATUS: EXPIRED</small>
+  </div>
+<% elsif @golf_reservation.cancelled? %>
+  <div class="mb-3 p-2 text-center" style="background-color:#e2e3e5;border-radius:6px;border:1px solid #6c757d;">
+    <small style="color:#383d41;font-weight:600;">STATUS: CANCELLED</small>
+  </div>
+<% end %>
+
+<ul class="list-style-6 margin-30px-bottom text-medium">
+  <li><strong>Green Fee (<%= @golf_reservation.holes_label %> × <%= @golf_reservation.players_count %> pax)</strong><span><%= @golf_reservation.green_fee_label %></span></li>
+  <% @golf_reservation.golf_add_ons.each do |ao| %>
+    <li><strong><%= ao.item_with_quantity %></strong><span><%= ao.total_price_label %></span></li>
+  <% end %>
+  <li class="margin-20px-top font-weight-700"><strong>Total</strong><span><%= @golf_reservation.total_price_label %></span></li>
+</ul>
+
+<div class="d-flex flex-wrap justify-content-center gap-4">
+  <% if @golf_reservation.is_unpaid? %>
+    <div id="payment-actions">
+      <%= link_to "Cancel", golf_reservation_path(@golf_reservation.order_id), class: "btn btn-light-gray btn-small text-medium", method: :delete, data: { confirm: "Cancel this reservation?" } %>
+      <% if user_signed_in? %>
+        <a href="#" class="btn btn-dark-gray btn-medium text-medium" data-bs-toggle="modal" data-bs-target="#disclaimerModal">Pay</a>
+      <% else %>
+        <a href="#" class="btn btn-dark-gray btn-medium text-medium" data-bs-toggle="modal" data-bs-target="#loginModal">Pay</a>
+      <% end %>
+    </div>
+    <div id="expired-actions" style="display:none;">
+      <div class="text-center w-100">
+        <p class="text-medium mb-2" style="color:#dc3545;"><strong>The time limit for payment has expired.</strong></p>
+        <%= link_to "Search Again", golf_path, class: "btn btn-light-gray btn-small text-medium" %>
+      </div>
+    </div>
+  <% elsif @golf_reservation.expired? %>
+    <div class="text-center w-100">
+      <p class="text-medium mb-2" style="color:#dc3545;"><strong>The time limit for payment has expired.</strong></p>
+      <%= link_to "Book Again", golf_path, class: "btn btn-light-gray btn-small text-medium" %>
+    </div>
+  <% elsif @golf_reservation.cancelled? %>
+    <div class="text-center w-100">
+      <p class="text-medium mb-2" style="color:#6c757d;"><strong>This reservation has been cancelled.</strong></p>
+      <%= link_to "Book Again", golf_path, class: "btn btn-light-gray btn-small text-medium" %>
+    </div>
+  <% else %>
+    <div class="text-center w-100">
+      <div class="margin-20px-bottom">
+        <%= raw @golf_reservation.qrcode %>
+      </div>
+      <p class="text-small text-medium-gray">Show this QR code upon arrival</p>
+    </div>
+  <% end %>
+</div>

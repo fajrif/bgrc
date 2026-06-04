@@ -1,0 +1,130 @@
+<!-- Golf Reservation New -->
+<section>
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <div class="border padding-30px-all margin-60px-top margin-60px-bottom">
+          <h4 class="alt-font text-uppercase font-weight-600 margin-20px-bottom">Book Your Tee Time</h4>
+
+          <% if @tee_time.blank? %>
+            <div class="alert alert-warning">
+              No tee time selected. <a href="<%= golf_path %>">Choose from available slots.</a>
+            </div>
+          <% end %>
+
+          <%= form_tag golf_reservations_path, method: :post do %>
+            <input type="hidden" name="tee_time" value="<%= @tee_time %>">
+
+            <!-- Tee Time Display -->
+            <div class="mb-4">
+              <label class="text-medium font-weight-600 mb-1 d-block">Selected Tee Time</label>
+              <div class="border padding-15px-all" style="background-color:#f8f9fa;border-radius:6px;">
+                <% if @tee_time.present? %>
+                  <% tt = DateTime.parse(@tee_time) rescue nil %>
+                  <span class="text-medium font-weight-600">
+                    <%= tt ? tt.strftime("%A, %d %B %Y — %I:%M %p") : @tee_time %>
+                  </span>
+                <% else %>
+                  <span class="text-medium text-medium-gray">No tee time selected</span>
+                <% end %>
+              </div>
+            </div>
+
+            <!-- Players -->
+            <div class="mb-4">
+              <label class="text-medium font-weight-600 mb-2 d-block">Number of Players</label>
+              <div class="d-flex flex-wrap gap-3">
+                <% [1, 2, 3, 4].each do |n| %>
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="players_count" id="players_<%= n %>"
+                           value="<%= n %>" <%= n == 1 ? "checked" : "" %>>
+                    <label class="form-check-label text-medium" for="players_<%= n %>">
+                      <%= n %> <%= "Player".pluralize(n) %>
+                    </label>
+                  </div>
+                <% end %>
+              </div>
+            </div>
+
+            <!-- Holes -->
+            <div class="mb-4">
+              <label class="text-medium font-weight-600 mb-2 d-block">Number of Holes</label>
+              <div class="d-flex flex-wrap gap-3">
+                <% @golf_course.holes_list.each do |holes| %>
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="holes" id="holes_<%= holes %>"
+                           value="<%= holes %>" <%= holes == 18 ? "checked" : "" %>>
+                    <label class="form-check-label text-medium" for="holes_<%= holes %>">
+                      <%= holes %> Holes
+                    </label>
+                  </div>
+                <% end %>
+              </div>
+            </div>
+
+            <!-- Add-ons -->
+            <% unless @golf_course.golf_items.active.empty? %>
+            <div class="mb-4">
+              <label class="text-medium font-weight-600 mb-2 d-block">Add-ons (Optional)</label>
+              <% @golf_course.golf_items.active.each do |item| %>
+                <div class="form-check mb-2">
+                  <input class="form-check-input" type="checkbox" name="golf_item_ids[]"
+                         id="item_<%= item.id %>" value="<%= item.id %>">
+                  <label class="form-check-label text-medium" for="item_<%= item.id %>">
+                    <%= item.name %> — <span class="text-medium-gray"><%= item.price_label %></span>
+                  </label>
+                </div>
+              <% end %>
+            </div>
+            <% end %>
+
+            <!-- Player Names (optional) -->
+            <div class="mb-4">
+              <label class="text-medium font-weight-600 mb-1 d-block">Player Names <small class="text-medium-gray">(Optional)</small></label>
+              <div id="player-names-fields">
+                <input type="text" name="player_names[]" class="form-control mb-2 text-medium" placeholder="Player 1 name">
+              </div>
+            </div>
+
+            <!-- Notes -->
+            <div class="mb-4">
+              <label class="text-medium font-weight-600 mb-1 d-block">Notes <small class="text-medium-gray">(Optional)</small></label>
+              <%= text_area_tag :notes, nil, class: "form-control text-medium", rows: 2, placeholder: "Any special requests..." %>
+            </div>
+
+            <div class="d-flex gap-3">
+              <%= link_to "Back", golf_path, class: "btn btn-light-gray btn-medium text-medium" %>
+              <%= submit_tag "Reserve Tee Time", class: "btn btn-dark-gray btn-medium text-medium", disabled: @tee_time.blank? %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+(function() {
+  function updatePlayerNameFields() {
+    var selected = document.querySelector('input[name="players_count"]:checked');
+    var count = selected ? parseInt(selected.value) : 1;
+    var container = document.getElementById('player-names-fields');
+    container.innerHTML = '';
+    for (var i = 1; i <= count; i++) {
+      var input = document.createElement('input');
+      input.type = 'text';
+      input.name = 'player_names[]';
+      input.className = 'form-control mb-2 text-medium';
+      input.placeholder = 'Player ' + i + ' name';
+      container.appendChild(input);
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('input[name="players_count"]').forEach(function(radio) {
+      radio.addEventListener('change', updatePlayerNameFields);
+    });
+    updatePlayerNameFields();
+  });
+})();
+</script>

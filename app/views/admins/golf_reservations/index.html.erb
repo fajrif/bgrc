@@ -1,0 +1,63 @@
+<% title_page("Golf Reservations") %>
+<div class="row">
+  <div class="col-lg-12">
+    <div class="card">
+      <div class="card-header border-0">
+        <%= form_tag admins_golf_reservations_url, method: :get do %>
+          <div class="row g-3 align-items-center">
+            <div class="col-md-3">
+              <div class="form-icon">
+                <%= text_field_tag :search, params[:search], class: "form-control form-control-icon", placeholder: "Search Order ID ..." %>
+                <i class="ri-search-line"></i>
+              </div>
+            </div>
+            <div class="col-md-2">
+              <%= select_tag :status, options_for_select([["All Status", ""], ["Unpaid", 0], ["Paid", 1], ["Expired", 2], ["Cancelled", 3]], params[:status]), class: "form-select" %>
+            </div>
+            <div class="col-md-3">
+              <%= date_field_tag :date, params[:date], class: "form-control" %>
+            </div>
+            <div class="col-md-auto">
+              <%= submit_tag "Filter", class: "btn btn-primary" %>
+              <%= link_to "Calendar View", calendar_admins_golf_reservations_path, class: "btn btn-outline-secondary" %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+      <div class="card-body">
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>Order ID</th>
+              <th>Customer</th>
+              <th>Tee Time</th>
+              <th>Holes</th>
+              <th>Players</th>
+              <th>Total</th>
+              <th>Status</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @golf_reservations.each do |res| %>
+              <tr>
+                <td><small><%= res.order_id %></small></td>
+                <td><%= res.user&.name || "Guest" %></td>
+                <td><%= res.tee_time&.strftime("%d %b %Y %H:%M") %></td>
+                <td><%= res.holes_label %></td>
+                <td><%= res.players_count %></td>
+                <td><%= res.total_price_label %></td>
+                <td>
+                  <% color = { GolfReservation::PAID => "success", GolfReservation::EXPIRED => "secondary", GolfReservation::CANCELLED => "secondary" }.fetch(res.status, "warning") %>
+                  <span class="badge bg-<%= color %>"><%= res.status_label %></span>
+                </td>
+                <td><%= link_to "View", admins_golf_reservation_path(res), class: "btn btn-sm btn-info" %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+        <%= paginate @golf_reservations %>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,103 @@
+<% title_page(@golf_course.name) %>
+<div class="row">
+  <div class="col-lg-8">
+    <!-- Course Info -->
+    <div class="card mb-4">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0"><%= @golf_course.name %></h5>
+        <div class="d-flex gap-2">
+          <%= link_to "Edit", edit_admins_golf_course_path(@golf_course), class: "btn btn-sm btn-secondary" %>
+        </div>
+      </div>
+      <div class="card-body">
+        <p><strong>Location:</strong> <%= @golf_course.location %></p>
+        <p><strong>Holes:</strong> <%= @golf_course.holes_available %></p>
+        <p><strong>Interval:</strong> Every <%= @golf_course.interval_minutes %> minutes</p>
+        <p><strong>Max Players:</strong> <%= @golf_course.max_players %></p>
+        <p><strong>Status:</strong> <span class="badge <%= @golf_course.is_available? ? 'bg-success' : 'bg-secondary' %>"><%= @golf_course.status_label %></span></p>
+      </div>
+    </div>
+
+    <!-- Business Hours -->
+    <div class="card mb-4">
+      <div class="card-header"><h5 class="mb-0">Business Hours</h5></div>
+      <div class="card-body">
+        <table class="table table-sm">
+          <thead><tr><th>Day</th><th>Open</th><th>Close</th><th>Closed</th><th></th></tr></thead>
+          <tbody>
+            <% @golf_business_hours.each do |bh| %>
+              <tr>
+                <td><%= bh.day_name %></td>
+                <td><%= bh.closed? ? "—" : bh.open %></td>
+                <td><%= bh.closed? ? "—" : bh.close %></td>
+                <td><%= bh.closed? ? "Yes" : "No" %></td>
+                <td><%= link_to "Edit", edit_admins_golf_business_hour_path(bh), class: "btn btn-sm btn-secondary" %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Rates -->
+    <div class="card mb-4">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">Green Fee Rates</h5>
+        <%= link_to "Add Rate", new_admins_golf_course_golf_rate_path(@golf_course), class: "btn btn-sm btn-primary" %>
+      </div>
+      <div class="card-body">
+        <% if @golf_rates.empty? %>
+          <p class="text-muted">No rates configured.</p>
+        <% else %>
+          <table class="table table-sm">
+            <thead><tr><th>Holes</th><th>Day Type</th><th>Price (per player)</th><th></th></tr></thead>
+            <tbody>
+              <% @golf_rates.each do |rate| %>
+                <tr>
+                  <td><%= rate.holes %> Holes</td>
+                  <td><%= rate.day_type.capitalize %></td>
+                  <td><%= rate.price_label %></td>
+                  <td>
+                    <%= link_to "Edit", edit_admins_golf_rate_path(rate), class: "btn btn-sm btn-secondary" %>
+                    <%= link_to "Delete", admins_golf_rate_path(rate), method: :delete, data: { confirm: "Delete this rate?" }, class: "btn btn-sm btn-danger" %>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        <% end %>
+      </div>
+    </div>
+
+    <!-- Items -->
+    <div class="card mb-4">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">Add-on Items</h5>
+        <%= link_to "Add Item", new_admins_golf_course_golf_item_path(@golf_course), class: "btn btn-sm btn-primary" %>
+      </div>
+      <div class="card-body">
+        <% if @golf_items.empty? %>
+          <p class="text-muted">No add-on items configured.</p>
+        <% else %>
+          <table class="table table-sm">
+            <thead><tr><th>Name</th><th>Price</th><th>Type</th><th>Status</th><th></th></tr></thead>
+            <tbody>
+              <% @golf_items.each do |item| %>
+                <tr>
+                  <td><%= item.name %></td>
+                  <td><%= item.price_label %></td>
+                  <td><%= item.price_type.humanize %></td>
+                  <td><span class="badge <%= item.active? ? 'bg-success' : 'bg-secondary' %>"><%= item.status.capitalize %></span></td>
+                  <td>
+                    <%= link_to "Edit", edit_admins_golf_item_path(item), class: "btn btn-sm btn-secondary" %>
+                    <%= link_to "Delete", admins_golf_item_path(item), method: :delete, data: { confirm: "Delete this item?" }, class: "btn btn-sm btn-danger" %>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

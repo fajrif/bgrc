@@ -1,0 +1,32 @@
+<% title_page("New Golf Add-on Item") %>
+<div class="row">
+  <div class="col-lg-5">
+    <div class="card">
+      <div class="card-body">
+        <%= form_for [:admins, @golf_course, @golf_item] do |f| %>
+          <div class="mb-3">
+            <%= f.label :name, class: "form-label" %>
+            <%= f.text_field :name, class: "form-control", placeholder: "Golf Cart, Caddie, Club Rental..." %>
+          </div>
+          <div class="mb-3">
+            <%= f.label :price, "Price (Rp.)", class: "form-label" %>
+            <%= f.number_field :price, class: "form-control", min: 0 %>
+          </div>
+          <div class="mb-3">
+            <%= f.label :price_type, "Pricing Method", class: "form-label" %>
+            <%= f.select :price_type, GolfItem.price_types.map { |k, _| [k.humanize, k] }, {}, class: "form-select" %>
+            <div class="form-text">Per Person: multiplied by number of players. Flat: fixed price per booking.</div>
+          </div>
+          <div class="mb-3">
+            <%= f.label :status, class: "form-label" %>
+            <%= f.select :status, GolfItem.statuses.map { |k, _| [k.humanize, k] }, {}, class: "form-select" %>
+          </div>
+          <div class="d-flex gap-2">
+            <%= f.submit "Create Item", class: "btn btn-primary" %>
+            <%= link_to "Cancel", admins_golf_course_path(@golf_course), class: "btn btn-secondary" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,171 @@
+<!-- Golf Landing Page -->
+<section class="bg-light-gray padding-60px-tb sm-padding-30px-tb">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-12 text-center">
+        <h2 class="alt-font text-black font-weight-700 letter-spacing-2 text-uppercase margin-10px-bottom">
+          <%= @golf_course&.name || "Golf" %>
+        </h2>
+        <% if @golf_course %>
+          <p class="text-medium text-medium-gray">
+            <%= @golf_course.location %>
+          </p>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="padding-60px-tb sm-padding-30px-tb">
+  <div class="container">
+    <% unless @golf_course %>
+      <div class="row justify-content-center">
+        <div class="col-md-6 text-center">
+          <p class="text-medium">Golf course information is not available yet. Please check back later.</p>
+        </div>
+      </div>
+    <% else %>
+      <div class="row">
+        <!-- Left: Course Info + Date Picker -->
+        <div class="col-lg-5 margin-30px-bottom">
+          <% if @golf_course.image.attached? %>
+            <%= image_tag @golf_course.image, class: "w-100 margin-20px-bottom", style: "border-radius: 8px; object-fit: cover; max-height: 300px;" %>
+          <% end %>
+
+          <div class="border padding-30px-all margin-20px-bottom">
+            <h5 class="alt-font text-uppercase font-weight-600 margin-15px-bottom">Course Details</h5>
+            <p class="text-medium mb-2"><strong>Available Holes:</strong> <%= @golf_course.holes_list.join(" / ") %> Holes</p>
+            <p class="text-medium mb-2"><strong>Tee Time Interval:</strong> Every <%= @golf_course.interval_minutes %> minutes</p>
+            <p class="text-medium mb-2"><strong>Max Players Per Group:</strong> <%= @golf_course.max_players %></p>
+            <p class="text-medium mb-2"><strong>Location:</strong> <%= @golf_course.location %></p>
+          </div>
+
+          <% unless @golf_course.golf_rates.empty? %>
+          <div class="border padding-30px-all">
+            <h5 class="alt-font text-uppercase font-weight-600 margin-15px-bottom">Green Fees (Per Player)</h5>
+            <table class="table table-sm text-medium">
+              <thead>
+                <tr><th>Holes</th><th>Weekday</th><th>Weekend</th></tr>
+              </thead>
+              <tbody>
+                <% @golf_course.holes_list.each do |holes| %>
+                  <% wday = @golf_course.golf_rates.find_by(holes: holes, day_type: :weekday) %>
+                  <% wend = @golf_course.golf_rates.find_by(holes: holes, day_type: :weekend) %>
+                  <tr>
+                    <td><%= holes %> Holes</td>
+                    <td><%= wday&.price_label || "—" %></td>
+                    <td><%= wend&.price_label || "—" %></td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+          <% end %>
+        </div>
+
+        <!-- Right: Tee Time Selector -->
+        <div class="col-lg-7">
+          <div class="border padding-30px-all">
+            <h5 class="alt-font text-uppercase font-weight-600 margin-15px-bottom">Select Your Tee Time</h5>
+
+            <div class="mb-4">
+              <label class="text-medium font-weight-600 mb-2 d-block">Select Date</label>
+              <input type="text" id="golf-date-picker" class="form-control"
+                     value="<%= Date.today.strftime('%d/%m/%Y') %>"
+                     placeholder="Select a date" readonly>
+            </div>
+
+            <div id="tee-time-loading" style="display:none;" class="text-center mb-3">
+              <div class="spinner-border spinner-border-sm text-secondary" role="status"></div>
+              <span class="text-medium ms-2">Loading available tee times...</span>
+            </div>
+
+            <div id="tee-time-grid" class="mb-3">
+              <!-- Tee time slots loaded via AJAX -->
+              <p class="text-medium text-medium-gray text-center" id="tee-time-placeholder">Select a date to see available tee times.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</section>
+
+<% if @golf_course %>
+<script>
+(function() {
+  var selectedDate = null;
+  var selectedTeeTime = null;
+  var teeTimesUrl = '<%= golf_tee_times_path %>';
+  var newReservationUrl = '<%= new_golf_reservation_path %>';
+
+  function formatDateForApi(dateStr) {
+    // Convert DD/MM/YYYY to YYYY-MM-DD
+    var parts = dateStr.split('/');
+    return parts[2] + '-' + parts[1] + '-' + parts[0];
+  }
+
+  function loadTeeTimes(dateStr) {
+    var grid = document.getElementById('tee-time-grid');
+    var loading = document.getElementById('tee-time-loading');
+    var placeholder = document.getElementById('tee-time-placeholder');
+
+    if (placeholder) placeholder.style.display = 'none';
+    loading.style.display = 'block';
+    grid.innerHTML = '';
+
+    var apiDate = formatDateForApi(dateStr);
+
+    fetch(teeTimesUrl + '?date=' + apiDate, {
+      headers: { 'Accept': 'application/json' }
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(slots) {
+      loading.style.display = 'none';
+      if (!slots || slots.length === 0) {
+        grid.innerHTML = '<p class="text-medium text-medium-gray text-center">No tee times available for this date.</p>';
+        return;
+      }
+
+      var html = '<div class="row row-cols-3 row-cols-sm-4 g-2">';
+      slots.forEach(function(slot) {
+        if (slot.available) {
+          html += '<div class="col">' +
+            '<a href="' + newReservationUrl + '?tee_time=' + encodeURIComponent(apiDate + 'T' + slot.time) + '&date=' + apiDate + '" ' +
+            'class="btn btn-sm w-100 text-medium" style="background-color:#28a745;color:#fff;border:2px solid #28a745;font-weight:600;">' +
+            slot.time + '</a></div>';
+        } else {
+          html += '<div class="col">' +
+            '<button class="btn btn-sm w-100 text-medium" disabled ' +
+            'style="background-color:#e9ecef;color:#adb5bd;border:2px solid #dee2e6;cursor:not-allowed;">' +
+            slot.time + ' <small>(Booked)</small></button></div>';
+        }
+      });
+      html += '</div>';
+      grid.innerHTML = html;
+    })
+    .catch(function() {
+      loading.style.display = 'none';
+      grid.innerHTML = '<p class="text-medium text-danger text-center">Error loading tee times. Please try again.</p>';
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    if (typeof flatpickr === 'undefined') return;
+
+    flatpickr('#golf-date-picker', {
+      dateFormat: 'd/m/Y',
+      minDate: 'today',
+      maxDate: new Date().fp_incr(30),
+      onChange: function(selectedDates, dateStr) {
+        selectedDate = dateStr;
+        loadTeeTimes(dateStr);
+      }
+    });
+
+    // Load today's tee times on page load
+    loadTeeTimes('<%= Date.today.strftime('%d/%m/%Y') %>');
+  });
+})();
+</script>
+<% end %>

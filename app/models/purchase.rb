@@ -62,6 +62,9 @@ class Purchase < ApplicationRecord
     if self.productable.is_a?(Booking)
 			self.productable.paid!
 			self.productable.send_email_notification!
+    elsif self.productable.is_a?(GolfReservation)
+      self.productable.paid!
+      self.productable.send_email_notification!
     elsif self.productable.is_a?(ClassCreditPurchase)
       self.productable.mark_paid!
       self.productable.book_initial_session!

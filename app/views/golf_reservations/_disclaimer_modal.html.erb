@@ -1,0 +1,58 @@
+<div class="modal fade" id="disclaimerModal" tabindex="-1" aria-labelledby="disclaimerModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="disclaimerModalLabel">Golf Reservation Terms & Conditions</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <% if snippet = Snippet.find_by_key("golf_cancellation_policy") || Snippet.find_by_key("cancellation_policy") %>
+          <h6 class="text-black font-weight-600 mb-2"><%= snippet.title %></h6>
+          <div class="text-medium mb-4"><%= snippet.content %></div>
+        <% end %>
+        <% if snippet = Snippet.find_by_key("golf_refund_policy") || Snippet.find_by_key("refund_policy") %>
+          <h6 class="text-black font-weight-600 mb-2"><%= snippet.title %></h6>
+          <div class="text-medium mb-4"><%= snippet.content %></div>
+        <% end %>
+        <% if snippet = Snippet.find_by_key("golf_terms") || Snippet.find_by_key("terms_and_conditions") %>
+          <h6 class="text-black font-weight-600 mb-2"><%= snippet.title %></h6>
+          <div class="text-medium mb-4"><%= snippet.content %></div>
+        <% end %>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-light-gray btn-small text-medium" data-bs-dismiss="modal">Cancel</button>
+        <a href="#" id="btn-agree-pay" class="btn btn-dark-gray btn-medium text-medium text-white">I Agree & Pay</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  function initDisclaimerButton() {
+    var button = document.getElementById('btn-agree-pay');
+    if (!button) return;
+    button.addEventListener('click', function(e) {
+      e.preventDefault();
+      var modalEl = document.getElementById('disclaimerModal');
+      if (modalEl && typeof bootstrap !== 'undefined') {
+        var modal = bootstrap.Modal.getInstance(modalEl);
+        if (modal) modal.hide();
+      }
+      $.ajax({
+        url: '<%= users_new_purchase_path(@golf_reservation.class.to_s.downcase, @golf_reservation.id.to_s) %>',
+        type: 'GET',
+        dataType: 'script',
+        beforeSend: function(xhr) {
+          xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'));
+        },
+        error: function(xhr, status, error) {
+          alert('An error occurred while processing payment. Please try again.');
+        }
+      });
+    });
+  }
+  if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', initDisclaimerButton); }
+  else { initDisclaimerButton(); }
+})();
+</script>

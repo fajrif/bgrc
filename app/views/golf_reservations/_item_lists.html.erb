@@ -1,0 +1,52 @@
+<% unless @golf_reservation.golf_add_ons.empty? %>
+  <div class="padding-25px-all">
+    <h6 class="alt-font text-uppercase font-weight-600 margin-10px-bottom">Add-ons</h6>
+    <% @golf_reservation.golf_add_ons.each do |ao| %>
+      <div class="d-flex justify-content-between text-medium mb-1">
+        <span><%= ao.item_with_quantity %></span>
+        <span><%= ao.total_price_label %></span>
+      </div>
+    <% end %>
+  </div>
+<% end %>
+
+<% unless @golf_reservation.paid? || @golf_reservation.expired? || @golf_reservation.cancelled? %>
+  <% active_items = @golf_reservation.golf_course.golf_items.active %>
+  <% unless active_items.empty? %>
+    <div class="padding-25px-all border-top border-color-extra-light-gray">
+      <h6 class="alt-font text-uppercase font-weight-600 margin-10px-bottom">Add Add-ons</h6>
+      <% active_items.each do |item| %>
+        <% selected = @golf_reservation.golf_add_ons.find_by(golf_item_id: item.id).present? %>
+        <div class="d-flex align-items-center justify-content-between mb-2">
+          <div class="form-check mb-0">
+            <input class="form-check-input golf-addon-checkbox" type="checkbox"
+                   id="addon_<%= item.id %>"
+                   data-reservation-id="<%= @golf_reservation.order_id %>"
+                   data-item-id="<%= item.id %>"
+                   data-url="<%= add_on_golf_reservation_path(@golf_reservation.order_id, golf_item_id: item.id) %>"
+                   <%= selected ? "checked" : "" %>>
+            <label class="form-check-label text-medium" for="addon_<%= item.id %>">
+              <%= item.name %> <span class="text-medium-gray">(<%= item.price_label %>)</span>
+            </label>
+          </div>
+        </div>
+      <% end %>
+    </div>
+
+    <script>
+    (function() {
+      document.querySelectorAll('.golf-addon-checkbox').forEach(function(checkbox) {
+        checkbox.addEventListener('change', function() {
+          var url = this.getAttribute('data-url');
+          var selected = this.checked;
+          var csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+          fetch(url + '?selected=' + selected, {
+            method: 'PATCH',
+            headers: { 'X-CSRF-Token': csrfToken, 'Accept': 'text/javascript' }
+          }).then(function(r) { return r.text(); }).then(function(js) { eval(js); });
+        });
+      });
+    })();
+    </script>
+  <% end %>
+<% end %>

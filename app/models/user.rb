@@ -12,6 +12,7 @@ class User < ApplicationRecord
 	has_many :purchases, :dependent => :destroy
 	has_many :providers, :dependent => :destroy
 	has_many :bookings
+	has_many :golf_reservations
 	has_many :class_credit_purchases
 	has_many :group_class_registrations
 

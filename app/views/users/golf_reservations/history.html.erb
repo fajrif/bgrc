@@ -1,0 +1,50 @@
+<section class="padding-60px-tb sm-padding-30px-tb">
+  <div class="container">
+    <div class="row">
+      <div class="col-12 margin-30px-bottom">
+        <h4 class="alt-font text-uppercase font-weight-600">Golf Reservation History</h4>
+        <%= link_to "Active Reservations", users_golf_reservations_path, class: "btn btn-light-gray btn-small text-medium" %>
+      </div>
+    </div>
+    <div class="row">
+      <% if @golf_reservations.empty? %>
+        <div class="col-12 text-center">
+          <p class="text-medium text-medium-gray">No past golf reservations found.</p>
+        </div>
+      <% else %>
+        <div class="col-12">
+          <table class="table text-medium">
+            <thead>
+              <tr>
+                <th>Order ID</th>
+                <th>Tee Time</th>
+                <th>Holes</th>
+                <th>Players</th>
+                <th>Total</th>
+                <th>Status</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @golf_reservations.each do |res| %>
+                <tr>
+                  <td><%= res.order_id %></td>
+                  <td><%= res.tee_time&.strftime("%d %b %Y %H:%M") %></td>
+                  <td><%= res.holes_label %></td>
+                  <td><%= res.players_count %></td>
+                  <td><%= res.total_price_label %></td>
+                  <td>
+                    <% color = res.expired? ? "text-danger" : "text-secondary" %>
+                    <span class="<%= color %>"><%= res.status_label %></span>
+                  </td>
+                  <td><%= link_to "View", golf_reservation_path(res.order_id), class: "btn btn-light-gray btn-small text-small" %></td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+          <%= paginate @golf_reservations %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</section>

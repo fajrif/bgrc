@@ -46,3 +46,7 @@ app-prod.yaml
 # ignore claude files
 .claude/
 CLAUDE.md
+
+# Testing artifacts (AI agent scenarios, screenshots, bug reports)
+docs/testing/
+.agent-artifacts/

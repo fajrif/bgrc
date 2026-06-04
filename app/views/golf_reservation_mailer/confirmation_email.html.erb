@@ -1,0 +1,99 @@
+<div marginwidth="0" marginheight="0" style="background-color:rgb(245,245,245)">
+  <div style="margin:0px;padding:70px 0px;width:100%;background-color:rgb(245,245,245)">
+    <table border="0" cellpadding="0" cellspacing="0" height="100%" width="100%">
+      <tbody>
+        <tr>
+          <td align="center" valign="top">
+            <table border="0" cellpadding="0" cellspacing="0" width="600" style="width:700px;font-family:Helvetica,Arial,sans-serif;border-radius:21px;background-color:rgb(255,255,255)">
+              <tbody>
+                <tr>
+                  <td style="display:block;padding:36px 48px 0 48px">
+                    <h1 style="font-size:26px;font-weight:500;text-align:center;color:rgb(80,80,80)">Hi <%= @user.full_name %></h1>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" style="background-color:rgb(255,255,255)">
+                    <table border="0" cellpadding="20" cellspacing="0" width="100%">
+                      <tbody>
+                        <tr>
+                          <td valign="top" style="padding:10px 28px 48px 28px;font-size:18px;font-family:Helvetica,Arial,sans-serif;color:rgb(80,80,80)">
+                            <p style="margin:0px 0px 26px;font-size:18px;text-align:center;">Your Golf Tee Time is Confirmed</p>
+                            <div style="display:flex;justify-content:center;margin-bottom:30px;">
+                              <table cellspacing="0" cellpadding="6" style="border-collapse:collapse;color:rgb(80,80,80)">
+                                <tbody>
+                                  <tr>
+                                    <td style="padding:0 12px;font-size:16px;">Order ID:</td>
+                                    <td style="padding:0 12px;font-size:16px;"><%= @golf_reservation.order_id %></td>
+                                  </tr>
+                                  <tr>
+                                    <td style="padding:0 12px;font-size:16px;">Tee Time:</td>
+                                    <td style="padding:0 12px;font-size:16px;"><%= @golf_reservation.tee_time_label %></td>
+                                  </tr>
+                                  <tr>
+                                    <td style="padding:0 12px;font-size:16px;">Course:</td>
+                                    <td style="padding:0 12px;font-size:16px;"><%= @golf_reservation.golf_course.name %></td>
+                                  </tr>
+                                  <tr>
+                                    <td style="padding:0 12px;font-size:16px;">Holes:</td>
+                                    <td style="padding:0 12px;font-size:16px;"><%= @golf_reservation.holes_label %></td>
+                                  </tr>
+                                  <tr>
+                                    <td style="padding:0 12px;font-size:16px;">Players:</td>
+                                    <td style="padding:0 12px;font-size:16px;"><%= @golf_reservation.players_count %></td>
+                                  </tr>
+                                  <% unless @golf_reservation.golf_add_ons.empty? %>
+                                  <tr>
+                                    <td style="padding:0 12px;font-size:16px;vertical-align:top;">Add-ons:</td>
+                                    <td style="padding:0 12px;font-size:16px;">
+                                      <% @golf_reservation.golf_add_ons.each do |ao| %>
+                                        <%= ao.item_with_quantity %> – <%= ao.total_price_label %><br/>
+                                      <% end %>
+                                    </td>
+                                  </tr>
+                                  <% end %>
+                                  <tr>
+                                    <td style="padding:6px 12px;font-size:16px;font-weight:bold;">Total:</td>
+                                    <td style="padding:6px 12px;font-size:16px;font-weight:bold;"><%= @golf_reservation.total_price_label %></td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                            </div>
+                            <hr/>
+                            <div style="margin:20px 0;text-align:center;">
+                              <h1 style="font-size:24px;font-weight:500;text-align:center;color:rgb(80,80,80)">Show the QR Code upon arrival</h1>
+                              <p style="margin:0px 0px 26px;font-size:16px;text-align:center;color:rgb(80,80,80)">
+                                Use this QR code at the golf course entrance.<br/>Please arrive at least 15 minutes before your tee time.
+                              </p>
+                              <div style="display:flex;justify-content:center;">
+                                <%= @golf_reservation.qrcode.html_safe %>
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+                <tr>
+                  <td align="center" valign="top">
+                    <table border="0" cellpadding="10" cellspacing="0" width="600" style="width:700px;font-family:Helvetica,Arial,sans-serif;border-radius:0 0 21px 21px;background-color:rgb(255,255,255)">
+                      <tbody>
+                        <tr>
+                          <td colspan="2" valign="middle" style="padding:0px 48px 48px;font-size:12px;text-align:center;">
+                            <p style="line-height:1.5;font-size:12px;font-family:Helvetica,Arial,sans-serif;color:rgb(198,198,198)">
+                              Questions? Contact us at <a href="mailto:<%= configatron.info_email %>" style="color:rgb(55,118,240)"><%= configatron.info_email %></a>
+                            </p>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

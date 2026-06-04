@@ -1,6 +1,10 @@
 $("#forFlashMessage").html("<%= escape_javascript(flash_message2) %>");
+<% if @golf_reservation %>
+$("#itemListsPayment").html("<%= escape_javascript(render("golf_reservations/item_lists_payment")) %>");
+<% else %>
 $("#itemLists").html("<%= escape_javascript(render("users/bookings/item_lists")) %>");
 $("#itemListsPayment").html("<%= escape_javascript(render("users/bookings/item_lists_payment")) %>");
+<% end %>
 
 // Hide countdown timer after payment
 $("#countdown-timer").hide();
