@@ -40,7 +40,7 @@
         if (modal) modal.hide();
       }
       $.ajax({
-        url: '<%= users_new_purchase_path(@golf_reservation.class.to_s.downcase, @golf_reservation.id.to_s) %>',
+        url: '<%= users_new_purchase_path(@golf_reservation.class.to_s.underscore, @golf_reservation.id.to_s) %>',
         type: 'GET',
         dataType: 'script',
         beforeSend: function(xhr) {

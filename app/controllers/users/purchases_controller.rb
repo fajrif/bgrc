@@ -69,7 +69,7 @@ class Users::PurchasesController < Users::BaseController
 	private
 
 	def set_productable
-		@productable = params[:type].to_s.camelize.singularize.constantize.find(params[:id])
+		@productable = params[:type].to_s.classify.constantize.find(params[:id])
 	end
 
 end

@@ -22,7 +22,7 @@
             <% end %>
             <tr><th>Green Fee</th><td><%= @golf_reservation.green_fee_label %></td></tr>
             <% @golf_reservation.golf_add_ons.each do |ao| %>
-            <tr><th><%= ao.golf_item.name %></th><td><%= ao.total_price_label %></td></tr>
+            <tr><th><%= ao.golf_item&.name || "Item ##{ao.golf_item_id}" %></th><td><%= ao.total_price_label %></td></tr>
             <% end %>
             <tr><th>Total</th><td><strong><%= @golf_reservation.total_price_label %></strong></td></tr>
             <tr><th>Notes</th><td><%= @golf_reservation.notes.presence || "—" %></td></tr>
@@ -39,6 +39,8 @@
           <%= link_to "Mark as Paid (Cashier)", mark_paid_admins_golf_reservation_path(@golf_reservation), method: :post,
               data: { confirm: "Mark this reservation as paid?" }, class: "btn btn-success btn-sm" %>
         <% end %>
+        <%= link_to "Delete", admins_golf_reservation_path(@golf_reservation), method: :delete,
+            data: { confirm: "Permanently delete this reservation?" }, class: "btn btn-outline-danger btn-sm" %>
         <%= link_to "Back to List", admins_golf_reservations_path, class: "btn btn-secondary btn-sm" %>
       </div>
     </div>

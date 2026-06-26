@@ -290,4 +290,12 @@ module AdminHelper
 		controller.controller_name == "inquiries"
 	end
 
+	def is_admins_golf_page?
+		controller.controller_name == "golf_courses" ||
+		controller.controller_name == "golf_business_hours" ||
+		controller.controller_name == "golf_rates" ||
+		controller.controller_name == "golf_items" ||
+		controller.controller_name == "golf_reservations"
+	end
+
 end

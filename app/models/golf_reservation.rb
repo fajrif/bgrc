@@ -51,6 +51,10 @@ class GolfReservation < ApplicationRecord
     self.status == EXPIRED
   end
 
+  def paid?
+    self.status == PAID
+  end
+
   def cancelled?
     self.status == CANCELLED
   end
@@ -83,9 +87,9 @@ class GolfReservation < ApplicationRecord
     self.save!
   end
 
-  def create_purchase_record!
+  def create_purchase_record!(user: self.user)
     Purchase.create!(
-      user: self.user,
+      user: user,
       productable: self,
       token: "CASHIER-#{SecureRandom.base58(8)}",
       status_code: "200",

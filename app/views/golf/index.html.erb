@@ -129,7 +129,12 @@
 
       var html = '<div class="row row-cols-3 row-cols-sm-4 g-2">';
       slots.forEach(function(slot) {
-        if (slot.available) {
+        if (slot.past) {
+          html += '<div class="col">' +
+            '<button class="btn btn-sm w-100 text-medium" disabled ' +
+            'style="background-color:#f0f0f0;color:#ccc;border:2px solid #e8e8e8;cursor:not-allowed;">' +
+            slot.time + ' <small>(Past)</small></button></div>';
+        } else if (slot.available) {
           html += '<div class="col">' +
             '<a href="' + newReservationUrl + '?tee_time=' + encodeURIComponent(apiDate + 'T' + slot.time) + '&date=' + apiDate + '" ' +
             'class="btn btn-sm w-100 text-medium" style="background-color:#28a745;color:#fff;border:2px solid #28a745;font-weight:600;">' +

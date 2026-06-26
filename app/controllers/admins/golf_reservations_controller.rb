@@ -1,5 +1,5 @@
 class Admins::GolfReservationsController < Admins::BaseController
-  before_action :set_golf_reservation, except: [:index, :calendar, :new, :create]
+  before_action :set_golf_reservation, except: [:index, :calendar]
 
   def index
     criteria = GolfReservation.all
@@ -52,6 +52,9 @@ class Admins::GolfReservationsController < Admins::BaseController
   end
 
   def mark_paid
+    unless @golf_reservation.user.present?
+      redirect_to admins_golf_reservation_path(@golf_reservation), alert: "Cannot mark as paid — reservation has no associated user." and return
+    end
     @golf_reservation.update!(status: GolfReservation::PAID)
     @golf_reservation.create_purchase_record!
     redirect_to admins_golf_reservation_path(@golf_reservation), notice: "Reservation marked as paid."

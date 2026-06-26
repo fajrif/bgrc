@@ -1,43 +1,54 @@
-<section class="padding-60px-tb sm-padding-30px-tb">
+<section class="half-section">
   <div class="container">
-    <div class="row">
-      <div class="col-12 margin-30px-bottom">
-        <h4 class="alt-font text-uppercase font-weight-600">My Golf Reservations</h4>
-        <%= link_to "Reservation History", history_users_golf_reservations_path, class: "btn btn-light-gray btn-small text-medium" %>
-      </div>
-    </div>
-    <div class="row">
-      <% if @golf_reservations.empty? %>
-        <div class="col-12 text-center">
+    <%= render "users/shared/sidebar" %>
+    <div class="row align-items-start mb-4">
+      <div class="col-lg-12 col-md-12 text-center text-md-start padding-five-lr lg-padding-six-lr md-padding-15px-lr">
+        <h6 class="font-weight-600 text-uppercase margin-20px-bottom letter-spacing-8">My Golf Reservations</h6>
+        <div class="margin-20px-bottom">
+          <%= link_to "Reservation History", history_users_golf_reservations_path, class: "btn btn-light-gray btn-small text-medium" %>
+        </div>
+        <% if @golf_reservations.empty? %>
           <p class="text-medium text-medium-gray">You have no active golf reservations.</p>
           <%= link_to "Book a Tee Time", golf_path, class: "btn btn-dark-gray btn-medium text-medium" %>
-        </div>
-      <% else %>
-        <% @golf_reservations.each do |res| %>
-          <div class="col-md-6 mb-4">
-            <div class="border padding-25px-all h-100">
-              <div class="d-flex justify-content-between align-items-start mb-2">
-                <span class="text-small text-medium-gray"><%= res.order_id %></span>
-                <span class="badge <%= res.status == GolfReservation::PAID ? 'bg-success' : 'bg-warning text-dark' %>">
-                  <%= res.status_label %>
-                </span>
-              </div>
-              <p class="text-medium font-weight-600 mb-1"><%= res.tee_time_label %></p>
-              <p class="text-medium mb-1"><strong><%= res.holes_label %></strong> &bull; <%= res.players_count %> Player(s)</p>
-              <p class="text-medium mb-2"><%= res.total_price_label %></p>
-              <div class="d-flex gap-2">
-                <%= link_to "View Details", golf_reservation_path(res.order_id), class: "btn btn-light-gray btn-small text-medium" %>
-                <% if res.is_unpaid? %>
-                  <%= link_to "Cancel", users_golf_reservation_path(res), class: "btn btn-danger btn-small text-medium", method: :delete, data: { confirm: "Cancel this reservation?" } %>
-                <% end %>
-              </div>
-            </div>
-          </div>
-        <% end %>
-        <div class="col-12">
+        <% else %>
+          <table class="table text-medium">
+            <thead>
+              <tr>
+                <th>Order ID</th>
+                <th>Tee Time</th>
+                <th>Holes</th>
+                <th>Players</th>
+                <th>Total</th>
+                <th>Status</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @golf_reservations.each do |res| %>
+                <tr>
+                  <td><small><%= res.order_id %></small></td>
+                  <td><%= res.tee_time&.strftime("%d %b %Y %H:%M") %></td>
+                  <td><%= res.holes_label %></td>
+                  <td><%= res.players_count %></td>
+                  <td><%= res.total_price_label %></td>
+                  <td>
+                    <span class="badge <%= res.status == GolfReservation::PAID ? 'bg-success' : 'bg-warning text-dark' %>">
+                      <%= res.status_label %>
+                    </span>
+                  </td>
+                  <td class="d-flex gap-1">
+                    <%= link_to "View", golf_reservation_path(res.order_id), class: "btn btn-light-gray btn-small text-small" %>
+                    <% if res.is_unpaid? %>
+                      <%= link_to "Cancel", users_golf_reservation_path(res), method: :delete, data: { confirm: "Cancel this reservation?" }, class: "btn btn-danger btn-small text-small" %>
+                    <% end %>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
           <%= paginate @golf_reservations %>
-        </div>
-      <% end %>
+        <% end %>
+      </div>
     </div>
   </div>
 </section>

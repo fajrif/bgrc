@@ -31,6 +31,8 @@ class GolfCourse < ApplicationRecord
     open_time  = Time.parse("#{date} #{bh.open}")
     close_time = Time.parse("#{date} #{bh.close}")
 
+    now = Time.current
+
     slots = []
     t = open_time
     while t < close_time
@@ -45,7 +47,11 @@ class GolfCourse < ApplicationRecord
                        .map { |tt| tt.in_time_zone.strftime("%H:%M") }
 
     slots.map do |slot|
-      { time: slot, available: !booked_times.include?(slot.strftime("%H:%M")) }
+      if date == Date.current && slot <= now
+        { time: slot, available: false, past: true }
+      else
+        { time: slot, available: !booked_times.include?(slot.strftime("%H:%M")) }
+      end
     end
   end
 

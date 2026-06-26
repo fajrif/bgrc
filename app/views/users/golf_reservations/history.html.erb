@@ -1,18 +1,15 @@
-<section class="padding-60px-tb sm-padding-30px-tb">
+<section class="half-section">
   <div class="container">
-    <div class="row">
-      <div class="col-12 margin-30px-bottom">
-        <h4 class="alt-font text-uppercase font-weight-600">Golf Reservation History</h4>
-        <%= link_to "Active Reservations", users_golf_reservations_path, class: "btn btn-light-gray btn-small text-medium" %>
-      </div>
-    </div>
-    <div class="row">
-      <% if @golf_reservations.empty? %>
-        <div class="col-12 text-center">
-          <p class="text-medium text-medium-gray">No past golf reservations found.</p>
+    <%= render "users/shared/sidebar" %>
+    <div class="row align-items-start mb-4">
+      <div class="col-lg-12 col-md-12 text-center text-md-start padding-five-lr lg-padding-six-lr md-padding-15px-lr">
+        <h6 class="font-weight-600 text-uppercase margin-20px-bottom letter-spacing-8">Golf Reservation History</h6>
+        <div class="margin-20px-bottom">
+          <%= link_to "Active Reservations", users_golf_reservations_path, class: "btn btn-light-gray btn-small text-medium" %>
         </div>
-      <% else %>
-        <div class="col-12">
+        <% if @golf_reservations.empty? %>
+          <p class="text-medium text-medium-gray">No past golf reservations found.</p>
+        <% else %>
           <table class="table text-medium">
             <thead>
               <tr>
@@ -43,8 +40,8 @@
             </tbody>
           </table>
           <%= paginate @golf_reservations %>
-        </div>
-      <% end %>
+        <% end %>
+      </div>
     </div>
   </div>
 </section>

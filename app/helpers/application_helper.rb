@@ -102,6 +102,10 @@ module ApplicationHelper
 		controller.controller_name == "payments"
 	end
 
+	def is_users_golf_page?
+		controller.controller_name == "golf_reservations"
+	end
+
 	def productable_type_label(type)
 		case type
 		when "Booking" then "Booking"

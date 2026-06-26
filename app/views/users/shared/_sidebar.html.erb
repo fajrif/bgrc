@@ -5,6 +5,7 @@
           <li class="nav-item"><a href="<%= users_account_path %>" class="nav-link <%= 'active' if is_users_account_page? %> text-medium-gray">My Account</a></li>
           <li class="nav-item"><a href="<%= users_bookings_path %>" class="nav-link <%= 'active' if is_users_bookings_page? %> text-medium-gray">My Booking</a></li>
           <li class="nav-item"><a href="<%= calendar_users_bookings_path %>" class="nav-link <%= 'active' if is_users_schedule_page? %> text-medium-gray">My Schedules</a></li>
+          <li class="nav-item"><a href="<%= users_golf_reservations_path %>" class="nav-link <%= 'active' if is_users_golf_page? %> text-medium-gray">Golf Reservations</a></li>
           <li class="nav-item"><a href="<%= users_class_credits_path %>" class="nav-link <%= 'active' if controller.controller_name == 'class_credits' %> text-medium-gray">Class Credits</a></li>
           <li class="nav-item"><a href="<%= users_payments_path %>" class="nav-link <%= 'active' if is_users_payment_page? %> text-medium-gray">Payment</a></li>
         </ul>

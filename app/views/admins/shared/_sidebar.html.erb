@@ -108,6 +108,24 @@
 					</div>
 				</li>
 				<li class="nav-item">
+					<a class="nav-link menu-link <%= 'active' if is_admins_golf_page? %>" href="#sidebarGolf" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarGolf">
+						<i class="ri-trophy-line"></i> <span data-key="t-landing">Golf</span>
+					</a>
+					<div class="collapse menu-dropdown <%= 'show' if is_admins_golf_page? %>" id="sidebarGolf">
+						<ul class="nav nav-sm flex-column">
+							<li class="nav-item">
+								<a href="<%= admins_golf_courses_path %>" class="nav-link <%= current_path?('golf_courses') %>">Courses</a>
+							</li>
+							<li class="nav-item">
+								<a href="<%= admins_golf_reservations_path %>" class="nav-link <%= current_path?('golf_reservations') %>">Reservations</a>
+							</li>
+							<li class="nav-item">
+								<a href="<%= calendar_admins_golf_reservations_path %>" class="nav-link <%= current_path?('calendar') %>">Calendar</a>
+							</li>
+						</ul>
+					</div>
+				</li>
+				<li class="nav-item">
 					<a class="nav-link menu-link <%= 'active' if is_admins_others_page? %>" href="#sidebarOthers" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarOthers">
 						<i class="ri-message-line"></i> <span data-key="t-landing">Others</span>
 					</a>
