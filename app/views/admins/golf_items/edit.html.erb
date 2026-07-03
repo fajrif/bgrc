@@ -3,7 +3,7 @@
   <div class="col-lg-5">
     <div class="card">
       <div class="card-body">
-        <%= form_for [:admins, @golf_course, @golf_item] do |f| %>
+        <%= form_for [:admins, @golf_item] do |f| %>
           <div class="mb-3">
             <%= f.label :name, class: "form-label" %>
             <%= f.text_field :name, class: "form-control" %>

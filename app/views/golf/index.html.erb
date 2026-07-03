@@ -92,17 +92,34 @@
 </section>
 
 <% if @golf_course %>
+<%= render 'golf/reservation_modal', golf_course: @golf_course %>
+
 <script>
 (function() {
-  var selectedDate = null;
-  var selectedTeeTime = null;
+  var selectedDate = '<%= Date.today.strftime('%d/%m/%Y') %>';
   var teeTimesUrl = '<%= golf_tee_times_path %>';
-  var newReservationUrl = '<%= new_golf_reservation_path %>';
+  var autoRefreshInterval = null;
 
   function formatDateForApi(dateStr) {
-    // Convert DD/MM/YYYY to YYYY-MM-DD
     var parts = dateStr.split('/');
     return parts[2] + '-' + parts[1] + '-' + parts[0];
+  }
+
+  function formatTeeTimeLabel(apiDate, time) {
+    var dt = new Date(apiDate + 'T' + time);
+    var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    return dt.toLocaleDateString('en-US', options) + ' — ' + time;
+  }
+
+  function openReservationModal(time, apiDate) {
+    var isoStr = apiDate + 'T' + time;
+    document.getElementById('modal-tee-time-input').value = isoStr;
+    document.getElementById('modal-tee-time-display').textContent = formatTeeTimeLabel(apiDate, time);
+    document.getElementById('modal-tee-time-error').style.display = 'none';
+    document.getElementById('modal-tee-time-error').textContent = '';
+    if (typeof window.updateModalPrice === 'function') window.updateModalPrice();
+    var modal = new bootstrap.Modal(document.getElementById('reservationModal'));
+    modal.show();
   }
 
   function loadTeeTimes(dateStr) {
@@ -136,9 +153,10 @@
             slot.time + ' <small>(Past)</small></button></div>';
         } else if (slot.available) {
           html += '<div class="col">' +
-            '<a href="' + newReservationUrl + '?tee_time=' + encodeURIComponent(apiDate + 'T' + slot.time) + '&date=' + apiDate + '" ' +
-            'class="btn btn-sm w-100 text-medium" style="background-color:#28a745;color:#fff;border:2px solid #28a745;font-weight:600;">' +
-            slot.time + '</a></div>';
+            '<button type="button" class="btn btn-sm w-100 text-medium tee-slot-btn" ' +
+            'data-time="' + slot.time + '" data-date="' + apiDate + '" ' +
+            'style="background-color:#28a745;color:#fff;border:2px solid #28a745;font-weight:600;">' +
+            slot.time + '</button></div>';
         } else {
           html += '<div class="col">' +
             '<button class="btn btn-sm w-100 text-medium" disabled ' +
@@ -148,6 +166,13 @@
       });
       html += '</div>';
       grid.innerHTML = html;
+
+      // Attach modal-open handlers to available slot buttons
+      grid.querySelectorAll('.tee-slot-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          openReservationModal(btn.dataset.time, btn.dataset.date);
+        });
+      });
     })
     .catch(function() {
       loading.style.display = 'none';
@@ -155,7 +180,39 @@
     });
   }
 
+  function startAutoRefresh(dateStr) {
+    clearInterval(autoRefreshInterval);
+    // Only auto-refresh for today — future dates have no slots going past
+    var todayApi = formatDateForApi('<%= Date.today.strftime('%d/%m/%Y') %>');
+    if (formatDateForApi(dateStr) === todayApi) {
+      autoRefreshInterval = setInterval(function() {
+        loadTeeTimes(dateStr);
+      }, 60000);
+    }
+  }
+
   document.addEventListener('DOMContentLoaded', function() {
+    // Modal form client-side past-time validation
+    var modalForm = document.getElementById('reservation-modal-form');
+    if (modalForm) {
+      modalForm.addEventListener('submit', function(e) {
+        var teeTimeVal = document.getElementById('modal-tee-time-input').value;
+        var errorEl = document.getElementById('modal-tee-time-error');
+        if (!teeTimeVal) {
+          e.preventDefault();
+          errorEl.textContent = 'No tee time selected.';
+          errorEl.style.display = 'block';
+          return;
+        }
+        var teeTime = new Date(teeTimeVal);
+        if (teeTime <= new Date()) {
+          e.preventDefault();
+          errorEl.textContent = 'This tee time has already passed. Please select another slot.';
+          errorEl.style.display = 'block';
+        }
+      });
+    }
+
     if (typeof flatpickr === 'undefined') return;
 
     flatpickr('#golf-date-picker', {
@@ -165,11 +222,13 @@
       onChange: function(selectedDates, dateStr) {
         selectedDate = dateStr;
         loadTeeTimes(dateStr);
+        startAutoRefresh(dateStr);
       }
     });
 
-    // Load today's tee times on page load
-    loadTeeTimes('<%= Date.today.strftime('%d/%m/%Y') %>');
+    // Load today's tee times on page load and start auto-refresh
+    loadTeeTimes(selectedDate);
+    startAutoRefresh(selectedDate);
   });
 })();
 </script>

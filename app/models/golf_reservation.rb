@@ -63,6 +63,10 @@ class GolfReservation < ApplicationRecord
     user_id.nil?
   end
 
+  def midtrans_paid?
+    paid? && purchase.present? && purchase.payment_type != "CASHIER"
+  end
+
   def time_remaining
     return 0 unless expires_at.present? && persisted?
     result = self.class.connection.select_value(

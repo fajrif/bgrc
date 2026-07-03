@@ -32,18 +32,12 @@
 
             <!-- Players -->
             <div class="mb-4">
-              <label class="text-medium font-weight-600 mb-2 d-block">Number of Players</label>
-              <div class="d-flex flex-wrap gap-3">
+              <label class="text-medium font-weight-600 mb-2 d-block" for="players_count">Number of Players</label>
+              <select name="players_count" id="players_count" class="form-select text-medium">
                 <% [1, 2, 3, 4].each do |n| %>
-                  <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="players_count" id="players_<%= n %>"
-                           value="<%= n %>" <%= n == 1 ? "checked" : "" %>>
-                    <label class="form-check-label text-medium" for="players_<%= n %>">
-                      <%= n %> <%= "Player".pluralize(n) %>
-                    </label>
-                  </div>
+                  <option value="<%= n %>"><%= n %> <%= "Player".pluralize(n) %></option>
                 <% end %>
-              </div>
+              </select>
             </div>
 
             <!-- Holes -->
@@ -62,36 +56,6 @@
               </div>
             </div>
 
-            <!-- Add-ons -->
-            <% unless @golf_course.golf_items.active.empty? %>
-            <div class="mb-4">
-              <label class="text-medium font-weight-600 mb-2 d-block">Add-ons (Optional)</label>
-              <% @golf_course.golf_items.active.each do |item| %>
-                <div class="form-check mb-2">
-                  <input class="form-check-input" type="checkbox" name="golf_item_ids[]"
-                         id="item_<%= item.id %>" value="<%= item.id %>">
-                  <label class="form-check-label text-medium" for="item_<%= item.id %>">
-                    <%= item.name %> — <span class="text-medium-gray"><%= item.price_label %></span>
-                  </label>
-                </div>
-              <% end %>
-            </div>
-            <% end %>
-
-            <!-- Player Names (optional) -->
-            <div class="mb-4">
-              <label class="text-medium font-weight-600 mb-1 d-block">Player Names <small class="text-medium-gray">(Optional)</small></label>
-              <div id="player-names-fields">
-                <input type="text" name="player_names[]" class="form-control mb-2 text-medium" placeholder="Player 1 name">
-              </div>
-            </div>
-
-            <!-- Notes -->
-            <div class="mb-4">
-              <label class="text-medium font-weight-600 mb-1 d-block">Notes <small class="text-medium-gray">(Optional)</small></label>
-              <%= text_area_tag :notes, nil, class: "form-control text-medium", rows: 2, placeholder: "Any special requests..." %>
-            </div>
-
             <div class="d-flex gap-3">
               <%= link_to "Back", golf_path, class: "btn btn-light-gray btn-medium text-medium" %>
               <%= submit_tag "Reserve Tee Time", class: "btn btn-dark-gray btn-medium text-medium", disabled: @tee_time.blank? %>
@@ -103,28 +67,3 @@
   </div>
 </section>
 
-<script>
-(function() {
-  function updatePlayerNameFields() {
-    var selected = document.querySelector('input[name="players_count"]:checked');
-    var count = selected ? parseInt(selected.value) : 1;
-    var container = document.getElementById('player-names-fields');
-    container.innerHTML = '';
-    for (var i = 1; i <= count; i++) {
-      var input = document.createElement('input');
-      input.type = 'text';
-      input.name = 'player_names[]';
-      input.className = 'form-control mb-2 text-medium';
-      input.placeholder = 'Player ' + i + ' name';
-      container.appendChild(input);
-    }
-  }
-
-  document.addEventListener('DOMContentLoaded', function() {
-    document.querySelectorAll('input[name="players_count"]').forEach(function(radio) {
-      radio.addEventListener('change', updatePlayerNameFields);
-    });
-    updatePlayerNameFields();
-  });
-})();
-</script>

@@ -101,8 +101,8 @@ jQuery(document).ready(function($){
 	$(".datepicker").flatpickr({"altInput":true, "altFormat": "d/m/Y", "enableTime": false, "disableMobile":true, "dateFormat":"d/m/Y"});
 
 	// Choices
-	if($('.form-select').length > 0){
-		$('.form-select').each(function(index, element) {
+	if($('.form-select:not(.choices-skip)').length > 0){
+		$('.form-select:not(.choices-skip)').each(function(index, element) {
 			const choices = new Choices(element, {
         searchEnabled: false,
         shouldSort: false

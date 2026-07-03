@@ -1,5 +1,5 @@
 class Admins::GolfReservationsController < Admins::BaseController
-  before_action :set_golf_reservation, except: [:index, :calendar]
+  before_action :set_golf_reservation, except: [:index, :calendar, :new, :create, :tee_times]
 
   def index
     criteria = GolfReservation.all
@@ -30,16 +30,69 @@ class Admins::GolfReservationsController < Admins::BaseController
     end]
   end
 
+  def new
+    @golf_reservation = GolfReservation.new
+    @golf_courses = GolfCourse.all
+    @users = User.all.order(name: :asc)
+  end
+
+  def create
+    @golf_reservation = GolfReservation.new(params_golf_reservation_create)
+    @golf_reservation.status = GolfReservation::PAID
+    @golf_courses = GolfCourse.all
+    @users = User.all.order(name: :asc)
+
+    if @golf_reservation.valid?
+      golf_course = @golf_reservation.golf_course
+      if GolfReservation.check_available?(golf_course, @golf_reservation.tee_time)
+        if @golf_reservation.save
+          @golf_reservation.create_purchase_record! if @golf_reservation.user.present?
+          redirect_to admins_golf_reservation_path(@golf_reservation), notice: "Reservation created and marked as paid."
+        else
+          flash.now[:alert] = @golf_reservation.errors.full_messages.join(", ")
+          render :new
+        end
+      else
+        flash.now[:alert] = "That tee time is already booked."
+        render :new
+      end
+    else
+      flash.now[:alert] = @golf_reservation.errors.full_messages.join(", ")
+      render :new
+    end
+  end
+
+  def tee_times
+    golf_course = GolfCourse.find(params[:golf_course_id])
+    date = Date.parse(params[:date])
+    slots = golf_course.available_tee_times(date)
+    render json: slots.map { |s|
+      { label: s[:time].strftime("%H:%M"), value: s[:time].strftime("%Y-%m-%dT%H:%M:%S"), available: s[:available] }
+    }
+  rescue
+    render json: []
+  end
+
   def show
   end
 
   def edit
+    @golf_courses = GolfCourse.all
+    @users = User.all.order(name: :asc)
   end
 
   def update
-    if @golf_reservation.update(params_golf_reservation)
+    permitted = if @golf_reservation.midtrans_paid?
+      params_golf_reservation_safe
+    else
+      params_golf_reservation_full
+    end
+
+    if @golf_reservation.update(permitted)
       redirect_to admins_golf_reservation_path(@golf_reservation), notice: "Reservation updated."
     else
+      @golf_courses = GolfCourse.all
+      @users = User.all.order(name: :asc)
       render :edit
     end
   end
@@ -71,7 +124,15 @@ class Admins::GolfReservationsController < Admins::BaseController
     @golf_reservation = GolfReservation.find(params[:id])
   end
 
-  def params_golf_reservation
-    params.require(:golf_reservation).permit(:status, :notes)
+  def params_golf_reservation_create
+    params.require(:golf_reservation).permit(:golf_course_id, :user_id, :tee_time, :players_count, :holes, :notes)
+  end
+
+  def params_golf_reservation_safe
+    params.require(:golf_reservation).permit(:user_id, :notes)
+  end
+
+  def params_golf_reservation_full
+    params.require(:golf_reservation).permit(:golf_course_id, :user_id, :tee_time, :players_count, :holes, :notes)
   end
 end

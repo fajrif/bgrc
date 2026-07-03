@@ -1,0 +1,127 @@
+<% title_page("New Golf Reservation") %>
+<div class="row">
+  <div class="col-md-8 col-lg-6">
+    <div class="card">
+      <div class="card-header">
+        <h5 class="mb-0">New Golf Reservation (Cashier)</h5>
+        <small class="text-muted">Reservation will be immediately marked as Paid.</small>
+      </div>
+      <div class="card-body">
+        <% if flash[:alert] %>
+          <div class="alert alert-danger"><%= flash[:alert] %></div>
+        <% end %>
+
+        <%= form_tag admins_golf_reservations_path, method: :post do %>
+          <div class="mb-3">
+            <label class="form-label">Golf Course</label>
+            <%= select_tag "golf_reservation[golf_course_id]",
+                options_from_collection_for_select(@golf_courses, :id, :name, @golf_reservation.golf_course_id),
+                class: "form-select", id: "golf_course_select", include_blank: "Select Course" %>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">User <span class="text-muted">(optional — leave blank for guest)</span></label>
+            <%= select_tag "golf_reservation[user_id]",
+                options_from_collection_for_select(@users, :id, :name_with_email, @golf_reservation.user_id),
+                class: "form-select", include_blank: "Guest (no user)" %>
+          </div>
+
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <label class="form-label">Date</label>
+              <input type="text" id="tee_date_picker" class="form-control" placeholder="Select date">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Tee Time</label>
+              <select name="golf_reservation[tee_time]" id="tee_time_select" class="form-select choices-skip" disabled>
+                <option value="">Select course & date first</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Number of Players</label>
+            <%= select_tag "golf_reservation[players_count]",
+                options_for_select([[1,1],[2,2],[3,3],[4,4]], @golf_reservation.players_count || 1),
+                class: "form-select" %>
+          </div>
+
+          <div class="mb-3" id="holes_section">
+            <label class="form-label">Holes</label>
+            <div id="holes_radios">
+              <div class="form-text text-muted">Select a course to see available holes.</div>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Notes</label>
+            <%= text_area_tag "golf_reservation[notes]", @golf_reservation.notes, class: "form-control", rows: 2 %>
+          </div>
+
+          <div class="d-flex gap-2">
+            <%= submit_tag "Create & Mark as Paid", class: "btn btn-success" %>
+            <%= link_to "Back to List", admins_golf_reservations_path, class: "btn btn-light" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%= content_for :tail do %>
+<script>
+jQuery(document).ready(function($) {
+  var courseData = <%= raw @golf_courses.map { |c| { id: c.id, holes: c.holes_list } }.to_json %>;
+
+  var datePicker = $("#tee_date_picker").flatpickr({
+    dateFormat: "Y-m-d",
+    minDate: "today",
+    disableMobile: true,
+    onChange: function() { loadTeeTimes(); }
+  });
+
+  function renderHoles(courseId) {
+    var course = courseData.find(function(c) { return c.id == courseId; });
+    if (!course || !course.holes.length) {
+      $("#holes_radios").html('<div class="form-text text-muted">Select a course to see available holes.</div>');
+      return;
+    }
+    var html = course.holes.map(function(h, i) {
+      return '<div class="form-check form-check-inline">' +
+        '<input class="form-check-input" type="radio" name="golf_reservation[holes]" id="holes_' + h + '" value="' + h + '"' + (i === 0 ? ' checked' : '') + '>' +
+        '<label class="form-check-label" for="holes_' + h + '">' + h + ' Holes</label>' +
+        '</div>';
+    }).join('');
+    $("#holes_radios").html(html);
+  }
+
+  function loadTeeTimes() {
+    var courseId = $("#golf_course_select").val();
+    var date = $("#tee_date_picker").val();
+    var $select = $("#tee_time_select");
+
+    if (!courseId || !date) {
+      $select.prop("disabled", true).html('<option value="">Select course & date first</option>');
+      return;
+    }
+
+    $.getJSON("<%= tee_times_admins_golf_reservations_path %>", { golf_course_id: courseId, date: date }, function(slots) {
+      var available = slots.filter(function(s) { return s.available; });
+      if (!available.length) {
+        $select.prop("disabled", true).html('<option value="">No available slots</option>');
+        return;
+      }
+      var options = available.map(function(s) {
+        return '<option value="' + s.value + '">' + s.label + '</option>';
+      }).join('');
+      $select.prop("disabled", false).html(options);
+    });
+  }
+
+  $("#golf_course_select").on("change", function() {
+    renderHoles($(this).val());
+    loadTeeTimes();
+  });
+});
+</script>
+<% end %>

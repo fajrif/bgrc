@@ -39,6 +39,7 @@
           <%= link_to "Mark as Paid (Cashier)", mark_paid_admins_golf_reservation_path(@golf_reservation), method: :post,
               data: { confirm: "Mark this reservation as paid?" }, class: "btn btn-success btn-sm" %>
         <% end %>
+        <%= link_to "Edit", edit_admins_golf_reservation_path(@golf_reservation), class: "btn btn-warning btn-sm" %>
         <%= link_to "Delete", admins_golf_reservation_path(@golf_reservation), method: :delete,
             data: { confirm: "Permanently delete this reservation?" }, class: "btn btn-outline-danger btn-sm" %>
         <%= link_to "Back to List", admins_golf_reservations_path, class: "btn btn-secondary btn-sm" %>

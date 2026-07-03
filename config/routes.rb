@@ -121,6 +121,7 @@ Rails.application.routes.draw do
       resources :golf_reservations, :controller => "golf_reservations" do
         collection do
           get :calendar
+          get :tee_times
         end
         member do
           post :cancel

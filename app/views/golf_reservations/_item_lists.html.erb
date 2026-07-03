@@ -10,7 +10,7 @@
   </div>
 <% end %>
 
-<% unless @golf_reservation.paid? || @golf_reservation.expired? || @golf_reservation.cancelled? %>
+<% if @golf_reservation.is_unpaid? %>
   <% active_items = @golf_reservation.golf_course.golf_items.active %>
   <% unless active_items.empty? %>
     <div class="padding-25px-all border-top border-color-extra-light-gray">

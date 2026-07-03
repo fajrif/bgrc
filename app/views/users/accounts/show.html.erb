@@ -19,7 +19,7 @@
             </div>
             <div class="col-lg-9 col-md-9 text-center text-md-start padding-eight-lr lg-padding-six-lr md-padding-15px-lr">
                 <h6 class="font-weight-600 text-uppercase margin-20px-bottom letter-spacing-8">My Account</h6>
-                <div class="row">
+                <div id="profile" class="row">
                   <div class="col-lg-12">
                     <%= f.input :full_name, label: false, placeholder: "Full name" %>
                   </div>
@@ -47,3 +47,8 @@
         <% end %>
     </div>
 </section>
+<style>
+#profile input, textarea {
+  margin-bottom: 20px !important;
+}
+</style>

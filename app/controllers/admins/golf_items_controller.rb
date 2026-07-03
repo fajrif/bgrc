@@ -1,6 +1,6 @@
 class Admins::GolfItemsController < Admins::BaseController
   before_action :set_golf_course
-  before_action :set_golf_item, only: [:show, :edit, :update, :destroy]
+  before_action :set_golf_item, only: [:edit, :update, :destroy]
 
   def index
     @golf_items = @golf_course.golf_items
