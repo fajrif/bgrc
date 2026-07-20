@@ -1,0 +1,26 @@
+<!-- start social media -->
+<%
+  social_images = %w[
+    sports/tennis.png
+    images/image-3.png
+    sports/padel.png
+    images/image-5.png
+    sports/pickleball.png
+    images/image-6.png
+  ]
+%>
+<section class="bbcc-section bbcc-social">
+    <div class="container-lg">
+        <div class="bbcc-section-head bbcc-section-head-center">
+            <h2 class="bbcc-section-title">Social Media</h2>
+        </div>
+    </div>
+    <div class="bbcc-social-grid">
+        <% social_images.each do |img| %>
+            <a href="<%= raw(configatron.social_instagram_url) %>" target="_blank" rel="noopener" class="bbcc-social-item" style="background-image:url('<%= image_url(img) %>');" aria-label="View our Instagram">
+                <span class="bbcc-social-icon"><i class="fa-brands fa-instagram" aria-hidden="true"></i></span>
+            </a>
+        <% end %>
+    </div>
+</section>
+<!-- end social media -->

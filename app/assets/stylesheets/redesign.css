@@ -1,0 +1,432 @@
+/* =====================================================================
+   BGRC public redesign — neutral charcoal/gray palette.
+   Scoped with the `bbcc-` prefix so it never collides with the theme.
+   ===================================================================== */
+
+:root {
+  --bbcc-ink: #2b2b2b;         /* primary text */
+  --bbcc-ink-soft: #6b6b6b;    /* muted text */
+  --bbcc-dark: #3a3a3a;        /* charcoal buttons / bars */
+  --bbcc-dark-hover: #232323;
+  --bbcc-topbar: #8c8c8c;      /* medium-gray topbar */
+  --bbcc-line: #e3e3e3;        /* hairlines */
+  --bbcc-bg: #ffffff;
+  --bbcc-bg-alt: #f4f4f4;      /* light-gray section bg */
+}
+
+/* ---------- shared primitives ---------- */
+.bbcc-section { padding: 72px 0; }
+.bbcc-section-head { margin-bottom: 40px; }
+.bbcc-section-head-center { text-align: center; }
+.bbcc-section-sub { max-width: 640px; margin-left: auto; margin-right: auto; }
+
+.bbcc-section-title {
+  font-family: "Mona Sans", sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  font-weight: 500;
+  font-size: clamp(1.5rem, 3vw, 2.15rem);
+  line-height: 1.2;
+  color: var(--bbcc-ink);
+  margin: 0 0 18px;
+}
+.bbcc-section-head-center .bbcc-section-title { margin-bottom: 0; }
+
+.bbcc-lead { font-size: 1.05rem; line-height: 1.7; color: var(--bbcc-ink); }
+.bbcc-section p { color: var(--bbcc-ink-soft); line-height: 1.7; }
+
+.bbcc-btn {
+  display: inline-block;
+  background: var(--bbcc-dark);
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 10px 34px;
+  border: 1px solid var(--bbcc-dark);
+  border-radius: 0;
+  margin-top: 22px;
+  transition: background .2s, color .2s;
+}
+.bbcc-btn:hover, .bbcc-btn:focus { background: var(--bbcc-dark-hover); border-color: var(--bbcc-dark-hover); color: #fff; }
+
+.bbcc-link {
+  display: inline-block;
+  color: var(--bbcc-ink);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  font-size: 12px;
+  font-weight: 600;
+  border-bottom: 1px solid var(--bbcc-ink);
+  padding-bottom: 2px;
+  transition: color .2s, border-color .2s;
+}
+.bbcc-link:hover, .bbcc-link:focus { color: var(--bbcc-ink-soft); border-color: var(--bbcc-ink-soft); }
+
+body.bbcc-no-scroll { overflow: hidden; }
+
+/* =====================================================================
+   HEADER
+   ===================================================================== */
+.bbcc-header { position: relative; z-index: 1000; background: #fff; }
+
+.bbcc-topbar { background: var(--bbcc-topbar); color: #fff; }
+.bbcc-topbar-inner {
+  display: flex; align-items: center; justify-content: space-between;
+  min-height: 40px;
+}
+.bbcc-topbar a { color: #fff; text-transform: uppercase; letter-spacing: 1.5px; font-size: 11px; }
+.bbcc-topbar a:hover { color: #efefef; text-decoration: none; }
+.bbcc-topbar-right { display: flex; align-items: center; gap: 12px; }
+.bbcc-topbar-sep { opacity: .6; }
+.bbcc-topbar-user { color: #fff !important; text-transform: uppercase; letter-spacing: 1.5px; font-size: 11px; padding: 4px 0; }
+
+.bbcc-navbar { background: #fff; border-bottom: 1px solid var(--bbcc-line); }
+.bbcc-navbar-inner {
+  position: relative;
+  display: flex; align-items: center; justify-content: space-between;
+  min-height: 88px;
+}
+.bbcc-logo { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); display: inline-flex; }
+.bbcc-logo img { height: 46px; width: auto; display: block; }
+
+.bbcc-menu-toggle {
+  display: inline-flex; align-items: center; gap: 12px;
+  background: none; border: 0; padding: 0; cursor: pointer;
+}
+.bbcc-burger { display: inline-flex; flex-direction: column; justify-content: center; gap: 5px; width: 26px; }
+.bbcc-burger span { display: block; height: 2px; width: 100%; background: var(--bbcc-ink); transition: .2s; }
+.bbcc-menu-label { text-transform: uppercase; letter-spacing: 2px; font-size: 14px; color: var(--bbcc-ink); }
+
+.bbcc-book-btn {
+  background: var(--bbcc-dark); color: #fff;
+  text-transform: uppercase; letter-spacing: 2px; font-size: 12px; font-weight: 500;
+  padding: 10px 30px; border: 1px solid var(--bbcc-dark); transition: background .2s;
+}
+.bbcc-book-btn:hover, .bbcc-book-btn:focus { background: var(--bbcc-dark-hover); color: #fff; text-decoration: none; }
+
+/* =====================================================================
+   OFF-CANVAS LEFT MENU
+   ===================================================================== */
+.bbcc-offcanvas { position: fixed; inset: 0; z-index: 10050; visibility: hidden; }
+.bbcc-offcanvas.is-open { visibility: visible; }
+.bbcc-offcanvas-backdrop {
+  position: absolute; inset: 0; background: rgba(0,0,0,.45);
+  opacity: 0; transition: opacity .3s ease;
+}
+.bbcc-offcanvas.is-open .bbcc-offcanvas-backdrop { opacity: 1; }
+
+.bbcc-offcanvas-panel {
+  position: absolute; top: 0; left: 0; height: 100%;
+  width: 400px; max-width: 86vw; background: #fff;
+  transform: translateX(-100%);
+  transition: transform .35s cubic-bezier(.7,0,.3,1);
+  display: flex; flex-direction: column;
+  padding: 88px 52px 40px; overflow-y: auto;
+  box-shadow: 4px 0 30px rgba(0,0,0,.12);
+}
+.bbcc-offcanvas.is-open .bbcc-offcanvas-panel { transform: translateX(0); }
+
+.bbcc-offcanvas-close {
+  position: absolute; top: 24px; right: 28px;
+  background: none; border: 0; font-size: 34px; line-height: 1;
+  color: var(--bbcc-ink); cursor: pointer;
+}
+.bbcc-offcanvas-nav ul { list-style: none; margin: 0; padding: 0; }
+.bbcc-offcanvas-nav li { margin-bottom: 22px; }
+.bbcc-offcanvas-nav a {
+  font-family: "Mona Sans", sans-serif;
+  text-transform: uppercase; letter-spacing: 2px;
+  font-size: 22px; font-weight: 400; color: var(--bbcc-ink);
+  transition: color .2s;
+}
+.bbcc-offcanvas-nav a:hover { color: var(--bbcc-ink-soft); text-decoration: none; }
+
+.bbcc-offcanvas-auth {
+  margin-top: auto; padding-top: 30px;
+  display: flex; gap: 28px;
+  border-top: 1px solid var(--bbcc-line);
+}
+.bbcc-offcanvas-auth a {
+  text-transform: uppercase; letter-spacing: 2px; font-size: 14px; font-weight: 600;
+  color: var(--bbcc-ink);
+}
+.bbcc-offcanvas-auth a:hover { color: var(--bbcc-ink-soft); text-decoration: none; }
+
+/* =====================================================================
+   HERO + SEARCH
+   ===================================================================== */
+.bbcc-hero {
+  position: relative;
+  min-height: 74vh;
+  display: flex; align-items: flex-end;
+  padding: 90px 0 48px;
+  background-size: cover; background-position: center;
+}
+.bbcc-hero-overlay { position: absolute; inset: 0; background: rgba(0,0,0,.28); }
+.bbcc-hero .container-lg { position: relative; z-index: 2; width: 100%; }
+
+.bbcc-hero-search { background: #fff; box-shadow: 0 24px 60px rgba(0,0,0,.18); }
+.bbcc-hero-search-fields { display: flex; flex-wrap: wrap; align-items: stretch; }
+.bbcc-hero-field {
+  position: relative;
+  flex: 1 1 0; min-width: 200px;
+  padding: 14px 44px 12px 24px;
+  border-right: 1px solid var(--bbcc-line);
+  display: flex; flex-direction: column; justify-content: center;
+}
+.bbcc-hero-field label {
+  display: block; text-transform: none; letter-spacing: normal;
+  font-size: 12px; color: var(--bbcc-ink-soft); margin-bottom: 4px; line-height: 1.2;
+}
+.bbcc-hero-field select,
+.bbcc-hero-field input {
+  width: 100%; border: 0; padding: 0; margin: 0; height: auto; line-height: 1.3;
+  font-size: 1.15rem; color: var(--bbcc-ink);
+  background: transparent; outline: none; box-shadow: none;
+  -webkit-appearance: none; appearance: none;
+}
+.bbcc-hero-field select { cursor: pointer; }
+.bbcc-hero-field select:invalid { color: var(--bbcc-ink); }
+.bbcc-hero-field-icon {
+  position: absolute; right: 20px; top: 50%; transform: translateY(-50%);
+  color: var(--bbcc-ink); font-size: 16px; pointer-events: none;
+}
+.bbcc-hero-search-btn {
+  flex: 0 0 auto; border: 0; background: #d7d7d7; color: var(--bbcc-ink);
+  text-transform: uppercase; letter-spacing: 2px; font-size: 12px; font-weight: 500;
+  padding: 0 40px; cursor: pointer; transition: background .2s;
+}
+.bbcc-hero-search-btn:hover { background: #c7c7c7; }
+
+/* =====================================================================
+   FEATURE GRID
+   ===================================================================== */
+.bbcc-tile {
+  position: relative; display: block; overflow: hidden;
+  background-size: cover; background-position: center;
+  color: #fff;
+}
+.bbcc-tile:hover { color: #fff; text-decoration: none; }
+.bbcc-tile-lg { height: 340px; }
+.bbcc-tile-sm { height: 240px; }
+.bbcc-tile-shade { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,.65) 0%, rgba(0,0,0,.15) 55%, rgba(0,0,0,.05) 100%); transition: background .3s; }
+.bbcc-tile:hover .bbcc-tile-shade { background: linear-gradient(to top, rgba(0,0,0,.72) 0%, rgba(0,0,0,.28) 60%, rgba(0,0,0,.12) 100%); }
+.bbcc-tile-body { position: absolute; left: 0; bottom: 0; z-index: 2; padding: 26px 28px; max-width: 90%; }
+.bbcc-tile-label { display: block; text-transform: uppercase; letter-spacing: 2px; font-size: 18px; font-weight: 500; }
+.bbcc-tile-desc { display: block; margin-top: 10px; font-size: 13px; line-height: 1.55; color: rgba(255,255,255,.85); }
+
+/* =====================================================================
+   GRAB & GO
+   ===================================================================== */
+.bbcc-grabgo-image { width: 100%; height: 400px; background-size: cover; background-position: center; }
+
+/* =====================================================================
+   DINING / RESTAURANTS (carousel)
+   ===================================================================== */
+.bbcc-card { display: block; color: inherit; }
+.bbcc-card:hover { text-decoration: none; color: inherit; }
+.bbcc-card-image { position: relative; display: block; height: 300px; background-size: cover; background-position: center; overflow: hidden; }
+.bbcc-card-shade { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,.6), rgba(0,0,0,0) 60%); }
+.bbcc-card-name { position: absolute; left: 0; bottom: 0; z-index: 2; padding: 18px 20px; color: #fff; text-transform: uppercase; letter-spacing: 1.5px; font-size: 15px; font-weight: 500; }
+.bbcc-card-desc { display: block; padding: 14px 2px 0; font-size: 14px; color: var(--bbcc-ink-soft); }
+
+/* generic swiper controls */
+.bbcc-swiper { position: relative; }
+.bbcc-swiper-controls { display: flex; align-items: center; justify-content: center; gap: 22px; margin-top: 30px; }
+.bbcc-swiper-prev, .bbcc-swiper-next { background: none; border: 0; color: var(--bbcc-ink); font-size: 18px; cursor: pointer; padding: 4px 8px; }
+.bbcc-swiper-prev:hover, .bbcc-swiper-next:hover { color: var(--bbcc-ink-soft); }
+.bbcc-swiper-prev.swiper-button-disabled, .bbcc-swiper-next.swiper-button-disabled { opacity: .3; cursor: default; }
+.bbcc-swiper-pagination { display: flex; align-items: center; gap: 8px; width: auto; }
+.bbcc-swiper-pagination .swiper-pagination-bullet { background: #bdbdbd; opacity: 1; transform: none; }
+.bbcc-swiper-pagination .swiper-pagination-bullet-active { background: var(--bbcc-dark); }
+
+/* =====================================================================
+   INTRO
+   ===================================================================== */
+.bbcc-intro { background: var(--bbcc-bg-alt); }
+
+/* =====================================================================
+   FULL-WIDTH GOLF BANNER
+   ===================================================================== */
+.bbcc-fullbanner { height: 460px; background-size: cover; background-position: center; }
+
+/* =====================================================================
+   MITS PARTNER
+   ===================================================================== */
+.bbcc-mits-image { width: 100%; height: 260px; background-size: cover; background-position: center; }
+
+/* =====================================================================
+   EVENTS (accordion + image)
+   ===================================================================== */
+.bbcc-events { background: var(--bbcc-bg-alt); }
+.bbcc-events-image { width: 100%; height: 420px; background-size: cover; background-position: center; }
+
+/* shared native <details> accordion */
+.bbcc-accordion-item { border-bottom: 1px solid var(--bbcc-line); }
+.bbcc-accordion-item summary {
+  list-style: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  padding: 22px 4px; text-transform: uppercase; letter-spacing: 1.5px;
+  font-size: 15px; font-weight: 500; color: var(--bbcc-ink);
+}
+.bbcc-accordion-item summary::-webkit-details-marker { display: none; }
+.bbcc-accordion-icon { position: relative; flex: 0 0 14px; width: 14px; height: 14px; }
+.bbcc-accordion-icon::before, .bbcc-accordion-icon::after {
+  content: ""; position: absolute; background: var(--bbcc-ink); transition: .2s;
+}
+.bbcc-accordion-icon::before { top: 6px; left: 0; width: 14px; height: 2px; }
+.bbcc-accordion-icon::after { top: 0; left: 6px; width: 2px; height: 14px; }
+.bbcc-accordion-item[open] .bbcc-accordion-icon::after { opacity: 0; }
+.bbcc-accordion-body { padding: 0 4px 24px; }
+.bbcc-accordion-body p { margin-bottom: 12px; }
+
+/* =====================================================================
+   HIGHLIGHTS (carousel)
+   ===================================================================== */
+.bbcc-highlight { position: relative; display: block; height: 360px; background-size: cover; background-position: center; overflow: hidden; }
+.bbcc-highlight:hover { text-decoration: none; }
+.bbcc-highlight-shade { position: absolute; inset: 0; background: rgba(0,0,0,.35); transition: background .3s; }
+.bbcc-highlight:hover .bbcc-highlight-shade { background: rgba(0,0,0,.45); }
+.bbcc-highlight-title {
+  position: absolute; inset: 0; z-index: 2; display: flex; align-items: center; justify-content: center;
+  text-align: center; padding: 20px; color: #fff;
+  text-transform: uppercase; letter-spacing: 3px; font-size: 20px; font-weight: 500;
+}
+
+/* =====================================================================
+   TESTIMONIALS
+   ===================================================================== */
+.bbcc-testimonials { background: var(--bbcc-bg-alt); }
+.bbcc-quote { background: #fff; padding: 34px 30px; height: 100%; border: 1px solid var(--bbcc-line); }
+.bbcc-quote-mark { font-size: 26px; color: #bcbcbc; margin-bottom: 16px; display: block; }
+.bbcc-quote-text { color: var(--bbcc-ink); line-height: 1.7; margin-bottom: 20px; }
+.bbcc-quote-name { display: block; text-transform: uppercase; letter-spacing: 1.5px; font-size: 13px; font-weight: 600; color: var(--bbcc-ink); }
+.bbcc-quote-company { display: block; font-size: 12px; color: var(--bbcc-ink-soft); margin-top: 2px; }
+
+/* =====================================================================
+   LOCATION
+   ===================================================================== */
+.bbcc-location { position: relative; }
+.bbcc-location-map { line-height: 0; }
+.bbcc-location-map iframe { width: 100%; height: 460px; border: 0; display: block; filter: grayscale(0.2); }
+.bbcc-location-overlay { position: absolute; inset: 0; display: flex; align-items: center; pointer-events: none; }
+.bbcc-location-card {
+  pointer-events: auto; background: #fff; box-shadow: 0 20px 50px rgba(0,0,0,.15);
+  padding: 36px 34px; max-width: 360px;
+}
+.bbcc-location-title { text-transform: uppercase; letter-spacing: 2px; font-size: 20px; font-weight: 500; color: var(--bbcc-ink); margin: 0 0 14px; }
+.bbcc-location-address { font-style: normal; color: var(--bbcc-ink-soft); line-height: 1.7; margin-bottom: 8px; }
+
+/* =====================================================================
+   BLOG
+   ===================================================================== */
+.bbcc-post-image { display: block; overflow: hidden; margin-bottom: 18px; }
+.bbcc-post-image img { width: 100%; height: 240px; object-fit: cover; display: block; transition: transform .4s; }
+.bbcc-post:hover .bbcc-post-image img { transform: scale(1.04); }
+.bbcc-post-image-ph { display: block; width: 100%; height: 240px; background-size: cover; background-position: center; }
+.bbcc-post-meta { display: block; text-transform: uppercase; letter-spacing: 1px; font-size: 11px; color: var(--bbcc-ink-soft); margin-bottom: 8px; }
+.bbcc-post-title { display: block; text-transform: uppercase; letter-spacing: 1px; font-size: 16px; font-weight: 600; color: var(--bbcc-ink); margin-bottom: 10px; }
+.bbcc-post-title:hover { color: var(--bbcc-ink-soft); text-decoration: none; }
+.bbcc-post-excerpt { color: var(--bbcc-ink-soft); line-height: 1.6; margin-bottom: 16px; }
+
+/* =====================================================================
+   FAQ  (uses shared .bbcc-accordion)
+   ===================================================================== */
+.bbcc-faq .bbcc-accordion-body { color: var(--bbcc-ink-soft); }
+
+/* =====================================================================
+   SOCIAL MEDIA GRID
+   ===================================================================== */
+.bbcc-social-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 0; }
+.bbcc-social-item { position: relative; display: block; padding-top: 100%; background-size: cover; background-position: center; overflow: hidden; }
+.bbcc-social-icon { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 26px; background: rgba(0,0,0,.35); opacity: 0; transition: opacity .25s; }
+.bbcc-social-item:hover .bbcc-social-icon { opacity: 1; }
+
+/* =====================================================================
+   FOOTER
+   ===================================================================== */
+.bbcc-footer { background: var(--bbcc-bg-alt); color: var(--bbcc-ink); }
+.bbcc-footer-main { padding: 64px 0 40px; }
+.bbcc-footer-logo { display: inline-block; margin-bottom: 30px; }
+.bbcc-footer-logo img { height: 54px; width: auto; }
+
+.bbcc-footer-links { display: flex; gap: 60px; margin-bottom: 30px; }
+.bbcc-footer-links ul { list-style: none; margin: 0; padding: 0; }
+.bbcc-footer-links li { margin-bottom: 14px; }
+.bbcc-footer-links a { color: var(--bbcc-ink); font-size: 15px; }
+.bbcc-footer-links a:hover { color: var(--bbcc-ink-soft); text-decoration: none; }
+
+.bbcc-footer-address { font-style: normal; color: var(--bbcc-ink-soft); line-height: 1.7; margin-bottom: 24px; }
+
+.bbcc-footer-social { display: flex; gap: 12px; }
+.bbcc-footer-social a {
+  width: 42px; height: 42px; border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: #cfcfcf; color: #fff; font-size: 16px; transition: background .2s;
+}
+.bbcc-footer-social a:hover { background: var(--bbcc-dark); text-decoration: none; }
+
+.bbcc-footer-intro { color: var(--bbcc-ink); line-height: 1.7; margin-bottom: 18px; max-width: 640px; }
+.bbcc-footer-supported { text-transform: none; color: var(--bbcc-ink); margin-bottom: 34px; }
+.bbcc-footer-supported strong { letter-spacing: 4px; }
+
+/* footer contact form (reuses inquiries/_form simple_form markup) */
+.bbcc-footer-form .text-center { text-align: left !important; }
+.bbcc-footer-form .form-group { margin-bottom: 26px; }
+.bbcc-footer-form label { display: none; }
+.bbcc-footer-form input.form-control,
+.bbcc-footer-form textarea.form-control,
+.bbcc-footer-form .input-border-bottom {
+  border: 0; border-bottom: 1px solid #bcbcbc; border-radius: 0;
+  background: transparent; padding: 10px 0; box-shadow: none;
+}
+.bbcc-footer-form input.form-control:focus,
+.bbcc-footer-form textarea.form-control:focus {
+  border-color: var(--bbcc-dark); box-shadow: none; background: transparent;
+}
+.bbcc-footer-form input::placeholder,
+.bbcc-footer-form textarea::placeholder { color: var(--bbcc-ink-soft); }
+.bbcc-footer-form .btn {
+  background: var(--bbcc-dark); border: 1px solid var(--bbcc-dark); color: #fff; border-radius: 0;
+  text-transform: uppercase; letter-spacing: 2px; font-size: 12px; padding: 10px 40px; margin-top: 8px;
+}
+.bbcc-footer-form .btn:hover { background: var(--bbcc-dark-hover); border-color: var(--bbcc-dark-hover); color: #fff; }
+
+.bbcc-footer-bottom { border-top: 1px solid #dcdcdc; }
+.bbcc-footer-bottom-inner {
+  display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+  padding: 22px 0; font-size: 13px; color: var(--bbcc-ink-soft);
+}
+.bbcc-footer-legal { display: flex; gap: 40px; flex-wrap: wrap; }
+.bbcc-footer-legal a { color: var(--bbcc-ink-soft); }
+.bbcc-footer-legal a:hover { color: var(--bbcc-ink); text-decoration: none; }
+
+/* =====================================================================
+   RESPONSIVE
+   ===================================================================== */
+@media (max-width: 991px) {
+  .bbcc-hero { min-height: 60vh; }
+  .bbcc-events-image, .bbcc-location-map iframe { height: 320px; }
+  .bbcc-location-overlay { position: static; padding-top: 0; }
+  .bbcc-location-card { max-width: none; margin-top: -60px; position: relative; z-index: 2; }
+  .bbcc-social-grid { grid-template-columns: repeat(3, 1fr); }
+  .bbcc-footer-right { margin-top: 40px; }
+}
+
+@media (max-width: 767px) {
+  .bbcc-section { padding: 52px 0; }
+  .bbcc-navbar-inner { min-height: 70px; }
+  .bbcc-logo img { height: 38px; }
+  .bbcc-menu-label { display: none; }
+  .bbcc-book-btn { padding: 11px 18px; font-size: 11px; }
+  .bbcc-hero-field { flex: 1 1 100%; border-right: 0; border-bottom: 1px solid var(--bbcc-line); }
+  .bbcc-hero-search-btn { width: 100%; padding: 16px; }
+  .bbcc-tile-lg, .bbcc-tile-sm { height: 220px; }
+  .bbcc-fullbanner { height: 260px; }
+  .bbcc-footer-links { gap: 40px; }
+  .bbcc-footer-bottom-inner { justify-content: flex-start; }
+  .bbcc-social-grid { grid-template-columns: repeat(2, 1fr); }
+  .bbcc-offcanvas-panel { padding: 80px 34px 32px; }
+}

@@ -1,0 +1,44 @@
+<!-- start restaurants / dining -->
+<%
+  restaurants = [
+    { name: "The Paddock",        image: "facilities/restaurant.png", desc: "All-day dining with a garden view." },
+    { name: "Kawanua Marina",     image: "images/image-2.png",        desc: "Fresh seafood by the waterfront." },
+    { name: "Pit Lane Sports Bar",image: "images/image-3.png",        desc: "Craft drinks and live sports." },
+    { name: "Mezzaluna",          image: "images/image-4.png",        desc: "Modern Italian, wood-fired." },
+    { name: "Port Side",          image: "images/image-5.png",        desc: "Sunset cocktails and small plates." }
+  ]
+%>
+<section class="bbcc-section bbcc-dining">
+    <div class="container-lg">
+        <div class="bbcc-section-head">
+            <h2 class="bbcc-section-title">Restaurants</h2>
+            <p class="bbcc-lead bbcc-section-sub">
+                Five distinct venues, one destination. From casual bites to fine dining,
+                every table at Bali Beach Country Club tells its own story.
+            </p>
+        </div>
+    </div>
+    <div class="container-lg">
+        <div class="swiper bbcc-swiper bbcc-dining-swiper">
+            <div class="swiper-wrapper">
+                <% restaurants.each do |r| %>
+                    <div class="swiper-slide">
+                        <a href="<%= restaurant_path %>" class="bbcc-card">
+                            <span class="bbcc-card-image" style="background-image:url('<%= image_url(r[:image]) %>');">
+                                <span class="bbcc-card-shade"></span>
+                                <span class="bbcc-card-name"><%= r[:name] %></span>
+                            </span>
+                            <span class="bbcc-card-desc"><%= r[:desc] %></span>
+                        </a>
+                    </div>
+                <% end %>
+            </div>
+            <div class="bbcc-swiper-controls">
+                <button type="button" class="bbcc-swiper-prev" aria-label="Previous"><i class="fa-solid fa-angle-left"></i></button>
+                <div class="bbcc-swiper-pagination"></div>
+                <button type="button" class="bbcc-swiper-next" aria-label="Next"><i class="fa-solid fa-angle-right"></i></button>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- end restaurants / dining -->

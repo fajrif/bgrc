@@ -1,16 +1,10 @@
 class HomeController < ApplicationController
 
   def index
-		# get public home
-    @banner = BannerSection.where(name: "Home").first.banners.first
+		# get public home — data-backed sections only; other sections are static.
     @testimonials = Testimonial.first(6)
-    @facilities = Facility.first(3)
-    @sports = Sport.first(4)
-    @event = Event.featured_events.first
-    @packages = Package.first(3)
-    @promos = Promo.first(3)
-    @articles = Article.first(3)
-    @faqs = Question.where("section = ?", "general").limit(5)
+    @articles = Article.where(status: 1).first(3)
+    @faqs = Question.where(section: "general").limit(6)
   end
 
   def about

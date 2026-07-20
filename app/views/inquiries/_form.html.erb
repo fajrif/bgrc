@@ -2,7 +2,7 @@
 	<div class="col-12 col-lg-12">
 		<%= simple_form_for @inquiry, url: contacts_path, method: :post, remote: true do |f| %>
       <div class="row justify-content-center">
-        <div class="col-lg-8 text-center">
+        <div class="col-12 text-center">
           <%= flash_message2 %>
           <%= f.input :name, label: false, placeholder: "Name", input_html: { class: "input-border-bottom" } %>
           <%= f.input :email, label: false, placeholder: "Email", input_html: { class: "input-border-bottom" } %>

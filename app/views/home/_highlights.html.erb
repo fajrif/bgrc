@@ -1,0 +1,37 @@
+<!-- start highlights / special events -->
+<%
+  highlights = [
+    { title: "Special Events",     image: "banners/banner-padel.png" },
+    { title: "Weekend Tournaments",image: "images/image-6.png" },
+    { title: "Ladies' Night",      image: "images/image-2.png" },
+    { title: "Junior Camps",       image: "images/image-3.png" },
+    { title: "Sunset Sessions",    image: "images/image-5.png" }
+  ]
+%>
+<section class="bbcc-section bbcc-highlights" id="highlights">
+    <div class="container-lg">
+        <div class="bbcc-section-head bbcc-section-head-center">
+            <h2 class="bbcc-section-title">Highlights</h2>
+        </div>
+    </div>
+    <div class="container-lg">
+        <div class="swiper bbcc-swiper bbcc-highlights-swiper">
+            <div class="swiper-wrapper">
+                <% highlights.each do |h| %>
+                    <div class="swiper-slide">
+                        <a href="<%= events_path %>" class="bbcc-highlight" style="background-image:url('<%= image_url(h[:image]) %>');">
+                            <span class="bbcc-highlight-shade"></span>
+                            <span class="bbcc-highlight-title"><%= h[:title] %></span>
+                        </a>
+                    </div>
+                <% end %>
+            </div>
+            <div class="bbcc-swiper-controls">
+                <button type="button" class="bbcc-swiper-prev" aria-label="Previous"><i class="fa-solid fa-angle-left"></i></button>
+                <div class="bbcc-swiper-pagination"></div>
+                <button type="button" class="bbcc-swiper-next" aria-label="Next"><i class="fa-solid fa-angle-right"></i></button>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- end highlights / special events -->

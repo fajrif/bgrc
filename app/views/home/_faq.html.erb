@@ -1,40 +1,21 @@
-<!-- start faq section -->
-<section class="pt-0 wow animate__fadeIn">
-    <div class="container">
-        <div class="row">
-            <div class="col-12 text-center">
-                <h5 class="alt-font font-weight-600 text-uppercase margin-50px-bottom">FAQ</h5>
-            </div>
+<!-- start faq -->
+<section class="bbcc-section bbcc-faq">
+    <div class="container-lg">
+        <div class="bbcc-section-head bbcc-section-head-center">
+            <h2 class="bbcc-section-title">FAQ</h2>
         </div>
-        <div class="row d-flex justify-content-center">
-            <div class="col-7">
-              <div class="">
-                <!-- start accordion -->
-                <div class="panel-group accordion-event accordion-style1" id="accordion-one" data-active-icon="ti-minus" data-inactive-icon="ti-plus">
-                  <% @faqs.each do |faq| %>
-                    <!-- start accordion item -->
-                    <div class="panel">
-                      <div class="panel-heading">
-                        <a class="accordion-toggle collapsed" data-bs-toggle="collapse" data-bs-parent="#accordion-one" href="#accordion-faq-<%= faq.id %>" aria-expanded="false">
-                          <div class="panel-title font-weight-500 text-uppercase position-relative padding-20px-right">
-                            <h6 class="text-large"><%= faq.title %></h6>
-                            <i class="ti-plus text-dark-gray"></i>
-                          </div>
-                        </a>
-                      </div>
-                      <div id="accordion-faq-<%= faq.id %>" data-bs-parent="#accordion-one" class="panel-collapse collapse">
-                        <div class="panel-body">
-                          <%= raw faq.description %>
-                        </div>
-                      </div>
-                    </div>
-                    <!-- end accordion item -->
-                  <% end %>
+        <div class="row justify-content-center">
+            <div class="col-12 col-lg-9">
+                <div class="bbcc-accordion">
+                    <% @faqs.each do |faq| %>
+                        <details class="bbcc-accordion-item">
+                            <summary><%= faq.title %><span class="bbcc-accordion-icon"></span></summary>
+                            <div class="bbcc-accordion-body"><%= raw faq.description %></div>
+                        </details>
+                    <% end %>
                 </div>
-                <!-- end accordion -->
-              </div>
             </div>
         </div>
     </div>
 </section>
-<!-- end faq section -->
+<!-- end faq -->

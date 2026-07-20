@@ -1,76 +1,67 @@
 <div class="whatsapp-wrapper">
-  <a id="floating-whatsapp-btn" href="https://wa.me/<%= configatron.whatsapp_number.to_s.gsub(/\D/, '') %>?text=<%= url_encode("Hi Bali Beach Country Club, I saw your website and would like to ask about your facilities and services. Could you please assist me?") %>"><img src="<%= image_url('whatsapp.png') %>" alt="whatsapp" /></a>
+  <a id="floating-whatsapp-btn" href="https://wa.me/<%= configatron.whatsapp_number.to_s.gsub(/\D/, '') %>?text=<%= url_encode("Hi Bali Beach Country Club, I saw your website and would like to ask about your facilities and services. Could you please assist me?") %>"><img src="<%= image_url('whatsapp.png') %>" alt="Chat on WhatsApp" /></a>
 </div>
 
 <!-- start footer -->
-<footer class="footer-standard-light bg-light-grey">
-    <div class="footer-widget-area padding-three-top sm-padding-30px-top">
-        <div class="container">
-            <div class="row">
-                <div class="col-12 col-md-4 widget md-margin-30px-bottom text-center text-sm-start">
-                    <!-- start logo -->
-                    <%= link_to root_url, class: "margin-20px-bottom d-inline-block" do %>
-                      <%= image_tag("logo.png", class: "footer-logo", alt: "Bali Beach Country Club") %>
-                    <% end %>
-                    <!-- end logo -->
-                    <p class="d-block text-medium margin-30px-bottom w-100">
-                      <%= raw(configatron.location_address) %>
-                    </p>
-                    <!-- start social media -->
-                    <div class="social-icon-style-8 d-inline-block align-middle">
-                      <ul class="small-icon no-margin-bottom">
-                        <li><a class="facebook" href="<%= raw(configatron.social_facebook_url) %>" target="_blank"><i class="fa-brands fa-facebook-f" aria-hidden="true"></i></a></li>
-                        <li><a class="twitter" href="<%= raw(configatron.social_twitter_url) %>" target="_blank"><i class="fa-brands fa-twitter"></i></a></li>
-                        <li><a class="google" href="<%= raw(configatron.social_google_plus_url) %>" target="_blank"><i class="fa-brands fa-google-plus-g"></i></a></li>
-                        <li><a class="instagram" href="<%= raw(configatron.social_instagram_url) %>" target="_blank"><i class="fa-brands fa-instagram no-margin-right" aria-hidden="true"></i></a></li>
-                      </ul>
-                    </div>
-                    <!-- end social media -->
+<footer class="bbcc-footer">
+    <div class="container-lg">
+        <div class="row bbcc-footer-main">
+            <!-- left column -->
+            <div class="col-12 col-lg-5 bbcc-footer-left">
+                <%= link_to root_url, class: "bbcc-footer-logo" do %>
+                    <%= image_tag "bbcc-logo.png", alt: "Bali Beach Country Club" %>
+                <% end %>
+
+                <div class="bbcc-footer-links">
+                    <ul>
+                        <li><a href="<%= about_path %>">About Us</a></li>
+                        <li><a href="<%= facilities_path %>">Facilities</a></li>
+                        <li><a href="<%= packages_path %>">Packages</a></li>
+                    </ul>
+                    <ul>
+                        <li><a href="<%= events_path %>">Our Events</a></li>
+                        <li><a href="<%= blogs_path %>">Blog</a></li>
+                        <li><a href="<%= get_contact_path %>">Contact Us</a></li>
+                    </ul>
                 </div>
-                <!-- start links -->
-                <div class="col-12 col-md-8 widget padding-45px-left md-padding-15px-left xs-margin-30px-bottom text-center text-sm-start">
-                    <p class="d-block text-medium margin-30px-bottom w-70 sm-w-100">
-                      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi. 
-                    </p>
-                    <p class="text-medium">
-                      Supported by:&nbsp; <strong class="letter-spacing-10">MITS ACADEMY</strong>
-                    </p>
-                    <div class="d-flex justify-content-start gap-4">
-                      <ul class="list-unstyled">
-                        <li><a class="text-medium" href="<%= about_path %>"><%= t('menu.about') %></a></li>
-                        <li><a class="text-medium" href="<%= facilities_path %>"><%= t('menu.facilities') %></a></li>
-                        <li><a class="text-medium" href="<%= packages_path %>"><%= t('menu.packages') %></a></li>
-                      </ul>
-                      <ul class="list-unstyled">
-                        <li><a class="text-medium" href="<%= events_path %>"><%= t('menu.events') %></a></li>
-                        <li><a class="text-medium" href="<%= blogs_path %>"><%= t('menu.blogs') %></a></li>
-                        <li><a class="text-medium" href="<%= get_contact_path %>"><%= t('menu.contact') %></a></li>
-                      </ul>
-                    </div>
+
+                <address class="bbcc-footer-address"><%= raw(configatron.location_address) %></address>
+
+                <div class="bbcc-footer-social">
+                    <a href="<%= raw(configatron.social_facebook_url) %>" target="_blank" rel="noopener" aria-label="Facebook"><i class="fa-brands fa-facebook-f" aria-hidden="true"></i></a>
+                    <a href="<%= raw(configatron.social_instagram_url) %>" target="_blank" rel="noopener" aria-label="Instagram"><i class="fa-brands fa-instagram" aria-hidden="true"></i></a>
+                    <a href="<%= raw(configatron.social_twitter_url) %>" target="_blank" rel="noopener" aria-label="Twitter"><i class="fa-brands fa-x-twitter" aria-hidden="true"></i></a>
+                    <a href="<%= raw(configatron.social_linkedin_url) %>" target="_blank" rel="noopener" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in" aria-hidden="true"></i></a>
                 </div>
-                <!-- end links -->
+            </div>
+
+            <!-- right column -->
+            <div class="col-12 col-lg-7 bbcc-footer-right">
+                <p class="bbcc-footer-intro">
+                    Discover world-class sports, dining, and wellness at Bali Beach Country Club &mdash; your
+                    premier destination in Nusa Dua for golf, racquet sports, group classes, and unforgettable events.
+                </p>
+                <p class="bbcc-footer-supported">
+                    Supported by:&nbsp;&nbsp;<strong>MITS ACADEMY</strong>
+                </p>
+                <div class="bbcc-footer-form">
+                    <%= render "inquiries/form" %>
+                </div>
             </div>
         </div>
     </div>
-    <div class="bg-light-grey padding-20px-tb text-center sm-padding-30px-tb">
-        <div class="container">
-            <div class="row row-cols-1 row-cols-md-2">
-                <!-- start copyright -->
-                <div class="col text-small text-md-start text-center">&copy; 2024 Bali Beach Country Club</div>
-                <div class="col text-small">
-                  <div class="d-flex align-center justify-content-center justify-content-md-end gap-2">
+
+    <div class="bbcc-footer-bottom">
+        <div class="container-lg">
+            <div class="bbcc-footer-bottom-inner">
+                <span class="bbcc-footer-copy">&copy; 2025 Bali Beach Country Club</span>
+                <div class="bbcc-footer-legal">
                     <a href="<%= disclaimer_path %>"><%= t('menu.disclaimer') %></a>
-                    |
                     <a href="<%= privacy_path %>"><%= t('menu.privacy_policy') %></a>
-                    |
                     <a href="<%= faq_path %>"><%= t('menu.faq') %></a>
-                  </div>
                 </div>
-                <!-- end copyright -->
             </div>
         </div>
     </div>
 </footer>
 <!-- end footer -->
-
-

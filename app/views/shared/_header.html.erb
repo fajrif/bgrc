@@ -1,73 +1,77 @@
 <!-- start header -->
-<header>
+<header class="bbcc-header">
     <!-- topbar -->
-    <div class="top-header-area bg-black padding-10px-tb">
+    <div class="bbcc-topbar">
         <div class="container-lg">
-            <div class="row align-items-center m-0">
-                <div class="col-6 ps-lg-0 align-items-center justify-content-start text-white-2">
-                    <a href="<%= search_path %>" class="btn btn-light btn-sm text-uppercase letter-spacing-2 text-extra-small  text-black">Book Now</a>
+            <div class="bbcc-topbar-inner">
+                <div class="bbcc-topbar-left">
+                    <a href="<%= faq_path %>">FAQ</a>
                 </div>
-                <div class="col-6 pe-lg-0 alt-font d-flex align-items-center justify-content-end gap-2">
+                <div class="bbcc-topbar-right">
                     <% if user_signed_in? %>
-                      <div class="btn-group dropdown-style-1">
-                        <button type="button" class="btn dropdown-toggle sm-w-100 text-uppercase text-white-2" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                          <%= current_user.full_name %>
-                        </button>
-                        <%= get_current_user_menu_routes %>
-                      </div>
+                        <div class="btn-group dropdown-style-1">
+                            <button type="button" class="btn dropdown-toggle bbcc-topbar-user text-uppercase" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <%= current_user.full_name %>
+                            </button>
+                            <%= get_current_user_menu_routes %>
+                        </div>
                     <% else %>
-                      <a href="<%= new_user_registration_path %>" class="text-small text-link-white-2 text-uppercase line-height-normal" title="Sign Up">Sign Up</a>
-                      |
-                      <a href="<%= new_user_session_path %>" class="text-small text-link-white-2 text-uppercase line-height-normal" title="Login">Login</a>
+                        <a href="<%= new_user_registration_path %>" title="Sign Up">Sign Up</a>
+                        <span class="bbcc-topbar-sep">|</span>
+                        <a href="<%= new_user_session_path %>" title="Log In">Log In</a>
                     <% end %>
                 </div>
             </div>
         </div>
     </div>
     <!-- end topbar -->
-    <!-- start navigation -->
-    <nav class="navbar navbar-default bootsnav header-dark background-transparent menu-logo-center navbar-expand-lg">
-        <div class="container-lg nav-header-container">
-            <!-- start logo -->
-            <div class="center-logo">
-              <%= link_to root_path, class: "logo" do %>
-                <%= image_tag("logo2.png", class: "logo", alt: "Bali Beach Country Club") %>
-              <% end %>
-            </div>
-            <!-- end logo -->
-            <div class="col col-lg-12 accordion-menu">
-                <button type="button" class="navbar-toggler collapsed" data-bs-toggle="collapse" data-bs-target="#navbar-collapse-toggle-1">
-                  <span class="sr-only">toggle navigation</span>
-                  <span class="icon-bar"></span>
-                  <span class="icon-bar"></span>
-                  <span class="icon-bar"></span>
+    <!-- start navbar -->
+    <div class="bbcc-navbar">
+        <div class="container-lg">
+            <div class="bbcc-navbar-inner">
+                <button type="button" class="bbcc-menu-toggle" id="offcanvas-open" aria-label="Open menu" aria-controls="offcanvas-menu" aria-expanded="false">
+                    <span class="bbcc-burger" aria-hidden="true"><span></span><span></span><span></span></span>
+                    <span class="bbcc-menu-label">Menu</span>
                 </button>
-                <div class="navbar-collapse collapse justify-content-between" id="navbar-collapse-toggle-1">
-                    <ul class="nav navbar-nav alt-font text-normal w-40 md-w-100 text-sm-start justify-content-start" data-in="animate__fadeIn" data-out="animate__fadeOut">
-                      <li><a href="<%= facilities_path %>"><%= t('menu.facilities') %></a></li>
-                      <li class="dropdown simple-dropdown">
-                        <a href="#"><%= t('menu.sports') %></a><i class="fa-solid fa-angle-down dropdown-toggle" data-bs-toggle="dropdown" aria-hidden="true"></i>
-                          <!-- start sub menu -->
-                          <ul class="dropdown-menu box-shadow-light" role="menu">
-                            <% Sport.all.each do |sport| %>
-                              <li class="dropdown"><%= link_to sport.name, sport_path(sport) %></li>
-                            <% end %>
-                          </ul>
-                      </li>
-                      <li><a href="<%= golf_path %>">Golf</a></li>
-                      <li><a href="<%= restaurant_path %>"><%= t('menu.restaurant') %></a></li>
-                      <li><a href="<%= wellnesses_path %>"><%= t('menu.wellness') %></a></li>
-                    </ul>
-                    <ul class="nav navbar-nav navbar-right no-margin alt-font text-normal w-40 md-w-100 justify-content-end" data-in="animate__fadeIn" data-out="animate__fadeOut">
-                      <li><a href="<%= events_path %>"><%= t('menu.events') %></a></li>
-                      <li><a href="<%= about_path %>"><%= t('menu.about') %></a></li>
-                      <li><a href="<%= blogs_path %>"><%= t('menu.blogs') %></a></li>
-                      <li><a href="<%= get_contact_path %>"><%= t('menu.contact') %></a></li>
-                    </ul>
-                </div>
+                <%= link_to root_path, class: "bbcc-logo" do %>
+                    <%= image_tag "bbcc-logo.png", alt: "Bali Beach Country Club" %>
+                <% end %>
+                <a href="<%= search_path %>" class="bbcc-book-btn">Book Now</a>
             </div>
         </div>
-    </nav>
-    <!-- end navigation -->
+    </div>
+    <!-- end navbar -->
 </header>
 <!-- end header -->
+
+<!-- start off-canvas menu -->
+<div class="bbcc-offcanvas" id="offcanvas-menu" aria-hidden="true">
+    <div class="bbcc-offcanvas-backdrop" id="offcanvas-backdrop"></div>
+    <aside class="bbcc-offcanvas-panel" role="dialog" aria-modal="true" aria-label="Site menu">
+        <button type="button" class="bbcc-offcanvas-close" id="offcanvas-close" aria-label="Close menu">&times;</button>
+        <nav class="bbcc-offcanvas-nav">
+            <ul>
+                <li><a href="<%= search_path %>">Book Now</a></li>
+                <li><a href="<%= facilities_path %>">Club Life</a></li>
+                <li><a href="<%= restaurant_path %>">Dining</a></li>
+                <li><a href="<%= events_path %>">Events</a></li>
+                <li><a href="<%= root_path(anchor: 'highlights') %>">Highlights</a></li>
+                <li><a href="<%= blogs_path %>">Blog</a></li>
+                <li><a href="<%= about_path %>">About Us</a></li>
+                <li><a href="<%= get_contact_path %>">Contact</a></li>
+                <% if user_signed_in? %>
+                    <li><a href="<%= users_account_path %>">My Account</a></li>
+                <% end %>
+            </ul>
+        </nav>
+        <div class="bbcc-offcanvas-auth">
+            <% if user_signed_in? %>
+                <%= link_to "Log Out", destroy_user_session_path, method: :delete, rel: "nofollow" %>
+            <% else %>
+                <a href="<%= new_user_registration_path %>">Sign Up</a>
+                <a href="<%= new_user_session_path %>">Log In</a>
+            <% end %>
+        </div>
+    </aside>
+</div>
+<!-- end off-canvas menu -->

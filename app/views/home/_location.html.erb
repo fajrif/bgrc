@@ -1,18 +1,19 @@
-<section class="wow animate__fadeIn p-0">
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-lg-7 text-center">
-                <div class="position-relative overflow-hidden w-100">
-                    <h5 class="alt-font font-weight-600 text-uppercase margin-50px-bottom">Location</h5>
-                </div>
-            </div>
+<!-- start location -->
+<section class="bbcc-location" aria-label="Our location">
+    <div class="bbcc-location-map">
+        <iframe
+            src="https://www.google.com/maps?q=Bali%20Beach%20Country%20Club%20Nusa%20Dua%20Bali&output=embed"
+            title="Bali Beach Country Club location map"
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+            allowfullscreen></iframe>
+    </div>
+    <div class="container-lg bbcc-location-overlay">
+        <div class="bbcc-location-card">
+            <h3 class="bbcc-location-title">Our Location</h3>
+            <address class="bbcc-location-address"><%= raw(configatron.location_address) %></address>
+            <a href="https://www.google.com/maps?q=Bali+Beach+Country+Club+Nusa+Dua+Bali" target="_blank" rel="noopener" class="bbcc-btn">Click Here</a>
         </div>
     </div>
 </section>
-<section class="wow animate__fadeIn p-0 parallax small-screen md-h-500px sm-h-350px" data-parallax-background-ratio="0.5" style="background-image: url('<%= image_url("banners/banner-2.png") %>')">
-    <div class="container">
-        <div class="row">
-            <div class="col-12"></div>
-        </div>
-    </div>
-</section>
+<!-- end location -->

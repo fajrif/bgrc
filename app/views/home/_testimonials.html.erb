@@ -1,41 +1,25 @@
-<!-- start testimonial section -->
-<section class="small-section wow animate__fadeIn">
-    <div class="container">
-        <div class="row justify-content-center mb-4">
-            <div class="col-lg-7 text-center">
-                <div class="position-relative overflow-hidden w-100">
-                    <h5 class="alt-font font-weight-600 text-uppercase margin-50px-bottom">What People are Saying About Us</h5>
-                </div>
-            </div>
+<!-- start testimonials -->
+<section class="bbcc-section bbcc-testimonials">
+    <div class="container-lg">
+        <div class="bbcc-section-head bbcc-section-head-center">
+            <h2 class="bbcc-section-title">What People are Saying About Us</h2>
         </div>
-        <div class="row position-relative justify-content-center">
-            <div class="col-md-12 col-sm-9">
-                <div class="swiper swiper-pagination-bottom blog-slider" data-slider-options='{ "slidesPerView": "3", "allowTouchMove":true, "loop":false, "spaceBetween": 30, "autoplay": { "delay": 3000, "disableOnInteraction": false }, "keyboard": { "enabled": true, "onlyInViewport": true }, "navigation": { "nextEl": ".swiper-button-next-1", "prevEl": ".swiper-button-prev-1" }, "breakpoints": { "992": { "slidesPerView":"3" }, "768": { "slidesPerView":"2" } }, "pagination": { "el": ".swiper-pagination", "clickable": true } }'>
-                    <div class="swiper-wrapper">
-                      <% @testimonials.each do |testimonial| %>
-                        <!-- start testimonial item -->
-                        <div class="swiper-slide">
-                            <div class="sm-margin-40px-bottom">
-                              <div class="d-flex justify-content-center align-items-start">
-                                <div class="margin-20px-right">
-                                  <img src="https://placehold.co/149" class="rounded-circle" alt=""/>
-                                </div>
-                                <div>
-                                  <i class="fa-solid fa-quote-left icon-medium text-deep-pink d-block margin-10px-bottom"></i>
-                                  <p class="w-90 md-w-100 text-medium"><%= testimonial.comment.truncate(150) %></p>
-                                  <span class="text-extra-dark-gray font-weight-600 text-small text-uppercase d-block line-height-10 alt-font"><%= testimonial.name %></span>
-                                  <span class="text-light-gray2 text-extra-small text-uppercase text-medium"><%= testimonial.company_name %></span>
-                                </div>
-                              </div>
-                            </div>
+        <div class="row g-4 justify-content-center">
+            <% @testimonials.first(3).each do |testimonial| %>
+                <div class="col-12 col-md-6 col-lg-4">
+                    <div class="bbcc-quote">
+                        <i class="fa-solid fa-quote-left bbcc-quote-mark" aria-hidden="true"></i>
+                        <p class="bbcc-quote-text"><%= testimonial.comment.truncate(180) %></p>
+                        <div class="bbcc-quote-author">
+                            <span class="bbcc-quote-name"><%= testimonial.name %></span>
+                            <% if testimonial.company_name.present? %>
+                                <span class="bbcc-quote-company"><%= testimonial.company_name %></span>
+                            <% end %>
                         </div>
-                        <!-- end testimonial item -->
-                        <% end %>
                     </div>
-                    <div class="swiper-pagination"></div>
                 </div>
-            </div>
+            <% end %>
         </div>
     </div>
 </section>
-<!-- start testimonial section -->
+<!-- end testimonials -->
