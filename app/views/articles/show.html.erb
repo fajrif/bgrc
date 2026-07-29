@@ -1,38 +1,134 @@
-<!-- start page single banner -->
-<section class="wow animate__fadeIn parallax" data-parallax-background-ratio="0.5" style="background-image:url('<%= url_for(@article.image) %>');">
-		<div class="opacity-medium bg-black"></div>
-		<div class="container position-relative">
-			<div class="row align-items-center">
-				<div class="col-12 d-flex flex-column justify-content-center text-start extra-small-screen page-title-large">
-					<h1 class="text-white-2 text-uppercase font-weight-400 letter-spacing-minus-1 margin-10px-bottom"><%= @article.title %></h1>
-					<span class="text-very-light-gray text-uppercase"><%= @article.try(:category).try(:name) %></span>
-				</div>
-			</div>
-		</div>
+<%
+  share_url = get_blog_url(@article)
+  share_text = @article.title
+%>
+<!-- start article hero -->
+<section class="bbcc-article-hero" style="background-image:url('<%= url_for(@article.image) %>');" aria-label="<%= @article.title %>"></section>
+<!-- end article hero -->
+
+<%= render "shared/breadcrumb", crumbs: [
+  { label: "Blog", path: blogs_path },
+  { label: @category&.name, path: (blogs_path(category_id: @category.id) if @category) },
+  { label: @article.title }
+] %>
+
+<!-- start article content -->
+<section class="bbcc-section bbcc-article">
+    <div class="container-lg">
+        <div class="row g-4 g-lg-5">
+            <div class="col-12 col-lg-4">
+                <div class="bbcc-article-sidebar-block">
+                    <div class="bbcc-article-meta">
+                        <span>Bali Beach Country Club</span>
+                        <span class="bbcc-article-meta-sep">|</span>
+                        <span><%= @article.published_date&.strftime('%d %b %Y') %></span>
+                        <% if @category %>
+                            <span class="bbcc-article-meta-sep">|</span>
+                            <span><%= @category.name %></span>
+                        <% end %>
+                        <span class="bbcc-article-meta-sep">|</span>
+                        <span><i class="fa-regular fa-clock" aria-hidden="true"></i> <%= @article.reading_time_minutes %> min read</span>
+                    </div>
+                    <h1 class="bbcc-article-title"><%= @article.title %></h1>
+                </div>
+
+                <div class="bbcc-article-sidebar-block">
+                    <span class="bbcc-article-eyebrow">Written By</span>
+                    <div class="bbcc-article-author">
+                        <span class="bbcc-article-avatar" aria-hidden="true"></span>
+                        <span>
+                            <span class="bbcc-article-author-name">Bali Beach Country Club</span>
+                            <span class="bbcc-article-author-role">Club News &amp; Updates</span>
+                        </span>
+                    </div>
+                    <p class="bbcc-article-bio">
+                        News, updates and stories from the team at Bali Beach Country Club.
+                    </p>
+                </div>
+
+                <div class="bbcc-article-sidebar-block">
+                    <span class="bbcc-article-eyebrow">Share This Article</span>
+                    <div class="bbcc-article-share">
+                        <a href="https://www.facebook.com/sharer/sharer.php?u=<%= ERB::Util.url_encode(share_url) %>" target="_blank" rel="noopener" aria-label="Share on Facebook">
+                            <i class="fa-brands fa-facebook-f" aria-hidden="true"></i>
+                        </a>
+                        <a href="https://twitter.com/intent/tweet?url=<%= ERB::Util.url_encode(share_url) %>&text=<%= ERB::Util.url_encode(share_text) %>" target="_blank" rel="noopener" aria-label="Share on X">
+                            <i class="fa-brands fa-x-twitter" aria-hidden="true"></i>
+                        </a>
+                        <a href="https://www.linkedin.com/sharing/share-offsite/?url=<%= ERB::Util.url_encode(share_url) %>" target="_blank" rel="noopener" aria-label="Share on LinkedIn">
+                            <i class="fa-brands fa-linkedin-in" aria-hidden="true"></i>
+                        </a>
+                        <a href="https://wa.me/?text=<%= ERB::Util.url_encode("#{share_text} #{share_url}") %>" target="_blank" rel="noopener" aria-label="Share on WhatsApp">
+                            <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-lg-8">
+                <div class="bbcc-article-body">
+                    <%= raw @article.content %>
+                </div>
+                <% if @article.file.attached? %>
+                    <div class="margin-30px-top">
+                        <%= render_link_download_file(@article, "bbcc-btn") %>
+                    </div>
+                <% end %>
+            </div>
+        </div>
+    </div>
 </section>
-<!-- end page single banner -->
-<!-- start blog content section -->
-<section class="half-section wow animate__fadeIn">
-	<div class="container">
-		<div class="row">
-			<div class="col-12 margin-50px-bottom">
-				<span class="post-author text-medium text-extra-dark-gray d-block margin-10px-bottom sm-margin-5px-bottom"><%= @article.try(:published_date).try(:strftime, '%b %d, %Y') %></span>
-				<h5 class="font-weight-400 text-extra-dark-gray text-uppercase"><%= @article.title %></h5>
-				<div class="line-height-26">
-					<%= raw @article.content %>
-				</div>
-				<% if @article.file.attached? %>
-					<div class="margin-50px-top">
-						<%= render_link_download_file(@article, "btn btn-medium btn-iec btn-rounded") %>
-					</div>
-				<% end %>
-			</div>
-			<div class="col-12 text-center">
-				<%= link_to :back, class: "btn btn-medium btn-rounded btn-iec" do %>
-					<i class="fa-solid fa-arrow-left icon-very-small m-switch" aria-hidden="true"></i>&nbsp;<%= t('global.back_to_news') %>
-				<% end %>
-			</div>
-		</div>
-	</div>
+<!-- end article content -->
+
+<% if @articles.any? %>
+<!-- start other blogs -->
+<section class="bbcc-section bbcc-blog">
+    <div class="container-lg">
+        <div class="bbcc-section-head bbcc-section-head-center">
+            <h2 class="bbcc-section-title">Other Blogs</h2>
+        </div>
+        <div class="row g-4">
+            <% @articles.each do |article| %>
+                <div class="col-12 col-md-6 col-lg-4">
+                    <article class="bbcc-post">
+                        <%= link_to get_blog_path(article), class: "bbcc-post-image" do %>
+                            <%= image_tag article.image.variant(resize_to_fill: [750, 500]), alt: article.title %>
+                        <% end %>
+                        <div class="bbcc-post-body">
+                            <span class="bbcc-post-meta">
+                                <%= article.published_date&.strftime('%d %b %Y') %>
+                                &nbsp;|&nbsp; <%= article.category.name %>
+                            </span>
+                            <%= link_to article.title, get_blog_path(article), class: "bbcc-post-title" %>
+                            <p class="bbcc-post-excerpt"><%= article.short_description.to_s.truncate(120) %></p>
+                            <%= link_to "Read More", get_blog_path(article), class: "bbcc-btn" %>
+                        </div>
+                    </article>
+                </div>
+            <% end %>
+        </div>
+    </div>
 </section>
-<!-- end blog content section -->
+<!-- end other blogs -->
+<% end %>
+
+<%= render "shared/bbcc_highlights" %>
+
+<!-- start book a court cta -->
+<section class="bbcc-article-cta">
+    <div class="row g-0 align-items-stretch">
+        <div class="col-12 col-lg-6">
+            <div class="bbcc-article-cta-image" style="background-image:url('<%= image_url('sports/tennis/gallery-2.png') %>');"></div>
+        </div>
+        <div class="col-12 col-lg-6">
+            <div class="bbcc-article-cta-body">
+                <h2 class="bbcc-section-title mb-0">Ready to Play? <br>Book Your Court Today</h2>
+                <p>
+                    Golf, tennis, padel and pickleball courts are ready when you are &mdash; check
+                    live availability and reserve your spot in a few taps.
+                </p>
+                <%= link_to "Book Now", search_path, class: "bbcc-btn" %>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- end book a court cta -->

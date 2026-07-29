@@ -3,21 +3,14 @@ class ArticlesController < ApplicationController
 
   def index
 		@categories = Category.all
-
-		begin
-			if @category = Category.find(params[:id])
-				criteria = @category.articles
-			end
-		rescue ActiveRecord::RecordNotFound
-			criteria = Article.all
-		end
+		@category = Category.find_by(id: params[:category_id])
+		criteria = @category ? @category.articles : Article.all
 
 		unless params[:sort_by].blank?
 			criteria = criteria.unscope(:order).order("published_date " + params[:sort_by])
 		end
 
 		@articles = criteria.page(params[:page]).per(12)
-
   end
 
   def show

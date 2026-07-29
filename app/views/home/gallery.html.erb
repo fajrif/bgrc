@@ -1,0 +1,41 @@
+<%
+  gallery_labels = {
+    "golf" => "Golf", "tennis" => "Tennis", "padel" => "Padel", "pickleball" => "Pickleball",
+    "fitness" => "Fitness", "spa" => "Spa", "dining" => "Dining", "events" => "Events", "club_life" => "Club Life"
+  }
+  initial_count = 12
+%>
+<%= render "shared/page_hero", banner: @banner, crumbs: [{ label: "About Us", path: about_path }, { label: "Gallery" }] %>
+
+<!-- start gallery -->
+<section class="bbcc-section bbcc-gallery-page">
+    <div class="container-lg">
+        <nav class="bbcc-tabs" aria-label="Gallery categories">
+            <%= link_to "All", gallery_path, class: ["bbcc-tab", ("active" if @section == "all")] %>
+            <% gallery_labels.each do |key, label| %>
+                <%= link_to label, gallery_path(category: key), class: ["bbcc-tab", ("active" if @section == key)] %>
+            <% end %>
+        </nav>
+
+        <% if @items.present? %>
+            <div class="bbcc-masonry">
+                <% @items.each_with_index do |image, index| %>
+                    <span class="bbcc-masonry-item<%= " bbcc-masonry-item-hidden" if index >= initial_count %>">
+                        <%= image_tag image.variant(resize_to_limit: [700, 700]) %>
+                    </span>
+                <% end %>
+            </div>
+            <% if @items.size > initial_count %>
+                <div class="text-center">
+                    <button type="button" class="bbcc-btn bbcc-view-more" data-target=".bbcc-masonry-item-hidden">View More</button>
+                </div>
+            <% end %>
+        <% else %>
+            <p class="bbcc-faq-empty">No photos in this category yet.</p>
+        <% end %>
+    </div>
+</section>
+<!-- end gallery -->
+
+<%= render "shared/bbcc_highlights" %>
+<%= render "home/blogs" %>

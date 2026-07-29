@@ -143,3 +143,25 @@ Mobility.with_locale(:id) {
 }
 banner.save
 puts "Create Banner: #{banner.title}"
+
+# Banner FAQ
+banner = Banner.new(title: "FAQ", description: "Answers to the most common questions about booking, payments, membership and more at Bali Beach Country Club.")
+banner.image.attach(io: Rails.root.join("vendor/assets/images/banners/banner-contact.png").open, filename: "banner-contact.png")
+banner.banner_section = @bs14
+Mobility.with_locale(:id) {
+	banner.title = "FAQ"
+	banner.description = "Jawaban atas pertanyaan yang paling sering diajukan seputar pemesanan, pembayaran, keanggotaan, dan lainnya di Bali Beach Country Club."
+}
+banner.save
+puts "Create Banner: #{banner.title}"
+
+# Banner Gallery
+banner = Banner.new(title: "Gallery", description: "A look at life around Bali Beach Country Club — our courts, courses, facilities and events.")
+banner.image.attach(io: Rails.root.join("vendor/assets/images/facilities/restaurant.png").open, filename: "restaurant.png")
+banner.banner_section = @bs15
+Mobility.with_locale(:id) {
+	banner.title = "Galeri"
+	banner.description = "Sekilas kehidupan di Bali Beach Country Club — lapangan, fasilitas, dan acara kami."
+}
+banner.save
+puts "Create Banner: #{banner.title}"

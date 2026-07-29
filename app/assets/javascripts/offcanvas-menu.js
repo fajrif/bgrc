@@ -31,6 +31,14 @@ jQuery(function ($) {
     }
   });
 
+  // Generic "view more" reveal button: shows the hidden siblings matching
+  // the button's data-target selector, then hides itself.
+  $('.bbcc-view-more').on('click', function () {
+    var $btn = $(this);
+    $($btn.data('target')).removeClass('bbcc-masonry-item-hidden');
+    $btn.hide();
+  });
+
   // Homepage carousels (Swiper is bundled in theme-vendors.min.js).
   if (typeof Swiper !== 'undefined') {
     $('.bbcc-swiper').each(function () {

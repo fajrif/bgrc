@@ -33,4 +33,9 @@ class Article < ApplicationRecord
 		where("id <> ?", id).limit(limit)
 	end
 
+	def reading_time_minutes
+		word_count = content.to_plain_text.split.size
+		[(word_count / 200.0).ceil, 1].max
+	end
+
 end

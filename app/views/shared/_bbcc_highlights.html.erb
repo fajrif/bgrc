@@ -1,0 +1,36 @@
+<!-- start bbcc highlights -->
+<%
+  bbcc_highlights = [
+    { title: "Sunset Golf Sessions",       meta: "Weekly &nbsp;|&nbsp; Golf",       image: "sports/golf/gallery-4.png",
+      desc: "Twilight tee times with course lighting, ideal for members who like to finish the round as the sun goes down." },
+    { title: "Weekend Pickleball Socials", meta: "Weekends &nbsp;|&nbsp; Pickleball", image: "sports/pickleball/gallery-3.png",
+      desc: "Open-play socials every weekend &mdash; a relaxed way for members and guests to meet other players on the court." },
+    { title: "Junior Tennis Clinics",      meta: "Weekly &nbsp;|&nbsp; Tennis",     image: "sports/tennis/gallery-5.png",
+      desc: "MITS Academy-led clinics building fundamentals for young players, held weekly on our tennis courts." }
+  ]
+%>
+<section class="bbcc-section bbcc-highlights-grid">
+    <div class="container-lg">
+        <div class="bbcc-section-head bbcc-section-head-center">
+            <h2 class="bbcc-section-title">BBCC Highlights</h2>
+        </div>
+        <div class="row g-4">
+            <% bbcc_highlights.each do |h| %>
+                <div class="col-12 col-md-6 col-lg-4">
+                    <article class="bbcc-post">
+                        <span class="bbcc-post-image">
+                            <%= image_tag h[:image], alt: h[:title] %>
+                        </span>
+                        <div class="bbcc-post-body">
+                            <span class="bbcc-post-meta"><%= raw h[:meta] %></span>
+                            <span class="bbcc-post-title"><%= h[:title] %></span>
+                            <p class="bbcc-post-excerpt"><%= raw h[:desc] %></p>
+                            <%= link_to "Read More", events_path, class: "bbcc-btn" %>
+                        </div>
+                    </article>
+                </div>
+            <% end %>
+        </div>
+    </div>
+</section>
+<!-- end bbcc highlights -->

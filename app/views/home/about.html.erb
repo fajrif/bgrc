@@ -1,8 +1,11 @@
-<%= render "banner" %>
+<%= render "shared/page_hero", banner: @banner, crumbs: [{ label: "About Us" }] %>
 <%= render "about_content" %>
 <%= render "image_separation" %>
+<%= render "history" %>
 <%= render "vision_mission" %>
 <%= render "image_separation_other" %>
+<%= render "team" %>
 <%= render "bgrc_partner" %>
-<%= render "sports" %>
-<%= render "testimonials" unless @testimonials.empty? %>
+<%= render "gallery" %>
+<%= render "shared/bbcc_highlights" %>
+<%= render "blogs" %>

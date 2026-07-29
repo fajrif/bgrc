@@ -1,54 +1,37 @@
-<section class="wow animate__fadeIn bg-light-grey padding-35px-tb page-title-small top-space">
-    <div class="container">
-        <div class="row align-items-center">
-            <div class="col-lg-8 col-md-6 text-center text-md-start">
-                <!-- start page title -->
-                <h1 class="alt-font font-weight-600 mb-0 text-uppercase"><%= t('menu.faq') %></h1>
-                <!-- end page title -->
+<%= render "shared/page_hero", banner: @banner, crumbs: [{ label: "FAQ" }] %>
+
+<!-- start faq -->
+<section class="bbcc-section bbcc-faq-page">
+    <div class="container-lg">
+        <div class="row g-4 g-lg-5">
+            <div class="col-12 col-lg-3">
+                <nav class="bbcc-faq-nav" aria-label="FAQ categories">
+                    <% Question::SECTIONS.each do |key| %>
+                        <%= link_to Question.section_label(key), faq_path(section: key),
+                            class: ["bbcc-faq-nav-link", ("active" if key == @section)] %>
+                    <% end %>
+                </nav>
             </div>
-            <div class="col-lg-4 col-md-6 breadcrumb alt-font text-small justify-content-center justify-content-md-end sm-margin-10px-top">
-                <!-- breadcrumb -->
-                <ul>
-                  <li><a href="<%= root_url %>">Home</a></li>
-                  <li class="text-dark-gray"><%= t('menu.faq') %></li>
-                </ul>
-                <!-- end breadcrumb -->
-            </div>
-        </div>
-    </div>
-</section>
-<!-- start answer section -->
-<section class="wow animate__fadeIn">
-    <div class="container">
-        <div class="row d-flex justify-content-center">
-            <div class="col-7">
-              <div class="">
-                <!-- start accordion -->
-                <div class="panel-group accordion-event accordion-style1" id="accordion-one" data-active-icon="ti-minus" data-inactive-icon="ti-plus">
-                  <% @faqs.each do |faq| %>
-                    <!-- start accordion item -->
-                    <div class="panel">
-                      <div class="panel-heading">
-                        <a class="accordion-toggle collapsed" data-bs-toggle="collapse" data-bs-parent="#accordion-one" href="#accordion-faq-<%= faq.id %>" aria-expanded="false">
-                          <div class="panel-title font-weight-500 text-uppercase position-relative padding-20px-right">
-                            <h6 class="text-large"><%= faq.title %></h6>
-                            <i class="ti-plus text-dark-gray"></i>
-                          </div>
-                        </a>
-                      </div>
-                      <div id="accordion-faq-<%= faq.id %>" data-bs-parent="#accordion-one" class="panel-collapse collapse">
-                        <div class="panel-body">
-                          <%= raw faq.description %>
-                        </div>
-                      </div>
+            <div class="col-12 col-lg-9">
+                <% if @faqs.any? %>
+                    <div class="bbcc-faq-list">
+                        <% @faqs.each do |faq| %>
+                            <details class="bbcc-faq-item">
+                                <summary>
+                                    <span><%= faq.title %></span>
+                                    <i class="fa-solid fa-chevron-right bbcc-faq-item-icon" aria-hidden="true"></i>
+                                </summary>
+                                <div class="bbcc-faq-item-body"><%= raw faq.description %></div>
+                            </details>
+                        <% end %>
                     </div>
-                    <!-- end accordion item -->
-                  <% end %>
-                </div>
-                <!-- end accordion -->
-              </div>
+                <% else %>
+                    <p class="bbcc-faq-empty">
+                        No questions in this category yet. Have one? <%= link_to "Contact us", get_contact_path, class: "bbcc-link" %>.
+                    </p>
+                <% end %>
             </div>
         </div>
     </div>
 </section>
-<!-- end answer section -->
+<!-- end faq -->

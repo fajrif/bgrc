@@ -101,16 +101,7 @@ module AdminHelper
 	end
 
 	def option_sections
-    [
-      "general",
-      "booking",
-      "payment",
-      "promo",
-      "packages",
-      "facilities",
-      "sports",
-      "location"
-    ]
+    Question::SECTIONS
 	end
 
 	def populate_array_of_time

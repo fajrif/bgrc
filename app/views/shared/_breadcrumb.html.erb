@@ -1,0 +1,18 @@
+<%# locals: crumbs: — array of { label:, path: }; path omitted/nil renders as the current (unlinked) crumb %>
+<!-- start breadcrumb -->
+<div class="bbcc-breadcrumb-bar">
+    <div class="container-lg">
+        <nav class="bbcc-breadcrumb" aria-label="Breadcrumb">
+            <%= link_to "Home", root_path %>
+            <% crumbs.each_with_index do |crumb, index| %>
+                <span class="bbcc-breadcrumb-sep">/</span>
+                <% if crumb[:path].present? && index < crumbs.size - 1 %>
+                    <%= link_to crumb[:label], crumb[:path] %>
+                <% else %>
+                    <span class="bbcc-breadcrumb-current"><%= crumb[:label] %></span>
+                <% end %>
+            <% end %>
+        </nav>
+    </div>
+</div>
+<!-- end breadcrumb -->

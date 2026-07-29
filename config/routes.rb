@@ -218,6 +218,7 @@ Rails.application.routes.draw do
     match 'disclaimer', to: 'home#disclaimer', via: :get, as: :disclaimer
     match 'privacy', to: 'home#privacy', via: :get, as: :privacy
     match 'faq', to: 'home#faq', via: :get, as: :faq
+    match 'gallery', to: 'home#gallery', via: :get, as: :gallery
     match 'restaurant', to: 'restaurant#index', via: :get, as: :restaurant
     match 'search', to: 'search#index', via: :get, as: :search
     match 'search_selection', to: 'search#search_selection', via: :get, as: :search_selection
