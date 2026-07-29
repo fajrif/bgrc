@@ -6,9 +6,8 @@
 
 <%= render "shared/breadcrumb", crumbs: [
   { label: "Highlights", path: highlights_path },
-  ({ label: @category.name, path: highlights_path(category_id: @category.id) } if @category),
   { label: @highlight.title }
-].compact %>
+] %>
 
 <!-- start highlight content -->
 <section class="bbcc-section bbcc-article">
@@ -16,35 +15,25 @@
         <div class="row g-4 g-lg-5">
             <div class="col-12 col-lg-4">
                 <div class="bbcc-article-sidebar-block">
-                    <div class="bbcc-article-meta">
-                        <span>Bali Beach Country Club</span>
-                        <span class="bbcc-article-meta-sep">|</span>
-                        <span><%= @highlight.published_date&.strftime('%d %b %Y') %></span>
-                        <% if @highlight.tags.present? %>
-                            <span class="bbcc-article-meta-sep">|</span>
-                            <span><%= @highlight.tags %></span>
-                        <% end %>
-                        <% if @category %>
-                            <span class="bbcc-article-meta-sep">|</span>
-                            <span><%= @category.name %></span>
-                        <% end %>
-                    </div>
                     <h1 class="bbcc-article-title"><%= @highlight.title %></h1>
                     <p class="bbcc-article-bio"><%= @highlight.short_description %></p>
-                </div>
-
-                <div class="bbcc-article-sidebar-block">
-                    <span class="bbcc-article-eyebrow">Take Part</span>
-                    <p class="bbcc-article-bio">
-                        Book a court or a tee time to join in, or get in touch and we will hold you a place.
-                    </p>
-                    <%= link_to "Book Now", search_path, class: "bbcc-btn" %>
+                    <%= link_to "Contact Us Now", get_contact_path, class: "bbcc-btn" %>
                 </div>
             </div>
             <div class="col-12 col-lg-8">
                 <div class="bbcc-article-body">
                     <%= raw @highlight.content %>
                 </div>
+
+                <% if @highlight.images.attached? %>
+                    <div class="row g-3 bbcc-article-gallery">
+                        <% @highlight.images.each do |img| %>
+                            <div class="col-12 col-md-6">
+                                <%= image_tag img.variant(resize_to_fill: [750, 500]), alt: @highlight.title %>
+                            </div>
+                        <% end %>
+                    </div>
+                <% end %>
             </div>
         </div>
     </div>
@@ -56,28 +45,10 @@
 <section class="bbcc-section bbcc-blog">
     <div class="container-lg">
         <div class="bbcc-section-head bbcc-section-head-center">
-            <h2 class="bbcc-section-title">Other Highlights</h2>
+            <h2 class="bbcc-section-title">Other BBCC Highlights</h2>
         </div>
         <div class="row g-4">
-            <% @highlights.each do |highlight| %>
-                <div class="col-12 col-md-6 col-lg-4">
-                    <article class="bbcc-post">
-                        <%= link_to highlight_path(highlight), class: "bbcc-post-image" do %>
-                            <% if highlight.image.attached? %>
-                                <%= image_tag highlight.image.variant(resize_to_fill: [750, 500]), alt: highlight.title %>
-                            <% else %>
-                                <span class="bbcc-post-image-ph" style="background-image:url('<%= image_url('images/image-4.png') %>');"></span>
-                            <% end %>
-                        <% end %>
-                        <div class="bbcc-post-body">
-                            <span class="bbcc-post-meta"><%= raw highlight.meta_label %></span>
-                            <%= link_to highlight.title, highlight_path(highlight), class: "bbcc-post-title" %>
-                            <p class="bbcc-post-excerpt"><%= highlight.short_description.to_s.truncate(120) %></p>
-                            <%= link_to "Read More", highlight_path(highlight), class: "bbcc-btn" %>
-                        </div>
-                    </article>
-                </div>
-            <% end %>
+            <%= render partial: "card", collection: @highlights, as: :highlight %>
         </div>
     </div>
 </section>

@@ -12,6 +12,7 @@ class Highlight < ApplicationRecord
 	default_scope { order(position: :asc, published_date: :desc) }
 
 	has_one_attached :image, dependent: :purge
+	has_many_attached :images, dependent: :purge
 	has_one :action_text_rich_text, class_name: 'ActionText::RichText', as: :record
 	belongs_to :category, optional: true
 

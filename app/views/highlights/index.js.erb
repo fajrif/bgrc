@@ -1,0 +1,6 @@
+$('#highlights-grid').append('<%= j(render partial: "card", collection: @highlights, as: :highlight) %>');
+<% if @highlights.last_page? %>
+$('#highlights-load-more-wrap').remove();
+<% else %>
+$('#highlights-load-more').attr('href', '<%= highlights_path(page: @highlights.next_page, category_id: @category&.id) %>');
+<% end %>

@@ -60,11 +60,20 @@ class Admins::HighlightsController < Admins::BaseController
 		redirect_to admins_highlight_path(@highlight.id)
 	end
 
+	def delete_image
+		if @image = ActiveStorage::Attachment.find(params[:asset_id])
+			flash[:notice] = "Successfully delete image gallery."
+			@image.purge
+		end
+		redirect_to admins_highlight_path(@highlight.id)
+	end
+
   private
 
   def params_highlight
     params.require(:highlight).permit(:image, :title, :short_description, :content, :published_date,
-																			:status, :category_id, :meta_title, :meta_description, :tags, :position)
+																			:status, :category_id, :meta_title, :meta_description, :tags, :position,
+																			images: [])
   end
 
   def set_highlight

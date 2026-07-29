@@ -39,6 +39,7 @@ Rails.application.routes.draw do
 			resources :highlights do
 				member do
 					delete "delete_attachment_image/:asset_id" => "highlights#delete_attachment_image", :as => :delete_attachment_image
+					delete "delete_image/:asset_id" => "highlights#delete_image", :as => :delete_image
 				end
 			end
 			resources :categories
