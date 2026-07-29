@@ -1,0 +1,31 @@
+<%= render "shared/page_hero", banner: @banner, crumbs: [{ label: "Terms & Conditions" }] %>
+
+<!-- start terms & conditions -->
+<section class="bbcc-section bbcc-legal-page">
+    <div class="container-lg">
+        <div class="row g-4 g-lg-5">
+            <div class="col-12 col-lg-3">
+                <%= render "shared/legal_nav", active: :terms %>
+            </div>
+            <div class="col-12 col-lg-9">
+                <p class="bbcc-lead">
+                    Welcome to the Bali Beach Country Club Terms &amp; Conditions page. By booking or
+                    using this website, you agree to be bound by the terms below &mdash; the same
+                    policies you confirm when completing a booking payment. If you do not agree with
+                    these terms, please do not use the Site.
+                </p>
+                <% if @snippets.present? %>
+                    <% @snippets.each_with_index do |snippet, index| %>
+                        <div class="bbcc-legal-section">
+                            <h2 class="bbcc-legal-heading"><%= index + 1 %>. <%= snippet.title %></h2>
+                            <div class="bbcc-article-body bbcc-legal-content"><%= raw snippet.content %></div>
+                        </div>
+                    <% end %>
+                <% else %>
+                    <p class="bbcc-faq-empty">Content coming soon.</p>
+                <% end %>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- end terms & conditions -->

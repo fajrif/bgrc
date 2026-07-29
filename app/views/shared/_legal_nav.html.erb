@@ -1,0 +1,6 @@
+<%# locals: active: — :disclaimer, :privacy, or :terms %>
+<nav class="bbcc-faq-nav" aria-label="Legal pages">
+    <%= link_to "Disclaimer", disclaimer_path, class: ["bbcc-faq-nav-link", ("active" if active == :disclaimer)] %>
+    <%= link_to "Privacy Policy", privacy_path, class: ["bbcc-faq-nav-link", ("active" if active == :privacy)] %>
+    <%= link_to "Terms & Conditions", terms_path, class: ["bbcc-faq-nav-link", ("active" if active == :terms)] %>
+</nav>

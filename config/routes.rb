@@ -111,6 +111,7 @@ Rails.application.routes.draw do
         end
       end
 			resources :coaches
+			resources :team_members
 			resources :items
 
       resources :golf_courses do
@@ -217,8 +218,11 @@ Rails.application.routes.draw do
     match 'about', to: 'home#about', via: :get, as: :about
     match 'disclaimer', to: 'home#disclaimer', via: :get, as: :disclaimer
     match 'privacy', to: 'home#privacy', via: :get, as: :privacy
+    match 'terms', to: 'home#terms', via: :get, as: :terms
     match 'faq', to: 'home#faq', via: :get, as: :faq
     match 'gallery', to: 'home#gallery', via: :get, as: :gallery
+    match 'our-team', to: 'home#our_team', via: :get, as: :our_team
+    match 'mits-academy', to: 'home#mits_academy', via: :get, as: :mits_academy
     match 'restaurant', to: 'restaurant#index', via: :get, as: :restaurant
     match 'search', to: 'search#index', via: :get, as: :search
     match 'search_selection', to: 'search#search_selection', via: :get, as: :search_selection

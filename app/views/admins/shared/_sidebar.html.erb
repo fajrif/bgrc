@@ -129,6 +129,9 @@
 					<div class="collapse menu-dropdown <%= 'show' if is_admins_others_page? %>" id="sidebarOthers">
 						<ul class="nav nav-sm flex-column">
 							<li class="nav-item">
+								<a href="<%= admins_team_members_path %>" class="nav-link <%= current_path?('team_members') %>">Team Members</a>
+							</li>
+							<li class="nav-item">
 								<a href="<%= admins_testimonials_path %>" class="nav-link <%= current_path?('testimonials') %>">Testimonials</a>
 							</li>
 							<li class="nav-item">

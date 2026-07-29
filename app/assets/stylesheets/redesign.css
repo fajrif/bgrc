@@ -523,6 +523,43 @@ body.bbcc-no-scroll { overflow: hidden; }
 .bbcc-article-cta-body p { margin: 18px 0 26px; }
 
 /* =====================================================================
+   OUR TEAM PAGE
+   ===================================================================== */
+.bbcc-team-card { display: block; background: var(--bbcc-bg-alt); }
+.bbcc-team-card-image { display: block; overflow: hidden; }
+.bbcc-team-card-image img { width: 100%; height: 320px; object-fit: cover; display: block; }
+.bbcc-team-card-body { padding: 22px 24px 26px; }
+.bbcc-team-card-meta { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 10px; }
+.bbcc-team-card-dept, .bbcc-team-card-role { text-transform: uppercase; letter-spacing: 1px; font-size: 11px; color: var(--bbcc-ink-soft); }
+.bbcc-team-card-name { display: block; text-transform: uppercase; letter-spacing: 1px; font-size: 16px; font-weight: 700; color: var(--bbcc-ink); margin-bottom: 10px; }
+.bbcc-team-card-bio { color: var(--bbcc-ink-soft); line-height: 1.6; margin: 0; }
+.bbcc-team-card-hidden { display: none; }
+
+/* =====================================================================
+   MITS ACADEMY PAGE
+   ===================================================================== */
+.bbcc-coach-card .bbcc-card-image { height: 420px; }
+
+.bbcc-mits-split-row + .bbcc-mits-split-row { margin-top: 4px; }
+.bbcc-mits-split-image { width: 100%; height: 100%; min-height: 320px; background-size: cover; background-position: center; }
+.bbcc-mits-split-body { height: 100%; padding: 48px; background: var(--bbcc-bg-alt); display: flex; flex-direction: column; justify-content: center; }
+.bbcc-mits-split-body p { margin-bottom: 16px; }
+.bbcc-mits-contact { height: 100%; padding: 48px; background: var(--bbcc-bg-alt); display: flex; flex-direction: column; justify-content: center; }
+.bbcc-mits-contact-actions { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 8px; }
+.bbcc-mits-contact-actions .bbcc-btn { margin-top: 0; }
+
+/* =====================================================================
+   LEGAL PAGES (Disclaimer, Privacy Policy, Terms & Conditions)
+   ===================================================================== */
+.bbcc-legal-content:first-of-type { margin-top: 8px; }
+.bbcc-legal-section { margin-top: 8px; }
+.bbcc-legal-section + .bbcc-legal-section { margin-top: 40px; padding-top: 40px; border-top: 1px solid var(--bbcc-line); }
+.bbcc-legal-heading {
+  font-family: "Mona Sans", sans-serif; font-weight: 500; color: var(--bbcc-ink);
+  font-size: 1.2rem; margin: 0 0 16px;
+}
+
+/* =====================================================================
    FOOTER
    ===================================================================== */
 .bbcc-footer { background: var(--bbcc-bg-alt); color: var(--bbcc-ink); }
@@ -549,6 +586,8 @@ body.bbcc-no-scroll { overflow: hidden; }
 .bbcc-footer-intro { color: var(--bbcc-ink); line-height: 1.7; margin-bottom: 18px; max-width: 640px; }
 .bbcc-footer-supported { text-transform: none; color: var(--bbcc-ink); margin-bottom: 34px; }
 .bbcc-footer-supported strong { letter-spacing: 4px; }
+.bbcc-footer-supported a { color: inherit; }
+.bbcc-footer-supported a:hover { color: var(--bbcc-ink-soft); text-decoration: none; }
 
 /* footer contact form (reuses inquiries/_form simple_form markup) */
 .bbcc-footer-form .text-center { text-align: left !important; }
@@ -594,6 +633,8 @@ body.bbcc-no-scroll { overflow: hidden; }
   .bbcc-page-hero { min-height: 320px; }
   .bbcc-gallery-top .bbcc-gallery-item { height: 260px; }
   .bbcc-masonry { column-count: 2; }
+  .bbcc-coach-card .bbcc-card-image { height: 320px; }
+  .bbcc-mits-split-image { min-height: 240px; }
 }
 
 @media (max-width: 767px) {
@@ -613,4 +654,6 @@ body.bbcc-no-scroll { overflow: hidden; }
   .bbcc-gallery-top { grid-template-columns: 1fr 1fr; }
   .bbcc-gallery-top .bbcc-gallery-item { height: 200px; }
   .bbcc-gallery-bottom { grid-template-columns: repeat(2, 1fr); }
+  .bbcc-team-card-image img { height: 260px; }
+  .bbcc-mits-split-body, .bbcc-mits-contact { padding: 32px; }
 }

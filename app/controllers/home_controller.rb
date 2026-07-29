@@ -15,10 +15,22 @@ class HomeController < ApplicationController
 
   def disclaimer
 		# get public disclaimer
+    @banner = BannerSection.where(name: "Disclaimer").first.banners.first
+    @snippet = Snippet.find_by_key("disclaimer")
   end
 
   def privacy
 		# get public privacy
+    @banner = BannerSection.where(name: "Privacy Policy").first.banners.first
+    @snippet = Snippet.find_by_key("privacy_policy")
+  end
+
+  def terms
+		# get public terms & conditions — same policy snippets shown in the booking payment modal
+    @banner = BannerSection.where(name: "Terms & Conditions").first.banners.first
+    @snippets = [Snippet.find_by_key("terms_and_conditions"),
+                 Snippet.find_by_key("cancellation_policy"),
+                 Snippet.find_by_key("refund_policy")].compact
   end
 
   def faq
@@ -48,6 +60,21 @@ class HomeController < ApplicationController
 
     @section = @galleries.key?(params[:category]) ? params[:category] : "all"
     @items = @section == "all" ? @galleries.values.flatten : @galleries[@section]
+    @articles = Article.where(status: 1).first(3)
+  end
+
+  def our_team
+		# get public our team
+    @banner = BannerSection.where(name: "Our Team").first.banners.first
+    @section = TeamMember::DEPARTMENTS.include?(params[:department]) ? params[:department] : "all"
+    @team_members = @section == "all" ? TeamMember.all : TeamMember.where(department: @section)
+    @articles = Article.where(status: 1).first(3)
+  end
+
+  def mits_academy
+		# get public mits academy — real coaches, delivered in partnership with MITS Academy
+    @banner = BannerSection.where(name: "MITS Academy").first.banners.first
+    @coaches = Coach.all
     @articles = Article.where(status: 1).first(3)
   end
 

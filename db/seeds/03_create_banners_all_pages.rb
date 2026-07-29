@@ -165,3 +165,58 @@ Mobility.with_locale(:id) {
 }
 banner.save
 puts "Create Banner: #{banner.title}"
+
+# Banner Our Team
+banner = Banner.new(title: "Our Team", description: "Meet the people behind Bali Beach Country Club — from the clubhouse kitchen to the practice courts.")
+banner.image.attach(io: Rails.root.join("vendor/assets/images/facilities/restaurant.png").open, filename: "restaurant.png")
+banner.banner_section = @bs16
+Mobility.with_locale(:id) {
+	banner.title = "Tim Kami"
+	banner.description = "Kenali orang-orang di balik Bali Beach Country Club — mulai dari dapur klub hingga lapangan latihan."
+}
+banner.save
+puts "Create Banner: #{banner.title}"
+
+# Banner MITS Academy
+banner = Banner.new(title: "MITS Academy", description: "Our coaching partner for tennis, padel and pickleball — elite programs for every age and ambition.")
+banner.image.attach(io: Rails.root.join("vendor/assets/images/banners/banner-tennis.png").open, filename: "banner-tennis.png")
+banner.banner_section = @bs17
+Mobility.with_locale(:id) {
+	banner.title = "MITS Academy"
+	banner.description = "Mitra pelatihan kami untuk tenis, padel, dan pickleball — program unggulan untuk segala usia dan ambisi."
+}
+banner.save
+puts "Create Banner: #{banner.title}"
+
+# Banner Disclaimer
+banner = Banner.new(title: "Disclaimer", description: "Please read this disclaimer carefully before using the Bali Beach Country Club website.")
+banner.image.attach(io: Rails.root.join("vendor/assets/images/banners/banner-golf.png").open, filename: "banner-golf.png")
+banner.banner_section = @bs18
+Mobility.with_locale(:id) {
+	banner.title = "Disclaimer"
+	banner.description = "Harap baca disclaimer ini dengan saksama sebelum menggunakan situs web Bali Beach Country Club."
+}
+banner.save
+puts "Create Banner: #{banner.title}"
+
+# Banner Privacy Policy
+banner = Banner.new(title: "Privacy Policy", description: "How Bali Beach Country Club collects, uses and protects your personal information.")
+banner.image.attach(io: Rails.root.join("vendor/assets/images/banners/banner-golf.png").open, filename: "banner-golf.png")
+banner.banner_section = @bs19
+Mobility.with_locale(:id) {
+	banner.title = "Kebijakan Privasi"
+	banner.description = "Bagaimana Bali Beach Country Club mengumpulkan, menggunakan, dan melindungi informasi pribadi Anda."
+}
+banner.save
+puts "Create Banner: #{banner.title}"
+
+# Banner Terms & Conditions
+banner = Banner.new(title: "Terms & Conditions", description: "The terms, cancellation and refund policies that apply to bookings at Bali Beach Country Club.")
+banner.image.attach(io: Rails.root.join("vendor/assets/images/banners/banner-golf.png").open, filename: "banner-golf.png")
+banner.banner_section = @bs20
+Mobility.with_locale(:id) {
+	banner.title = "Syarat & Ketentuan"
+	banner.description = "Syarat, kebijakan pembatalan, dan pengembalian dana yang berlaku untuk pemesanan di Bali Beach Country Club."
+}
+banner.save
+puts "Create Banner: #{banner.title}"

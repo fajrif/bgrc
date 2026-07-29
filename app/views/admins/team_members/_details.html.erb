@@ -1,0 +1,34 @@
+<table class="table table-hover">
+	<tr>
+		<td style="width:15%;"><b>ID</b></td>
+		<td><%= @team_member.id %></td>
+	</tr>
+	<% if @team_member.photo.attached? %>
+	<tr>
+		<td><b>Photo</b></td>
+		<td>
+			<%= image_tag @team_member.photo.variant(resize_to_limit: [100,100]) %>
+		</td>
+	</tr>
+	<% end %>
+	<tr>
+		<td><b>Name</b></td>
+		<td><h5 class="fs-14 mb-0 text-body"><%= @team_member.name %></h5></td>
+	</tr>
+	<tr>
+		<td><b>Department</b></td>
+		<td><%= @team_member.department_label %></td>
+	</tr>
+	<tr>
+		<td><b>Role</b></td>
+		<td><%= @team_member.role %></td>
+	</tr>
+	<tr>
+		<td><b>Bio</b></td>
+		<td><%= @team_member.bio %></td>
+	</tr>
+	<tr>
+		<td><b>Position</b></td>
+		<td><%= @team_member.position %></td>
+	</tr>
+</table>

@@ -1,0 +1,119 @@
+<%= render "shared/page_hero", banner: @banner, crumbs: [{ label: "About Us", path: about_path }, { label: "MITS Academy" }] %>
+
+<!-- start mits academy intro -->
+<section class="bbcc-section bbcc-mits-intro">
+    <div class="container-lg">
+        <div class="row g-4 g-lg-5">
+            <div class="col-12 col-lg-4">
+                <h1 class="bbcc-section-title">MITS Academy</h1>
+                <p class="bbcc-lead mb-0">Our coaching partner for tennis, padel and pickleball at Bali Beach Country Club.</p>
+            </div>
+            <div class="col-12 col-lg-8">
+                <p>
+                    MITS Academy leads coaching across tennis, padel and pickleball at Bali Beach Country
+                    Club, bringing structured pathways for junior development through to high-performance
+                    training.
+                </p>
+                <p>
+                    Every program is built around international coaching standards and the courts here
+                    are designed to match &mdash; giving players a genuine step up, whichever sport
+                    brings them to the club.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- end mits academy intro -->
+
+<!-- start mits academy full banner -->
+<div class="bbcc-fullbanner" style="background-image:url('<%= image_url('banners/banner-padel.png') %>');" role="img" aria-label="MITS Academy players on court"></div>
+<!-- end mits academy full banner -->
+
+<% if @coaches.present? %>
+<!-- start coaches -->
+<section class="bbcc-section bbcc-mits-coaches">
+    <div class="container-lg">
+        <div class="bbcc-section-head bbcc-section-head-center">
+            <h2 class="bbcc-section-title">Coaches</h2>
+            <p class="bbcc-lead bbcc-section-sub">
+                Certified MITS Academy coaches across tennis, padel and pickleball, ready to help you
+                build the fundamentals or sharpen a competitive edge.
+            </p>
+        </div>
+        <div class="swiper bbcc-swiper bbcc-coaches-swiper">
+            <div class="swiper-wrapper">
+                <% @coaches.each do |coach| %>
+                    <div class="swiper-slide">
+                        <div class="bbcc-card bbcc-coach-card">
+                            <span class="bbcc-card-image" style="<%= "background-image:url('#{url_for(coach.photo)}');" if coach.photo.attached? %>">
+                                <span class="bbcc-card-shade"></span>
+                                <span class="bbcc-card-name"><%= coach.name %></span>
+                            </span>
+                        </div>
+                    </div>
+                <% end %>
+            </div>
+            <div class="bbcc-swiper-controls">
+                <button type="button" class="bbcc-swiper-prev" aria-label="Previous"><i class="fa-solid fa-angle-left"></i></button>
+                <div class="bbcc-swiper-pagination"></div>
+                <button type="button" class="bbcc-swiper-next" aria-label="Next"><i class="fa-solid fa-angle-right"></i></button>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- end coaches -->
+<% end %>
+
+<!-- start mits academy split -->
+<section class="bbcc-section bbcc-mits-split">
+    <div class="container-lg">
+        <div class="row g-0 bbcc-mits-split-row">
+            <div class="col-12 col-lg-6">
+                <div class="bbcc-mits-split-image" style="background-image:url('<%= image_url('sports/tennis/gallery-3.png') %>');"></div>
+            </div>
+            <div class="col-12 col-lg-6">
+                <div class="bbcc-mits-split-body">
+                    <p>
+                        Beyond Bali, MITS Academy runs coaching programs and player pathways in Australia
+                        &mdash; from grassroots clinics to elite performance training.
+                    </p>
+                    <p>
+                        Members and guests training here can tap into that wider network of coaching
+                        expertise and playing opportunities.
+                    </p>
+                    <a href="https://wearemits.com" target="_blank" rel="noopener" class="bbcc-btn">Visit MITS Australia</a>
+                </div>
+            </div>
+        </div>
+        <div class="row g-0 bbcc-mits-split-row">
+            <div class="col-12 col-lg-6">
+                <div class="bbcc-mits-contact">
+                    <h3 class="bbcc-vision-label">Contact Info</h3>
+                    <div class="bbcc-info-item margin-15px-bottom">
+                        <span class="bbcc-info-icon"><i class="icon-map" aria-hidden="true"></i></span>
+                        <div class="bbcc-info-body"><%= raw(configatron.location_address) %></div>
+                    </div>
+                    <div class="bbcc-info-item margin-15px-bottom">
+                        <span class="bbcc-info-icon"><i class="icon-phone" aria-hidden="true"></i></span>
+                        <div class="bbcc-info-body"><p><%= configatron.company_phone1 %></p></div>
+                    </div>
+                    <div class="bbcc-info-item margin-20px-bottom">
+                        <span class="bbcc-info-icon"><i class="icon-envelope" aria-hidden="true"></i></span>
+                        <div class="bbcc-info-body"><p><%= configatron.admin_email %></p></div>
+                    </div>
+                    <div class="bbcc-mits-contact-actions">
+                        <a href="https://wa.me/<%= configatron.whatsapp_number.to_s.gsub(/\D/, '') %>?text=<%= url_encode("Hi, I'd like to ask about MITS Academy coaching programs at Bali Beach Country Club.") %>" target="_blank" rel="noopener" class="bbcc-btn">WhatsApp Us</a>
+                        <a href="mailto:<%= configatron.admin_email %>" class="bbcc-btn">Email Us</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-lg-6">
+                <div class="bbcc-mits-split-image" style="background-image:url('<%= image_url('sports/tennis/gallery-4.png') %>');"></div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- end mits academy split -->
+
+<%= render "shared/bbcc_highlights" %>
+<%= render "home/blogs" %>

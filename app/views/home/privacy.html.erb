@@ -1,41 +1,25 @@
-<section class="wow animate__fadeIn bg-light-grey padding-35px-tb page-title-small top-space">
-    <div class="container">
-        <div class="row align-items-center">
-            <div class="col-lg-8 col-md-6 text-center text-md-start">
-                <!-- start page title -->
-                <h1 class="alt-font font-weight-600 mb-0 text-uppercase"><%= t('menu.privacy_policy') %></h1>
-                <!-- end page title -->
+<%= render "shared/page_hero", banner: @banner, crumbs: [{ label: "Privacy Policy" }] %>
+
+<!-- start privacy policy -->
+<section class="bbcc-section bbcc-legal-page">
+    <div class="container-lg">
+        <div class="row g-4 g-lg-5">
+            <div class="col-12 col-lg-3">
+                <%= render "shared/legal_nav", active: :privacy %>
             </div>
-            <div class="col-lg-4 col-md-6 breadcrumb alt-font text-small justify-content-center justify-content-md-end sm-margin-10px-top">
-                <!-- breadcrumb -->
-                <ul>
-                  <li><a href="<%= root_url %>">Home</a></li>
-                  <li class="text-dark-gray"><%= t('menu.privacy_policy') %></li>
-                </ul>
-                <!-- end breadcrumb -->
-            </div>
-        </div>
-    </div>
-</section>
-<section class="wow animate__fadeIn">
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-lg-10">
-                <span class="text-medium alt-font font-weight-600 margin-10px-bottom d-block">Lorem Ipsum</span>
-                <p class="text-medium line-height-30">Ferri reque integre mea ut, eu eos vide errem noluisse. Putent laoreet et ius. <strong>Vel utroque dissentias ut,</strong> nam ad soleat alterum maluisset, cu est copiosae intellegat inciderint. Nam ei eirmod consequuntur, quod nostrum consectetuer usu ut. Vim veniam singulis senserit an, sumo consul mentitum duo ea. <u>Copiosae antiopam</u> ius ea, meis explicari reformidans vix cu.Ut possit patrioque prodesset est, vivendum concludaturque conclusionemque eam in.</p>
-            </div>
-            <div class="col-lg-10">
-                <span class="text-medium alt-font font-weight-600 margin-10px-bottom d-block">Lorem Ipsum</span>
-                <p class="text-medium line-height-30">Ferri reque integre mea ut, eu eos vide errem noluisse. Putent laoreet et ius. <strong>Vel utroque dissentias ut,</strong> nam ad soleat alterum maluisset, cu est copiosae intellegat inciderint. Nam ei eirmod consequuntur, quod nostrum consectetuer usu ut. Vim veniam singulis senserit an, sumo consul mentitum duo ea. <u>Copiosae antiopam</u> ius ea, meis explicari reformidans vix cu.Ut possit patrioque prodesset est, vivendum concludaturque conclusionemque eam in.</p>
-            </div>
-            <div class="col-lg-10">
-                <span class="text-medium alt-font font-weight-600 margin-10px-bottom d-block">Lorem Ipsum</span>
-                <p class="text-medium line-height-30">Ferri reque integre mea ut, eu eos vide errem noluisse. Putent laoreet et ius. <strong>Vel utroque dissentias ut,</strong> nam ad soleat alterum maluisset, cu est copiosae intellegat inciderint. Nam ei eirmod consequuntur, quod nostrum consectetuer usu ut. Vim veniam singulis senserit an, sumo consul mentitum duo ea. <u>Copiosae antiopam</u> ius ea, meis explicari reformidans vix cu.Ut possit patrioque prodesset est, vivendum concludaturque conclusionemque eam in.</p>
-            </div>
-            <div class="col-lg-10">
-                <span class="text-medium alt-font font-weight-600 margin-10px-bottom d-block">Lorem Ipsum</span>
-                <p class="text-medium line-height-30">Ferri reque integre mea ut, eu eos vide errem noluisse. Putent laoreet et ius. <strong>Vel utroque dissentias ut,</strong> nam ad soleat alterum maluisset, cu est copiosae intellegat inciderint. Nam ei eirmod consequuntur, quod nostrum consectetuer usu ut. Vim veniam singulis senserit an, sumo consul mentitum duo ea. <u>Copiosae antiopam</u> ius ea, meis explicari reformidans vix cu.Ut possit patrioque prodesset est, vivendum concludaturque conclusionemque eam in.</p>
+            <div class="col-12 col-lg-9">
+                <p class="bbcc-lead">
+                    This Privacy Policy explains how Bali Beach Country Club collects, uses and protects
+                    your personal information when you use this website, create an account, or make a
+                    booking with us.
+                </p>
+                <% if @snippet %>
+                    <div class="bbcc-article-body bbcc-legal-content"><%= raw @snippet.content %></div>
+                <% else %>
+                    <p class="bbcc-faq-empty">Content coming soon.</p>
+                <% end %>
             </div>
         </div>
     </div>
 </section>
+<!-- end privacy policy -->

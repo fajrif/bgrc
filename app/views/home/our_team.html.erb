@@ -1,0 +1,51 @@
+<%
+  initial_count = 6
+%>
+<%= render "shared/page_hero", banner: @banner, crumbs: [{ label: "About Us", path: about_path }, { label: "Our Team" }] %>
+
+<!-- start our team -->
+<section class="bbcc-section bbcc-team-page">
+    <div class="container-lg">
+        <nav class="bbcc-tabs" aria-label="Team departments">
+            <%= link_to "All", our_team_path, class: ["bbcc-tab", ("active" if @section == "all")] %>
+            <% TeamMember::DEPARTMENTS.each do |key| %>
+                <%= link_to TeamMember.department_label(key), our_team_path(department: key), class: ["bbcc-tab", ("active" if @section == key)] %>
+            <% end %>
+        </nav>
+
+        <% if @team_members.present? %>
+            <div class="row g-4">
+                <% @team_members.each_with_index do |member, index| %>
+                    <div class="col-12 col-sm-6 col-lg-4<%= " bbcc-team-card-hidden" if index >= initial_count %>">
+                        <article class="bbcc-team-card">
+                            <span class="bbcc-team-card-image">
+                                <% if member.photo.attached? %>
+                                    <%= image_tag member.photo.variant(resize_to_fill: [500, 580]), alt: member.name %>
+                                <% end %>
+                            </span>
+                            <div class="bbcc-team-card-body">
+                                <div class="bbcc-team-card-meta">
+                                    <span class="bbcc-team-card-dept"><%= member.department_label %></span>
+                                    <span class="bbcc-team-card-role"><%= member.role %></span>
+                                </div>
+                                <span class="bbcc-team-card-name"><%= member.name %></span>
+                                <p class="bbcc-team-card-bio"><%= member.bio %></p>
+                            </div>
+                        </article>
+                    </div>
+                <% end %>
+            </div>
+            <% if @team_members.size > initial_count %>
+                <div class="text-center">
+                    <button type="button" class="bbcc-btn bbcc-view-more" data-target=".bbcc-team-card-hidden">View More</button>
+                </div>
+            <% end %>
+        <% else %>
+            <p class="bbcc-faq-empty">No team members in this department yet.</p>
+        <% end %>
+    </div>
+</section>
+<!-- end our team -->
+
+<%= render "shared/bbcc_highlights" %>
+<%= render "home/blogs" %>
