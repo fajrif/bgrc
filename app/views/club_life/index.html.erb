@@ -1,0 +1,42 @@
+<%= render "shared/page_hero", banner: @banner, crumbs: [{ label: "Club Life" }] %>
+
+<!-- start club life mosaic -->
+<section class="bbcc-section bbcc-clublife-mosaic">
+    <div class="container-lg">
+        <% if @sections.present? %>
+            <% lead, *rest = @sections.to_a %>
+            <div class="row g-3 g-lg-4">
+                <div class="col-12">
+                    <%= link_to club_life_section_path(lead), class: "bbcc-tile bbcc-tile-wide",
+                                style: ("background-image:url('#{url_for(lead.image)}');" if lead.image.attached?) do %>
+                        <span class="bbcc-tile-shade"></span>
+                        <span class="bbcc-tile-body">
+                            <span class="bbcc-tile-label"><%= lead.name %></span>
+                            <span class="bbcc-tile-desc"><%= lead.short_description.to_s.truncate(180) %></span>
+                        </span>
+                    <% end %>
+                </div>
+                <% rest.each do |section| %>
+                    <div class="col-12 col-md-6">
+                        <%= link_to club_life_section_path(section), class: "bbcc-tile bbcc-tile-lg",
+                                    style: ("background-image:url('#{url_for(section.image)}');" if section.image.attached?) do %>
+                            <span class="bbcc-tile-shade"></span>
+                            <span class="bbcc-tile-body">
+                                <span class="bbcc-tile-label"><%= section.name %></span>
+                                <span class="bbcc-tile-desc"><%= section.short_description.to_s.truncate(180) %></span>
+                            </span>
+                        <% end %>
+                    </div>
+                <% end %>
+            </div>
+        <% else %>
+            <p class="bbcc-faq-empty">Club Life sections are being set up.</p>
+        <% end %>
+    </div>
+</section>
+<!-- end club life mosaic -->
+
+<%= render "home/about_intro" %>
+<%= render "home/golf_banner" %>
+<%= render "shared/bbcc_highlights" %>
+<%= render "home/blogs" %>

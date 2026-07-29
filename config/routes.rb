@@ -36,6 +36,11 @@ Rails.application.routes.draw do
 					delete "delete_attachment_image/:asset_id" => "articles#delete_attachment_image", :as => :delete_attachment_image
 				end
 			end
+			resources :highlights do
+				member do
+					delete "delete_attachment_image/:asset_id" => "highlights#delete_attachment_image", :as => :delete_attachment_image
+				end
+			end
 			resources :categories
 			resources :inquiries, :only => [:index, :show, :destroy]
 			resources :addresses do
@@ -81,6 +86,7 @@ Rails.application.routes.draw do
 			resources :facilities do
 				member do
           delete "delete_attachment_image/:asset_id" => "facilities#delete_attachment_image", :as => :delete_attachment_image
+          delete "delete_image/:asset_id" => "facilities#delete_image", :as => :delete_image
         end
       end
       resources :wellnesses do
@@ -210,6 +216,11 @@ Rails.application.routes.draw do
     end
 		resources :promos, :only => [:index, :show]
 		resources :sports, :only => [:show]
+		resources :highlights, :only => [:index, :show]
+
+    # Club Life
+    get 'club-life',     to: 'club_life#index', as: :club_life
+    get 'club-life/:id', to: 'club_life#show',  as: :club_life_section
 
     match 'contact', to: 'inquiries#show', via: :get, as: :get_contact
     match 'contact', to: 'inquiries#create', via: :post, as: :contacts

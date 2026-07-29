@@ -1,0 +1,22 @@
+<%# locals: active: — the Facility currently being viewed %>
+<nav class="bbcc-faq-nav bbcc-clublife-nav" aria-label="Club Life sections">
+    <% Facility.club_life_roots.each do |section| %>
+        <div class="bbcc-clublife-nav-group">
+            <%= link_to club_life_section_path(section),
+                        class: ["bbcc-faq-nav-link", ("active" if active == section)] do %>
+                <%= section.name %>
+                <% if section.children.any? %>
+                    <i class="fa-solid fa-chevron-down bbcc-clublife-nav-caret" aria-hidden="true"></i>
+                <% end %>
+            <% end %>
+            <% if section.children.any? %>
+                <div class="bbcc-clublife-nav-children">
+                    <% section.children.each do |child| %>
+                        <%= link_to child.name, club_life_section_path(child),
+                                    class: ["bbcc-clublife-nav-child", ("active" if active == child)] %>
+                    <% end %>
+                </div>
+            <% end %>
+        </div>
+    <% end %>
+</nav>

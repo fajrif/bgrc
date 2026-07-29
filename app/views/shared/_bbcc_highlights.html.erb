@@ -1,31 +1,28 @@
+<%# Rendered from several pages that do not all set an ivar, so it queries its own data. %>
+<% bbcc_highlights = Highlight.published.limit(3) %>
+<% if bbcc_highlights.any? %>
 <!-- start bbcc highlights -->
-<%
-  bbcc_highlights = [
-    { title: "Sunset Golf Sessions",       meta: "Weekly &nbsp;|&nbsp; Golf",       image: "sports/golf/gallery-4.png",
-      desc: "Twilight tee times with course lighting, ideal for members who like to finish the round as the sun goes down." },
-    { title: "Weekend Pickleball Socials", meta: "Weekends &nbsp;|&nbsp; Pickleball", image: "sports/pickleball/gallery-3.png",
-      desc: "Open-play socials every weekend &mdash; a relaxed way for members and guests to meet other players on the court." },
-    { title: "Junior Tennis Clinics",      meta: "Weekly &nbsp;|&nbsp; Tennis",     image: "sports/tennis/gallery-5.png",
-      desc: "MITS Academy-led clinics building fundamentals for young players, held weekly on our tennis courts." }
-  ]
-%>
 <section class="bbcc-section bbcc-highlights-grid">
     <div class="container-lg">
         <div class="bbcc-section-head bbcc-section-head-center">
             <h2 class="bbcc-section-title">BBCC Highlights</h2>
         </div>
         <div class="row g-4">
-            <% bbcc_highlights.each do |h| %>
+            <% bbcc_highlights.each do |highlight| %>
                 <div class="col-12 col-md-6 col-lg-4">
                     <article class="bbcc-post">
-                        <span class="bbcc-post-image">
-                            <%= image_tag h[:image], alt: h[:title] %>
-                        </span>
+                        <%= link_to highlight_path(highlight), class: "bbcc-post-image" do %>
+                            <% if highlight.image.attached? %>
+                                <%= image_tag highlight.image.variant(resize_to_fill: [750, 500]), alt: highlight.title %>
+                            <% else %>
+                                <span class="bbcc-post-image-ph" style="background-image:url('<%= image_url('images/image-4.png') %>');"></span>
+                            <% end %>
+                        <% end %>
                         <div class="bbcc-post-body">
-                            <span class="bbcc-post-meta"><%= raw h[:meta] %></span>
-                            <span class="bbcc-post-title"><%= h[:title] %></span>
-                            <p class="bbcc-post-excerpt"><%= raw h[:desc] %></p>
-                            <%= link_to "Read More", events_path, class: "bbcc-btn" %>
+                            <span class="bbcc-post-meta"><%= raw highlight.meta_label %></span>
+                            <%= link_to highlight.title, highlight_path(highlight), class: "bbcc-post-title" %>
+                            <p class="bbcc-post-excerpt"><%= highlight.short_description.to_s.truncate(140) %></p>
+                            <%= link_to "Read More", highlight_path(highlight), class: "bbcc-btn" %>
                         </div>
                     </article>
                 </div>
@@ -34,3 +31,4 @@
     </div>
 </section>
 <!-- end bbcc highlights -->
+<% end %>

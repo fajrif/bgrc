@@ -233,6 +233,7 @@ module AdminHelper
 
   def is_admins_articles_page?
 		controller.controller_name == "articles" ||
+		controller.controller_name == "highlights" ||
 		controller.controller_name == "categories"
   end
 

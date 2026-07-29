@@ -1,0 +1,291 @@
+# Club Life — the public menu tree, stored as a Facility hierarchy.
+# Re-uses the facilities that already exist (renaming/re-parenting them in place)
+# and only creates the nodes that have no record yet. Safe to re-run.
+puts "create club life sections"
+
+CLUB_LIFE_IMAGES = Rails.root.join("vendor/assets/images")
+
+def club_life_find(en_name)
+	Facility.find_by("name @> ?", { en: en_name }.to_json)
+end
+
+# Upserts one node of the tree. `rename_from` lets an existing facility be adopted
+# under its Club Life name instead of creating a near-duplicate record.
+def club_life_node!(en_name, attrs: {}, id: {}, image: nil, gallery: [], rename_from: nil)
+	record   = rename_from ? club_life_find(rename_from) : nil
+	record ||= club_life_find(en_name) || Facility.new
+
+	record.assign_attributes(attrs.merge(name: en_name))
+	if image.present? && !record.image.attached?
+		record.image.attach(io: CLUB_LIFE_IMAGES.join(image).open, filename: File.basename(image))
+	end
+	record.save!
+
+	Mobility.with_locale(:id) do
+		record.name = id[:name] if id[:name].present?
+		record.short_description = id[:short_description] if id[:short_description].present?
+		record.description = id[:description] if id[:description].present?
+		record.cta_label = id[:cta_label] if id[:cta_label].present?
+		record.save!
+	end
+
+	if gallery.any? && !record.images.attached?
+		gallery.each do |path|
+			record.images.attach(io: CLUB_LIFE_IMAGES.join(path).open, filename: File.basename(path))
+		end
+	end
+
+	puts "Club Life: #{record.name}"
+	record
+end
+
+golf_sport       = Sport.find_by(name: "Golf")
+tennis_sport     = Sport.find_by(name: "Tennis")
+padel_sport      = Sport.find_by(name: "Padel")
+pickleball_sport = Sport.find_by(name: "Pickleball")
+
+# ---------------------------------------------------------------- GOLF
+golf = club_life_node!(
+	"Golf",
+	attrs: {
+		club_life: true, position: 1, parent_id: nil, sport_id: golf_sport&.id,
+		cta_label: "Book Tee Time", cta_url: "/golf",
+		short_description: "A coastal course at Tuban playable as nine or eighteen holes, with tee times released daily and green fees set per player.",
+		description: "Our course runs along the coast at Tuban and can be played as a nine or an eighteen hole round. Tee times are released on a rolling daily basis and spaced at ten minute intervals, with a maximum of four players per group, so the course never feels crowded.\n\nGreen fees are charged per player and vary between weekdays and weekends. Golf carts, buggies, caddies and club rental can all be added to your booking when you reserve your tee time, so you can arrive with nothing but your shoes."
+	},
+	id: {
+		name: "Golf",
+		short_description: "Lapangan tepi pantai di Tuban yang dapat dimainkan sembilan atau delapan belas hole, dengan tee time yang dibuka setiap hari dan green fee per pemain.",
+		description: "Lapangan kami membentang di tepi pantai Tuban dan dapat dimainkan dalam sembilan atau delapan belas hole. Tee time dibuka setiap hari dengan jarak sepuluh menit dan maksimal empat pemain per grup, sehingga lapangan tidak pernah terasa padat.\n\nGreen fee dihitung per pemain dan berbeda antara hari kerja dan akhir pekan. Golf cart, buggy, caddie, serta penyewaan stik dapat ditambahkan saat Anda memesan tee time.",
+		cta_label: "Pesan Tee Time"
+	},
+	image: "sports/golf.png"
+)
+
+club_life_node!(
+	"Golf Course",
+	attrs: {
+		club_life: false, parent_id: golf.id, position: 1, sport_id: golf_sport&.id,
+		cta_label: "Book Tee Time", cta_url: "/golf",
+		short_description: "Nine or eighteen holes, ten minute tee intervals, up to four players per group.",
+		description: "Book a tee time online and choose your round length at checkout. Carts, buggies, caddies and club rental are available as add-ons, and green fees are shown per player before you confirm."
+	},
+	id: {
+		name: "Lapangan Golf",
+		short_description: "Sembilan atau delapan belas hole, interval tee sepuluh menit, hingga empat pemain per grup.",
+		description: "Pesan tee time secara online dan pilih panjang permainan saat checkout. Cart, buggy, caddie, dan penyewaan stik tersedia sebagai tambahan, dan green fee ditampilkan per pemain sebelum Anda mengonfirmasi.",
+		cta_label: "Pesan Tee Time"
+	}
+)
+
+club_life_node!(
+	"Golf Lessons & Academy",
+	attrs: {
+		club_life: false, parent_id: golf.id, position: 2,
+		cta_label: "View Classes", cta_url: "/group_classes",
+		short_description: "Coaching for players at every stage, from first grip to competitive play.",
+		description: "Lessons are run by our resident coaching team and can be taken privately, semi-privately or as part of a small group. Sessions cover the full game: driving, irons, short game and putting, with course play once the fundamentals are in place."
+	},
+	id: {
+		name: "Les Golf & Akademi",
+		short_description: "Pelatihan untuk pemain di setiap tahap, dari pegangan pertama hingga permainan kompetitif.",
+		description: "Les dijalankan oleh tim pelatih kami dan dapat diambil secara privat, semi-privat, atau dalam grup kecil. Sesi mencakup keseluruhan permainan: driving, iron, short game, dan putting.",
+		cta_label: "Lihat Kelas"
+	},
+	image: "sports/golf/gallery-3.png" # placeholder — replace with an academy photo via admin
+)
+
+club_life_node!(
+	"Driving Range",
+	attrs: {
+		club_life: false, parent_id: golf.id, position: 3,
+		cta_label: "Enquire", cta_url: "/contact",
+		short_description: "Warm up before your round or work through a bucket at your own pace.",
+		description: "The range sits alongside the first tee and is open through the day. Clubs are available to rent at the pro shop if you would rather travel light, and our coaches are on hand if you want a few pointers between buckets."
+	},
+	id: {
+		name: "Driving Range",
+		short_description: "Pemanasan sebelum bermain atau berlatih sesuai ritme Anda sendiri.",
+		description: "Driving range berada di samping tee pertama dan buka sepanjang hari. Stik dapat disewa di pro shop, dan pelatih kami siap membantu jika Anda membutuhkan arahan.",
+		cta_label: "Hubungi Kami"
+	},
+	image: "sports/golf/gallery-5.png" # placeholder — replace with a driving range photo via admin
+)
+
+# ------------------------------------------------------- RACQUET SPORTS
+racquet = club_life_node!(
+	"Racquet Sports",
+	attrs: {
+		club_life: true, position: 2, parent_id: nil, sport_id: nil,
+		cta_label: "Explore Classes", cta_url: "/group_classes",
+		short_description: "Tennis, padel and pickleball courts, with coaching delivered in partnership with MITS Academy.",
+		description: "Three racquet sports share the same corner of the club, so you can move between them as easily as changing shoes. Courts can be booked by the hour, and coached sessions run as private lessons, group classes and social classes through the week.\n\nOur coaching programme is delivered in partnership with MITS Academy, whose coaches work with players from first-time juniors through to competitive adults."
+	},
+	id: {
+		name: "Olahraga Raket",
+		short_description: "Lapangan tenis, padel, dan pickleball, dengan pelatihan bersama MITS Academy.",
+		description: "Tiga olahraga raket berbagi sudut klub yang sama, sehingga Anda dapat berpindah di antaranya semudah mengganti sepatu. Lapangan dapat dipesan per jam, dan sesi berpelatih tersedia sebagai les privat, kelas grup, dan kelas sosial sepanjang minggu.\n\nProgram pelatihan kami dijalankan bersama MITS Academy.",
+		cta_label: "Lihat Kelas"
+	},
+	image: "banners/banner-tennis.png"
+)
+
+club_life_node!(
+	"Tennis",
+	rename_from: "Tennis Court",
+	attrs: {
+		club_life: false, parent_id: racquet.id, position: 1, sport_id: tennis_sport&.id,
+		cta_label: "Book a Court", cta_url: "/search?sport_id=#{tennis_sport&.id}",
+		short_description: "Private lessons, adult and junior group classes, and weekly social classes.",
+		description: "Tennis is the busiest of our racquet programmes. Alongside hourly court bookings we run private and semi-private lessons, adult and child group classes, and two weekly social classes for members who would rather just turn up and play."
+	},
+	id: {
+		name: "Tenis",
+		short_description: "Les privat, kelas grup dewasa dan anak, serta kelas sosial mingguan.",
+		description: "Tenis adalah program raket kami yang paling sibuk. Selain penyewaan lapangan per jam, kami menjalankan les privat dan semi-privat, kelas grup dewasa dan anak, serta dua kelas sosial mingguan.",
+		cta_label: "Pesan Lapangan"
+	}
+)
+
+club_life_node!(
+	"Padel",
+	rename_from: "Padel Court",
+	attrs: {
+		club_life: false, parent_id: racquet.id, position: 2, sport_id: padel_sport&.id,
+		cta_label: "Book a Court", cta_url: "/search?sport_id=#{padel_sport&.id}",
+		short_description: "Enclosed courts, quick to learn, and a weekly ladies' night.",
+		description: "Padel is the fastest game to pick up of the three — the walls keep the ball in play and rallies last longer, which makes it forgiving for newcomers. Private sessions are available, and our ladies' night runs every Friday afternoon."
+	},
+	id: {
+		name: "Padel",
+		short_description: "Lapangan tertutup, cepat dipelajari, dengan ladies' night mingguan.",
+		description: "Padel adalah permainan yang paling cepat dipelajari di antara ketiganya — dinding menjaga bola tetap dalam permainan sehingga reli berlangsung lebih lama. Sesi privat tersedia, dan ladies' night kami berlangsung setiap Jumat sore.",
+		cta_label: "Pesan Lapangan"
+	}
+)
+
+club_life_node!(
+	"Pickleball",
+	rename_from: "Pickleball Court",
+	attrs: {
+		club_life: false, parent_id: racquet.id, position: 3, sport_id: pickleball_sport&.id,
+		cta_label: "Book a Court", cta_url: "/search?sport_id=#{pickleball_sport&.id}",
+		short_description: "Short court, light paddle, and the easiest way into racquet sports.",
+		description: "Pickleball uses a smaller court and a solid paddle, so points are quick and the learning curve is short. It has become the club's most sociable racquet sport, and courts can be booked by the hour like any other."
+	},
+	id: {
+		name: "Pickleball",
+		short_description: "Lapangan pendek, raket ringan, dan cara termudah masuk ke olahraga raket.",
+		description: "Pickleball menggunakan lapangan yang lebih kecil dan raket padat, sehingga poin berlangsung cepat dan mudah dipelajari. Lapangan dapat dipesan per jam seperti olahraga lainnya.",
+		cta_label: "Pesan Lapangan"
+	}
+)
+
+# ------------------------------------------------------------- FITNESS
+club_life_node!(
+	"Fitness",
+	attrs: {
+		club_life: true, position: 3, parent_id: nil, sport_id: nil,
+		cta_label: "Enquire", cta_url: "/contact",
+		short_description: "A full gym floor plus yoga, pilates and the pool, open through the day.",
+		description: "The gym floor covers free weights, resistance machines and cardio, with space to train without waiting for equipment. Yoga and pilates run in the studio alongside it, and the pool is open for lap swimming outside of class hours.\n\nMembership includes gym access; class schedules and personal training are arranged through the front desk."
+	},
+	id: {
+		name: "Kebugaran",
+		short_description: "Area gym lengkap ditambah yoga, pilates, dan kolam renang, buka sepanjang hari.",
+		description: "Area gym mencakup beban bebas, mesin resistensi, dan kardio, dengan ruang yang cukup untuk berlatih tanpa mengantre. Yoga dan pilates berlangsung di studio di sebelahnya, dan kolam renang terbuka untuk berenang di luar jam kelas.\n\nKeanggotaan mencakup akses gym; jadwal kelas dan personal training diatur melalui front desk.",
+		cta_label: "Hubungi Kami"
+	},
+	image: "facilities/gym.png",
+	gallery: ["facilities/gym.png", "facilities/pilates.png", "facilities/yoga.png", "facilities/swimming-pool.png"]
+)
+
+# ---------------------------------------------------------- BEACH CLUB
+club_life_node!(
+	"Beach Club",
+	attrs: {
+		club_life: true, position: 4, parent_id: nil, sport_id: nil,
+		cta_label: "Enquire", cta_url: "/contact",
+		short_description: "Loungers, shade and the pool deck, a short walk from the courts.",
+		description: "The beach club is where the day slows down. Loungers and shade run along the pool deck, food and drinks come across from the restaurant, and it stays open into the evening.\n\nIt is also the part of the club most often booked for private events — get in touch if you would like to hold something here."
+	},
+	id: {
+		name: "Beach Club",
+		short_description: "Kursi santai, area teduh, dan pool deck, hanya beberapa langkah dari lapangan.",
+		description: "Beach club adalah tempat hari berjalan lebih lambat. Kursi santai dan area teduh membentang di sepanjang pool deck, makanan dan minuman diantar dari restoran, dan tempat ini buka hingga malam.\n\nArea ini juga paling sering dipesan untuk acara privat — hubungi kami jika Anda ingin mengadakan acara di sini.",
+		cta_label: "Hubungi Kami"
+	},
+	image: "facilities/swimming-pool.png" # placeholder — replace with a beach club photo via admin
+)
+
+# ------------------------------------------------------- SPA + WELLNESS
+spa = club_life_node!(
+	"Spa + Wellness",
+	attrs: {
+		club_life: true, position: 5, parent_id: nil, sport_id: nil,
+		cta_label: "Enquire", cta_url: "/contact",
+		short_description: "Treatment rooms, recovery facilities and longevity programmes under one roof.",
+		description: "Wellness at the club covers three related things: traditional spa treatments, physical recovery for members training hard, and longer-term programmes aimed at how well you age.\n\nTreatments are delivered by our specialist team and booked through the front desk. If you are unsure which of the three you need, our specialists will talk it through with you first."
+	},
+	id: {
+		name: "Spa + Wellness",
+		short_description: "Ruang perawatan, fasilitas pemulihan, dan program longevity dalam satu atap.",
+		description: "Wellness di klub kami mencakup tiga hal yang saling berkaitan: perawatan spa tradisional, pemulihan fisik untuk anggota yang berlatih keras, dan program jangka panjang untuk kualitas penuaan.\n\nPerawatan dijalankan oleh tim spesialis kami dan dipesan melalui front desk.",
+		cta_label: "Hubungi Kami"
+	},
+	image: "facilities/yoga.png", # placeholder — replace with a spa photo via admin
+	gallery: ["facilities/yoga.png", "facilities/pilates.png", "facilities/recovery-center.png"]
+)
+
+club_life_node!(
+	"Spa",
+	attrs: {
+		club_life: false, parent_id: spa.id, position: 1,
+		cta_label: "Enquire", cta_url: "/contact",
+		short_description: "Massage and traditional treatments in quiet rooms away from the courts.",
+		description: "Our treatment rooms sit away from the busier side of the club. Sessions run from short massages between a round and dinner through to longer treatments, and can be booked for one or two people."
+	},
+	id: {
+		name: "Spa",
+		short_description: "Pijat dan perawatan tradisional di ruang tenang jauh dari lapangan.",
+		description: "Ruang perawatan kami berada jauh dari sisi klub yang lebih ramai. Sesi tersedia mulai dari pijat singkat hingga perawatan yang lebih panjang, dan dapat dipesan untuk satu atau dua orang.",
+		cta_label: "Hubungi Kami"
+	},
+	image: "facilities/pilates.png" # placeholder — replace with a spa treatment photo via admin
+)
+
+club_life_node!(
+	"Recovery",
+	rename_from: "Sauna",
+	attrs: {
+		club_life: false, parent_id: spa.id, position: 2,
+		cta_label: "Enquire", cta_url: "/contact",
+		short_description: "Sauna and recovery facilities for members training through the week.",
+		description: "The recovery centre is built around the members who train hardest — sauna, stretching space and hands-on recovery work between sessions. It is the quickest way to get back onto the court or the course the following morning."
+	},
+	id: {
+		name: "Pemulihan",
+		short_description: "Sauna dan fasilitas pemulihan untuk anggota yang berlatih sepanjang minggu.",
+		description: "Pusat pemulihan dirancang untuk anggota yang berlatih paling keras — sauna, ruang peregangan, dan penanganan pemulihan di antara sesi latihan.",
+		cta_label: "Hubungi Kami"
+	}
+)
+
+club_life_node!(
+	"Anti Aging",
+	attrs: {
+		club_life: false, parent_id: spa.id, position: 3,
+		cta_label: "Enquire", cta_url: "/contact",
+		short_description: "Longer-term programmes built around how well you age, not just how you feel today.",
+		description: "Our anti-aging programmes are planned over months rather than single visits, combining treatments with movement and recovery work. Every programme starts with a consultation with one of our specialists so the plan matches where you actually are."
+	},
+	id: {
+		name: "Anti Aging",
+		short_description: "Program jangka panjang yang dibangun untuk kualitas penuaan, bukan sekadar hari ini.",
+		description: "Program anti-aging kami direncanakan dalam hitungan bulan, menggabungkan perawatan dengan latihan gerak dan pemulihan. Setiap program dimulai dengan konsultasi bersama salah satu spesialis kami.",
+		cta_label: "Hubungi Kami"
+	},
+	image: "facilities/yoga.png" # placeholder — replace with an anti-aging photo via admin
+)
+
+puts "Club Life sections: #{Facility.club_life_roots.count} roots, #{Facility.where.not(parent_id: nil).count} children"

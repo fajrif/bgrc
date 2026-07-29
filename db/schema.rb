@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_07_29_033649) do
+ActiveRecord::Schema[7.1].define(version: 2026_07_29_082837) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -257,8 +257,16 @@ ActiveRecord::Schema[7.1].define(version: 2026_07_29_033649) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.jsonb "slug", default: {}
+    t.integer "parent_id"
+    t.integer "sport_id"
+    t.integer "position", default: 0, null: false
+    t.boolean "club_life", default: false, null: false
+    t.jsonb "cta_label", default: {}
+    t.string "cta_url", default: "", null: false
     t.index ["name"], name: "index_facilities_on_name", unique: true
+    t.index ["parent_id"], name: "index_facilities_on_parent_id"
     t.index ["slug"], name: "index_facilities_on_slug", unique: true
+    t.index ["sport_id"], name: "index_facilities_on_sport_id"
   end
 
   create_table "friendly_id_slugs", force: :cascade do |t|
@@ -413,6 +421,24 @@ ActiveRecord::Schema[7.1].define(version: 2026_07_29_033649) do
     t.integer "max_pack_sessions", default: 1
     t.string "calendar_color", default: "#0d6efd"
     t.integer "credit_validity_months"
+  end
+
+  create_table "highlights", force: :cascade do |t|
+    t.jsonb "title", default: {}
+    t.jsonb "short_description", default: {}
+    t.jsonb "slug", default: {}
+    t.jsonb "meta_title", default: {}
+    t.jsonb "meta_description", default: {}
+    t.bigint "category_id"
+    t.datetime "published_date"
+    t.integer "status", default: 1, null: false
+    t.string "tags", default: "", null: false
+    t.integer "position", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["category_id"], name: "index_highlights_on_category_id"
+    t.index ["slug"], name: "index_highlights_on_slug", unique: true
+    t.index ["title"], name: "index_highlights_on_title", unique: true
   end
 
   create_table "inquiries", force: :cascade do |t|

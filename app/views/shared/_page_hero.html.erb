@@ -1,12 +1,17 @@
-<%# locals: banner:, crumbs: %>
-<% if banner %>
+<%# locals: banner:, crumbs:, and optional hero_image:/hero_title:/hero_desc: overrides %>
+<%
+  hero_image = local_assigns[:hero_image].presence || (banner&.image&.attached? ? url_for(banner.image) : nil)
+  hero_title = local_assigns[:hero_title].presence || banner&.title
+  hero_desc  = local_assigns[:hero_desc].presence  || banner&.description
+%>
+<% if hero_image %>
 <!-- start page hero -->
-<section class="bbcc-page-hero" style="background-image:url('<%= url_for(banner.image) %>');">
+<section class="bbcc-page-hero" style="background-image:url('<%= hero_image %>');">
     <div class="bbcc-page-hero-overlay"></div>
     <div class="container-lg">
         <div class="bbcc-page-hero-body">
-            <h1 class="bbcc-page-hero-title"><%= banner.title %></h1>
-            <p class="bbcc-page-hero-desc"><%= banner.description.truncate(200) %></p>
+            <h1 class="bbcc-page-hero-title"><%= hero_title %></h1>
+            <p class="bbcc-page-hero-desc"><%= hero_desc.to_s.truncate(200) %></p>
         </div>
     </div>
 </section>

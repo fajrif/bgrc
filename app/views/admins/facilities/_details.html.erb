@@ -14,9 +14,48 @@
 		</td>
 	</tr>
 	<% end %>
+	<% if @facility.images.attached? %>
+	<tr>
+		<td><b>Image Gallery</b></td>
+		<td>
+			<% @facility.images.each do |img| %>
+				<div class="d-flex align-items-center mb-2">
+					<%= image_tag img.variant(resize_to_limit: [100,100]) %>
+					<%= link_to delete_image_admins_facility_path(@facility.id, img.id), :class => "ms-2 btn btn-danger btn-sm", :data => { :confirm => 'Are You sure want to delete this image?' }, :method => :delete do %>
+						<i class="ri-delete-bin-fill"></i>
+					<% end %>
+				</div>
+			<% end %>
+		</td>
+	</tr>
+	<% end %>
 	<tr>
 		<td><b>Name</b></td>
 		<td><h5 class="fs-14 mb-0 text-body"><%= @facility.name %></h5></td>
+	</tr>
+	<tr>
+		<td><b>Club Life</b></td>
+		<td>
+			<% if @facility.club_life? %>
+				<span class="badge bg-success">Section</span> &mdash; <%= link_to club_life_section_path(@facility), club_life_section_path(@facility) %>
+			<% elsif @facility.parent.present? %>
+				<span class="badge bg-info"><%= @facility.parent.name %></span> &mdash; <%= link_to club_life_section_path(@facility), club_life_section_path(@facility) %>
+			<% else %>
+				<span class="text-muted">Not in the Club Life menu</span>
+			<% end %>
+		</td>
+	</tr>
+	<tr>
+		<td><b>Linked Sport</b></td>
+		<td><%= @facility.sport&.name || "—" %></td>
+	</tr>
+	<tr>
+		<td><b>Position</b></td>
+		<td><%= @facility.position %></td>
+	</tr>
+	<tr>
+		<td><b>Button</b></td>
+		<td><%= @facility.cta_label.presence || "—" %> <%= "→ #{@facility.cta_url}" if @facility.cta_url.present? %></td>
 	</tr>
 	<tr>
 		<td><b>Short Description</b></td>

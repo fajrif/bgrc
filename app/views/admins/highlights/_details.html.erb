@@ -1,0 +1,52 @@
+<table class="table table-hover">
+	<tr>
+		<td style="width:15%;"><b>ID</b></td>
+		<td><%= @highlight.id %></td>
+	</tr>
+	<% if @highlight.image.attached? %>
+	<tr>
+		<td><b>Image</b></td>
+		<td>
+			<%= image_tag @highlight.image.variant(resize_to_limit: [100,100]) %>
+			<%= link_to delete_attachment_image_admins_highlight_path(@highlight.id, @highlight.image.id), :class => "ms-2 btn btn-danger btn-sm", :data => { :confirm => 'Are You sure want to delete this image?' }, :method => :delete do %>
+				<i class="ri-delete-bin-fill"></i>
+			<% end %>
+		</td>
+	</tr>
+	<% end %>
+	<tr>
+		<td><b>Title</b></td>
+		<td><h5 class="fs-14 mb-0 text-body"><%= @highlight.title %></h5></td>
+	</tr>
+	<tr>
+		<td><b>Cadence</b></td>
+		<td><h5 class="fs-14 mb-0 text-body"><%= @highlight.tags %></h5></td>
+	</tr>
+	<tr>
+		<td><b>Slug</b></td>
+		<td><%= link_to highlight_path(@highlight), highlight_path(@highlight) %></td>
+	</tr>
+	<tr>
+		<td><b>Category</b></td>
+		<td><%= badge_category(@highlight.try(:category)) %></td>
+	</tr>
+	<tr>
+		<td><b>Position</b></td>
+		<td><%= @highlight.position %></td>
+	</tr>
+	<tr>
+		<td><b>Status</b></td>
+		<td>
+			<h5 class="fs-14 mb-1"><%= @highlight.published_label %></h5>
+			<p class="text-muted mb-0">Date : <%= @highlight.published_date_label %></p>
+		</td>
+	</tr>
+	<tr>
+		<td><b>Short Description</b></td>
+		<td><%= @highlight.short_description %></td>
+	</tr>
+	<tr>
+		<td><b>Content</b></td>
+		<td><%= raw @highlight.content %></td>
+	</tr>
+</table>

@@ -51,7 +51,7 @@ class HomeController < ApplicationController
       "padel"      => sport_images("Padel"),
       "pickleball" => sport_images("Pickleball"),
       "fitness"    => [facility_image("GYM")].compact,
-      "spa"        => [facility_image("Yoga"), facility_image("Pilates"), facility_image("Sauna")].compact,
+      "spa"        => [facility_image("Yoga"), facility_image("Pilates"), facility_image("Recovery")].compact,
       "dining"     => [facility_image("Restaurant")].compact,
       "events"     => Event.all.map(&:image) + RecurringEvent.active.map(&:image),
       "club_life"  => [facility_image("Pro Shop"), facility_image("Locker Room"),

@@ -32,10 +32,12 @@ jQuery(function ($) {
   });
 
   // Generic "view more" reveal button: shows the hidden siblings matching
-  // the button's data-target selector, then hides itself.
+  // the button's data-target selector, then hides itself. The selector is
+  // always the hiding class itself, so derive the class to strip from it.
   $('.bbcc-view-more').on('click', function () {
     var $btn = $(this);
-    $($btn.data('target')).removeClass('bbcc-masonry-item-hidden');
+    var target = String($btn.data('target') || '');
+    $(target).removeClass(target.replace(/^\./, ''));
     $btn.hide();
   });
 

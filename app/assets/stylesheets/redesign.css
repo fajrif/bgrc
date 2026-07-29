@@ -560,6 +560,53 @@ body.bbcc-no-scroll { overflow: hidden; }
 }
 
 /* =====================================================================
+   CLUB LIFE
+   ===================================================================== */
+.bbcc-section-alt { background: var(--bbcc-bg-alt); }
+
+/* mosaic — one wide lead tile, then a 2-up grid */
+.bbcc-tile-wide { height: 400px; }
+.bbcc-clublife-mosaic .bbcc-tile-desc { max-width: 520px; }
+.bbcc-clublife-mosaic .bbcc-tile .bbcc-tile-desc { opacity: 0; max-height: 0; transition: opacity .3s, max-height .3s; }
+.bbcc-clublife-mosaic .bbcc-tile:hover .bbcc-tile-desc { opacity: 1; max-height: 160px; }
+
+/* left rail — extends .bbcc-faq-nav with a nested level */
+.bbcc-clublife-nav { gap: 18px; }
+.bbcc-clublife-nav-group { display: flex; flex-direction: column; gap: 14px; }
+.bbcc-clublife-nav-caret { font-size: 11px; margin-left: 8px; color: var(--bbcc-ink-soft); }
+.bbcc-clublife-nav-children { display: flex; flex-direction: column; gap: 12px; padding-left: 20px; }
+.bbcc-clublife-nav-child {
+  width: fit-content; font-size: 15px; color: var(--bbcc-ink-soft);
+  padding-bottom: 3px; border-bottom: 2px solid transparent;
+}
+.bbcc-clublife-nav-child:hover { color: var(--bbcc-ink); text-decoration: none; }
+.bbcc-clublife-nav-child.active { color: var(--bbcc-ink); font-weight: 600; border-bottom-color: var(--bbcc-ink); }
+
+.bbcc-clublife-body p { margin-bottom: 16px; }
+.bbcc-clublife-body p:last-child { margin-bottom: 24px; }
+.bbcc-clublife-photo-hidden { display: none; }
+
+/* service card — image, light body, full-width CTA.
+   Shared by the Golf sub-sections, the Spa services and the class listings. */
+.bbcc-service-card { display: flex; flex-direction: column; height: 100%; background: #dedede; }
+.bbcc-service-card-image { display: block; overflow: hidden; }
+.bbcc-service-card-image img { width: 100%; height: 210px; object-fit: cover; display: block; transition: transform .4s; }
+.bbcc-service-card-image:hover img { transform: scale(1.04); }
+.bbcc-service-card-body { display: flex; flex-direction: column; flex: 1 1 auto; padding: 22px 24px 26px; }
+.bbcc-service-card-title {
+  display: block; font-family: "Mona Sans", sans-serif;
+  text-transform: uppercase; letter-spacing: 1px; font-size: 17px; font-weight: 600;
+  color: var(--bbcc-ink); margin-bottom: 12px;
+}
+.bbcc-service-card-title:hover { color: var(--bbcc-dark-hover); text-decoration: none; }
+.bbcc-service-card-desc { color: var(--bbcc-ink-soft); line-height: 1.6; margin: 0 0 20px; }
+.bbcc-service-card .bbcc-post-meta { margin-bottom: 10px; }
+.bbcc-service-card-body .bbcc-btn { margin-top: auto; }
+.bbcc-btn-block { display: block; width: 100%; text-align: center; }
+
+.bbcc-specialists .text-center { margin-top: 36px; }
+
+/* =====================================================================
    FOOTER
    ===================================================================== */
 .bbcc-footer { background: var(--bbcc-bg-alt); color: var(--bbcc-ink); }
@@ -635,6 +682,8 @@ body.bbcc-no-scroll { overflow: hidden; }
   .bbcc-masonry { column-count: 2; }
   .bbcc-coach-card .bbcc-card-image { height: 320px; }
   .bbcc-mits-split-image { min-height: 240px; }
+  .bbcc-tile-wide { height: 300px; }
+  .bbcc-clublife-mosaic .bbcc-tile .bbcc-tile-desc { opacity: 1; max-height: 160px; }
 }
 
 @media (max-width: 767px) {
@@ -656,4 +705,6 @@ body.bbcc-no-scroll { overflow: hidden; }
   .bbcc-gallery-bottom { grid-template-columns: repeat(2, 1fr); }
   .bbcc-team-card-image img { height: 260px; }
   .bbcc-mits-split-body, .bbcc-mits-contact { padding: 32px; }
+  .bbcc-tile-wide { height: 240px; }
+  .bbcc-clublife-nav-children { padding-left: 16px; }
 }

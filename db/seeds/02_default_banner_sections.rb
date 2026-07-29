@@ -26,3 +26,5 @@ puts "create all banner sections"
 @bs18 = BannerSection.create(name: "Disclaimer")
 @bs19 = BannerSection.create(name: "Privacy Policy")
 @bs20 = BannerSection.create(name: "Terms & Conditions")
+@bs21 = BannerSection.create(name: "Club Life")
+@bs22 = BannerSection.create(name: "Highlights")

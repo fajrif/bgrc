@@ -1,24 +1,16 @@
 class FacilitiesController < ApplicationController
-  before_action :set_banner, only: [:index]
 
+  # Facilities are now presented through Club Life; the old flat list is gone.
   def index
-    criteria = Facility.all
-		@facilities = criteria.page(params[:page]).per(12)
-
-		@meta_title = "Our Facilities"
-		@meta_desc = "Facilities"
+    redirect_to club_life_path, status: :moved_permanently
   end
 
   def show
 		@facility = Facility.friendly.find(params[:id])
+		return redirect_to club_life_section_path(@facility), status: :moved_permanently if @facility.in_club_life?
+
 		@meta_title = @facility.name
 		@meta_desc = @facility.short_description
-  end
-
-  private
-
-  def set_banner
-    @banner = BannerSection.where(name: "Facilities").first.banners.first
   end
 
 end

@@ -1,0 +1,50 @@
+<%= render "shared/page_hero", banner: @banner, crumbs: [{ label: "Highlights" }] %>
+
+<!-- start highlights index -->
+<section class="bbcc-section bbcc-blog-index">
+    <div class="container-lg">
+        <div class="bbcc-section-head bbcc-section-head-center">
+            <h1 class="bbcc-section-title">BBCC Highlights</h1>
+            <p class="bbcc-lead bbcc-section-sub">
+                Socials, clinics, tournaments and the regular fixtures that make up the club
+                calendar &mdash; on the course, on the courts and around the club.
+            </p>
+        </div>
+
+        <nav class="bbcc-tabs" aria-label="Highlight categories">
+            <%= link_to "All", highlights_path, class: ["bbcc-tab", ("active" if @category.nil?)] %>
+            <% @categories.each do |category| %>
+                <%= link_to category.name, highlights_path(category_id: category.id), class: ["bbcc-tab", ("active" if @category == category)] %>
+            <% end %>
+        </nav>
+
+        <% if @highlights.any? %>
+            <div class="row g-4">
+                <% @highlights.each do |highlight| %>
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <article class="bbcc-post">
+                            <%= link_to highlight_path(highlight), class: "bbcc-post-image" do %>
+                                <% if highlight.image.attached? %>
+                                    <%= image_tag highlight.image.variant(resize_to_fill: [750, 500]), alt: highlight.title %>
+                                <% else %>
+                                    <span class="bbcc-post-image-ph" style="background-image:url('<%= image_url('images/image-4.png') %>');"></span>
+                                <% end %>
+                            <% end %>
+                            <div class="bbcc-post-body">
+                                <span class="bbcc-post-meta"><%= raw highlight.meta_label %></span>
+                                <%= link_to highlight.title, highlight_path(highlight), class: "bbcc-post-title" %>
+                                <p class="bbcc-post-excerpt"><%= highlight.short_description.to_s.truncate(140) %></p>
+                                <%= link_to "Read More", highlight_path(highlight), class: "bbcc-btn" %>
+                            </div>
+                        </article>
+                    </div>
+                <% end %>
+            </div>
+
+            <%= paginate @highlights, theme: "bbcc" %>
+        <% else %>
+            <p class="bbcc-faq-empty">No highlights in this category yet.</p>
+        <% end %>
+    </div>
+</section>
+<!-- end highlights index -->

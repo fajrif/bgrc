@@ -1,0 +1,68 @@
+<%= simple_form_for @highlight, url: (@highlight.new_record? ? admins_highlights_path : admins_highlight_path(@highlight.id)), method: (@highlight.new_record? ? :post : :put) do |f| %>
+	<div class="row">
+		<div class="col-lg-8">
+			<div class="card">
+				<div class="card-body">
+					<%= f.error_notification %>
+					<fieldset>
+						<!-- Accordions with Icons -->
+						<div class="accordion custom-accordionwithicon mb-3" id="accordionWithicon">
+							<div class="accordion-item">
+								<h2 class="accordion-header" id="accordionwithiconExample1">
+									<button class="accordion-button collapsed text-primary" type="button" data-bs-toggle="collapse" data-bs-target="#metatags" aria-expanded="true" aria-controls="metatags">
+											<i class="ri-global-line me-2"></i> META TAGS
+									</button>
+								</h2>
+								<div id="metatags" class="accordion-collapse collapse" aria-labelledby="metatags" data-bs-parent="#accordionWithicon">
+									<div class="accordion-body">
+										<%= f.input :meta_title, as: :string %>
+										<%= f.input :meta_description, as: :text %>
+									</div>
+								</div>
+							</div>
+						</div>
+						<%= f.input :image, as: :file, input_html: { class: "mb-3", accept: "image/gif, image/png, image/jpg, image/jpeg" } %>
+						<%= f.input :title, as: :string %>
+						<%= f.input :tags, as: :string, label: "Cadence", hint: "Shown before the category on each card, e.g. Weekly, Weekends, Monthly." %>
+						<%= f.input :short_description, as: :text %>
+						<%= f.input :content, as: :rich_text_area %>
+					</fieldset>
+					<%= f.error :base %>
+					<div class="form-actions">
+						<%= f.button :submit, :class => 'btn btn-secondary' %>
+						<% unless @highlight.new_record? %>
+							<%= link_to "Cancel", admins_highlight_path(@highlight.id), :class => 'btn btn-light' %>
+						<% else %>
+							<%= link_to "Cancel", admins_highlights_path, :class => 'btn btn-light' %>
+						<% end %>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-lg-4">
+			<div class="row">
+				<%= render "admins/shared/error_messages", :target => @highlight, col: 'col-lg-12' %>
+				<div class="col-lg-12">
+					<div class="card">
+						<div class="card-header">
+							<h5 class="card-title mb-0">Settings</h5>
+						</div>
+						<div class="card-body">
+							<%= f.association :category, as: :select, include_blank: "— none —" %>
+							<%= f.input :position, as: :integer, hint: "Lower numbers show first." %>
+							<%= f.input :published_date, as: :string, input_html: { class: "datetimepicker", value: get_input_date_value(f.object.published_date) } %>
+							<%= f.input :status, as: :select, collection: get_published_status, value_method: :first, label_method: :last %>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+<% end %>
+
+<%= content_for :tail do %>
+	<%= stylesheet_link_tag :actiontext, "data-turbo-track": "reload" %>
+	<%= javascript_include_tag :trix %>
+	<%= javascript_include_tag :actiontext %>
+	<%= javascript_include_tag "trix_config.js" %>
+<% end %>

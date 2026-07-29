@@ -220,3 +220,25 @@ Mobility.with_locale(:id) {
 }
 banner.save
 puts "Create Banner: #{banner.title}"
+
+# Banner Club Life
+banner = Banner.new(title: "Club Life", description: "Golf, racquet sports, the beach club, fitness and wellness — everything the club opens up to you.")
+banner.image.attach(io: Rails.root.join("vendor/assets/images/banners/banner-padel.png").open, filename: "banner-padel.png")
+banner.banner_section = @bs21
+Mobility.with_locale(:id) {
+	banner.title = "Club Life"
+	banner.description = "Golf, olahraga raket, beach club, kebugaran, dan wellness — semua yang klub tawarkan untuk Anda."
+}
+banner.save
+puts "Create Banner: #{banner.title}"
+
+# Banner Highlights
+banner = Banner.new(title: "BBCC Highlights", description: "Socials, clinics, tournaments and the regular fixtures that make up the club calendar.")
+banner.image.attach(io: Rails.root.join("vendor/assets/images/banners/banner-events.png").open, filename: "banner-events.png")
+banner.banner_section = @bs22
+Mobility.with_locale(:id) {
+	banner.title = "BBCC Highlights"
+	banner.description = "Acara sosial, klinik, turnamen, dan agenda rutin yang mengisi kalender klub."
+}
+banner.save
+puts "Create Banner: #{banner.title}"

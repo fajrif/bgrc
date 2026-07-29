@@ -1,13 +1,6 @@
 <!-- start highlights / special events -->
-<%
-  highlights = [
-    { title: "Special Events",     image: "banners/banner-padel.png" },
-    { title: "Weekend Tournaments",image: "images/image-6.png" },
-    { title: "Ladies' Night",      image: "images/image-2.png" },
-    { title: "Junior Camps",       image: "images/image-3.png" },
-    { title: "Sunset Sessions",    image: "images/image-5.png" }
-  ]
-%>
+<% highlights = Highlight.published.limit(8) %>
+<% if highlights.any? %>
 <section class="bbcc-section bbcc-highlights" id="highlights">
     <div class="container-lg">
         <div class="bbcc-section-head bbcc-section-head-center">
@@ -17,12 +10,13 @@
     <div class="container-lg">
         <div class="swiper bbcc-swiper bbcc-highlights-swiper">
             <div class="swiper-wrapper">
-                <% highlights.each do |h| %>
+                <% highlights.each do |highlight| %>
                     <div class="swiper-slide">
-                        <a href="<%= events_path %>" class="bbcc-highlight" style="background-image:url('<%= image_url(h[:image]) %>');">
+                        <%= link_to highlight_path(highlight), class: "bbcc-highlight",
+                                    style: ("background-image:url('#{url_for(highlight.image)}');" if highlight.image.attached?) do %>
                             <span class="bbcc-highlight-shade"></span>
-                            <span class="bbcc-highlight-title"><%= h[:title] %></span>
-                        </a>
+                            <span class="bbcc-highlight-title"><%= highlight.title %></span>
+                        <% end %>
                     </div>
                 <% end %>
             </div>
@@ -34,4 +28,5 @@
         </div>
     </div>
 </section>
+<% end %>
 <!-- end highlights / special events -->
