@@ -1,41 +1,13 @@
-<!-- start of wpo-destination-single-section -->
-<section class="wpo-destination-single-section section-padding pt-120">
-		<div class="container">
-				<div class="row">
-						<%= render "users/accounts/sidebar" %>
-						<div class="col-lg-8 col-md-12">
-								<div class="wpo-destination-single-wrap">
-										<div class="question-touch cart-area text-start" style="max-width:none;" id="bookingsTable">
-											<h2 style="text-align:left;">Order Booking History</h2>
-											<%= render "table_history" %>
-										</div>
-								</div>
-						</div>
-				</div>
-		</div>
-</section>
-<!-- end of wpo-destination-single-section -->
+<!-- start booking history -->
+<section class="bbcc-section bbcc-account">
+    <div class="container-lg">
+        <%= render "users/shared/account_nav" %>
+        <%= render "users/shared/booking_view_switch" %>
 
-<style>
-	#bookingsTable {
-		overflow: scroll;
-    overflow-y: hidden;
-	}
-	.cart-area .cart-wrap .product-2 {
-		padding-left: 5px;
-	}
-	.cart-area .cart-wrap td {
-		text-align: left;
-		padding: 10px;
-	}
-	.cart-area .cart-wrap td, .cart-area .cart-wrap th {
-		text-align: left;
-	}
-	.cart-area .cart-wrap th {
-		padding: 10px 0;
-		height: 20px;
-	}
-	ul.pagination li {
-		padding: 10px;
-	}
-</style>
+        <div id="bookingsTable">
+            <%= render "table_history" %>
+        </div>
+        <%= paginate @bookings, theme: "bbcc" %>
+    </div>
+</section>
+<!-- end booking history -->

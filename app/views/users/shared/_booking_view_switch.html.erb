@@ -1,0 +1,15 @@
+<%# sub-navigation for the "My Bookings" tab: courts/classes list, calendar, golf and history %>
+<div class="bbcc-viewswitch">
+    <%= link_to users_bookings_path, class: ["bbcc-viewswitch-btn", ("active" if is_users_bookings_list_page?)] do %>
+        <i class="fa-solid fa-list-ul"></i> List View
+    <% end %>
+    <%= link_to calendar_users_bookings_path, class: ["bbcc-viewswitch-btn", ("active" if is_users_schedule_page?)] do %>
+        <i class="fa-solid fa-table-cells-large"></i> Calendar View
+    <% end %>
+    <%= link_to users_golf_reservations_path, class: ["bbcc-viewswitch-btn", ("active" if is_users_golf_page?)] do %>
+        <i class="fa-solid fa-golf-ball-tee"></i> Golf
+    <% end %>
+    <%= link_to history_users_bookings_path, class: ["bbcc-viewswitch-btn", ("active" if is_users_bookings_history_page?)] do %>
+        <i class="fa-solid fa-clock-rotate-left"></i> History
+    <% end %>
+</div>

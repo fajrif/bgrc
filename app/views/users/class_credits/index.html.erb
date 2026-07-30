@@ -1,68 +1,84 @@
-<section class="half-section">
-    <div class="container">
-        <%= render "users/shared/sidebar" %>
-        <div class="row align-items-start mb-4">
-            <div class="col-lg-12 col-md-12 text-center text-md-start padding-five-lr lg-padding-six-lr md-padding-15px-lr">
-                <h6 class="font-weight-600 text-uppercase margin-20px-bottom letter-spacing-8">My Class Credits</h6>
-                <% if @credit_purchases.any? %>
-                    <table class="table table-striped table-responsive">
-                        <thead>
+<!-- start class credits -->
+<section class="bbcc-section bbcc-account">
+    <div class="container-lg">
+        <%= render "users/shared/account_nav" %>
+
+        <% if @credit_purchases.any? %>
+            <div class="bbcc-table-scroll">
+                <table class="bbcc-table">
+                    <thead>
+                        <tr>
+                            <th>Order ID</th>
+                            <th>Class</th>
+                            <th>Sessions Purchased</th>
+                            <th>Sessions Used</th>
+                            <th>Sessions Remaining</th>
+                            <th>Price Paid</th>
+                            <th>Status</th>
+                            <th>Purchase Date</th>
+                            <th>Expired</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% @credit_purchases.each do |cp| %>
                             <tr>
-                                <th>Order ID</th>
-                                <th>Class</th>
-                                <th>Sessions Purchased</th>
-                                <th>Sessions Used</th>
-                                <th>Sessions Remaining</th>
-                                <th>Price Paid</th>
-                                <th>Status</th>
-                                <th>Purchase Date</th>
-                                <th>Expires</th>
+                                <td>
+                                    <%= link_to cp.order_id, class_credit_purchase_path(cp), class: "bbcc-table-id" %>
+                                    <% unless cp.paid? %>
+                                        <%= link_to "Cancel Order", users_class_credit_path(cp), method: :delete,
+                                                    data: { confirm: "Are you sure you want to cancel order #{cp.order_id}?" },
+                                                    class: "bbcc-table-note" %>
+                                    <% end %>
+                                </td>
+                                <td><%= cp.group_class.name %></td>
+                                <td class="bbcc-table-num"><%= cp.sessions_count %></td>
+                                <td class="bbcc-table-num"><%= cp.sessions_used %></td>
+                                <td class="bbcc-table-num">
+                                    <%= cp.group_class.is_prescheduled? ? "—" : cp.sessions_remaining %>
+                                </td>
+                                <td><%= cp.price_label %></td>
+                                <td>
+                                    <span class="bbcc-badge <%= 'bbcc-badge-warn' unless cp.paid? %>"><%= cp.status_label %></span>
+                                </td>
+                                <td><%= cp.purchase_date.strftime('%d %b %Y') %></td>
+                                <td><%= cp.expires_at&.strftime('%d %b %Y') || "—" %></td>
+                                <td>
+                                    <button type="button" class="bbcc-credit-toggle" aria-expanded="false"
+                                            aria-controls="credit-panel-<%= cp.id %>" data-target="#credit-panel-<%= cp.id %>"
+                                            aria-label="Show sessions for order <%= cp.order_id %>">
+                                        <i class="fa-solid fa-caret-right"></i>
+                                    </button>
+                                </td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            <% @credit_purchases.each do |cp| %>
-                                <tr>
-                                    <td class="font-weight-500">
-                                        <%= link_to cp.order_id, class_credit_purchase_path(cp), class: "text-dark d-block" %>
-                                        <% if cp.paid? && cp.sessions_remaining > 0 && !cp.group_class.is_prescheduled? %>
-                                            <%= link_to "Book a Session", book_session_class_credit_purchase_path(cp), class: "text-extra-small text-green" %>
-                                        <% elsif cp.paid? && cp.group_class.is_prescheduled? %>
-                                            <span class="text-extra-small text-green fw-semibold">Registered</span>
-                                        <% elsif !cp.paid? %>
-                                            <%= link_to "Complete Payment →", class_credit_purchase_path(cp), class: "text-extra-small text-warning fw-semibold d-block" %>
-                                            <%= link_to "Cancel Order", users_class_credit_path(cp),
-                                                  method: :delete,
-                                                  data: { confirm: "Are you sure you want to cancel order #{cp.order_id}?" },
-                                                  class: "text-extra-small text-danger" %>
-                                        <% end %>
-                                    </td>
-                                    <td><%= cp.group_class.name %></td>
-                                    <td class="text-center"><%= cp.sessions_count %></td>
-                                    <td class="text-center"><%= cp.sessions_used %></td>
-                                    <td class="text-center font-weight-500 <%= cp.sessions_remaining > 0 ? 'text-green' : 'text-red' %>">
-                                        <%= cp.group_class.is_prescheduled? ? '—' : cp.sessions_remaining %>
-                                    </td>
-                                    <td><%= cp.price_label %></td>
-                                    <td>
-                                        <% if cp.paid? %>
-                                            <span class="badge bg-success">Paid</span>
-                                        <% else %>
-                                            <span class="badge bg-warning text-dark">Pending</span>
-                                        <% end %>
-                                    </td>
-                                    <td class="text-muted small"><%= cp.purchase_date.strftime('%d %b %Y') %></td>
-                                    <td class="text-muted small"><%= cp.expires_at&.strftime('%d %b %Y') || '—' %></td>
-                                </tr>
-                            <% end %>
-                        </tbody>
-                    </table>
-                <% else %>
-                    <div class="text-center padding-40px-tb">
-                        <p class="text-medium">You have no session credits yet.</p>
-                        <%= link_to "Browse Classes", search_path, class: "btn btn-dark btn-small text-white" %>
-                    </div>
-                <% end %>
+                            <tr class="bbcc-credit-panel" id="credit-panel-<%= cp.id %>" hidden>
+                                <td colspan="10">
+                                    <%# sticky wrapper keeps the session cards in view while the wide table scrolls sideways %>
+                                    <div class="bbcc-credit-panel-inner"><%= render "panel", cp: cp %></div>
+                                </td>
+                            </tr>
+                        <% end %>
+                    </tbody>
+                </table>
             </div>
-        </div>
+        <% else %>
+            <div class="bbcc-table-empty">
+                <p>You have no session credits yet.</p>
+                <%= link_to "Browse Classes", group_classes_path, class: "bbcc-btn" %>
+            </div>
+        <% end %>
     </div>
 </section>
+<!-- end class credits -->
+
+<script>
+  // plain JS: this runs before application.js (and jQuery) is loaded at the end of <body>
+  document.querySelectorAll('.bbcc-credit-toggle').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var panel = document.querySelector(btn.dataset.target);
+      var expanded = btn.getAttribute('aria-expanded') === 'true';
+      if (panel) panel.hidden = expanded;
+      btn.setAttribute('aria-expanded', expanded ? 'false' : 'true');
+    });
+  });
+</script>

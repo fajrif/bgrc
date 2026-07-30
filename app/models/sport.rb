@@ -19,4 +19,9 @@ class Sport < ApplicationRecord
 	def should_generate_new_friendly_id?
 		self.name_changed?
 	end
+
+	# golf is sold as tee times on its own booking page, not as court bookings
+	def golf?
+		slug.to_s == "golf" || name.to_s.strip.casecmp?("golf")
+	end
 end

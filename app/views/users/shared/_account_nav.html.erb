@@ -1,0 +1,12 @@
+<div class="bbcc-account-head">
+    <h1 class="bbcc-account-title">Welcome, <%= current_user.full_name %></h1>
+    <p class="bbcc-account-since"><%= member_since_label(current_user) %></p>
+</div>
+
+<nav class="bbcc-tabs bbcc-tabs-center bbcc-account-tabs" aria-label="Account sections">
+    <%= link_to "My Account", users_account_path, class: ["bbcc-tab", ("active" if is_users_account_page?)] %>
+    <%= link_to "My Bookings", users_bookings_path, class: ["bbcc-tab", ("active" if is_users_bookings_page?)] %>
+    <%= link_to "Class Credits", users_class_credits_path, class: ["bbcc-tab", ("active" if is_users_credits_page?)] %>
+    <%= link_to "Payment", users_payments_path, class: ["bbcc-tab", ("active" if is_users_payment_page?)] %>
+    <%= link_to "Log Out", users_logout_path, class: ["bbcc-tab", ("active" if is_users_logout_page?)] %>
+</nav>

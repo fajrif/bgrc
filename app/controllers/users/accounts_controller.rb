@@ -3,7 +3,6 @@ class Users::AccountsController < Users::BaseController
 
   def show
     @user = current_user
-		@purchases = current_user.purchases.where(productable_type: "Product", status_code: "200")
   end
 
   def update
@@ -15,6 +14,11 @@ class Users::AccountsController < Users::BaseController
 			flash[:alert] = "Unable to update user. Please complete some required fields."
 			render :show
 		end
+  end
+
+  # confirmation screen for the "Log Out" account tab; the sign-out itself
+  # stays on Devise's destroy_user_session_path
+  def logout
   end
 
 	def delete_photo

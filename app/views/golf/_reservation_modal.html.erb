@@ -1,9 +1,11 @@
-<div class="modal fade" id="reservationModal" tabindex="-1" aria-labelledby="reservationModalLabel" aria-hidden="true">
+<div class="modal fade bbcc-modal" id="reservationModal" tabindex="-1" aria-labelledby="reservationModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title alt-font text-uppercase font-weight-600" id="reservationModalLabel">Book Tee Time</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <h2 class="bbcc-modal-title" id="reservationModalLabel">Book Tee Time</h2>
+        <button type="button" class="bbcc-modal-close" data-bs-dismiss="modal" aria-label="Close">
+          <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+        </button>
       </div>
 
       <%= form_tag golf_reservations_path, method: :post, id: "reservation-modal-form" do %>
@@ -11,18 +13,16 @@
           <input type="hidden" name="tee_time" id="modal-tee-time-input">
 
           <!-- Selected Tee Time -->
-          <div class="mb-4">
-            <label class="text-medium font-weight-600 mb-1 d-block">Selected Tee Time</label>
-            <div class="border padding-15px-all" style="background-color:#f8f9fa;border-radius:6px;">
-              <span class="text-medium font-weight-600" id="modal-tee-time-display">—</span>
-            </div>
-            <div id="modal-tee-time-error" class="text-danger text-medium mt-2" style="display:none;"></div>
+          <div class="bbcc-modal-callout">
+            <span class="bbcc-modal-label">Selected Tee Time</span>
+            <span class="bbcc-modal-value" id="modal-tee-time-display">—</span>
           </div>
+          <p id="modal-tee-time-error" class="bbcc-field-error-text" style="display:none;"></p>
 
           <!-- Number of Players -->
-          <div class="mb-4">
-            <label class="text-medium font-weight-600 mb-2 d-block" for="modal_players_count">Number of Players</label>
-            <select name="players_count" id="modal_players_count" class="form-select text-medium">
+          <div class="bbcc-field">
+            <label for="modal_players_count">Number of Players</label>
+            <select name="players_count" id="modal_players_count">
               <% [1, 2, 3, 4].each do |n| %>
                 <option value="<%= n %>"><%= n %> <%= "Player".pluralize(n) %></option>
               <% end %>
@@ -30,37 +30,35 @@
           </div>
 
           <!-- Number of Holes -->
-          <div class="mb-4">
-            <label class="text-medium font-weight-600 mb-2 d-block">Number of Holes</label>
-            <div class="d-flex flex-wrap gap-3">
+          <div class="bbcc-modal-group">
+            <span class="bbcc-modal-label">Number of Holes</span>
+            <div class="bbcc-radio-row">
               <% golf_course.holes_list.each do |holes| %>
-                <div class="form-check form-check-inline">
-                  <input class="form-check-input" type="radio" name="holes"
-                         id="modal_holes_<%= holes %>" value="<%= holes %>" <%= holes == golf_course.holes_list.last ? "checked" : "" %>>
-                  <label class="form-check-label text-medium" for="modal_holes_<%= holes %>">
-                    <%= holes %> Holes
-                  </label>
-                </div>
+                <label class="bbcc-radio" for="modal_holes_<%= holes %>">
+                  <input type="radio" name="holes" id="modal_holes_<%= holes %>"
+                         value="<%= holes %>" <%= holes == golf_course.holes_list.last ? "checked" : "" %>>
+                  <span><%= holes %> Holes</span>
+                </label>
               <% end %>
             </div>
           </div>
 
           <!-- Estimated Green Fee -->
-          <div class="border padding-15px-all" style="background-color:#f8f9fa;border-radius:6px;">
-            <div class="d-flex justify-content-between align-items-center mb-1">
-              <span class="text-medium text-medium-gray">Rate per player</span>
-              <span class="text-medium" id="modal-rate-per-player">—</span>
+          <div class="bbcc-modal-summary">
+            <div class="bbcc-modal-summary-row">
+              <span>Rate per player</span>
+              <span id="modal-rate-per-player">—</span>
             </div>
-            <div class="d-flex justify-content-between align-items-center">
-              <span class="text-medium font-weight-600">Estimated Green Fee</span>
-              <span class="text-medium font-weight-700" id="modal-green-fee" style="font-size:1.05em;">—</span>
+            <div class="bbcc-modal-summary-row bbcc-modal-summary-total">
+              <span>Estimated Green Fee</span>
+              <span id="modal-green-fee">—</span>
             </div>
           </div>
         </div>
 
         <div class="modal-footer">
-          <button type="button" class="btn btn-light-gray btn-medium text-medium" data-bs-dismiss="modal">Cancel</button>
-          <button type="submit" id="modal-submit-btn" class="btn btn-dark-gray btn-medium text-medium">Reserve Tee Time</button>
+          <button type="button" class="bbcc-btn bbcc-btn-light" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" id="modal-submit-btn" class="bbcc-btn">Reserve Tee Time</button>
         </div>
       <% end %>
     </div>

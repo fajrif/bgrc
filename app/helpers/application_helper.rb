@@ -83,15 +83,28 @@ module ApplicationHelper
   end
 
 	def is_users_account_page?
-		controller.controller_name == "accounts"
+		controller.controller_name == "accounts" && controller.action_name != "logout"
 	end
 
+	# My Bookings covers court/class bookings, the schedule calendar and golf reservations
 	def is_users_bookings_page?
-		controller.controller_name == "bookings" && controller.action_name != "calendar"
+		%w[bookings golf_reservations].include?(controller.controller_name)
+	end
+
+	def is_users_bookings_list_page?
+		controller.controller_name == "bookings" && controller.action_name == "index"
 	end
 
 	def is_users_schedule_page?
 		controller.controller_name == "bookings" && controller.action_name == "calendar"
+	end
+
+	def is_users_bookings_history_page?
+		controller.controller_name == "bookings" && controller.action_name == "history"
+	end
+
+	def is_users_credits_page?
+		controller.controller_name == "class_credits"
 	end
 
 	def is_users_packages_page?
@@ -106,11 +119,21 @@ module ApplicationHelper
 		controller.controller_name == "golf_reservations"
 	end
 
+	def is_users_logout_page?
+		controller.controller_name == "accounts" && controller.action_name == "logout"
+	end
+
+	def member_since_label(user)
+		date = user.created_at.to_date
+		"Member since #{date.strftime('%B')} #{date.day.ordinalize}, #{date.year}"
+	end
+
 	def productable_type_label(type)
 		case type
 		when "Booking" then "Booking"
-		when "ClassCreditPurchase" then "ClassCredit"
-		else type
+		when "ClassCreditPurchase" then "Class Credit"
+		when "GolfReservation" then "Golf"
+		else type.to_s.underscore.humanize
 		end
 	end
 

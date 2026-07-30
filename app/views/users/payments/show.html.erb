@@ -1,0 +1,69 @@
+<!-- start payment receipt -->
+<section class="bbcc-section bbcc-account">
+    <div class="container-lg">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4 d-print-none">
+            <%= link_to "Back to Payments", users_payments_path, class: "bbcc-link" %>
+            <button type="button" class="bbcc-btn bbcc-btn-sm" onclick="window.print()">Print / Save as PDF</button>
+        </div>
+
+        <div class="bbcc-receipt">
+            <div class="bbcc-receipt-head">
+                <div>
+                    <h1 class="bbcc-receipt-title"><%= configatron.site_title %></h1>
+                    <p class="bbcc-account-since"><%= raw configatron.location_address %></p>
+                </div>
+                <div class="bbcc-receipt-meta">
+                    <p class="bbcc-account-since mb-0">Receipt</p>
+                    <p class="bbcc-table-id mb-0">#<%= @purchase.order_id %></p>
+                    <p class="bbcc-account-since mb-0"><%= @purchase.created_at.strftime('%d %b %Y %H:%M') %></p>
+                </div>
+            </div>
+
+            <table class="bbcc-receipt-rows">
+                <tbody>
+                    <tr>
+                        <th>Billed to</th>
+                        <td><%= current_user.full_name %> &middot; <%= current_user.email %></td>
+                    </tr>
+                    <tr>
+                        <th>Type</th>
+                        <td><%= productable_type_label(@purchase.productable_type) %></td>
+                    </tr>
+                    <tr>
+                        <th>Description</th>
+                        <td><%= @purchase.productable.try(:name) || "—" %></td>
+                    </tr>
+                    <tr>
+                        <th>Payment method</th>
+                        <td>
+                            <%= @purchase.payment_type&.humanize || "—" %>
+                            <% if @purchase.bank.present? %>&middot; <%= @purchase.bank.upcase %><% end %>
+                            <% if @purchase.masked_card.present? %>&middot; <%= @purchase.masked_card %><% end %>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Transaction ID</th>
+                        <td><%= @purchase.transaction_id.presence || "—" %></td>
+                    </tr>
+                    <tr>
+                        <th>Status</th>
+                        <td>
+                            <% if @purchase.status_code.in?(["200", "201"]) %>
+                                <span class="bbcc-badge">Paid</span>
+                            <% elsif @purchase.status_code == "000" %>
+                                <span class="bbcc-badge bbcc-badge-warn">Pending</span>
+                            <% else %>
+                                <span class="bbcc-badge bbcc-badge-danger"><%= @purchase.status_message.presence || "Failed" %></span>
+                            <% end %>
+                        </td>
+                    </tr>
+                    <tr class="bbcc-receipt-total">
+                        <th>Total paid</th>
+                        <td><%= number_to_currency(@purchase.gross_amount, unit: "Rp. ", separator: ",", delimiter: ".", precision: 0) %></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+<!-- end payment receipt -->

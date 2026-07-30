@@ -1,22 +1,13 @@
-<section class="half-section">
-    <div class="container">
-        <%= render "users/shared/sidebar" %>
-        <div class="row align-items-start mb-4">
-            <div class="col-lg-12 col-md-12 text-center text-md-start padding-five-lr lg-padding-six-lr md-padding-15px-lr">
-                <h6 class="font-weight-600 text-uppercase margin-20px-bottom letter-spacing-8">My Booking</h6>
-								<div id="bookingsTable">
-                  <%= render "table" %>
-                </div>
-            </div>
+<!-- start my bookings -->
+<section class="bbcc-section bbcc-account">
+    <div class="container-lg">
+        <%= render "users/shared/account_nav" %>
+        <%= render "users/shared/booking_view_switch" %>
+
+        <div id="bookingsTable">
+            <%= render "table" %>
         </div>
-        <%= paginate @bookings, theme: :pofo %>
+        <%= paginate @bookings, theme: "bbcc" %>
     </div>
 </section>
-<%= content_for :tail do %>
-<style>
-  #bookingsTable .table td {
-    font-weight: 300;
-    font-size: 14px;
-  }
-</style>
-<% end %>
+<!-- end my bookings -->

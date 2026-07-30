@@ -1,0 +1,34 @@
+<%# locals: active: — :golf, :racquet, :fitness, :spa or :dining %>
+<%
+	# Fitness and Spa have no online booking of their own, so those two tabs point at
+	# their Club Life pages; the lookup mirrors home/_feature_grid.
+	club_life_roots = Facility.club_life_roots.index_by(&:en_name)
+	club_life_link  = ->(en_name) {
+		section = club_life_roots[en_name]
+		section ? club_life_section_path(section) : club_life_path
+	}
+	# /search needs a sport, so Racquet Sports opens the court calendar of the first
+	# racquet section that is wired to one (Tennis).
+	racquet      = club_life_roots["Racquet Sports"]
+	racquet_sport = racquet&.children&.find { |child| child.sport_id.present? }
+	racquet_link  = racquet_sport ? search_path(sport_id: racquet_sport.sport_id) : club_life_link.call("Racquet Sports")
+
+	hub_tabs = [
+		{ key: :golf,    label: "Golf",           icon: "fa-golf-ball-tee",             path: golf_path },
+		{ key: :racquet, label: "Racquet Sports", icon: "fa-table-tennis-paddle-ball",  path: racquet_link },
+		{ key: :fitness, label: "Fitness",        icon: "fa-dumbbell",                  path: club_life_link.call("Fitness") },
+		{ key: :spa,     label: "Spa & Wellness", icon: "fa-spa",                       path: club_life_link.call("Spa + Wellness") },
+		{ key: :dining,  label: "Dining",         icon: "fa-utensils",                  path: restaurant_path }
+	]
+%>
+<!-- start booking hub tabs -->
+<nav class="bbcc-hubtabs" aria-label="Booking sections">
+	<% hub_tabs.each do |tab| %>
+		<%= link_to tab[:path], class: ["bbcc-hubtab", ("active" if tab[:key] == active)],
+								aria: { current: ("page" if tab[:key] == active) } do %>
+			<i class="fa-solid <%= tab[:icon] %>" aria-hidden="true"></i>
+			<span><%= tab[:label] %></span>
+		<% end %>
+	<% end %>
+</nav>
+<!-- end booking hub tabs -->

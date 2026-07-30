@@ -145,6 +145,7 @@ Rails.application.routes.draw do
         end
       end
       resource :password, :only => [:edit, :update]
+      get "logout" => "accounts#logout", :as => :logout
 
       post "purchase/:type/:id" => "purchases#create", :as => :purchase
       get "purchase/:type/:id" => "purchases#new", :as => :new_purchase

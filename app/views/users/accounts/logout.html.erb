@@ -1,0 +1,17 @@
+<!-- start log out -->
+<section class="bbcc-section bbcc-account">
+    <div class="container-lg">
+        <%= render "users/shared/account_nav" %>
+
+        <div class="bbcc-logout-panel">
+            <h2 class="bbcc-logout-title">Are you sure you want to log out?</h2>
+            <p>You will be signed out of your account.</p>
+
+            <div class="bbcc-logout-actions">
+                <%= link_to "Cancel", users_account_path, class: "bbcc-btn bbcc-btn-light" %>
+                <%= link_to "Yes, Logout Now", destroy_user_session_path, method: :delete, class: "bbcc-btn" %>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- end log out -->

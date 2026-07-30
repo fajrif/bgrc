@@ -1,0 +1,42 @@
+<div class="bbcc-table-scroll">
+  <table class="bbcc-table">
+    <thead>
+      <tr>
+        <th>Order ID</th>
+        <th>Tee Time</th>
+        <th>Holes</th>
+        <th>Players</th>
+        <th>Status</th>
+        <th>Price</th>
+        <% if show_actions %><th></th><% end %>
+      </tr>
+    </thead>
+    <tbody>
+      <% golf_reservations.each do |res| %>
+        <tr>
+          <td><%= link_to res.order_id, golf_reservation_path(res.order_id), class: "bbcc-table-id" %></td>
+          <td><%= res.tee_time&.strftime('%a %b %d, %Y %I.%M %p') %></td>
+          <td><%= res.holes_label %></td>
+          <td class="bbcc-table-num"><%= res.players_count %></td>
+          <td>
+            <% badge = if res.is_unpaid?  then "bbcc-badge-warn"
+                       elsif res.expired? then "bbcc-badge-danger"
+                       elsif res.cancelled? then "bbcc-badge-muted"
+                       end %>
+            <span class="bbcc-badge <%= badge %>"><%= res.status_label %></span>
+          </td>
+          <td><%= res.total_price_label %></td>
+          <% if show_actions %>
+            <td>
+              <% if res.is_unpaid? %>
+                <%= link_to "Cancel", users_golf_reservation_path(res), method: :delete,
+                            data: { confirm: "Cancel this reservation?" },
+                            class: "bbcc-btn bbcc-btn-sm bbcc-btn-ghost" %>
+              <% end %>
+            </td>
+          <% end %>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

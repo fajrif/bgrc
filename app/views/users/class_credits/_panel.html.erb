@@ -1,0 +1,46 @@
+<% gc = cp.group_class %>
+
+<% unless cp.paid? %>
+    <p class="bbcc-credit-panel-title">Payment for this order has not been completed yet.</p>
+    <%= link_to "Complete Payment", class_credit_purchase_path(cp), class: "bbcc-btn bbcc-btn-sm" %>
+<% else %>
+    <% if gc.is_prescheduled? %>
+        <% claimed = cp.group_class_registrations.active.order(:session_date).to_a %>
+        <% bookable = 0 %>
+        <% book_path = group_class_path(gc) %>
+    <% else %>
+        <% claimed = cp.bookings.where.not(status: [Booking::EXPIRED, Booking::CANCELLED]).order(:date).to_a %>
+        <% bookable = cp.sessions_remaining %>
+        <% book_path = book_session_class_credit_purchase_path(cp) %>
+    <% end %>
+
+    <p class="bbcc-credit-panel-title">
+        <% if cp.credit_expired? %>
+            This credit expired on <%= cp.expires_at.strftime('%d %b %Y') %>.
+        <% elsif bookable > 0 %>
+            You have <%= pluralize(bookable, "more credit") %> left
+        <% elsif gc.is_prescheduled? %>
+            You are registered for the session below.
+        <% else %>
+            All sessions in this order have been used.
+        <% end %>
+    </p>
+
+    <div class="row g-3">
+        <% bookable.times do %>
+            <%= render "class_card", gc: gc, date_label: "Not scheduled yet — pick your slot",
+                                     coach_name: nil, pax: cp.pax, used: false,
+                                     used_label: nil, book_path: book_path %>
+        <% end %>
+
+        <% claimed.each do |session| %>
+            <% session_date = session.is_a?(Booking) ? session.date : session.session_date %>
+            <%= render "class_card", gc: gc,
+                                     date_label: session_date.strftime('%a, %d %b %Y | %I:%M %p'),
+                                     coach_name: session.try(:coach).try(:name),
+                                     pax: session.pax, used: true,
+                                     used_label: (session_date > Time.current ? "Booked" : "Session Used"),
+                                     book_path: nil %>
+        <% end %>
+    </div>
+<% end %>

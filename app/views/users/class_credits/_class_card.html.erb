@@ -1,0 +1,39 @@
+<div class="col-12 col-md-6 col-lg-4">
+    <article class="bbcc-class-card <%= "bbcc-class-card-used" if used %>">
+        <div class="bbcc-class-chips">
+            <span class="bbcc-class-chip"><i class="fa-solid fa-lock"></i><%= gc.category_label %></span>
+            <% if gc.sport %>
+                <span class="bbcc-class-chip"><i class="fa-solid fa-table-tennis-paddle-ball"></i><%= gc.sport.name %></span>
+            <% end %>
+        </div>
+
+        <h3 class="bbcc-class-card-title"><%= gc.name %></h3>
+
+        <p class="bbcc-class-meta"><span><i class="fa-regular fa-calendar"></i><%= date_label %></span></p>
+        <p class="bbcc-class-meta">
+            <span><i class="fa-regular fa-clock"></i><%= gc.duration_label %></span>
+            <span><i class="fa-solid fa-user-group"></i><%= gc.max_pax %> Max</span>
+            <% if pax %>
+                <span><i class="fa-solid fa-users"></i><%= pax %> Pax</span>
+            <% end %>
+        </p>
+
+        <p class="bbcc-class-card-price"><%= gc.check_price(pax || gc.min_pax) %></p>
+
+        <% if coach_name.present? %>
+            <div class="bbcc-class-coach">
+                <span class="bbcc-class-coach-avatar"><i class="fa-solid fa-user"></i></span>
+                <div>
+                    <div class="bbcc-class-coach-label">Coach</div>
+                    <div class="bbcc-class-coach-name"><%= coach_name %></div>
+                </div>
+            </div>
+        <% end %>
+
+        <% if used %>
+            <span class="bbcc-btn bbcc-btn-block bbcc-btn-disabled"><%= used_label %></span>
+        <% else %>
+            <%= link_to "Book Now", book_path, class: "bbcc-btn bbcc-btn-block" %>
+        <% end %>
+    </article>
+</div>

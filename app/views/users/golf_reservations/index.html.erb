@@ -1,54 +1,18 @@
-<section class="half-section">
-  <div class="container">
-    <%= render "users/shared/sidebar" %>
-    <div class="row align-items-start mb-4">
-      <div class="col-lg-12 col-md-12 text-center text-md-start padding-five-lr lg-padding-six-lr md-padding-15px-lr">
-        <h6 class="font-weight-600 text-uppercase margin-20px-bottom letter-spacing-8">My Golf Reservations</h6>
-        <div class="margin-20px-bottom">
-          <%= link_to "Reservation History", history_users_golf_reservations_path, class: "btn btn-light-gray btn-small text-medium" %>
-        </div>
-        <% if @golf_reservations.empty? %>
-          <p class="text-medium text-medium-gray">You have no active golf reservations.</p>
-          <%= link_to "Book a Tee Time", golf_path, class: "btn btn-dark-gray btn-medium text-medium" %>
-        <% else %>
-          <table class="table text-medium">
-            <thead>
-              <tr>
-                <th>Order ID</th>
-                <th>Tee Time</th>
-                <th>Holes</th>
-                <th>Players</th>
-                <th>Total</th>
-                <th>Status</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              <% @golf_reservations.each do |res| %>
-                <tr>
-                  <td><small><%= res.order_id %></small></td>
-                  <td><%= res.tee_time&.strftime("%d %b %Y %H:%M") %></td>
-                  <td><%= res.holes_label %></td>
-                  <td><%= res.players_count %></td>
-                  <td><%= res.total_price_label %></td>
-                  <td>
-                    <span class="badge <%= res.status == GolfReservation::PAID ? 'bg-success' : 'bg-warning text-dark' %>">
-                      <%= res.status_label %>
-                    </span>
-                  </td>
-                  <td class="d-flex gap-1">
-                    <%= link_to "View", golf_reservation_path(res.order_id), class: "btn btn-light-gray btn-small text-small" %>
-                    <% if res.is_unpaid? %>
-                      <%= link_to "Cancel", users_golf_reservation_path(res), method: :delete, data: { confirm: "Cancel this reservation?" }, class: "btn btn-danger btn-small text-small" %>
-                    <% end %>
-                  </td>
-                </tr>
-              <% end %>
-            </tbody>
-          </table>
-          <%= paginate @golf_reservations %>
-        <% end %>
+<!-- start golf reservations -->
+<section class="bbcc-section bbcc-account">
+  <div class="container-lg">
+    <%= render "users/shared/account_nav" %>
+    <%= render "users/shared/booking_view_switch" %>
+
+    <% if @golf_reservations.empty? %>
+      <div class="bbcc-table-empty">
+        <p>You have no active golf reservations.</p>
+        <%= link_to "Book a Tee Time", golf_path, class: "bbcc-btn" %>
       </div>
-    </div>
+    <% else %>
+      <%= render "table", golf_reservations: @golf_reservations, show_actions: true %>
+      <%= paginate @golf_reservations, theme: "bbcc" %>
+    <% end %>
   </div>
 </section>
+<!-- end golf reservations -->

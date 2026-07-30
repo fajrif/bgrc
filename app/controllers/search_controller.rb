@@ -30,7 +30,7 @@ class SearchController < ApplicationController
 
       @business_hours = @court.business_hours.map{|bh| { daysOfWeek: [bh.day_code], startTime: bh.open, endTime: bh.close } }
       @bookings = @court.bookings.where("date >= ? AND status NOT IN (?, ?)", @date, Booking::EXPIRED, Booking::CANCELLED)
-      @events = @bookings.map{|b| {title: 'Booked', editable: false, start: b.date.strftime('%Y-%m-%d %H:%M'), end: b.end_date.strftime('%Y-%m-%d %H:%M') }}
+      @events = @bookings.map{|b| {title: 'Booked', editable: false, className: 'booking-block', start: b.date.strftime('%Y-%m-%d %H:%M'), end: b.end_date.strftime('%Y-%m-%d %H:%M') }}
 
       @recurring_events = @court.recurring_events.where(active: true)
 
@@ -94,8 +94,9 @@ class SearchController < ApplicationController
       end
 
       # Group class schedules — per-date, skip if time-overlaps a blocked slot
+      # (the public calendar is styled by the neutral redesign, so calendar_color
+      #  is left to the admin/user calendars that still render it)
       @court.group_class_schedules.includes(:group_class).each do |gcs|
-        color = gcs.group_class.calendar_color.presence || '#0d6efd'
         (view_start..view_end).each do |day|
           next unless day.wday == gcs.day_of_week
           next if overlaps_block.call(day, gcs.start_time, gcs.end_time)
@@ -103,7 +104,6 @@ class SearchController < ApplicationController
             title: gcs.group_class.name,
             editable: false, selectable: false,
             className: 'class-schedule-block',
-            backgroundColor: color, borderColor: color,
             start: "#{day} #{gcs.start_time}",
             end:   "#{day} #{gcs.end_time}",
             extendedProps: { classUrl: Rails.application.routes.url_helpers.group_class_path(id: gcs.group_class.id) }
@@ -138,6 +138,11 @@ class SearchController < ApplicationController
       redirect_to root_path, flash: { warning: "Please select a sport to search." } and return
     end
     @sport = Sport.find(params[:sport_id])
+    # the homepage hero offers every sport, but golf has no courts to put on the
+    # week grid — send it to the tee-time page instead of an empty schedule
+    if @sport.golf? && @sport.courts.empty?
+      redirect_to golf_path and return
+    end
     @pax = params[:pax].presence || 4
   end
 

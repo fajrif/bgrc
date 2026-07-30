@@ -1,95 +1,94 @@
-<!-- Golf Landing Page -->
-<section class="bg-light-gray padding-60px-tb sm-padding-30px-tb">
-  <div class="container">
-    <div class="row align-items-center">
-      <div class="col-12 text-center">
-        <h2 class="alt-font text-black font-weight-700 letter-spacing-2 text-uppercase margin-10px-bottom">
-          <%= @golf_course&.name || "Golf" %>
-        </h2>
-        <% if @golf_course %>
-          <p class="text-medium text-medium-gray">
-            <%= @golf_course.location %>
-          </p>
+<%= render "shared/breadcrumb", crumbs: [{ label: "Booking Hub" }] %>
+
+<!-- start booking hub — golf -->
+<section class="bbcc-section bbcc-hub">
+    <div class="container-lg">
+        <%= render "shared/booking_hub_tabs", active: :golf %>
+
+        <% unless @golf_course %>
+            <div class="bbcc-table-empty">
+                <p>Golf course information is not available yet. Please check back later.</p>
+                <%= link_to "Explore Club Life", club_life_path, class: "bbcc-btn" %>
+            </div>
+        <% else %>
+            <div class="row g-4 g-lg-5">
+                <!-- Left: course details + green fees -->
+                <div class="col-12 col-lg-4">
+                    <h2 class="bbcc-hub-heading">Course Details</h2>
+                    <ul class="bbcc-hub-list">
+                        <li>Available Holes: <%= @golf_course.holes_list.join(" / ") %> Holes</li>
+                        <li>Tee Time Interval: Every <%= @golf_course.interval_minutes %> minutes</li>
+                        <li>Max Players Per Group: <%= @golf_course.max_players %></li>
+                        <li>Location: <%= @golf_course.location %></li>
+                    </ul>
+
+                    <% if @golf_course.golf_rates.any? %>
+                        <h2 class="bbcc-hub-heading">Green Fees (Per Player)</h2>
+                        <table class="bbcc-fees-table">
+                            <thead>
+                                <tr>
+                                    <th>Holes</th>
+                                    <th>Weekday</th>
+                                    <th>Weekend</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% @golf_course.holes_list.each do |holes| %>
+                                    <% weekday = @golf_course.golf_rates.find_by(holes: holes, day_type: :weekday) %>
+                                    <% weekend = @golf_course.golf_rates.find_by(holes: holes, day_type: :weekend) %>
+                                    <tr>
+                                        <td><%= holes %> Holes</td>
+                                        <td><%= weekday&.price_label || "—" %></td>
+                                        <td><%= weekend&.price_label || "—" %></td>
+                                    </tr>
+                                <% end %>
+                            </tbody>
+                        </table>
+                    <% end %>
+
+                    <%# the mockup leaves this column empty below the fees; the course photo only
+                        shows when an admin has attached one %>
+                    <% if @golf_course.image.attached? %>
+                        <div class="bbcc-hub-photo">
+                            <%= image_tag @golf_course.image, alt: @golf_course.name %>
+                        </div>
+                    <% end %>
+                </div>
+
+                <!-- Right: tee time selector -->
+                <div class="col-12 col-lg-8">
+                    <div class="bbcc-teetime-card">
+                        <h2 class="bbcc-teetime-title">Select Your Tee Time</h2>
+
+                        <div class="bbcc-teetime-datefield">
+                            <label for="golf-date-picker">Select Date</label>
+                            <input type="text" id="golf-date-picker"
+                                   value="<%= Date.today.strftime('%d/%m/%Y') %>"
+                                   placeholder="Select a date" readonly>
+                        </div>
+
+                        <p id="tee-time-loading" class="bbcc-teetime-note" style="display:none;">
+                            <i class="fa-solid fa-circle-notch fa-spin" aria-hidden="true"></i>
+                            Loading available tee times…
+                        </p>
+
+                        <div id="tee-time-grid" class="bbcc-teetime-grid">
+                            <!-- Tee time slots loaded via AJAX -->
+                            <p class="bbcc-teetime-note" id="tee-time-placeholder">Select a date to see available tee times.</p>
+                        </div>
+
+                        <div class="bbcc-teetime-legend">
+                            <span><i class="bbcc-teetime-swatch"></i>Available</span>
+                            <span><i class="bbcc-teetime-swatch bbcc-teetime-swatch-booked"></i>Booked</span>
+                            <span><i class="bbcc-teetime-swatch bbcc-teetime-swatch-past"></i>Passed</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
         <% end %>
-      </div>
     </div>
-  </div>
 </section>
-
-<section class="padding-60px-tb sm-padding-30px-tb">
-  <div class="container">
-    <% unless @golf_course %>
-      <div class="row justify-content-center">
-        <div class="col-md-6 text-center">
-          <p class="text-medium">Golf course information is not available yet. Please check back later.</p>
-        </div>
-      </div>
-    <% else %>
-      <div class="row">
-        <!-- Left: Course Info + Date Picker -->
-        <div class="col-lg-5 margin-30px-bottom">
-          <% if @golf_course.image.attached? %>
-            <%= image_tag @golf_course.image, class: "w-100 margin-20px-bottom", style: "border-radius: 8px; object-fit: cover; max-height: 300px;" %>
-          <% end %>
-
-          <div class="border padding-30px-all margin-20px-bottom">
-            <h5 class="alt-font text-uppercase font-weight-600 margin-15px-bottom">Course Details</h5>
-            <p class="text-medium mb-2"><strong>Available Holes:</strong> <%= @golf_course.holes_list.join(" / ") %> Holes</p>
-            <p class="text-medium mb-2"><strong>Tee Time Interval:</strong> Every <%= @golf_course.interval_minutes %> minutes</p>
-            <p class="text-medium mb-2"><strong>Max Players Per Group:</strong> <%= @golf_course.max_players %></p>
-            <p class="text-medium mb-2"><strong>Location:</strong> <%= @golf_course.location %></p>
-          </div>
-
-          <% unless @golf_course.golf_rates.empty? %>
-          <div class="border padding-30px-all">
-            <h5 class="alt-font text-uppercase font-weight-600 margin-15px-bottom">Green Fees (Per Player)</h5>
-            <table class="table table-sm text-medium">
-              <thead>
-                <tr><th>Holes</th><th>Weekday</th><th>Weekend</th></tr>
-              </thead>
-              <tbody>
-                <% @golf_course.holes_list.each do |holes| %>
-                  <% wday = @golf_course.golf_rates.find_by(holes: holes, day_type: :weekday) %>
-                  <% wend = @golf_course.golf_rates.find_by(holes: holes, day_type: :weekend) %>
-                  <tr>
-                    <td><%= holes %> Holes</td>
-                    <td><%= wday&.price_label || "—" %></td>
-                    <td><%= wend&.price_label || "—" %></td>
-                  </tr>
-                <% end %>
-              </tbody>
-            </table>
-          </div>
-          <% end %>
-        </div>
-
-        <!-- Right: Tee Time Selector -->
-        <div class="col-lg-7">
-          <div class="border padding-30px-all">
-            <h5 class="alt-font text-uppercase font-weight-600 margin-15px-bottom">Select Your Tee Time</h5>
-
-            <div class="mb-4">
-              <label class="text-medium font-weight-600 mb-2 d-block">Select Date</label>
-              <input type="text" id="golf-date-picker" class="form-control"
-                     value="<%= Date.today.strftime('%d/%m/%Y') %>"
-                     placeholder="Select a date" readonly>
-            </div>
-
-            <div id="tee-time-loading" style="display:none;" class="text-center mb-3">
-              <div class="spinner-border spinner-border-sm text-secondary" role="status"></div>
-              <span class="text-medium ms-2">Loading available tee times...</span>
-            </div>
-
-            <div id="tee-time-grid" class="mb-3">
-              <!-- Tee time slots loaded via AJAX -->
-              <p class="text-medium text-medium-gray text-center" id="tee-time-placeholder">Select a date to see available tee times.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    <% end %>
-  </div>
-</section>
+<!-- end booking hub — golf -->
 
 <% if @golf_course %>
 <%= render 'golf/reservation_modal', golf_course: @golf_course %>
@@ -122,6 +121,19 @@
     modal.show();
   }
 
+  function slotMarkup(slot, apiDate) {
+    if (slot.past) {
+      return '<div class="col"><span class="bbcc-teeslot bbcc-teeslot-past" ' +
+             'title="This tee time has already passed">' + slot.time + '</span></div>';
+    }
+    if (!slot.available) {
+      return '<div class="col"><span class="bbcc-teeslot bbcc-teeslot-booked" ' +
+             'title="Already booked">' + slot.time + '</span></div>';
+    }
+    return '<div class="col"><button type="button" class="bbcc-teeslot tee-slot-btn" ' +
+           'data-time="' + slot.time + '" data-date="' + apiDate + '">' + slot.time + '</button></div>';
+  }
+
   function loadTeeTimes(dateStr) {
     var grid = document.getElementById('tee-time-grid');
     var loading = document.getElementById('tee-time-loading');
@@ -140,30 +152,12 @@
     .then(function(slots) {
       loading.style.display = 'none';
       if (!slots || slots.length === 0) {
-        grid.innerHTML = '<p class="text-medium text-medium-gray text-center">No tee times available for this date.</p>';
+        grid.innerHTML = '<p class="bbcc-teetime-note">No tee times available for this date.</p>';
         return;
       }
 
-      var html = '<div class="row row-cols-3 row-cols-sm-4 g-2">';
-      slots.forEach(function(slot) {
-        if (slot.past) {
-          html += '<div class="col">' +
-            '<button class="btn btn-sm w-100 text-medium" disabled ' +
-            'style="background-color:#f0f0f0;color:#ccc;border:2px solid #e8e8e8;cursor:not-allowed;">' +
-            slot.time + ' <small>(Past)</small></button></div>';
-        } else if (slot.available) {
-          html += '<div class="col">' +
-            '<button type="button" class="btn btn-sm w-100 text-medium tee-slot-btn" ' +
-            'data-time="' + slot.time + '" data-date="' + apiDate + '" ' +
-            'style="background-color:#28a745;color:#fff;border:2px solid #28a745;font-weight:600;">' +
-            slot.time + '</button></div>';
-        } else {
-          html += '<div class="col">' +
-            '<button class="btn btn-sm w-100 text-medium" disabled ' +
-            'style="background-color:#e9ecef;color:#adb5bd;border:2px solid #dee2e6;cursor:not-allowed;">' +
-            slot.time + ' <small>(Booked)</small></button></div>';
-        }
-      });
+      var html = '<div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-3">';
+      slots.forEach(function(slot) { html += slotMarkup(slot, apiDate); });
       html += '</div>';
       grid.innerHTML = html;
 
@@ -176,7 +170,7 @@
     })
     .catch(function() {
       loading.style.display = 'none';
-      grid.innerHTML = '<p class="text-medium text-danger text-center">Error loading tee times. Please try again.</p>';
+      grid.innerHTML = '<p class="bbcc-teetime-note bbcc-teetime-note-error">Error loading tee times. Please try again.</p>';
     });
   }
 

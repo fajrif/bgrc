@@ -26,22 +26,16 @@ module LocaleHelper
 				content_tag(:a, "My Account", href: users_account_path)
 			end +
 			content_tag(:li) do
-				content_tag(:a, "My Booking", href: users_bookings_path)
-			end +
-			content_tag(:li) do
-				content_tag(:a, "My Schedules", href: calendar_users_bookings_path)
-			end +
-			content_tag(:li) do
-				content_tag(:a, "My Golf Reservations", href: users_golf_reservations_path)
+				content_tag(:a, "My Bookings", href: users_bookings_path)
 			end +
 			content_tag(:li) do
 				content_tag(:a, "Class Credits", href: users_class_credits_path)
 			end +
 			content_tag(:li) do
-				content_tag(:a, "Payments", href: users_payments_path)
+				content_tag(:a, "Payment", href: users_payments_path)
 			end +
 			content_tag(:li) do
-				content_tag(:a, "Sign out", href: destroy_user_session_path, "data-method": :delete)
+				content_tag(:a, "Log Out", href: users_logout_path)
 			end
 		end
 	end

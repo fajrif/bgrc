@@ -610,6 +610,424 @@ body.bbcc-no-scroll { overflow: hidden; }
 .bbcc-specialists .text-center { margin-top: 36px; }
 
 /* =====================================================================
+   MY ACCOUNT (account tabs: profile, bookings, credits, payments, logout)
+   ===================================================================== */
+.bbcc-account { padding-top: 56px; }
+.bbcc-account-head { margin-bottom: 44px; }
+.bbcc-account-title {
+  font-family: "Mona Sans", sans-serif;
+  font-size: clamp(1.45rem, 2.6vw, 1.9rem); font-weight: 700; line-height: 1.2;
+  color: var(--bbcc-ink); margin: 0 0 6px;
+}
+.bbcc-account-since { color: var(--bbcc-ink-soft); margin: 0; }
+/* the account tabs are sentence case, unlike the uppercase filter tabs elsewhere */
+.bbcc-account-tabs { gap: 12px 44px; margin-bottom: 34px; }
+.bbcc-account-tabs .bbcc-tab { text-transform: none; letter-spacing: normal; font-size: 16px; padding-bottom: 8px; }
+
+/* --- view switch (List View / Calendar View) --- */
+.bbcc-viewswitch { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 26px; }
+.bbcc-viewswitch-btn {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 12px 22px; background: var(--bbcc-bg-alt); border: 1px solid var(--bbcc-line);
+  color: var(--bbcc-ink-soft); font-size: 14px; letter-spacing: .3px;
+}
+.bbcc-viewswitch-btn:hover { color: var(--bbcc-ink); text-decoration: none; }
+.bbcc-viewswitch-btn.active { background: #dedede; color: var(--bbcc-ink); font-weight: 600; }
+
+/* --- data tables (bookings, credits, payments) --- */
+.bbcc-table-scroll { overflow-x: auto; }
+.bbcc-table { width: 100%; border-collapse: separate; border-spacing: 0 8px; }
+.bbcc-table thead th {
+  padding: 0 12px 14px; text-align: left; white-space: nowrap;
+  font-size: 13px; font-weight: 600; color: var(--bbcc-ink); border: 0;
+}
+.bbcc-table tbody td {
+  padding: 16px 12px; background: var(--bbcc-bg-alt); border: 0; white-space: nowrap;
+  font-size: 14px; color: var(--bbcc-ink-soft); vertical-align: middle;
+}
+.bbcc-table tbody tr:hover td { background: #ededed; }
+.bbcc-table-id { font-weight: 700; color: var(--bbcc-ink); white-space: nowrap; }
+.bbcc-table-id:hover { color: var(--bbcc-dark-hover); text-decoration: none; }
+.bbcc-table-num { text-align: center; }
+.bbcc-table-note { display: block; font-size: 12px; margin-top: 4px; }
+.bbcc-table-empty { padding: 48px 0; text-align: center; }
+
+.bbcc-badge {
+  display: inline-block; padding: 4px 12px; background: var(--bbcc-dark); color: #fff;
+  font-size: 11px; letter-spacing: 1px; text-transform: uppercase; white-space: nowrap;
+}
+.bbcc-badge-muted { background: #9c9c9c; }
+.bbcc-badge-warn { background: #b08326; }
+.bbcc-badge-danger { background: #9d4b43; }
+
+.bbcc-btn-sm { padding: 8px 18px; margin-top: 0; font-size: 11px; }
+.bbcc-btn-ghost { background: transparent; color: var(--bbcc-ink); }
+.bbcc-btn-ghost:hover, .bbcc-btn-ghost:focus { background: var(--bbcc-dark); color: #fff; }
+.bbcc-btn-disabled { background: #b4b4b4; border-color: #b4b4b4; color: #fff; cursor: default; pointer-events: none; }
+
+/* --- class credits: expandable row --- */
+.bbcc-credit-toggle {
+  background: none; border: 0; padding: 0; cursor: pointer; color: var(--bbcc-ink);
+  font-size: 11px; line-height: 1; transition: transform .2s;
+}
+.bbcc-credit-toggle[aria-expanded="true"] { transform: rotate(90deg); }
+.bbcc-credit-panel > td { padding: 0 12px 26px; background: var(--bbcc-bg-alt); white-space: normal; }
+.bbcc-credit-panel-inner { position: sticky; left: 0; width: min(100%, calc(100vw - 48px)); }
+.bbcc-credit-panel-title { color: var(--bbcc-ink); font-weight: 600; margin: 0 0 20px; }
+
+.bbcc-class-card { display: flex; flex-direction: column; height: 100%; background: #fff; border: 1px solid var(--bbcc-line); padding: 20px; }
+.bbcc-class-card-used { background: #e6e6e6; }
+.bbcc-class-card-used .bbcc-class-card-title,
+.bbcc-class-card-used .bbcc-class-card-price { color: var(--bbcc-ink-soft); }
+.bbcc-class-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+.bbcc-class-chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 4px 12px; border-radius: 999px; background: var(--bbcc-bg-alt);
+  font-size: 12px; color: var(--bbcc-ink-soft); white-space: nowrap;
+}
+.bbcc-class-card-title {
+  font-family: "Mona Sans", sans-serif; text-transform: uppercase; letter-spacing: .5px;
+  font-size: 15px; font-weight: 700; color: var(--bbcc-ink); margin: 0 0 12px;
+}
+.bbcc-class-meta { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 13px; color: var(--bbcc-ink-soft); margin-bottom: 6px; }
+.bbcc-class-meta i { margin-right: 6px; }
+.bbcc-class-card-price { font-size: 15px; font-weight: 700; color: var(--bbcc-ink); margin: 12px 0 16px; }
+.bbcc-class-coach { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; }
+.bbcc-class-coach-avatar {
+  flex: 0 0 44px; width: 44px; height: 44px; border-radius: 50%; background: #cfcfcf;
+  display: inline-flex; align-items: center; justify-content: center; color: #fff; font-size: 17px;
+}
+.bbcc-class-coach-label { font-size: 12px; color: var(--bbcc-ink-soft); line-height: 1.3; }
+.bbcc-class-coach-name { font-weight: 700; color: var(--bbcc-ink); line-height: 1.3; }
+.bbcc-class-card .bbcc-btn { margin-top: auto; }
+
+/* --- profile form --- */
+.bbcc-account-photo img { width: 100%; height: 280px; object-fit: cover; display: block; }
+.bbcc-account-photo-ph {
+  display: flex; align-items: center; justify-content: center;
+  height: 280px; background: var(--bbcc-bg-alt); color: var(--bbcc-ink-soft); font-size: 34px;
+}
+.bbcc-account-photo-actions { display: flex; justify-content: center; gap: 18px; margin-top: 14px; font-size: 14px; }
+.bbcc-account-photo-actions a, .bbcc-account-photo-actions label { color: var(--bbcc-ink); cursor: pointer; }
+.bbcc-account-photo-actions a:hover, .bbcc-account-photo-actions label:hover { color: var(--bbcc-ink-soft); text-decoration: none; }
+
+.bbcc-field { border: 1px solid var(--bbcc-line); padding: 8px 16px 10px; margin-bottom: 16px; background: #fff; }
+.bbcc-field label { display: block; font-size: 11px; color: var(--bbcc-ink-soft); margin: 0 0 2px; }
+.bbcc-field input, .bbcc-field select {
+  width: 100%; border: 0; padding: 0; background: transparent;
+  font-size: 1.05rem; color: var(--bbcc-ink); box-shadow: none; height: auto; min-height: 0;
+}
+.bbcc-field input:focus, .bbcc-field select:focus { outline: 0; box-shadow: none; }
+.bbcc-field select { appearance: none; -webkit-appearance: none; }
+.bbcc-field-error { border-color: #9d4b43; }
+.bbcc-field-error-text { display: block; font-size: 12px; color: #9d4b43; margin-top: 4px; }
+
+/* --- log out tab --- */
+.bbcc-logout-panel { max-width: 620px; margin: 0 auto; text-align: center; padding: 40px 0 20px; }
+.bbcc-logout-title {
+  font-family: "Mona Sans", sans-serif; font-size: clamp(1.25rem, 2.4vw, 1.7rem);
+  font-weight: 700; color: var(--bbcc-ink); margin: 0 0 10px;
+}
+.bbcc-logout-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; margin-top: 34px; }
+.bbcc-logout-actions .bbcc-btn { margin-top: 0; min-width: 240px; text-align: center; }
+.bbcc-btn-light { background: #dedede; border-color: #dedede; color: var(--bbcc-ink); }
+.bbcc-btn-light:hover, .bbcc-btn-light:focus { background: #cfcfcf; border-color: #cfcfcf; color: var(--bbcc-ink); }
+
+/* --- receipt --- */
+.bbcc-receipt { max-width: 720px; margin: 0 auto; border: 1px solid var(--bbcc-line); padding: 40px; }
+.bbcc-receipt-head { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 20px; margin-bottom: 30px; }
+.bbcc-receipt-title {
+  font-family: "Mona Sans", sans-serif; text-transform: uppercase; letter-spacing: 1px;
+  font-size: 1.05rem; font-weight: 700; color: var(--bbcc-ink); margin: 0 0 8px;
+}
+.bbcc-receipt-meta { text-align: right; margin-left: auto; }
+.bbcc-receipt-rows { width: 100%; }
+.bbcc-receipt-rows th { width: 45%; padding: 10px 0; text-align: left; font-weight: 600; color: var(--bbcc-ink); font-size: 14px; }
+.bbcc-receipt-rows td { padding: 10px 0; color: var(--bbcc-ink-soft); font-size: 14px; }
+.bbcc-receipt-total { border-top: 1px solid var(--bbcc-line); }
+.bbcc-receipt-total th, .bbcc-receipt-total td { padding-top: 18px; font-size: 1.05rem; color: var(--bbcc-ink); font-weight: 700; }
+
+/* =====================================================================
+   BOOKING HUB (golf tee times, racquet courts)
+   ===================================================================== */
+.bbcc-hub { padding-top: 30px; }
+
+/* the sport switcher above the booking panel — bordered boxes, active one filled */
+.bbcc-hubtabs {
+  display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px;
+  margin-bottom: 46px;
+}
+.bbcc-hubtab {
+  display: flex; align-items: center; gap: 14px;
+  padding: 16px 20px; border: 1px solid var(--bbcc-line); background: #fff;
+  color: var(--bbcc-ink); font-size: 15px; line-height: 1.2;
+  transition: background .2s, color .2s, border-color .2s;
+}
+.bbcc-hubtab i { font-size: 19px; color: var(--bbcc-ink-soft); transition: color .2s; }
+.bbcc-hubtab:hover { border-color: var(--bbcc-ink-soft); color: var(--bbcc-ink); text-decoration: none; }
+.bbcc-hubtab.active { background: var(--bbcc-dark); border-color: var(--bbcc-dark); color: #fff; }
+.bbcc-hubtab.active i { color: #fff; }
+
+/* left rail: plain headings + unboxed detail lists, per mockup */
+.bbcc-hub-heading {
+  font-family: "Mona Sans", sans-serif; text-transform: uppercase; letter-spacing: 1px;
+  font-size: 1.45rem; font-weight: 600; color: var(--bbcc-ink); margin: 0 0 18px;
+}
+.bbcc-hub-list + .bbcc-hub-heading { margin-top: 52px; }
+.bbcc-hub-list { list-style: none; margin: 0; padding: 0; }
+.bbcc-hub-list li { color: var(--bbcc-ink); line-height: 1.65; }
+
+.bbcc-fees-table { width: 100%; }
+.bbcc-fees-table th {
+  padding: 0 24px 8px 0; text-align: left; font-weight: 600; font-size: 15px; color: var(--bbcc-ink);
+}
+.bbcc-fees-table td { padding: 4px 24px 4px 0; color: var(--bbcc-ink); font-size: 15px; }
+
+.bbcc-hub-photo { margin-top: 44px; }
+.bbcc-hub-photo img { width: 100%; height: 240px; object-fit: cover; display: block; }
+
+/* right panel: the tee-time picker */
+.bbcc-teetime-card { border: 1px solid var(--bbcc-line); padding: 26px 30px 34px; background: #fff; }
+.bbcc-teetime-title {
+  font-family: "Mona Sans", sans-serif; text-transform: uppercase; letter-spacing: 1px;
+  font-size: 1.45rem; font-weight: 600; color: var(--bbcc-ink); margin: 0 0 22px;
+}
+.bbcc-teetime-datefield { margin-bottom: 30px; }
+.bbcc-teetime-datefield label { display: block; color: var(--bbcc-ink-soft); font-size: 14px; margin-bottom: 8px; }
+.bbcc-teetime-datefield input {
+  width: 100%; border: 1px solid var(--bbcc-line); border-radius: 0; background: #fff;
+  padding: 11px 18px; font-size: 15px; color: var(--bbcc-ink); cursor: pointer;
+}
+.bbcc-teetime-datefield input:focus { outline: 0; border-color: var(--bbcc-ink-soft); box-shadow: none; }
+
+.bbcc-teetime-note { color: var(--bbcc-ink-soft); text-align: center; margin: 0; padding: 20px 0; }
+.bbcc-teetime-note-error { color: #9d4b43; }
+
+.bbcc-teeslot {
+  display: block; width: 100%; border: 0; border-radius: 0; padding: 11px 6px;
+  background: #dedede; color: var(--bbcc-ink); font-size: 15px; text-align: center;
+  transition: background .2s, color .2s;
+}
+button.bbcc-teeslot:hover, button.bbcc-teeslot:focus { background: var(--bbcc-dark); color: #fff; }
+button.bbcc-teeslot:focus-visible { outline: 2px solid var(--bbcc-ink); outline-offset: 2px; }
+.bbcc-teeslot-booked {
+  color: var(--bbcc-ink-soft); cursor: not-allowed;
+  background: repeating-linear-gradient(-45deg, #ededed, #ededed 5px, #e0e0e0 5px, #e0e0e0 10px);
+}
+.bbcc-teeslot-past { background: #f6f6f6; color: #bdbdbd; cursor: not-allowed; }
+
+.bbcc-teetime-legend {
+  display: flex; flex-wrap: wrap; gap: 10px 26px;
+  margin-top: 28px; font-size: 13px; color: var(--bbcc-ink-soft);
+}
+.bbcc-teetime-legend span { display: inline-flex; align-items: center; gap: 9px; }
+.bbcc-teetime-swatch { width: 15px; height: 15px; background: #dedede; display: inline-block; }
+.bbcc-teetime-swatch-booked {
+  background: repeating-linear-gradient(-45deg, #ededed, #ededed 4px, #e0e0e0 4px, #e0e0e0 8px);
+}
+.bbcc-teetime-swatch-past { background: #f6f6f6; border: 1px solid var(--bbcc-line); }
+
+/* --- booking modal skin (Bootstrap modal, bbcc styling) --- */
+.bbcc-modal .modal-content { border: 1px solid var(--bbcc-line); border-radius: 0; }
+.bbcc-modal .modal-header { border-bottom: 1px solid var(--bbcc-line); padding: 24px 28px; }
+.bbcc-modal .modal-body { padding: 28px; }
+.bbcc-modal .modal-footer { border-top: 1px solid var(--bbcc-line); padding: 20px 28px; gap: 12px; }
+.bbcc-modal .modal-footer .bbcc-btn { margin-top: 0; }
+.bbcc-modal-title {
+  font-family: "Mona Sans", sans-serif; text-transform: uppercase; letter-spacing: 1px;
+  font-size: 1.05rem; font-weight: 700; color: var(--bbcc-ink); margin: 0;
+}
+.bbcc-modal-label { display: block; font-size: 11px; color: var(--bbcc-ink-soft); margin-bottom: 4px; }
+.bbcc-modal-value { display: block; font-size: 1.05rem; color: var(--bbcc-ink); font-weight: 600; }
+.bbcc-modal-callout { background: var(--bbcc-bg-alt); padding: 14px 18px; margin-bottom: 20px; }
+.bbcc-modal-group { margin-bottom: 20px; }
+.bbcc-radio-row { display: flex; flex-wrap: wrap; gap: 12px; }
+.bbcc-radio {
+  display: inline-flex; align-items: center; gap: 9px; cursor: pointer;
+  border: 1px solid var(--bbcc-line); padding: 10px 18px; margin: 0;
+  font-size: 14px; color: var(--bbcc-ink);
+}
+.bbcc-radio:has(input:checked) { border-color: var(--bbcc-dark); background: var(--bbcc-bg-alt); font-weight: 600; }
+/* the vendored theme stretches bare inputs to 100%, which squeezes the label onto two lines */
+.bbcc-radio input { flex: 0 0 auto; width: 16px; height: 16px; margin: 0; }
+.bbcc-radio span { white-space: nowrap; }
+
+/* the theme blanks out Bootstrap's .btn-close background, so the modal uses its own glyph */
+.bbcc-modal-close {
+  background: none; border: 0; padding: 0; margin-left: auto; line-height: 1;
+  font-size: 18px; color: var(--bbcc-ink-soft); cursor: pointer; transition: color .2s;
+}
+.bbcc-modal-close:hover { color: var(--bbcc-ink); }
+.bbcc-modal-summary { border-top: 1px solid var(--bbcc-line); padding-top: 18px; }
+.bbcc-modal-summary-row { display: flex; justify-content: space-between; gap: 16px; color: var(--bbcc-ink-soft); font-size: 14px; }
+.bbcc-modal-summary-total { margin-top: 8px; color: var(--bbcc-ink); font-size: 1.05rem; font-weight: 700; }
+
+/* =====================================================================
+   COURT SCHEDULE (racquet sports week grid)
+   FullCalendar's own CSS (vendor main.css) and fullcalendar-custom.css both
+   load *after* application.css, so every override here is scoped under
+   .bbcc-schedule to win on specificity rather than with !important.
+   ===================================================================== */
+.bbcc-schedule-head {
+  display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between;
+  gap: 18px; margin-bottom: 28px;
+}
+/* the sport name is a proper noun, so it keeps its own case */
+.bbcc-schedule-title { text-transform: none; letter-spacing: 0; margin-bottom: 8px; }
+.bbcc-schedule-range { color: var(--bbcc-ink); margin: 0; }
+
+.bbcc-schedule-bar {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+  gap: 16px; margin-bottom: 18px;
+}
+.bbcc-schedule-legend {
+  display: flex; flex-wrap: wrap; gap: 10px 26px; font-size: 13px; color: var(--bbcc-ink-soft);
+}
+.bbcc-schedule-legend span { display: inline-flex; align-items: center; gap: 9px; }
+.bbcc-legend-swatch { width: 15px; height: 15px; display: inline-block; background: #dedede; }
+.bbcc-legend-selection { background: var(--bbcc-dark); }
+.bbcc-legend-booked {
+  background: repeating-linear-gradient(-45deg, #ededed, #ededed 4px, #e0e0e0 4px, #e0e0e0 8px);
+}
+.bbcc-legend-blocked { background: #dcdcdc; }
+
+/* sport / date / court-type / court pickers — flat bordered controls */
+.bbcc-schedule-filters { display: flex; flex-wrap: wrap; gap: 12px; margin-left: auto; }
+.bbcc-schedule-control { position: relative; }
+.bbcc-schedule-control select,
+.bbcc-schedule-control input {
+  appearance: none; -webkit-appearance: none;
+  min-width: 172px; border: 1px solid var(--bbcc-line); border-radius: 0; background: #fff;
+  padding: 10px 40px 10px 16px; font-size: 14px; color: var(--bbcc-ink); cursor: pointer;
+}
+.bbcc-schedule-control select:focus,
+.bbcc-schedule-control input:focus { outline: 0; border-color: var(--bbcc-ink-soft); box-shadow: none; }
+.bbcc-schedule-control::after {
+  content: "\f107"; font-family: "Font Awesome 6 Free"; font-weight: 900;
+  position: absolute; right: 16px; top: 50%; transform: translateY(-50%);
+  font-size: 13px; color: var(--bbcc-ink-soft); pointer-events: none;
+}
+.bbcc-schedule-control-date::after { content: "\f133"; font-weight: 400; }
+
+/* --- the calendar grid --- */
+.bbcc-schedule {
+  background: #fff;
+  --fc-border-color: var(--bbcc-line);
+  --fc-page-bg-color: #fff;
+  --fc-neutral-bg-color: #f6f6f6;
+  --fc-today-bg-color: transparent;
+  --fc-highlight-color: rgba(58, 58, 58, .14);
+  --fc-non-business-color: #f8f8f8;
+  --fc-event-bg-color: #ededed;
+  --fc-event-border-color: #e0e0e0;
+  --fc-event-text-color: var(--bbcc-ink);
+}
+.bbcc-schedule #calendar { max-width: none; margin: 0; }
+.bbcc-schedule .fc-theme-standard td,
+.bbcc-schedule .fc-theme-standard th { border-color: var(--bbcc-line); }
+.bbcc-schedule .fc .fc-col-header-cell { padding: 15px 4px; background: #fff; }
+.bbcc-schedule .fc .fc-col-header-cell-cushion {
+  padding: 0; font-size: 14px; font-weight: 400; color: var(--bbcc-ink);
+}
+/* the grid's top-left corner cell is empty in FullCalendar; the mockup labels it */
+.bbcc-schedule .fc .fc-col-header .fc-timegrid-axis-frame { justify-content: center; }
+.bbcc-schedule .fc .fc-col-header .fc-timegrid-axis-frame::after {
+  content: "Time"; font-size: 14px; font-weight: 400; color: var(--bbcc-ink);
+}
+.bbcc-schedule .fc .fc-timegrid-slot { height: 52px; }
+.bbcc-schedule .fc .fc-timegrid-slot-label-frame { text-align: center; }
+.bbcc-schedule .fc .fc-timegrid-slot-label-cushion {
+  padding: 0 24px; font-size: 14px; color: var(--bbcc-ink);
+}
+
+/* events: flat blocks, no rounded corners or shadows */
+.bbcc-schedule .fc-timegrid-event,
+.bbcc-schedule .fc-v-event { border-radius: 0; box-shadow: none; }
+.bbcc-schedule .fc-timegrid-event .fc-event-main { padding: 0; }
+
+/* paid/pending bookings — hatched, not selectable */
+.bbcc-schedule .booking-block {
+  border: 0; color: var(--bbcc-ink-soft); cursor: not-allowed;
+  background: repeating-linear-gradient(-45deg, #ededed, #ededed 5px, #e0e0e0 5px, #e0e0e0 10px);
+}
+.bbcc-schedule .booking-block .fc-event-main-frame { justify-content: center; }
+.bbcc-schedule .booking-block .fc-event-time { display: none; }
+.bbcc-schedule .booking-block .fc-event-title { font-size: 13px; font-weight: 400; }
+
+/* slots an admin closed off (tournaments, maintenance).
+   application.css paints these three states slate-gray with !important for the
+   account calendars, so the public grid has to override in kind. */
+.bbcc-schedule .fc-event.recurring-event-block {
+  background-color: #dcdcdc !important; border-color: #dcdcdc !important;
+  color: var(--bbcc-ink-soft) !important; cursor: not-allowed !important;
+}
+
+/* classes and open events — gray card with the title, its hours and a sign-up button */
+.bbcc-schedule .fc-event.recurring-event-visible,
+.bbcc-schedule .fc-event.class-schedule-block {
+  background-color: #d9d9d9 !important; border-color: #d9d9d9 !important;
+  color: var(--bbcc-ink) !important; cursor: pointer !important;
+}
+.bbcc-schedule .fc-event.recurring-event-visible .fc-event-main,
+.bbcc-schedule .fc-event.class-schedule-block .fc-event-main {
+  padding: 9px 11px; color: var(--bbcc-ink) !important;
+}
+.bbcc-schedule .recurring-event-visible .fc-event-main-frame,
+.bbcc-schedule .class-schedule-block .fc-event-main-frame {
+  height: 100%; text-align: left; overflow: hidden;
+}
+.bbcc-schedule .recurring-event-visible .fc-event-title-container,
+.bbcc-schedule .class-schedule-block .fc-event-title-container {
+  order: 1; flex: 0 0 auto; min-height: auto;
+}
+.bbcc-schedule .recurring-event-visible .fc-event-title,
+.bbcc-schedule .class-schedule-block .fc-event-title {
+  font-size: 12px; font-weight: 700; line-height: 1.3; color: var(--bbcc-ink);
+  white-space: normal; max-height: none;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+/* fullcalendar-custom.css hides these times with !important, but the mockup shows them */
+.bbcc-schedule .recurring-event-visible .fc-event-time,
+.bbcc-schedule .class-schedule-block .fc-event-time {
+  display: block !important; order: 2; margin-top: 3px;
+  font-size: 11px; font-weight: 400; color: var(--bbcc-ink-soft);
+}
+.bbcc-schedule .fc-event .fc-signup-hint {
+  order: 3; margin-top: auto; align-self: center; flex: 0 0 auto; display: block;
+  background: #fff; border: 1px solid var(--bbcc-line); color: var(--bbcc-ink);
+  font-size: 10px; font-weight: 400; line-height: 1.4; padding: 3px 12px;
+  white-space: nowrap; text-decoration: none;
+}
+/* a one-hour block is 52px tall — only the title and the button fit */
+.bbcc-schedule .fc-event-compact .fc-event-title { -webkit-line-clamp: 1; }
+.bbcc-schedule .fc-event-compact .fc-event-time { display: none !important; }
+.bbcc-schedule .fc-event-compact .fc-event-main { padding: 6px 8px; }
+
+/* --- right rail: booking summary --- */
+.bbcc-booking-panel .bbcc-hub-heading { margin-bottom: 24px; }
+.bbcc-booking-summary { list-style: none; margin: 0 0 28px; padding: 0; }
+.bbcc-booking-summary li { color: var(--bbcc-ink); font-size: 15px; line-height: 1.75; }
+.bbcc-booking-hint { color: var(--bbcc-ink-soft); margin: 0 0 28px; }
+.bbcc-booking-hint-error { color: #9d4b43; }
+.bbcc-booking-panel .bbcc-btn { margin-top: 0; min-width: 200px; text-align: center; }
+.bbcc-btn:disabled, .bbcc-btn.disabled {
+  background: #b4b4b4; border-color: #b4b4b4; color: #fff; cursor: not-allowed;
+}
+.bbcc-booking-note { color: var(--bbcc-ink-soft); font-size: 14px; line-height: 1.7; margin: 46px 0 0; }
+.bbcc-booking-note a { color: var(--bbcc-ink); text-decoration: underline; }
+.bbcc-booking-note a:hover { color: var(--bbcc-ink-soft); }
+
+/* --- booking terms below the schedule --- */
+.bbcc-terms { margin-top: 34px; }
+.bbcc-terms h3 {
+  font-family: "Mona Sans", sans-serif; text-transform: uppercase; letter-spacing: 1px;
+  font-size: .95rem; font-weight: 700; color: var(--bbcc-ink); margin: 0 0 8px;
+}
+.bbcc-terms p { margin-bottom: 26px; }
+.bbcc-terms p:last-child { margin-bottom: 0; }
+.bbcc-terms-image img { width: 100%; height: 100%; max-height: 620px; object-fit: cover; display: block; }
+
+/* =====================================================================
    FOOTER
    ===================================================================== */
 .bbcc-footer { background: var(--bbcc-bg-alt); color: var(--bbcc-ink); }
@@ -673,6 +1091,15 @@ body.bbcc-no-scroll { overflow: hidden; }
 /* =====================================================================
    RESPONSIVE
    ===================================================================== */
+/* between lg and xl the grid keeps 7 columns in a narrow column, so it tightens up */
+@media (min-width: 992px) and (max-width: 1199px) {
+  .bbcc-schedule .fc .fc-col-header-cell-cushion { font-size: 12px; }
+  .bbcc-schedule .fc .fc-timegrid-slot-label-cushion { padding: 0 12px; font-size: 12px; }
+  .bbcc-schedule .fc .fc-col-header .fc-timegrid-axis-frame::after { font-size: 12px; }
+  .bbcc-booking-panel .bbcc-hub-heading { font-size: 1.15rem; }
+  .bbcc-schedule-control select, .bbcc-schedule-control input { min-width: 140px; }
+}
+
 @media (max-width: 991px) {
   .bbcc-hero { min-height: 60vh; }
   .bbcc-events-image, .bbcc-location-map iframe { height: 320px; }
@@ -687,6 +1114,10 @@ body.bbcc-no-scroll { overflow: hidden; }
   .bbcc-mits-split-image { min-height: 240px; }
   .bbcc-tile-wide { height: 300px; }
   .bbcc-clublife-mosaic .bbcc-tile .bbcc-tile-desc { opacity: 1; max-height: 160px; }
+  .bbcc-hubtabs { grid-template-columns: repeat(3, 1fr); margin-bottom: 38px; }
+  .bbcc-teetime-card { padding: 28px 24px 34px; }
+  .bbcc-schedule-filters { margin-left: 0; }
+  .bbcc-booking-panel { margin-top: 46px; }
 }
 
 @media (max-width: 767px) {
@@ -710,4 +1141,21 @@ body.bbcc-no-scroll { overflow: hidden; }
   .bbcc-mits-split-body, .bbcc-mits-contact { padding: 32px; }
   .bbcc-tile-wide { height: 240px; }
   .bbcc-clublife-nav-children { padding-left: 16px; }
+  .bbcc-account-tabs { gap: 12px 22px; }
+  .bbcc-account-photo img, .bbcc-account-photo-ph { height: 220px; }
+  .bbcc-logout-actions .bbcc-btn { min-width: 100%; }
+  .bbcc-receipt { padding: 26px; }
+  .bbcc-hubtabs { grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 32px; }
+  .bbcc-hubtab { gap: 10px; padding: 13px 14px; font-size: 14px; }
+  .bbcc-hubtab i { font-size: 17px; }
+  .bbcc-hub-heading { font-size: 1.15rem; }
+  .bbcc-teetime-card { padding: 24px 18px 30px; }
+  .bbcc-teetime-title { font-size: 1.15rem; }
+  /* 7 day columns don't fit a phone, so the grid scrolls inside its own box */
+  .bbcc-schedule { overflow-x: auto; }
+  .bbcc-schedule #calendar { min-width: 620px; }
+  .bbcc-schedule-control select, .bbcc-schedule-control input { min-width: 0; width: 100%; }
+  .bbcc-schedule-control { flex: 1 1 46%; }
+  .bbcc-schedule-filters { width: 100%; }
+  .bbcc-booking-panel .bbcc-btn { width: 100%; }
 }

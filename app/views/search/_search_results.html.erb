@@ -1,63 +1,143 @@
-<!-- start story section -->
-<section class="pt-5 pb-0 wow animate__fadeIn">
-  <div class="container">
-    <div class="row align-items-start">
-      <div class="col-lg-8 col-md-8 text-center text-md-start padding-three-lr">
-        <% if @court %>
-          <div class="d-flex justify-content-between align-items-end mb-3">
-            <div>
-              <h6 class="text-large text-black mb-2"><%= @court.name_label %></h6>
-              <p class="text-medium text-black mb-0"><%= @displayDate %></p>
-            </div>
-            <div class="d-flex gap-2">
-              <%= select_tag :court_type_id, options_from_collection_for_select(@court_types, "id", "name", @court_type.id), class: "form-select mb-0", include_blank: false, data: { remote: true, url: search_path(date: @date, sport_id: @sport.id, pax: @pax), method: :get } %>
-              <%= select_tag :court_id, options_from_collection_for_select(@courts, "id", "name", @court.id), class: "form-select mb-0", prompt: 'Select Court', data: { remote: true, url: search_path(date: @date, sport_id: @sport.id, pax: @pax, court_type_id: @court_type.id), method: :get } %>
-            </div>
-          </div>
-          <div class="pricing-area" id="schedule">
-            <div class="d-flex flex-wrap gap-3 mb-3 small align-items-center">
-              <div class="d-flex align-items-center gap-1">
-                <span style="display:inline-block;width:14px;height:14px;background:#ECFEED;border:1.5px solid #5BF651;border-radius:2px;flex-shrink:0;"></span>
-                <span class="text-muted">Your Selection</span>
-              </div>
-              <div class="d-flex align-items-center gap-1">
-                <span style="display:inline-block;width:14px;height:14px;background:#FFEBF2;border:1.5px solid #FF85AF;border-radius:2px;flex-shrink:0;"></span>
-                <span class="text-muted">Booked</span>
-              </div>
-              <div class="d-flex align-items-center gap-1">
-                <span style="display:inline-block;width:14px;height:14px;background:rgba(108,117,125,1);border:1.5px solid rgba(84,91,98,1);border-radius:2px;flex-shrink:0;"></span>
-                <span class="text-muted">Blocked Event</span>
-              </div>
-            </div>
-            <div id="calendar"></div>
-          </div>
-        <% else %>
-          <h6 class="alt-font text-extra-dark-gray mb-4 mx-5">
-            Sorry! There are no available courts for this category
-          </h6>
-        <% end %>
-      </div>
-      <% if @sport %>
-        <div class="col-lg-4 col-md-4 text-center text-md-start padding-three-lr">
-          <%= simple_form_for(:booking, :url => bookings_url, :method => :post) do %>
-            <div class="ms-4">
-              <input type="hidden" id="court_pax_select" value="4">
-              <h6 class="text-large text-black mb-3">Your Booking Details</h6>
-              <input id="date" type="hidden" value="<%= @date %>" name="date">
-              <input id="court-id" type="hidden" value="<%= @court.id %>" name="court_id">
-              <input id="input-book" type="hidden" value="" name="dates">
-              <input id="input-duration" type="hidden" value="" name="duration">
-              <input id="input-court-type" type="hidden" value="court_only" name="court_type">
-              <input id="input-pax" type="hidden" value="<%= @pax %>" name="pax">
-              <div id="calculate_table">
-                <%= render "calculate_info" %>
-              </div>
-              <button id="btnSubmit" type="submit" class="btn btn-light-gray btn-medium text-medium disabled" disabled>Submit</button>
-            </div>
-          <% end %>
-        </div>
-      <% end %>
-    </div>
-  </div>
-</section>
-<!-- end story section -->
+<%
+	# Golf has its own booking page, so the sport picker only lists sports that
+	# actually have courts on this calendar.
+	bookable_sports = Sport.joins(:courts).distinct.order(:name)
+%>
+<!-- start court schedule -->
+<%# the heading and filters sit in their own row so the booking rail lines up with
+    the top of the grid, as in the mockup %>
+<div class="row gx-4 gx-lg-5">
+	<div class="col-12 col-lg-8">
+		<div class="bbcc-schedule-head">
+			<div>
+				<h1 class="bbcc-hub-heading bbcc-schedule-title"><%= @sport.name %></h1>
+				<p class="bbcc-schedule-range"><%= @displayDate %></p>
+			</div>
+
+			<form class="bbcc-schedule-filters" action="<%= search_path %>" method="get" id="court-search-form">
+				<input type="hidden" name="court_type_id" id="court-search-type" value="<%= @court_type&.id %>">
+				<input type="hidden" name="court_id" id="court-search-court" value="<%= @court&.id %>">
+				<div class="bbcc-schedule-control">
+					<select name="sport_id" id="court-search-sport" aria-label="Sport">
+						<% bookable_sports.each do |sport| %>
+							<option value="<%= sport.id %>" <%= "selected" if sport.id == @sport.id %>><%= sport.name %></option>
+						<% end %>
+					</select>
+				</div>
+				<div class="bbcc-schedule-control bbcc-schedule-control-date">
+					<input type="text" name="date" id="court-date-input" aria-label="Date"
+					       value="<%= Date.parse(@date).strftime('%d/%m/%Y') %>" placeholder="Select a date" readonly>
+				</div>
+			</form>
+		</div>
+
+		<% if @court %>
+			<div class="bbcc-schedule-bar">
+				<div class="bbcc-schedule-legend">
+					<span><i class="bbcc-legend-swatch bbcc-legend-selection"></i>Your Selection</span>
+					<span><i class="bbcc-legend-swatch bbcc-legend-booked"></i>Booked</span>
+					<span><i class="bbcc-legend-swatch bbcc-legend-blocked"></i>Blocked Event</span>
+				</div>
+				<div class="bbcc-schedule-filters">
+					<div class="bbcc-schedule-control">
+						<%= select_tag :court_type_id, options_from_collection_for_select(@court_types, "id", "name", @court_type.id),
+						               include_blank: false, aria: { label: "Court type" },
+						               data: { remote: true, url: search_path(date: @date, sport_id: @sport.id, pax: @pax), method: :get } %>
+					</div>
+					<div class="bbcc-schedule-control">
+						<%= select_tag :court_id, options_from_collection_for_select(@courts, "id", "name", @court.id),
+						               prompt: "Select Court", aria: { label: "Court" },
+						               data: { remote: true, url: search_path(date: @date, sport_id: @sport.id, pax: @pax, court_type_id: @court_type.id), method: :get } %>
+					</div>
+				</div>
+			</div>
+		<% end %>
+	</div>
+</div>
+
+<div class="row g-4 g-lg-5">
+	<div class="col-12 col-lg-8">
+		<% if @court %>
+			<div class="bbcc-schedule" id="schedule">
+				<div id="calendar"></div>
+			</div>
+		<% else %>
+			<div class="bbcc-table-empty">
+				<p>Sorry, there are no courts available for this category yet.</p>
+				<%= link_to "Explore Club Life", club_life_path, class: "bbcc-btn" %>
+			</div>
+		<% end %>
+	</div>
+
+	<div class="col-12 col-lg-4">
+		<aside class="bbcc-booking-panel">
+			<h2 class="bbcc-hub-heading">Your Booking Details</h2>
+
+			<% if @court %>
+				<%= simple_form_for(:booking, url: bookings_url, method: :post) do %>
+					<input type="hidden" id="court_pax_select" value="4">
+					<input id="date" type="hidden" value="<%= @date %>" name="date">
+					<input id="court-id" type="hidden" value="<%= @court.id %>" name="court_id">
+					<input id="input-book" type="hidden" value="" name="dates">
+					<input id="input-duration" type="hidden" value="" name="duration">
+					<input id="input-court-type" type="hidden" value="court_only" name="court_type">
+					<input id="input-pax" type="hidden" value="<%= @pax %>" name="pax">
+
+					<div id="calculate_table">
+						<%= render "calculate_info" %>
+					</div>
+
+					<button id="btnSubmit" type="submit" class="bbcc-btn disabled" disabled>Submit</button>
+				<% end %>
+			<% else %>
+				<p class="bbcc-booking-hint">Pick a sport with available courts to start a booking.</p>
+			<% end %>
+
+			<p class="bbcc-booking-note">
+				Booking window: Online bookings are available up to 14 days in advance.
+				Need a booking outside regular hours or beyond 14 days?
+				<br>
+				<a href="https://wa.me/<%= configatron.whatsapp_number.to_s.gsub(/\D/, '') %>" target="_blank" rel="noopener">Contact us via WhatsApp</a>.
+			</p>
+		</aside>
+	</div>
+</div>
+<!-- end court schedule -->
+
+<script>
+(function() {
+	// runs again on every AJAX re-render of this panel, since the controls are replaced
+	function init() {
+		var form  = document.getElementById('court-search-form');
+		var sport = document.getElementById('court-search-sport');
+		var date  = document.getElementById('court-date-input');
+		if (!form) return;
+
+		if (sport) {
+			sport.addEventListener('change', function() {
+				// courts belong to a sport, so a sport change can't keep the current court
+				document.getElementById('court-search-type').value  = '';
+				document.getElementById('court-search-court').value = '';
+				form.submit();
+			});
+		}
+
+		if (date && window.flatpickr) {
+			flatpickr(date, {
+				dateFormat: 'd/m/Y',
+				minDate: 'today',
+				maxDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000),
+				disableMobile: true,
+				onChange: function() { form.submit(); }
+			});
+		}
+	}
+
+	// on a full page load this runs before application.js defines flatpickr
+	if (document.readyState === 'loading') {
+		document.addEventListener('DOMContentLoaded', init);
+	} else {
+		init();
+	}
+})();
+</script>

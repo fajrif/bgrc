@@ -1,45 +1,48 @@
-<% if @purchases.any? %>
-<table class="table table-hover table-responsive">
-  <thead>
-    <tr>
-      <th>Order ID</th>
-      <th>Type</th>
-      <th>Description</th>
-      <th>Amount</th>
-      <th>Payment Type</th>
-      <th>Status</th>
-      <th>Date</th>
-    </tr>
-  </thead>
-  <tbody>
-    <% @purchases.each do |purchase| %>
+<% if purchases.any? %>
+<div class="bbcc-table-scroll">
+  <table class="bbcc-table">
+    <thead>
       <tr>
-        <td class="font-weight-500 text-small"><%= purchase.order_id %></td>
-        <td class="text-small">
-          <span class="badge bg-secondary"><%= productable_type_label(purchase.productable_type) %></span>
-        </td>
-        <td class="text-small"><%= purchase.productable.try(:name) || "—" %></td>
-        <td class="font-weight-500">
-          <%= number_to_currency(purchase.gross_amount, unit: "Rp. ", separator: ",", delimiter: ".", precision: 0) %>
-        </td>
-        <td class="text-small"><%= purchase.payment_type&.humanize || "—" %></td>
-        <td>
-          <% status = purchase.status_code %>
-          <% if status == "200" || status == "201" %>
-            <span class="badge bg-success">Paid</span>
-          <% elsif status == "000" %>
-            <span class="badge bg-warning text-dark">Pending</span>
-          <% else %>
-            <span class="badge bg-danger"><%= purchase.status_message&.truncate(20) || "Failed" %></span>
-          <% end %>
-        </td>
-        <td class="text-small text-muted"><%= purchase.created_at.strftime('%d %b %Y %H:%M') %></td>
+        <th>Order ID</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Amount</th>
+        <th>Payment Type</th>
+        <th>Status</th>
+        <th>Date</th>
+        <th></th>
       </tr>
-    <% end %>
-  </tbody>
-</table>
+    </thead>
+    <tbody>
+      <% purchases.each do |purchase| %>
+        <tr>
+          <td class="bbcc-table-id"><%= purchase.order_id %></td>
+          <td><span class="bbcc-badge bbcc-badge-muted"><%= productable_type_label(purchase.productable_type) %></span></td>
+          <td><%= purchase.productable.try(:name) || "—" %></td>
+          <td><%= number_to_currency(purchase.gross_amount, unit: "Rp. ", separator: ",", delimiter: ".", precision: 0) %></td>
+          <td><%= purchase.payment_type&.humanize || "—" %></td>
+          <td>
+            <% if purchase.status_code.in?(["200", "201"]) %>
+              <span class="bbcc-badge">Paid</span>
+            <% elsif purchase.status_code == "000" %>
+              <span class="bbcc-badge bbcc-badge-warn">Pending</span>
+            <% else %>
+              <span class="bbcc-badge bbcc-badge-danger"><%= purchase.status_message&.truncate(20) || "Failed" %></span>
+            <% end %>
+          </td>
+          <td><%= purchase.created_at.strftime('%d %b %Y %H:%M') %></td>
+          <td>
+            <% if purchase.status_code.in?(["200", "201"]) %>
+              <%= link_to "Download", users_payment_path(purchase), class: "bbcc-btn bbcc-btn-sm" %>
+            <% end %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
 <% else %>
-  <div class="text-center padding-40px-tb">
-    <p class="text-medium">No payment records found.</p>
+  <div class="bbcc-table-empty">
+    <p>No payment records found.</p>
   </div>
 <% end %>

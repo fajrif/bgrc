@@ -1,11 +1,22 @@
 <%= content_for :head do %>
+	<%# main.css is FullCalendar's core stylesheet %>
 	<%= stylesheet_link_tag "main.css" %>
 <% end %>
 
-<%= render "banner" %>
-<div id="searchResults">
-  <%= render "search_results" if @court %>
-</div>
+<%= render "shared/breadcrumb", crumbs: [{ label: "Booking Hub" }] %>
+
+<!-- start booking hub — racquet sports -->
+<section class="bbcc-section bbcc-hub">
+	<div class="container-lg">
+		<%= render "shared/booking_hub_tabs", active: :racquet %>
+
+		<div id="searchResults">
+			<%= render "search_results" %>
+		</div>
+	</div>
+</section>
+<!-- end booking hub -->
+
 <%= render "info" %>
 
 <%= content_for :tail do %>
@@ -33,6 +44,10 @@
 				end: moment('<%= @date %>').add(7, 'days').format('YYYY-MM-DD')
 			},
 			eventLongPressDelay: 10,
+			dayHeaderFormat: { weekday: 'short', month: 'numeric', day: 'numeric' },
+			slotLabelContent: function(arg) {
+				return moment(arg.date).format('HH.mm');
+			},
 			eventTimeFormat: {
 				hour: '2-digit',
 				minute: '2-digit',
@@ -58,12 +73,7 @@
 				}
       },
       eventDidMount: function(arg) {
-        if (arg.event.extendedProps.signUpUrl) {
-          var hint = document.createElement('span');
-          hint.className = 'fc-signup-hint';
-          hint.textContent = 'Sign Up';
-          arg.el.querySelector('.fc-event-title') && arg.el.querySelector('.fc-event-title').appendChild(hint);
-        }
+        decorateEvent(arg);
       },
       eventClick: function(arg) {
 				if(arg.event.id == 'book1') {
@@ -83,9 +93,8 @@
       },
       editable: true,
       dayMaxEvents: false, // allow "more" link when too many events
-			eventBackgroundColor: '#FFEBF2',
-			eventBorderColor: '#FF85AF',
-			eventTextColor: '#FF85AF',
+			<%# event colours come from the --fc-* custom properties on .bbcc-schedule,
+			    so per-state classes can restyle them without fighting inline styles %>
 			selectConstraint: 'businessHours',
 			eventConstraint: 'businessHours',
 			businessHours: <%= @business_hours.html_safe %>,
@@ -95,6 +104,21 @@
 		calendar.setOption('height', 'auto');
     calendar.render();
   });
+
+	// classes and open events are bookable elsewhere, so they get a sign-up affordance
+	function decorateEvent(arg) {
+		if (!arg.event.extendedProps.signUpUrl && !arg.event.extendedProps.classUrl) return;
+		var frame = arg.el.querySelector('.fc-event-main-frame');
+		if (!frame) return;
+		// a one-hour block is only 52px tall, so it drops the time line
+		if ((arg.event.end - arg.event.start) / 3600000 < 2) {
+			arg.el.classList.add('fc-event-compact');
+		}
+		var hint = document.createElement('span');
+		hint.className = 'fc-signup-hint';
+		hint.textContent = 'Sign up';
+		frame.appendChild(hint);
+	}
 
 	function createEvent(arg, calendar) {
 			var startDay = moment(arg.start, "YYYY-MM-DD");
@@ -111,9 +135,9 @@
 				title: 'Check price',
 				start: arg.start,
 				end: arg.end,
-				textColor: '#097B0A',
-				borderColor: '#5BF651',
-				color: '#ECFEED'
+				textColor: '#ffffff',
+				borderColor: '#3a3a3a',
+				color: '#3a3a3a'
 			});
 
 			var formatDates = startDay.format('DD/MM/YYYY HH:mm');

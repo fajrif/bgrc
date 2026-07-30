@@ -1,47 +1,22 @@
-<section class="half-section">
-  <div class="container">
-    <%= render "users/shared/sidebar" %>
-    <div class="row align-items-start mb-4">
-      <div class="col-lg-12 col-md-12 text-center text-md-start padding-five-lr lg-padding-six-lr md-padding-15px-lr">
-        <h6 class="font-weight-600 text-uppercase margin-20px-bottom letter-spacing-8">Golf Reservation History</h6>
-        <div class="margin-20px-bottom">
-          <%= link_to "Active Reservations", users_golf_reservations_path, class: "btn btn-light-gray btn-small text-medium" %>
-        </div>
-        <% if @golf_reservations.empty? %>
-          <p class="text-medium text-medium-gray">No past golf reservations found.</p>
-        <% else %>
-          <table class="table text-medium">
-            <thead>
-              <tr>
-                <th>Order ID</th>
-                <th>Tee Time</th>
-                <th>Holes</th>
-                <th>Players</th>
-                <th>Total</th>
-                <th>Status</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              <% @golf_reservations.each do |res| %>
-                <tr>
-                  <td><%= res.order_id %></td>
-                  <td><%= res.tee_time&.strftime("%d %b %Y %H:%M") %></td>
-                  <td><%= res.holes_label %></td>
-                  <td><%= res.players_count %></td>
-                  <td><%= res.total_price_label %></td>
-                  <td>
-                    <% color = res.expired? ? "text-danger" : "text-secondary" %>
-                    <span class="<%= color %>"><%= res.status_label %></span>
-                  </td>
-                  <td><%= link_to "View", golf_reservation_path(res.order_id), class: "btn btn-light-gray btn-small text-small" %></td>
-                </tr>
-              <% end %>
-            </tbody>
-          </table>
-          <%= paginate @golf_reservations %>
-        <% end %>
-      </div>
+<!-- start golf reservation history -->
+<section class="bbcc-section bbcc-account">
+  <div class="container-lg">
+    <%= render "users/shared/account_nav" %>
+    <%= render "users/shared/booking_view_switch" %>
+
+    <div class="bbcc-viewswitch">
+      <%= link_to "Active Reservations", users_golf_reservations_path, class: "bbcc-viewswitch-btn" %>
+      <span class="bbcc-viewswitch-btn active">Golf Reservation History</span>
     </div>
+
+    <% if @golf_reservations.empty? %>
+      <div class="bbcc-table-empty">
+        <p>No past golf reservations found.</p>
+      </div>
+    <% else %>
+      <%= render "table", golf_reservations: @golf_reservations, show_actions: false %>
+      <%= paginate @golf_reservations, theme: "bbcc" %>
+    <% end %>
   </div>
 </section>
+<!-- end golf reservation history -->
