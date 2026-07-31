@@ -573,11 +573,21 @@ body.bbcc-no-scroll { overflow: hidden; }
 .bbcc-clublife-mosaic .bbcc-tile .bbcc-tile-desc { opacity: 0; max-height: 0; transition: opacity .3s, max-height .3s; }
 .bbcc-clublife-mosaic .bbcc-tile:hover .bbcc-tile-desc { opacity: 1; max-height: 160px; }
 
-/* left rail — extends .bbcc-faq-nav with a nested level */
+/* left rail — extends .bbcc-faq-nav with a nested, collapsible level */
 .bbcc-clublife-nav { gap: 18px; }
 .bbcc-clublife-nav-group { display: flex; flex-direction: column; gap: 14px; }
-.bbcc-clublife-nav-caret { font-size: 11px; margin-left: 8px; color: var(--bbcc-ink-soft); }
+.bbcc-clublife-nav-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.bbcc-clublife-nav-head .bbcc-faq-nav-link { padding-bottom: 0; }
+.bbcc-clublife-nav-toggle {
+  display: flex; align-items: center; justify-content: center;
+  width: 26px; height: 26px; margin: -4px; padding: 0;
+  background: none; border: 0; cursor: pointer; flex-shrink: 0;
+}
+.bbcc-clublife-nav-caret { font-size: 11px; color: var(--bbcc-ink-soft); transition: transform .2s; }
+.bbcc-clublife-nav-toggle:hover .bbcc-clublife-nav-caret { color: var(--bbcc-ink); }
+.bbcc-clublife-nav-toggle[aria-expanded="true"] .bbcc-clublife-nav-caret { transform: rotate(180deg); }
 .bbcc-clublife-nav-children { display: flex; flex-direction: column; gap: 12px; padding-left: 20px; }
+.bbcc-clublife-nav-children[hidden] { display: none; }
 .bbcc-clublife-nav-child {
   width: fit-content; font-size: 15px; color: var(--bbcc-ink-soft);
   padding-bottom: 3px; border-bottom: 2px solid transparent;
@@ -1049,7 +1059,7 @@ button.bbcc-teeslot:focus-visible { outline: 2px solid var(--bbcc-ink); outline-
   display: inline-flex; align-items: center; justify-content: center;
   background: #cfcfcf; color: #fff; font-size: 16px; transition: background .2s;
 }
-.bbcc-footer-social a:hover { background: var(--bbcc-dark); text-decoration: none; }
+.bbcc-footer-social a:hover { background: var(--bbcc-dark); text-decoration: none; color: #fff !important; }
 
 .bbcc-footer-intro { color: var(--bbcc-ink); line-height: 1.7; margin-bottom: 18px; max-width: 640px; }
 .bbcc-footer-supported { text-transform: none; color: var(--bbcc-ink); margin-bottom: 34px; }

@@ -1,16 +1,22 @@
 <%# locals: active: — the Facility currently being viewed %>
 <nav class="bbcc-faq-nav bbcc-clublife-nav" aria-label="Club Life sections">
     <% Facility.club_life_roots.each do |section| %>
-        <div class="bbcc-clublife-nav-group">
-            <%= link_to club_life_section_path(section),
-                        class: ["bbcc-faq-nav-link", ("active" if active == section)] do %>
-                <%= section.name %>
-                <% if section.children.any? %>
-                    <i class="fa-solid fa-chevron-down bbcc-clublife-nav-caret" aria-hidden="true"></i>
+        <% has_children = section.children.any? %>
+        <% expanded = active == section || active&.parent == section %>
+        <div class="bbcc-clublife-nav-group<%= " bbcc-clublife-nav-group-open" if expanded && has_children %>">
+            <div class="bbcc-clublife-nav-head">
+                <%= link_to section.name, club_life_section_path(section),
+                            class: ["bbcc-faq-nav-link", ("active" if active == section)] %>
+                <% if has_children %>
+                    <button type="button" class="bbcc-clublife-nav-toggle" aria-expanded="<%= expanded %>"
+                            aria-controls="clublife-children-<%= section.id %>"
+                            aria-label="Toggle <%= section.name %> sections">
+                        <i class="fa-solid fa-chevron-down bbcc-clublife-nav-caret" aria-hidden="true"></i>
+                    </button>
                 <% end %>
-            <% end %>
-            <% if section.children.any? %>
-                <div class="bbcc-clublife-nav-children">
+            </div>
+            <% if has_children %>
+                <div class="bbcc-clublife-nav-children" id="clublife-children-<%= section.id %>" <%= "hidden" unless expanded %>>
                     <% section.children.each do |child| %>
                         <%= link_to child.name, club_life_section_path(child),
                                     class: ["bbcc-clublife-nav-child", ("active" if active == child)] %>
@@ -20,3 +26,16 @@
         </div>
     <% end %>
 </nav>
+
+<script>
+  // plain JS: this partial can render before application.js (and jQuery) loads
+  document.querySelectorAll('.bbcc-clublife-nav-toggle').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var panel = document.getElementById(btn.getAttribute('aria-controls'));
+      var expanded = btn.getAttribute('aria-expanded') === 'true';
+      if (panel) panel.hidden = expanded;
+      btn.setAttribute('aria-expanded', expanded ? 'false' : 'true');
+      btn.closest('.bbcc-clublife-nav-group').classList.toggle('bbcc-clublife-nav-group-open', !expanded);
+    });
+  });
+</script>
