@@ -1,30 +1,17 @@
-# Create Default Banner Section
-BannerSection.delete_all
-puts "create all banner sections"
+# Ensure Default Banner Sections
+# Idempotent: only creates sections that don't already exist by name, never deletes.
+# Safe to re-run on production (e.g. after adding a new page's section here).
+puts "ensure all banner sections"
 
-@bs1 = BannerSection.create(name: "Home")
-
-@bs2 = BannerSection.create(name: "About")
-@bs3 = BannerSection.create(name: "Contact")
-
-@bs4 = BannerSection.create(name: "Facilities")
-@bs5 = BannerSection.create(name: "Sports")
-@bs6 = BannerSection.create(name: "Events")
-@bs7 = BannerSection.create(name: "Promos")
-@bs8 = BannerSection.create(name: "Articles")
-@bs9 = BannerSection.create(name: "Packages")
-
-@bs10 = BannerSection.create(name: "Golf")
-@bs11 = BannerSection.create(name: "Tennis")
-@bs12 = BannerSection.create(name: "Padel")
-@bs13 = BannerSection.create(name: "Pickleball")
-
-@bs14 = BannerSection.create(name: "FAQ")
-@bs15 = BannerSection.create(name: "Gallery")
-@bs16 = BannerSection.create(name: "Our Team")
-@bs17 = BannerSection.create(name: "MITS Academy")
-@bs18 = BannerSection.create(name: "Disclaimer")
-@bs19 = BannerSection.create(name: "Privacy Policy")
-@bs20 = BannerSection.create(name: "Terms & Conditions")
-@bs21 = BannerSection.create(name: "Club Life")
-@bs22 = BannerSection.create(name: "Highlights")
+[
+  "Home",
+  "About", "Contact",
+  "Facilities", "Sports", "Events", "Promos", "Articles", "Packages",
+  "Golf", "Tennis", "Padel", "Pickleball",
+  "FAQ", "Gallery", "Our Team", "MITS Academy",
+  "Disclaimer", "Privacy Policy", "Terms & Conditions",
+  "Club Life", "Highlights",
+].each do |name|
+  section = BannerSection.find_or_create_by!(name: name)
+  puts "Banner section: #{section.name}"
+end

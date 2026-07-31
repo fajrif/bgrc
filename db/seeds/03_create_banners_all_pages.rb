@@ -1,244 +1,87 @@
-# Create Banners for All Pages
-Banner.delete_all
+# Ensure Banners for All Pages
+# Idempotent: only creates a banner for sections that don't already have one, never deletes.
+# Safe to re-run on production — existing banners (including anything edited via admin) are
+# left untouched; this only fills in banners that are missing (e.g. for a newly added section).
+puts "ensure banners for all pages"
 
-# Banner HomePage
-banner = Banner.new(title: "Welcome to Bali Beach Country Club, where tropical paradise meets world-class sporting facilities.", description: "Whether you're a beginner, enthusiast, or seasoned pro, our exceptional golf course and top-tier tennis facilities in historic Nusa Dua offer an unforgettable experience for all ages and skill levels.")
-banner.image.attach(io: Rails.root.join("vendor/assets/images/banners/banner-home.png").open, filename: "banner-home.png")
-banner.banner_section = @bs1
-Mobility.with_locale(:id) {
-	banner.title = "Selamat datang di Bali Beach Country Club, tempat surga tropis bertemu dengan fasilitas olahraga kelas dunia."
-	banner.description = "Baik Anda seorang pemula, penggemar, atau profesional berpengalaman, lapangan golf kami yang luar biasa dan fasilitas tenis tingkat atas di Nusa Dua yang bersejarah menawarkan pengalaman yang tak terlupakan untuk semua usia dan tingkat keterampilan."
-}
-banner.save
-puts "Create Banner: #{banner.title}"
+def lorem_paragraphs
+  FFaker::Lorem.paragraphs.join(" ")
+end
 
-# Banner About
-banner = Banner.new(title: "About", description: FFaker::Lorem.paragraphs.join(" "))
-banner.image.attach(io: Rails.root.join("vendor/assets/images/banners/banner-about.png").open, filename: "banner-about.png")
-banner.banner_section = @bs2
-Mobility.with_locale(:id) {
-	banner.title = "Tentang Kami"
-	banner.description = FFaker::Lorem.paragraphs.join(" ")
-}
-banner.save
-puts "Create Banner: #{banner.title}"
+banners_data = [
+  { section: "Home", image: "banner-home.png",
+    title: "Welcome to Bali Beach Country Club, where tropical paradise meets world-class sporting facilities.",
+    description: "Whether you're a beginner, enthusiast, or seasoned pro, our exceptional golf course and top-tier tennis facilities in historic Nusa Dua offer an unforgettable experience for all ages and skill levels.",
+    title_id: "Selamat datang di Bali Beach Country Club, tempat surga tropis bertemu dengan fasilitas olahraga kelas dunia.",
+    description_id: "Baik Anda seorang pemula, penggemar, atau profesional berpengalaman, lapangan golf kami yang luar biasa dan fasilitas tenis tingkat atas di Nusa Dua yang bersejarah menawarkan pengalaman yang tak terlupakan untuk semua usia dan tingkat keterampilan." },
 
-# Banner Contact
-banner = Banner.new(title: "Contact", description: FFaker::Lorem.paragraphs.join(" "))
-banner.image.attach(io: Rails.root.join("vendor/assets/images/banners/banner-contact.png").open, filename: "banner-contact.png")
-banner.banner_section = @bs3
-Mobility.with_locale(:id) {
-	banner.title = "Kontak"
-	banner.description = FFaker::Lorem.paragraphs.join(" ")
-}
-banner.save
-puts "Create Banner: #{banner.title}"
+  { section: "About", image: "banner-about.png", title: "About", description: lorem_paragraphs, title_id: "Tentang Kami", description_id: lorem_paragraphs },
+  { section: "Contact", image: "banner-contact.png", title: "Contact", description: lorem_paragraphs, title_id: "Kontak", description_id: lorem_paragraphs },
+  { section: "Facilities", image: "banner-facilities.png", title: "Facilities", description: lorem_paragraphs, title_id: "Fasilitas", description_id: lorem_paragraphs },
+  { section: "Sports", image: "banner-sports.png", title: "Sports", description: lorem_paragraphs, title_id: "Olahraga", description_id: lorem_paragraphs },
+  { section: "Events", image: "banner-events.png", title: "Events", description: lorem_paragraphs, title_id: "Acara Kegiatan", description_id: lorem_paragraphs },
+  { section: "Promos", image: "banner-promo.png", title: "Promotion", description: lorem_paragraphs, title_id: "Promosi", description_id: lorem_paragraphs },
+  { section: "Articles", image: "banner-blogs.png", title: "Blog", description: lorem_paragraphs, title_id: "Blog", description_id: lorem_paragraphs },
+  { section: "Packages", image: "banner-packages.png", title: "Packages", description: lorem_paragraphs, title_id: "Paket", description_id: lorem_paragraphs },
+  { section: "Golf", image: "banner-golf.png", title: "Golf", description: lorem_paragraphs, title_id: "Golf", description_id: lorem_paragraphs },
+  { section: "Tennis", image: "banner-tennis.png", title: "Tennis", description: lorem_paragraphs, title_id: "Tennis", description_id: lorem_paragraphs },
+  { section: "Padel", image: "banner-padel.png", title: "Padel", description: lorem_paragraphs, title_id: "Padel", description_id: lorem_paragraphs },
+  { section: "Pickleball", image: "banner-pickleball.png", title: "Pickleball", description: lorem_paragraphs, title_id: "Pickleball", description_id: lorem_paragraphs },
 
-# Banner Facilities
-banner = Banner.new(title: "Facilities", description: FFaker::Lorem.paragraphs.join(" "))
-banner.image.attach(io: Rails.root.join("vendor/assets/images/banners/banner-facilities.png").open, filename: "banner-facilities.png")
-banner.banner_section = @bs4
-Mobility.with_locale(:id) {
-	banner.title = "Fasilitas"
-	banner.description = FFaker::Lorem.paragraphs.join(" ")
-}
-banner.save
-puts "Create Banner: #{banner.title}"
+  { section: "FAQ", image: "banner-contact.png",
+    title: "FAQ", description: "Answers to the most common questions about booking, payments, membership and more at Bali Beach Country Club.",
+    title_id: "FAQ", description_id: "Jawaban atas pertanyaan yang paling sering diajukan seputar pemesanan, pembayaran, keanggotaan, dan lainnya di Bali Beach Country Club." },
 
-# Banner Sports
-banner = Banner.new(title: "Sports", description: FFaker::Lorem.paragraphs.join(" "))
-banner.image.attach(io: Rails.root.join("vendor/assets/images/banners/banner-sports.png").open, filename: "banner-sports.png")
-banner.banner_section = @bs5
-Mobility.with_locale(:id) {
-	banner.title = "Olahraga"
-	banner.description = FFaker::Lorem.paragraphs.join(" ")
-}
-banner.save
-puts "Create Banner: #{banner.title}"
+  { section: "Gallery", image: "restaurant.png", dir: "facilities",
+    title: "Gallery", description: "A look at life around Bali Beach Country Club — our courts, courses, facilities and events.",
+    title_id: "Galeri", description_id: "Sekilas kehidupan di Bali Beach Country Club — lapangan, fasilitas, dan acara kami." },
 
-# Banner Events
-banner = Banner.new(title: "Events", description: FFaker::Lorem.paragraphs.join(" "))
-banner.image.attach(io: Rails.root.join("vendor/assets/images/banners/banner-events.png").open, filename: "banner-events.png")
-banner.banner_section = @bs6
-Mobility.with_locale(:id) {
-	banner.title = "Acara Kegiatan"
-	banner.description = FFaker::Lorem.paragraphs.join(" ")
-}
-banner.save
-puts "Create Banner: #{banner.title}"
+  { section: "Our Team", image: "restaurant.png", dir: "facilities",
+    title: "Our Team", description: "Meet the people behind Bali Beach Country Club — from the clubhouse kitchen to the practice courts.",
+    title_id: "Tim Kami", description_id: "Kenali orang-orang di balik Bali Beach Country Club — mulai dari dapur klub hingga lapangan latihan." },
 
-# Banner Promos
-banner = Banner.new(title: "Promotion", description: FFaker::Lorem.paragraphs.join(" "))
-banner.image.attach(io: Rails.root.join("vendor/assets/images/banners/banner-promo.png").open, filename: "banner-promo.png")
-banner.banner_section = @bs7
-Mobility.with_locale(:id) {
-	banner.title = "Promosi"
-	banner.description = FFaker::Lorem.paragraphs.join(" ")
-}
-banner.save
-puts "Create Banner: #{banner.title}"
+  { section: "MITS Academy", image: "banner-tennis.png",
+    title: "MITS Academy", description: "Our coaching partner for tennis, padel and pickleball — elite programs for every age and ambition.",
+    title_id: "MITS Academy", description_id: "Mitra pelatihan kami untuk tenis, padel, dan pickleball — program unggulan untuk segala usia dan ambisi." },
 
-# Banner Articles
-banner = Banner.new(title: "Blog", description: FFaker::Lorem.paragraphs.join(" "))
-banner.image.attach(io: Rails.root.join("vendor/assets/images/banners/banner-blogs.png").open, filename: "banner-blogs.png")
-banner.banner_section = @bs8
-Mobility.with_locale(:id) {
-	banner.title = "Blog"
-	banner.description = FFaker::Lorem.paragraphs.join(" ")
-}
-banner.save
-puts "Create Banner: #{banner.title}"
+  { section: "Disclaimer", image: "banner-golf.png",
+    title: "Disclaimer", description: "Please read this disclaimer carefully before using the Bali Beach Country Club website.",
+    title_id: "Disclaimer", description_id: "Harap baca disclaimer ini dengan saksama sebelum menggunakan situs web Bali Beach Country Club." },
 
-# Banner Packages
-banner = Banner.new(title: "Packages", description: FFaker::Lorem.paragraphs.join(" "))
-banner.image.attach(io: Rails.root.join("vendor/assets/images/banners/banner-packages.png").open, filename: "banner-packages.png")
-banner.banner_section = @bs9
-Mobility.with_locale(:id) {
-	banner.title = "Paket"
-	banner.description = FFaker::Lorem.paragraphs.join(" ")
-}
-banner.save
-puts "Create Banner: #{banner.title}"
+  { section: "Privacy Policy", image: "banner-golf.png",
+    title: "Privacy Policy", description: "How Bali Beach Country Club collects, uses and protects your personal information.",
+    title_id: "Kebijakan Privasi", description_id: "Bagaimana Bali Beach Country Club mengumpulkan, menggunakan, dan melindungi informasi pribadi Anda." },
 
-# Banner Golf
-banner = Banner.new(title: "Golf", description: FFaker::Lorem.paragraphs.join(" "))
-banner.image.attach(io: Rails.root.join("vendor/assets/images/banners/banner-golf.png").open, filename: "banner-golf.png")
-banner.banner_section = @bs10
-Mobility.with_locale(:id) {
-	banner.title = "Golf"
-	banner.description = FFaker::Lorem.paragraphs.join(" ")
-}
-banner.save
-puts "Create Banner: #{banner.title}"
+  { section: "Terms & Conditions", image: "banner-golf.png",
+    title: "Terms & Conditions", description: "The terms, cancellation and refund policies that apply to bookings at Bali Beach Country Club.",
+    title_id: "Syarat & Ketentuan", description_id: "Syarat, kebijakan pembatalan, dan pengembalian dana yang berlaku untuk pemesanan di Bali Beach Country Club." },
 
-# Banner Tennis
-banner = Banner.new(title: "Tennis", description: FFaker::Lorem.paragraphs.join(" "))
-banner.image.attach(io: Rails.root.join("vendor/assets/images/banners/banner-tennis.png").open, filename: "banner-tennis.png")
-banner.banner_section = @bs11
-Mobility.with_locale(:id) {
-	banner.title = "Tennis"
-	banner.description = FFaker::Lorem.paragraphs.join(" ")
-}
-banner.save
-puts "Create Banner: #{banner.title}"
+  { section: "Club Life", image: "banner-padel.png",
+    title: "Club Life", description: "Golf, racquet sports, the beach club, fitness and wellness — everything the club opens up to you.",
+    title_id: "Club Life", description_id: "Golf, olahraga raket, beach club, kebugaran, dan wellness — semua yang klub tawarkan untuk Anda." },
 
-# Banner Padel
-banner = Banner.new(title: "Padel", description: FFaker::Lorem.paragraphs.join(" "))
-banner.image.attach(io: Rails.root.join("vendor/assets/images/banners/banner-padel.png").open, filename: "banner-padel.png")
-banner.banner_section = @bs12
-Mobility.with_locale(:id) {
-	banner.title = "Padel"
-	banner.description = FFaker::Lorem.paragraphs.join(" ")
-}
-banner.save
-puts "Create Banner: #{banner.title}"
+  { section: "Highlights", image: "banner-events.png",
+    title: "BBCC Highlights", description: "Socials, clinics, tournaments and the regular fixtures that make up the club calendar.",
+    title_id: "BBCC Highlights", description_id: "Acara sosial, klinik, turnamen, dan agenda rutin yang mengisi kalender klub." },
+]
 
-# Banner Pickleball
-banner = Banner.new(title: "Pickleball", description: FFaker::Lorem.paragraphs.join(" "))
-banner.image.attach(io: Rails.root.join("vendor/assets/images/banners/banner-pickleball.png").open, filename: "banner-pickleball.png")
-banner.banner_section = @bs13
-Mobility.with_locale(:id) {
-	banner.title = "Pickleball"
-	banner.description = FFaker::Lorem.paragraphs.join(" ")
-}
-banner.save
-puts "Create Banner: #{banner.title}"
+banners_data.each do |data|
+  section = BannerSection.find_or_create_by!(name: data[:section])
+  banner = Banner.find_or_initialize_by(banner_section: section)
 
-# Banner FAQ
-banner = Banner.new(title: "FAQ", description: "Answers to the most common questions about booking, payments, membership and more at Bali Beach Country Club.")
-banner.image.attach(io: Rails.root.join("vendor/assets/images/banners/banner-contact.png").open, filename: "banner-contact.png")
-banner.banner_section = @bs14
-Mobility.with_locale(:id) {
-	banner.title = "FAQ"
-	banner.description = "Jawaban atas pertanyaan yang paling sering diajukan seputar pemesanan, pembayaran, keanggotaan, dan lainnya di Bali Beach Country Club."
-}
-banner.save
-puts "Create Banner: #{banner.title}"
+  if banner.persisted?
+    puts "Banner already exists for #{section.name}, skipping"
+    next
+  end
 
-# Banner Gallery
-banner = Banner.new(title: "Gallery", description: "A look at life around Bali Beach Country Club — our courts, courses, facilities and events.")
-banner.image.attach(io: Rails.root.join("vendor/assets/images/facilities/restaurant.png").open, filename: "restaurant.png")
-banner.banner_section = @bs15
-Mobility.with_locale(:id) {
-	banner.title = "Galeri"
-	banner.description = "Sekilas kehidupan di Bali Beach Country Club — lapangan, fasilitas, dan acara kami."
-}
-banner.save
-puts "Create Banner: #{banner.title}"
-
-# Banner Our Team
-banner = Banner.new(title: "Our Team", description: "Meet the people behind Bali Beach Country Club — from the clubhouse kitchen to the practice courts.")
-banner.image.attach(io: Rails.root.join("vendor/assets/images/facilities/restaurant.png").open, filename: "restaurant.png")
-banner.banner_section = @bs16
-Mobility.with_locale(:id) {
-	banner.title = "Tim Kami"
-	banner.description = "Kenali orang-orang di balik Bali Beach Country Club — mulai dari dapur klub hingga lapangan latihan."
-}
-banner.save
-puts "Create Banner: #{banner.title}"
-
-# Banner MITS Academy
-banner = Banner.new(title: "MITS Academy", description: "Our coaching partner for tennis, padel and pickleball — elite programs for every age and ambition.")
-banner.image.attach(io: Rails.root.join("vendor/assets/images/banners/banner-tennis.png").open, filename: "banner-tennis.png")
-banner.banner_section = @bs17
-Mobility.with_locale(:id) {
-	banner.title = "MITS Academy"
-	banner.description = "Mitra pelatihan kami untuk tenis, padel, dan pickleball — program unggulan untuk segala usia dan ambisi."
-}
-banner.save
-puts "Create Banner: #{banner.title}"
-
-# Banner Disclaimer
-banner = Banner.new(title: "Disclaimer", description: "Please read this disclaimer carefully before using the Bali Beach Country Club website.")
-banner.image.attach(io: Rails.root.join("vendor/assets/images/banners/banner-golf.png").open, filename: "banner-golf.png")
-banner.banner_section = @bs18
-Mobility.with_locale(:id) {
-	banner.title = "Disclaimer"
-	banner.description = "Harap baca disclaimer ini dengan saksama sebelum menggunakan situs web Bali Beach Country Club."
-}
-banner.save
-puts "Create Banner: #{banner.title}"
-
-# Banner Privacy Policy
-banner = Banner.new(title: "Privacy Policy", description: "How Bali Beach Country Club collects, uses and protects your personal information.")
-banner.image.attach(io: Rails.root.join("vendor/assets/images/banners/banner-golf.png").open, filename: "banner-golf.png")
-banner.banner_section = @bs19
-Mobility.with_locale(:id) {
-	banner.title = "Kebijakan Privasi"
-	banner.description = "Bagaimana Bali Beach Country Club mengumpulkan, menggunakan, dan melindungi informasi pribadi Anda."
-}
-banner.save
-puts "Create Banner: #{banner.title}"
-
-# Banner Terms & Conditions
-banner = Banner.new(title: "Terms & Conditions", description: "The terms, cancellation and refund policies that apply to bookings at Bali Beach Country Club.")
-banner.image.attach(io: Rails.root.join("vendor/assets/images/banners/banner-golf.png").open, filename: "banner-golf.png")
-banner.banner_section = @bs20
-Mobility.with_locale(:id) {
-	banner.title = "Syarat & Ketentuan"
-	banner.description = "Syarat, kebijakan pembatalan, dan pengembalian dana yang berlaku untuk pemesanan di Bali Beach Country Club."
-}
-banner.save
-puts "Create Banner: #{banner.title}"
-
-# Banner Club Life
-banner = Banner.new(title: "Club Life", description: "Golf, racquet sports, the beach club, fitness and wellness — everything the club opens up to you.")
-banner.image.attach(io: Rails.root.join("vendor/assets/images/banners/banner-padel.png").open, filename: "banner-padel.png")
-banner.banner_section = @bs21
-Mobility.with_locale(:id) {
-	banner.title = "Club Life"
-	banner.description = "Golf, olahraga raket, beach club, kebugaran, dan wellness — semua yang klub tawarkan untuk Anda."
-}
-banner.save
-puts "Create Banner: #{banner.title}"
-
-# Banner Highlights
-banner = Banner.new(title: "BBCC Highlights", description: "Socials, clinics, tournaments and the regular fixtures that make up the club calendar.")
-banner.image.attach(io: Rails.root.join("vendor/assets/images/banners/banner-events.png").open, filename: "banner-events.png")
-banner.banner_section = @bs22
-Mobility.with_locale(:id) {
-	banner.title = "BBCC Highlights"
-	banner.description = "Acara sosial, klinik, turnamen, dan agenda rutin yang mengisi kalender klub."
-}
-banner.save
-puts "Create Banner: #{banner.title}"
+  dir = data[:dir] || "banners"
+  banner.title = data[:title]
+  banner.description = data[:description]
+  banner.image.attach(io: Rails.root.join("vendor/assets/images/#{dir}/#{data[:image]}").open, filename: data[:image])
+  Mobility.with_locale(:id) {
+    banner.title = data[:title_id]
+    banner.description = data[:description_id]
+  }
+  banner.save!
+  puts "Create Banner: #{banner.title}"
+end
