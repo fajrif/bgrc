@@ -1,0 +1,15 @@
+<%# locals: facility:, and optional path: — omit path: to render a non-linking card %>
+<%
+  path  = local_assigns[:path]
+  photo = facility.card_image
+  style = ("background-image:url('#{url_for(photo)}');" if photo.present?)
+  tag_name = path.present? ? :a : :article
+%>
+<%= content_tag tag_name, class: "bbcc-cat-card", style: style, href: (path if path.present?) do %>
+    <span class="bbcc-cat-card-shade"></span>
+    <span class="bbcc-cat-card-name"><%= facility.name %></span>
+    <span class="bbcc-cat-card-panel">
+        <span class="bbcc-cat-card-panel-name"><%= facility.name %></span>
+        <span class="bbcc-cat-card-desc"><%= facility.short_description.to_s.truncate(180) %></span>
+    </span>
+<% end %>

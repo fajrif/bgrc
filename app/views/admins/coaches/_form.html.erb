@@ -9,6 +9,8 @@
 						<%= f.input :name, as: :string %>
 						<%= f.input :email, as: :string %>
 						<%= f.input :phone, as: :string %>
+						<%= f.input :role, as: :string, hint: "Shown under the coach's name, e.g. Head Tennis Coach" %>
+						<%= f.input :bio, as: :text, input_html: { rows: 4 } %>
 					</fieldset>
 					<%= f.error :base %>
 					<div class="form-actions">
@@ -31,6 +33,7 @@
 							<h5 class="card-title mb-0">Settings</h5>
 						</div>
 						<div class="card-body">
+              <%= f.association :sport, include_blank: "— No sport —", hint: "Sets which Club Life page lists this coach" %>
               <%= f.input :gender, as: :select, collection: [['1', 'Male'], ['0', 'Female']], label_method: :second, value_method: :first %>
               <%= f.input :price %>
 						</div>

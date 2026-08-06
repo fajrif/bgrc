@@ -1,0 +1,31 @@
+<%# locals: hero_image:, and optional selected_sport_id: to pre-choose a sport %>
+<% selected_sport_id = local_assigns[:selected_sport_id] %>
+<!-- start hero + availability search -->
+<section class="bbcc-hero" style="background-image:url('<%= hero_image %>');">
+    <div class="bbcc-hero-overlay"></div>
+    <div class="container-lg">
+        <div class="bbcc-hero-search">
+            <form action="<%= search_path %>" method="GET">
+                <div class="bbcc-hero-search-fields">
+                    <div class="bbcc-hero-field">
+                        <label>Select Which Club</label>
+                        <select name="sport_id" required>
+                            <option value="" disabled <%= "selected" if selected_sport_id.blank? %>>Choose Club Life</option>
+                            <% Sport.all.order(:name).each do |sport| %>
+                                <option value="<%= sport.id %>" <%= "selected" if selected_sport_id.to_s == sport.id.to_s %>><%= sport.name %></option>
+                            <% end %>
+                        </select>
+                        <i class="fa-solid fa-chevron-down bbcc-hero-field-icon" aria-hidden="true"></i>
+                    </div>
+                    <div class="bbcc-hero-field">
+                        <label>Select Date</label>
+                        <input type="text" name="date" class="datecourtpicker" placeholder="Select date" autocomplete="off">
+                        <i class="fa-regular fa-calendar bbcc-hero-field-icon" aria-hidden="true"></i>
+                    </div>
+                    <button type="submit" class="bbcc-hero-search-btn">Check Availability</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+<!-- end hero + availability search -->

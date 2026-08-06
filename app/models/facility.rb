@@ -44,4 +44,13 @@ class Facility < ApplicationRecord
 	def gallery_images
 		sport&.images&.attached? ? sport.images : images
 	end
+
+	# The photo a card fronts. Falls through to the linked sport so a node that
+	# has never had an image uploaded still shows its own sport rather than a
+	# shared placeholder.
+	def card_image
+		return image if image.attached?
+		return sport.image if sport&.image&.attached?
+		sport&.images&.first
+	end
 end

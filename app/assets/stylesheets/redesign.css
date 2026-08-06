@@ -64,6 +64,13 @@
 }
 .bbcc-link:hover, .bbcc-link:focus { color: var(--bbcc-ink-soft); border-color: var(--bbcc-ink-soft); }
 
+/* screen-reader only — pages whose hero carries no heading still need an h1 */
+.bbcc-sr-only {
+  position: absolute; width: 1px; height: 1px;
+  padding: 0; margin: -1px; overflow: hidden;
+  clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+}
+
 /* horizontal category/filter tabs (Gallery, Blog, ...) */
 .bbcc-tabs {
   display: flex; flex-wrap: wrap; gap: 12px 28px;
@@ -599,6 +606,65 @@ body.bbcc-no-scroll { overflow: hidden; }
 .bbcc-clublife-body p:last-child { margin-bottom: 24px; }
 .bbcc-clublife-photo-hidden { display: none; }
 
+/* category card — photo with the name over it; hovering reveals a dark panel
+   holding the name at the top and the description at the bottom.
+   Used by the Racquet Sports children and the per-sport facilities grid. */
+.bbcc-cat-card {
+  position: relative; display: block; overflow: hidden;
+  height: 420px; color: #fff;
+  background-color: var(--bbcc-ink); background-size: cover; background-position: center;
+}
+.bbcc-cat-card:hover { color: #fff; text-decoration: none; }
+.bbcc-cat-card-shade {
+  position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,.6) 0%, rgba(0,0,0,.08) 45%, rgba(0,0,0,0) 100%);
+  transition: opacity .3s;
+}
+.bbcc-cat-card-name {
+  position: absolute; left: 0; bottom: 0; z-index: 2;
+  padding: 26px 28px; max-width: 90%;
+  text-transform: uppercase; letter-spacing: 2px; font-size: 18px; font-weight: 500;
+  transition: opacity .3s;
+}
+.bbcc-cat-card-panel {
+  position: absolute; inset: 14px; z-index: 3;
+  display: flex; flex-direction: column; justify-content: space-between;
+  padding: 26px 28px; background: rgba(0,0,0,.72);
+  opacity: 0; transition: opacity .3s;
+}
+.bbcc-cat-card-panel-name {
+  display: block;
+  text-transform: uppercase; letter-spacing: 2px; font-size: 18px; font-weight: 500;
+}
+.bbcc-cat-card-desc {
+  display: block; font-size: 13px; line-height: 1.6; color: rgba(255,255,255,.85);
+}
+.bbcc-cat-card:hover .bbcc-cat-card-panel { opacity: 1; }
+.bbcc-cat-card:hover .bbcc-cat-card-shade,
+.bbcc-cat-card:hover .bbcc-cat-card-name { opacity: 0; }
+
+/* rate card — bordered box listing one court-type / time-window price */
+.bbcc-rate-card {
+  display: flex; flex-direction: column; height: 100%;
+  background: #fff; border: 1px solid var(--bbcc-line);
+  padding: 26px 24px 24px;
+}
+.bbcc-rate-card-icon { font-size: 26px; color: var(--bbcc-ink); margin-bottom: 22px; }
+.bbcc-rate-card-title {
+  font-family: "Mona Sans", sans-serif;
+  font-size: 20px; font-weight: 600; color: var(--bbcc-ink); margin: 0 0 14px;
+}
+.bbcc-rate-card-meta { display: flex; flex-direction: column; gap: 4px; margin: 0 0 22px; }
+.bbcc-rate-card-meta span { font-size: 14px; color: var(--bbcc-ink-soft); line-height: 1.5; }
+.bbcc-rate-card .bbcc-btn { margin-top: auto; }
+
+/* class tabs — same look as .bbcc-tabs, but <button> so filtering stays in-page */
+.bbcc-class-tabs .bbcc-tab {
+  background: none; border: 0; border-bottom: 2px solid transparent;
+  font-family: inherit; cursor: pointer;
+}
+.bbcc-class-col-hidden { display: none; }
+
 /* service card — image, light body, full-width CTA.
    Shared by the Golf sub-sections, the Spa services and the class listings. */
 .bbcc-service-card { display: flex; flex-direction: column; height: 100%; background: #dedede; }
@@ -1124,6 +1190,11 @@ button.bbcc-teeslot:focus-visible { outline: 2px solid var(--bbcc-ink); outline-
   .bbcc-mits-split-image { min-height: 240px; }
   .bbcc-tile-wide { height: 300px; }
   .bbcc-clublife-mosaic .bbcc-tile .bbcc-tile-desc { opacity: 1; max-height: 160px; }
+  /* no hover on touch — show the panel outright */
+  .bbcc-cat-card { height: 360px; }
+  .bbcc-cat-card .bbcc-cat-card-panel { opacity: 1; }
+  .bbcc-cat-card .bbcc-cat-card-shade,
+  .bbcc-cat-card .bbcc-cat-card-name { opacity: 0; }
   .bbcc-hubtabs { grid-template-columns: repeat(3, 1fr); margin-bottom: 38px; }
   .bbcc-teetime-card { padding: 28px 24px 34px; }
   .bbcc-schedule-filters { margin-left: 0; }

@@ -102,7 +102,9 @@ class ClassCreditPurchasesController < ApplicationController
 
     @group_class = @credit_purchase.group_class
     @sport       = @group_class.sport
-    @coaches     = Coach.all
+    # only offer coaches who teach this sport; unassigned coaches stay available
+    # so an existing record without a sport is never hidden from booking.
+    @coaches     = @sport ? Coach.where(sport_id: [@sport.id, nil]) : Coach.all
     @date        = params[:date].present? ? Date.parse(params[:date]).strftime("%Y-%m-%d") : Date.today.strftime("%Y-%m-%d")
     @court_types = CourtType.all
     @court_type  = params[:court_type_id].present? ? CourtType.find(params[:court_type_id]) : CourtType.first

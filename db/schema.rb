@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_07_29_082837) do
+ActiveRecord::Schema[7.1].define(version: 2026_08_06_000001) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -190,6 +190,10 @@ ActiveRecord::Schema[7.1].define(version: 2026_07_29_082837) do
     t.string "phone", default: "", null: false
     t.integer "gender", default: 1, null: false
     t.decimal "price", default: "0.0", null: false
+    t.integer "sport_id"
+    t.jsonb "role", default: {}
+    t.jsonb "bio", default: {}
+    t.index ["sport_id"], name: "index_coaches_on_sport_id"
   end
 
   create_table "costs", force: :cascade do |t|

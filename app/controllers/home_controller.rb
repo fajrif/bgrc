@@ -74,7 +74,10 @@ class HomeController < ApplicationController
   def mits_academy
 		# get public mits academy — real coaches, delivered in partnership with MITS Academy
     @banner = BannerSection.where(name: "MITS Academy").first.banners.first
-    @coaches = Coach.all
+    # MITS partners with us on the racquet sports only. Stated positively so
+    # coaches with no sport are excluded too, rather than by a NOT IN that
+    # would drop them on a NULL comparison by accident.
+    @coaches = Coach.where(sport_id: Sport.where.not(name: "Golf").select(:id))
     @articles = Article.where(status: 1).first(3)
   end
 

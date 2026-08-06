@@ -28,14 +28,14 @@
 
     <div class="row g-3">
         <% bookable.times do %>
-            <%= render "class_card", gc: gc, date_label: "Not scheduled yet — pick your slot",
+            <%= render "shared/class_card", gc: gc, date_label: "Not scheduled yet — pick your slot",
                                      coach_name: nil, pax: cp.pax, used: false,
                                      used_label: nil, book_path: book_path %>
         <% end %>
 
         <% claimed.each do |session| %>
             <% session_date = session.is_a?(Booking) ? session.date : session.session_date %>
-            <%= render "class_card", gc: gc,
+            <%= render "shared/class_card", gc: gc,
                                      date_label: session_date.strftime('%a, %d %b %Y | %I:%M %p'),
                                      coach_name: session.try(:coach).try(:name),
                                      pax: session.pax, used: true,

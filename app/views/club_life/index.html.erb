@@ -1,8 +1,10 @@
-<%= render "shared/page_hero", banner: @banner, crumbs: [{ label: "Club Life" }] %>
+<%= render "shared/hero_search", hero_image: (url_for(@banner.image) if @banner&.image&.attached?) %>
+<%= render "shared/breadcrumb", crumbs: [{ label: "Club Life" }] %>
 
 <!-- start club life mosaic -->
 <section class="bbcc-section bbcc-clublife-mosaic">
     <div class="container-lg">
+        <h1 class="bbcc-sr-only">Club Life</h1>
         <% if @sections.present? %>
             <% lead, *rest = @sections.to_a %>
             <div class="row g-3 g-lg-4">

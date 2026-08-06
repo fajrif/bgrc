@@ -1,12 +1,18 @@
 class Coach < ApplicationRecord
+	extend Mobility
+	translates :role, :bio
 
 	default_scope { order(id: :asc) }
 
 	has_one_attached :photo, dependent: :purge
 	has_many :bookings
+	belongs_to :sport, optional: true
 
 	validates_presence_of :name, :email, :phone, :price
 	validates_uniqueness_of :email
+
+	# => the coaching team shown on a sport's Club Life page
+	scope :for_sport, ->(sport_id) { where(sport_id: sport_id) }
 
 	def calculate_price(duration, use_currency=true)
     sum = 0

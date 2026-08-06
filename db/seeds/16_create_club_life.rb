@@ -130,7 +130,7 @@ racquet = club_life_node!(
 	image: "banners/banner-tennis.png"
 )
 
-club_life_node!(
+tennis = club_life_node!(
 	"Tennis",
 	rename_from: "Tennis Court",
 	attrs: {
@@ -147,7 +147,7 @@ club_life_node!(
 	}
 )
 
-club_life_node!(
+padel = club_life_node!(
 	"Padel",
 	rename_from: "Padel Court",
 	attrs: {
@@ -164,7 +164,7 @@ club_life_node!(
 	}
 )
 
-club_life_node!(
+pickleball = club_life_node!(
 	"Pickleball",
 	rename_from: "Pickleball Court",
 	attrs: {
@@ -180,6 +180,74 @@ club_life_node!(
 		cta_label: "Pesan Lapangan"
 	}
 )
+
+# -------------------------------------------- RACQUET SPORT FACILITIES
+# The venues listed on each sport page. They are deliberately one level below a
+# Club Life child, so `Facility#in_club_life?` is false for them and they get no
+# page of their own — they exist to be shown as cards on their parent's page.
+#
+# Facility names are globally unique, so each one is sport-qualified.
+# Photography is borrowed from the sport's own gallery until real photos are
+# uploaded through the admin panel.
+racquet_facilities = [
+	{ parent: tennis, sport_slug: "tennis", items: [
+		{ en: "Tennis Centre Court", id_name: "Lapangan Utama Tenis", photo: "gallery-1.png",
+			en_desc: "Our show court, with tiered seating for club tournaments and finals nights.",
+			id_desc: "Lapangan utama kami, dengan tribun bertingkat untuk turnamen klub dan malam final." },
+		{ en: "Tennis Practice Wall", id_name: "Dinding Latihan Tenis", photo: "gallery-2.png",
+			en_desc: "A full-height rebound wall for solo drilling, open whenever the courts are.",
+			id_desc: "Dinding pantul setinggi penuh untuk latihan mandiri, buka selama lapangan beroperasi." },
+		{ en: "Tennis Floodlit Courts", id_name: "Lapangan Tenis Bercahaya", photo: "gallery-3.png",
+			en_desc: "Evening play under full floodlighting, bookable through to close.",
+			id_desc: "Bermain malam hari dengan pencahayaan penuh, dapat dipesan hingga tutup." },
+		{ en: "Tennis Pro Shop Counter", id_name: "Konter Pro Shop Tenis", photo: "gallery-4.png",
+			en_desc: "Restringing, grips and demo racquets, with same-day turnaround on most jobs.",
+			id_desc: "Pemasangan senar, grip, dan raket demo, sebagian besar selesai di hari yang sama." },
+		{ en: "Tennis Player Lounge", id_name: "Lounge Pemain Tenis", photo: "gallery-5.png",
+			en_desc: "Shaded seating beside the courts for warming up, cooling down and waiting on a match.",
+			id_desc: "Tempat duduk teduh di sisi lapangan untuk pemanasan, pendinginan, dan menunggu pertandingan." }
+	] },
+	{ parent: padel, sport_slug: "padel", items: [
+		{ en: "Padel Glass Courts", id_name: "Lapangan Kaca Padel", photo: "gallery-1.png",
+			en_desc: "Fully enclosed panoramic courts, the standard format for competitive padel.",
+			id_desc: "Lapangan panoramik tertutup penuh, format standar untuk padel kompetitif." },
+		{ en: "Padel Viewing Deck", id_name: "Dek Penonton Padel", photo: "gallery-3.png",
+			en_desc: "Raised seating along the glass, where most of the club's padel socials end up.",
+			id_desc: "Tempat duduk tinggi di sepanjang kaca, tempat berkumpulnya acara sosial padel klub." },
+		{ en: "Padel Equipment Hire", id_name: "Sewa Peralatan Padel", photo: "gallery-4.png",
+			en_desc: "Paddles and balls available at the desk, so first-timers can play without buying kit.",
+			id_desc: "Raket dan bola tersedia di meja resepsionis, sehingga pemula dapat bermain tanpa membeli perlengkapan." }
+	] },
+	{ parent: pickleball, sport_slug: "pickleball", items: [
+		{ en: "Pickleball Courts", id_name: "Lapangan Pickleball", photo: "gallery-1.png",
+			en_desc: "Four dedicated courts, lined and netted to tournament specification.",
+			id_desc: "Empat lapangan khusus, dengan garis dan net sesuai spesifikasi turnamen." },
+		{ en: "Pickleball Social Area", id_name: "Area Sosial Pickleball", photo: "gallery-2.png",
+			en_desc: "Courtside tables where round-robin sessions regroup between games.",
+			id_desc: "Meja di tepi lapangan tempat sesi round-robin berkumpul di antara pertandingan." },
+		{ en: "Pickleball Paddle Hire", id_name: "Sewa Raket Pickleball", photo: "gallery-3.png",
+			en_desc: "Loan paddles and balls for anyone trying the sport for the first time.",
+			id_desc: "Peminjaman raket dan bola bagi siapa saja yang baru mencoba olahraga ini." }
+	] }
+]
+
+racquet_facilities.each do |group|
+	next if group[:parent].blank?
+
+	group[:items].each_with_index do |item, index|
+		club_life_node!(
+			item[:en],
+			attrs: {
+				club_life: false, parent_id: group[:parent].id, position: index + 1,
+				cta_label: "", cta_url: "",
+				short_description: item[:en_desc],
+				description: item[:en_desc]
+			},
+			id: { name: item[:id_name], short_description: item[:id_desc], description: item[:id_desc] },
+			image: "sports/#{group[:sport_slug]}/#{item[:photo]}"
+		)
+	end
+end
 
 # ------------------------------------------------------------- FITNESS
 club_life_node!(

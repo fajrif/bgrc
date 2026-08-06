@@ -5,6 +5,7 @@
 				<th class="text-center">ID</th>
 				<th>Photo</th>
 				<th>Name</th>
+				<th>Sport</th>
 				<th>Contact</th>
 				<th>Price</th>
 				<th>Action</th>
@@ -17,7 +18,9 @@
 					<td><%= image_tag coach.photo.variant(resize_to_limit: [100,100]) if coach.photo.attached? %></td>
 					<td>
 						<h5 class="fs-14 mb-1"><%= link_to coach.name, admins_coach_path(coach.id), class: "text-body" %></h5>
+						<p class="text-muted mb-0"><%= coach.role %></p>
 					</td>
+					<td><%= blank_or_not(coach.sport&.name) %></td>
 					<td>
             <p class="text-muted mb-0">Email : <%= coach.email %></p>
 						<p class="text-muted mb-0">Phone : <%= coach.phone %></p>
