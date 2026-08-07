@@ -269,6 +269,7 @@ module AdminHelper
 		controller.controller_name == "events" ||
 		controller.controller_name == "recurring_events" ||
 		controller.controller_name == "event_rsvps" ||
+		controller.controller_name == "event_types" ||
 		controller.controller_name == "promos"
 	end
 

@@ -10,30 +10,15 @@
             </div>
             <div class="col-12 col-lg-6 order-lg-1">
                 <div class="bbcc-accordion">
-                    <details class="bbcc-accordion-item" open>
-                        <summary>Weddings<span class="bbcc-accordion-icon"></span></summary>
-                        <div class="bbcc-accordion-body">
-                            <p>Say "I do" against a backdrop of manicured greens and ocean breeze. Our team
-                            crafts bespoke wedding experiences from intimate ceremonies to grand receptions.</p>
-                            <%= link_to "Enquire now", get_contact_path, class: "bbcc-btn" %>
-                        </div>
-                    </details>
-                    <details class="bbcc-accordion-item">
-                        <summary>Corporate Events<span class="bbcc-accordion-icon"></span></summary>
-                        <div class="bbcc-accordion-body">
-                            <p>Impress clients and reward teams with golf days, tournaments, conferences and
-                            team-building sessions supported by full-service catering and event planning.</p>
-                            <%= link_to "Enquire now", get_contact_path, class: "bbcc-btn" %>
-                        </div>
-                    </details>
-                    <details class="bbcc-accordion-item">
-                        <summary>Private Celebrations<span class="bbcc-accordion-icon"></span></summary>
-                        <div class="bbcc-accordion-body">
-                            <p>Birthdays, anniversaries and milestone gatherings &mdash; celebrate in style with
-                            flexible venues, curated menus and a setting your guests will never forget.</p>
-                            <%= link_to "Enquire now", get_contact_path, class: "bbcc-btn" %>
-                        </div>
-                    </details>
+                    <% EventType.ordered.each_with_index do |event_type, index| %>
+                        <details class="bbcc-accordion-item" <%= "open" if index.zero? %>>
+                            <summary><%= event_type.name %><span class="bbcc-accordion-icon"></span></summary>
+                            <div class="bbcc-accordion-body">
+                                <p><%= event_type.short_description %></p>
+                                <%= link_to "Enquire now", get_contact_path, class: "bbcc-btn" %>
+                            </div>
+                        </details>
+                    <% end %>
                 </div>
             </div>
         </div>

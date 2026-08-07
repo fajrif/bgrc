@@ -73,6 +73,7 @@ Rails.application.routes.draw do
         collection { get :check_overlaps }
       end
       resources :event_rsvps, only: [:index, :show, :destroy]
+      resources :event_types
       resources :purchases, :only => [:index, :show, :destroy] do
         member do
           put "settlement" => "purchases#settlement", :as => :settlement

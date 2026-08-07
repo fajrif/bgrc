@@ -1,0 +1,40 @@
+<%= simple_form_for @event_type, url: (@event_type.new_record? ? admins_event_types_path : admins_event_type_path(@event_type.id)), method: (@event_type.new_record? ? :post : :put) do |f| %>
+	<div class="row">
+		<div class="col-lg-8">
+			<div class="card">
+				<div class="card-body">
+					<%= f.error_notification %>
+					<fieldset>
+						<%= f.input :image, as: :file, input_html: { class: "mb-3", accept: "image/gif, image/png, image/jpg, image/jpeg, image/webp" } %>
+						<%= f.input :name, as: :string %>
+						<%= f.input :short_description, as: :text, input_html: { rows: 4 } %>
+					</fieldset>
+					<%= f.error :base %>
+					<div class="form-actions">
+						<%= f.button :submit, :class => 'btn btn-secondary' %>
+						<% unless @event_type.new_record? %>
+							<%= link_to "Cancel", admins_event_type_path(@event_type.id), :class => 'btn btn-light' %>
+						<% else %>
+							<%= link_to "Cancel", admins_event_types_path, :class => 'btn btn-light' %>
+						<% end %>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-lg-4">
+			<div class="row">
+				<%= render "admins/shared/error_messages", :target => @event_type, col: 'col-lg-12' %>
+				<div class="col-lg-12">
+					<div class="card">
+						<div class="card-header">
+							<h5 class="card-title mb-0">Settings</h5>
+						</div>
+						<div class="card-body">
+							<%= f.input :position, as: :integer, hint: "Display order on the Events page and homepage." %>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+<% end %>

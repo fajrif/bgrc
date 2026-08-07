@@ -541,6 +541,12 @@ body.bbcc-no-scroll { overflow: hidden; }
 .bbcc-article-cta-body p { margin: 18px 0 26px; }
 .bbcc-article-cta-body .bbcc-btn { align-self: flex-start; }
 
+/* events page CTA — same image treatment as .bbcc-article-cta-image, but the
+   mockup shows the text column on plain white, not the gray-box variant. */
+.bbcc-event-cta-body { padding: 48px; height: 100%; display: flex; flex-direction: column; justify-content: center; }
+.bbcc-event-cta-body p { margin: 18px 0 26px; color: var(--bbcc-ink-soft); line-height: 1.8; }
+.bbcc-event-cta-body .bbcc-btn { align-self: flex-start; }
+
 /* =====================================================================
    OUR TEAM PAGE
    ===================================================================== */
