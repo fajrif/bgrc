@@ -248,10 +248,21 @@ body.bbcc-no-scroll { overflow: hidden; }
    ===================================================================== */
 .bbcc-card { display: block; color: inherit; }
 .bbcc-card:hover { text-decoration: none; color: inherit; }
-.bbcc-card-image { position: relative; display: block; height: 300px; background-size: cover; background-position: center; overflow: hidden; }
-.bbcc-card-shade { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,.6), rgba(0,0,0,0) 60%); }
-.bbcc-card-name { position: absolute; left: 0; bottom: 0; z-index: 2; padding: 18px 20px; color: #fff; text-transform: uppercase; letter-spacing: 1.5px; font-size: 15px; font-weight: 500; }
-.bbcc-card-desc { display: block; padding: 14px 2px 0; font-size: 14px; color: var(--bbcc-ink-soft); }
+.bbcc-card-image { position: relative; display: block; height: 300px; background-size: cover; background-position: center; overflow: hidden; background-color: var(--bbcc-ink); }
+.bbcc-card-shade { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,.6), rgba(0,0,0,0) 60%); transition: opacity .3s; }
+.bbcc-card-name { position: absolute; left: 0; bottom: 0; z-index: 2; padding: 18px 20px; color: #fff; text-transform: uppercase; letter-spacing: 1.5px; font-size: 15px; font-weight: 500; transition: opacity .3s; }
+/* hover panel — name moves to the top, description reveals below it */
+.bbcc-card-panel {
+  position: absolute; inset: 14px; z-index: 3;
+  display: flex; flex-direction: column; justify-content: space-between;
+  padding: 20px; background: rgba(0,0,0,.72);
+  opacity: 0; transition: opacity .3s;
+}
+.bbcc-card-panel-name { display: block; text-transform: uppercase; letter-spacing: 1.5px; font-size: 15px; font-weight: 500; color: #fff; }
+.bbcc-card-desc { display: block; font-size: 13px; line-height: 1.6; color: rgba(255,255,255,.85); }
+.bbcc-card:hover .bbcc-card-panel { opacity: 1; }
+.bbcc-card:hover .bbcc-card-shade,
+.bbcc-card:hover .bbcc-card-name { opacity: 0; }
 
 /* generic swiper controls */
 .bbcc-swiper { position: relative; }
@@ -266,7 +277,6 @@ body.bbcc-no-scroll { overflow: hidden; }
 /* =====================================================================
    INTRO
    ===================================================================== */
-.bbcc-intro { background: var(--bbcc-bg-alt); }
 
 /* =====================================================================
    FULL-WIDTH GOLF BANNER
@@ -281,7 +291,6 @@ body.bbcc-no-scroll { overflow: hidden; }
 /* =====================================================================
    EVENTS (accordion + image)
    ===================================================================== */
-.bbcc-events { background: var(--bbcc-bg-alt); }
 .bbcc-events-image { width: 100%; height: 420px; background-size: cover; background-position: center; }
 
 /* shared native <details> accordion */
@@ -319,7 +328,6 @@ body.bbcc-no-scroll { overflow: hidden; }
 /* =====================================================================
    TESTIMONIALS
    ===================================================================== */
-.bbcc-testimonials { background: var(--bbcc-bg-alt); }
 .bbcc-quote { background: #fff; padding: 34px 30px; height: 100%; border: 1px solid var(--bbcc-line); }
 .bbcc-quote-mark { font-size: 26px; color: #bcbcbc; margin-bottom: 16px; display: block; }
 .bbcc-quote-text { color: var(--bbcc-ink); line-height: 1.7; margin-bottom: 20px; }
@@ -343,10 +351,11 @@ body.bbcc-no-scroll { overflow: hidden; }
 /* =====================================================================
    BLOG
    ===================================================================== */
-.bbcc-post-image { display: block; overflow: hidden; margin-bottom: 18px; }
+.bbcc-post-image { display: block; overflow: hidden; }
 .bbcc-post-image img { width: 100%; height: 240px; object-fit: cover; display: block; transition: transform .4s; }
 .bbcc-post:hover .bbcc-post-image img { transform: scale(1.04); }
 .bbcc-post-image-ph { display: block; width: 100%; height: 240px; background-size: cover; background-position: center; }
+.bbcc-post-body { background: var(--bbcc-bg-alt); padding: 24px 20px; }
 .bbcc-post-meta { display: block; text-transform: uppercase; letter-spacing: 1px; font-size: 11px; color: var(--bbcc-ink-soft); margin-bottom: 8px; }
 .bbcc-post-title { display: block; text-transform: uppercase; letter-spacing: 1px; font-size: 16px; font-weight: 600; color: var(--bbcc-ink); margin-bottom: 10px; }
 .bbcc-post-title:hover { color: var(--bbcc-ink-soft); text-decoration: none; }
@@ -481,9 +490,8 @@ body.bbcc-no-scroll { overflow: hidden; }
 /* =====================================================================
    BLOG INDEX
    ===================================================================== */
-.bbcc-featured-post { background: var(--bbcc-bg-alt); }
 .bbcc-featured-post-image { min-height: 320px; height: 100%; background-size: cover; background-position: center; }
-.bbcc-featured-post-body { padding: 48px; }
+.bbcc-featured-post-body { background: var(--bbcc-bg-alt); padding: 48px; height: 100%; display: flex; flex-direction: column; justify-content: center; }
 .bbcc-featured-post-title {
   text-transform: uppercase; letter-spacing: 1px; font-weight: 600;
   font-size: clamp(1.3rem, 2.4vw, 1.7rem); color: var(--bbcc-ink); line-height: 1.3;
@@ -527,9 +535,8 @@ body.bbcc-no-scroll { overflow: hidden; }
 .bbcc-article-gallery { margin-top: 8px; }
 .bbcc-article-gallery img { width: 100%; height: 320px; object-fit: cover; display: block; }
 
-.bbcc-article-cta { background: var(--bbcc-bg-alt); }
 .bbcc-article-cta-image { height: 100%; min-height: 260px; background-size: cover; background-position: center; }
-.bbcc-article-cta-body { padding: 48px; }
+.bbcc-article-cta-body { background: var(--bbcc-bg-alt); padding: 48px; height: 100%; display: flex; flex-direction: column; justify-content: center; }
 .bbcc-article-cta-body p { margin: 18px 0 26px; }
 
 /* =====================================================================
@@ -572,13 +579,14 @@ body.bbcc-no-scroll { overflow: hidden; }
 /* =====================================================================
    CLUB LIFE
    ===================================================================== */
-.bbcc-section-alt { background: var(--bbcc-bg-alt); }
 
 /* mosaic — one wide lead tile, then a 2-up grid */
 .bbcc-tile-wide { height: 400px; }
 .bbcc-clublife-mosaic .bbcc-tile-desc { max-width: 520px; }
-.bbcc-clublife-mosaic .bbcc-tile .bbcc-tile-desc { opacity: 0; max-height: 0; transition: opacity .3s, max-height .3s; }
-.bbcc-clublife-mosaic .bbcc-tile:hover .bbcc-tile-desc { opacity: 1; max-height: 160px; }
+.bbcc-clublife-mosaic .bbcc-tile .bbcc-tile-desc,
+.bbcc-features .bbcc-tile .bbcc-tile-desc { opacity: 0; max-height: 0; transition: opacity .3s, max-height .3s; }
+.bbcc-clublife-mosaic .bbcc-tile:hover .bbcc-tile-desc,
+.bbcc-features .bbcc-tile:hover .bbcc-tile-desc { opacity: 1; max-height: 160px; }
 
 /* left rail — extends .bbcc-faq-nav with a nested, collapsible level */
 .bbcc-clublife-nav { gap: 18px; }
@@ -1189,12 +1197,16 @@ button.bbcc-teeslot:focus-visible { outline: 2px solid var(--bbcc-ink); outline-
   .bbcc-coach-card .bbcc-card-image { height: 320px; }
   .bbcc-mits-split-image { min-height: 240px; }
   .bbcc-tile-wide { height: 300px; }
-  .bbcc-clublife-mosaic .bbcc-tile .bbcc-tile-desc { opacity: 1; max-height: 160px; }
+  .bbcc-clublife-mosaic .bbcc-tile .bbcc-tile-desc,
+  .bbcc-features .bbcc-tile .bbcc-tile-desc { opacity: 1; max-height: 160px; }
   /* no hover on touch — show the panel outright */
   .bbcc-cat-card { height: 360px; }
   .bbcc-cat-card .bbcc-cat-card-panel { opacity: 1; }
   .bbcc-cat-card .bbcc-cat-card-shade,
   .bbcc-cat-card .bbcc-cat-card-name { opacity: 0; }
+  .bbcc-card .bbcc-card-panel { opacity: 1; }
+  .bbcc-card .bbcc-card-shade,
+  .bbcc-card .bbcc-card-name { opacity: 0; }
   .bbcc-hubtabs { grid-template-columns: repeat(3, 1fr); margin-bottom: 38px; }
   .bbcc-teetime-card { padding: 28px 24px 34px; }
   .bbcc-schedule-filters { margin-left: 0; }

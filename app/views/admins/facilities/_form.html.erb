@@ -6,6 +6,7 @@
 					<%= f.error_notification %>
 					<fieldset>
 						<%= f.input :image, as: :file, input_html: { class: "mb-3", accept: "image/gif, image/png, image/jpg, image/jpeg, image/webp" } %>
+						<%= f.input :banner, as: :file, hint: "Used as the hero photo on this section's own page.", input_html: { class: "mb-3", accept: "image/gif, image/png, image/jpg, image/jpeg, image/webp" } %>
 						<%= f.input :images, as: :file, label: "Image Gallery", input_html: { class: "mb-3", accept: "image/gif, image/png, image/jpg, image/jpeg, image/webp", multiple: true } %>
 						<%= f.input :name, as: :string %>
 						<%= f.input :short_description, as: :text %>

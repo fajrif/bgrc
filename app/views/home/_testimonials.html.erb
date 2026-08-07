@@ -4,21 +4,30 @@
         <div class="bbcc-section-head bbcc-section-head-center">
             <h2 class="bbcc-section-title">What People are Saying About Us</h2>
         </div>
-        <div class="row g-4 justify-content-center">
-            <% @testimonials.first(3).each do |testimonial| %>
-                <div class="col-12 col-md-6 col-lg-4">
-                    <div class="bbcc-quote">
-                        <i class="fa-solid fa-quote-left bbcc-quote-mark" aria-hidden="true"></i>
-                        <p class="bbcc-quote-text"><%= testimonial.comment.truncate(180) %></p>
-                        <div class="bbcc-quote-author">
-                            <span class="bbcc-quote-name"><%= testimonial.name %></span>
-                            <% if testimonial.company_name.present? %>
-                                <span class="bbcc-quote-company"><%= testimonial.company_name %></span>
-                            <% end %>
+    </div>
+    <div class="container-lg">
+        <div class="swiper bbcc-swiper bbcc-testimonials-swiper">
+            <div class="swiper-wrapper">
+                <% @testimonials.each do |testimonial| %>
+                    <div class="swiper-slide">
+                        <div class="bbcc-quote">
+                            <i class="fa-solid fa-quote-left bbcc-quote-mark" aria-hidden="true"></i>
+                            <p class="bbcc-quote-text"><%= testimonial.comment.truncate(180) %></p>
+                            <div class="bbcc-quote-author">
+                                <span class="bbcc-quote-name"><%= testimonial.name %></span>
+                                <% if testimonial.company_name.present? %>
+                                    <span class="bbcc-quote-company"><%= testimonial.company_name %></span>
+                                <% end %>
+                            </div>
                         </div>
                     </div>
-                </div>
-            <% end %>
+                <% end %>
+            </div>
+            <div class="bbcc-swiper-controls">
+                <button type="button" class="bbcc-swiper-prev" aria-label="Previous"><i class="fa-solid fa-angle-left"></i></button>
+                <div class="bbcc-swiper-pagination"></div>
+                <button type="button" class="bbcc-swiper-next" aria-label="Next"><i class="fa-solid fa-angle-right"></i></button>
+            </div>
         </div>
     </div>
 </section>

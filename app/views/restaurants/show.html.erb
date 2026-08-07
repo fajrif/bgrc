@@ -1,0 +1,176 @@
+<%
+  crumbs = [{ label: "Dining", path: dining_path }, { label: @restaurant.name }]
+  paragraphs1 = @restaurant.description1.to_s.split(/\n+/)
+%>
+<% if @restaurant.banner.attached? %>
+<!-- start restaurant hero -->
+<section class="bbcc-page-hero" style="background-image:url('<%= url_for(@restaurant.banner) %>');">
+    <div class="bbcc-page-hero-overlay"></div>
+    <div class="container-lg">
+        <div class="bbcc-page-hero-body">
+            <h1 class="bbcc-page-hero-title"><%= @restaurant.name %></h1>
+            <p class="bbcc-page-hero-desc"><%= @restaurant.banner_description.to_s.truncate(200) %></p>
+        </div>
+    </div>
+</section>
+<!-- end restaurant hero -->
+<% end %>
+<%= render "shared/breadcrumb", crumbs: crumbs %>
+
+<!-- start restaurant intro -->
+<section class="bbcc-section bbcc-clublife-section">
+    <div class="container-lg">
+        <div class="row g-4 g-lg-5">
+            <div class="col-12 col-lg-3">
+                <%= render "shared/dining_nav", restaurants: @restaurants, active: @restaurant %>
+            </div>
+            <div class="col-12 col-lg-9">
+                <h2 class="bbcc-section-title"><%= @restaurant.name %></h2>
+                <p class="bbcc-lead"><%= @restaurant.description %></p>
+                <%= link_to "Reserve Now", get_contact_path, class: "bbcc-btn" %>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- end restaurant intro -->
+
+<% if @restaurant.middle_banner.attached? %>
+<!-- start restaurant middle banner -->
+<div class="bbcc-fullbanner" style="background-image:url('<%= url_for(@restaurant.middle_banner) %>');" role="img" aria-label="<%= @restaurant.name %>"></div>
+<!-- end restaurant middle banner -->
+<% end %>
+
+<% if paragraphs1.first(2).any? %>
+<!-- start restaurant description -->
+<section class="bbcc-section">
+    <div class="container-lg">
+        <div class="row g-4 g-lg-5">
+            <div class="col-12 col-lg-6">
+                <p><%= paragraphs1[0] %></p>
+            </div>
+            <div class="col-12 col-lg-6">
+                <p><%= paragraphs1[1] %></p>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- end restaurant description -->
+<% end %>
+
+<% if @restaurant.description2.present? || @restaurant.image.attached? %>
+<!-- start restaurant description with image -->
+<section class="bbcc-section bbcc-section-alt">
+    <div class="container-lg">
+        <div class="row g-4 g-lg-5 align-items-center">
+            <div class="col-12 col-lg-6">
+                <p><%= @restaurant.description2 %></p>
+            </div>
+            <div class="col-12 col-lg-6">
+                <% if @restaurant.image.attached? %>
+                    <%= image_tag @restaurant.image.variant(resize_to_fill: [750, 500]), class: "img-fluid", alt: @restaurant.name %>
+                <% end %>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- end restaurant description with image -->
+<% end %>
+
+<% if @restaurant.menus.any? %>
+<!-- start menu highlight -->
+<section class="bbcc-section bbcc-classes-row">
+    <div class="container-lg">
+        <div class="bbcc-section-head bbcc-section-head-center">
+            <h2 class="bbcc-section-title">Menu Highlight</h2>
+        </div>
+    </div>
+    <div class="container-lg">
+        <div class="swiper bbcc-swiper bbcc-menu-swiper">
+            <div class="swiper-wrapper">
+                <% @restaurant.menus.each do |menu| %>
+                    <div class="swiper-slide">
+                        <%= render "shared/category_card", facility: menu %>
+                    </div>
+                <% end %>
+            </div>
+            <div class="bbcc-swiper-controls">
+                <button type="button" class="bbcc-swiper-prev" aria-label="Previous"><i class="fa-solid fa-angle-left"></i></button>
+                <div class="bbcc-swiper-pagination"></div>
+                <button type="button" class="bbcc-swiper-next" aria-label="Next"><i class="fa-solid fa-angle-right"></i></button>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- end menu highlight -->
+<% end %>
+
+<% if @restaurant.images.attached? %>
+<!-- start restaurant gallery -->
+<section class="bbcc-section bbcc-gallery-page bbcc-section-alt">
+    <div class="container-lg">
+        <div class="bbcc-section-head bbcc-section-head-center">
+            <h2 class="bbcc-section-title">Gallery</h2>
+        </div>
+        <div class="bbcc-masonry">
+            <% @restaurant.images.each do |image| %>
+                <span class="bbcc-masonry-item">
+                    <%= image_tag image.variant(resize_to_limit: [700, 700]), alt: @restaurant.name %>
+                </span>
+            <% end %>
+        </div>
+    </div>
+</section>
+<!-- end restaurant gallery -->
+<% end %>
+
+<%
+  # Shared copy across every restaurant page — only the name changes — so a
+  # new venue never needs an admin to write this section from scratch.
+  dine_now_text = if I18n.locale == :id
+    "Siap bersantap di #{@restaurant.name}? Pesan meja hanya dalam beberapa klik melalui sistem reservasi online kami, atau hubungi kami langsung melalui WhatsApp dan tim kami akan mengonfirmasi reservasi Anda serta membantu memilih menu. Tamu tanpa reservasi selalu kami sambut selagi tempat tersedia, dan untuk kelompok besar atau acara khusus kami sarankan memesan setidaknya 24 jam sebelumnya agar meja Anda siap tepat waktu. Pesanan untuk dibawa pulang maupun layanan makan di kamar juga dapat diatur bagi tamu yang menginap — cukup sampaikan pesanan Anda ke front desk."
+  else
+    "Ready to eat at #{@restaurant.name}? Book a table in a few taps through our online reservation system, or reach out directly via WhatsApp and our team will confirm your booking and talk you through the menu. Walk-ins are always welcome subject to availability, and for larger groups or special occasions we recommend booking at least 24 hours ahead so your table is ready when you arrive. Takeaway orders and in-room dining can also be arranged for guests staying on property — just let the front desk know what you'd like and when."
+  end
+%>
+<!-- start dine now -->
+<section class="bbcc-section bbcc-intro">
+    <div class="container-lg">
+        <div class="row g-4 g-lg-5">
+            <div class="col-12 col-lg-4">
+                <h2 class="bbcc-section-title">Dine at <%= @restaurant.name %> Now</h2>
+            </div>
+            <div class="col-12 col-lg-8">
+                <p class="bbcc-lead"><%= dine_now_text %></p>
+                <%= link_to "Read More", get_contact_path, class: "bbcc-btn" %>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- end dine now -->
+
+<% if @others.any? %>
+<!-- start other dining experiences -->
+<section class="bbcc-section bbcc-service-row">
+    <div class="container-lg">
+        <div class="bbcc-section-head bbcc-section-head-center">
+            <h2 class="bbcc-section-title">Other Dining Experiences</h2>
+        </div>
+        <div class="row g-4">
+            <% @others.each do |other| %>
+                <div class="col-12 col-md-4">
+                    <%= link_to dining_restaurant_path(other), class: "bbcc-tile bbcc-tile-sm",
+                                style: ("background-image:url('#{url_for(other.image)}');" if other.image.attached?) do %>
+                        <span class="bbcc-tile-shade"></span>
+                        <span class="bbcc-tile-body">
+                            <span class="bbcc-tile-label"><%= other.name %></span>
+                        </span>
+                    <% end %>
+                </div>
+            <% end %>
+        </div>
+    </div>
+</section>
+<!-- end other dining experiences -->
+<% end %>
+
+<%= render "home/blogs" %>

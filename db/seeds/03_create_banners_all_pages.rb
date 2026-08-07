@@ -63,6 +63,10 @@ banners_data = [
   { section: "Highlights", image: "banner-events.png",
     title: "BBCC Highlights", description: "Socials, clinics, tournaments and the regular fixtures that make up the club calendar.",
     title_id: "BBCC Highlights", description_id: "Acara sosial, klinik, turnamen, dan agenda rutin yang mengisi kalender klub." },
+
+  { section: "Dining", image: "banner-resto.png", dir: "",
+    title: "Dining", description: "Five distinct venues, one destination — from casual bites to fine dining at Bali Beach Country Club.",
+    title_id: "Dining", description_id: "Lima tempat makan berbeda, satu destinasi — dari hidangan santai hingga fine dining di Bali Beach Country Club." },
 ]
 
 banners_data.each do |data|

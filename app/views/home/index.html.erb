@@ -1,7 +1,7 @@
 <%= render "search_bar" %>
 <%= render "feature_grid" %>
 <%= render "grab_and_go" %>
-<%= render "dining" %>
+<%= render "dining" unless @restaurants.empty? %>
 <%= render "about_intro" %>
 <%= render "golf_banner" %>
 <%= render "mits_partner" %>

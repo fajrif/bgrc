@@ -17,7 +17,7 @@
             </p>
         </div>
 
-        <nav class="bbcc-tabs" aria-label="Blog categories">
+        <nav class="bbcc-tabs bbcc-tabs-center" aria-label="Blog categories">
             <%= link_to "All", blogs_path, class: ["bbcc-tab", ("active" if @category.nil?)] %>
             <% @categories.each do |category| %>
                 <%= link_to category.name, blogs_path(category_id: category.id), class: ["bbcc-tab", ("active" if @category == category)] %>

@@ -11,9 +11,10 @@ class ClubLifeController < ApplicationController
     @section = Facility.friendly.find(params[:id])
     raise ActiveRecord::RecordNotFound unless @section.in_club_life?
 
-    @root     = @section.club_life_root
-    @children = @section.children
-    @gallery  = @section.gallery_images
+    @root      = @section.club_life_root
+    @children  = @section.children
+    @amenities = @section.amenities
+    @gallery   = @section.gallery_images
 
     # Linked sports carry the real class programme; unlinked sections show none.
     @group_classes = @section.sport_id.present? ? GroupClass.available.where(sport_id: @section.sport_id).includes(:sport) : GroupClass.none

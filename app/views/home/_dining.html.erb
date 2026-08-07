@@ -1,13 +1,4 @@
 <!-- start restaurants / dining -->
-<%
-  restaurants = [
-    { name: "The Paddock",        image: "facilities/restaurant.png", desc: "All-day dining with a garden view." },
-    { name: "Kawanua Marina",     image: "images/image-2.png",        desc: "Fresh seafood by the waterfront." },
-    { name: "Pit Lane Sports Bar",image: "images/image-3.png",        desc: "Craft drinks and live sports." },
-    { name: "Mezzaluna",          image: "images/image-4.png",        desc: "Modern Italian, wood-fired." },
-    { name: "Port Side",          image: "images/image-5.png",        desc: "Sunset cocktails and small plates." }
-  ]
-%>
 <section class="bbcc-section bbcc-dining">
     <div class="container-lg">
         <div class="bbcc-section-head">
@@ -21,14 +12,17 @@
     <div class="container-lg">
         <div class="swiper bbcc-swiper bbcc-dining-swiper">
             <div class="swiper-wrapper">
-                <% restaurants.each do |r| %>
+                <% @restaurants.each do |r| %>
                     <div class="swiper-slide">
-                        <a href="<%= restaurant_path %>" class="bbcc-card">
-                            <span class="bbcc-card-image" style="background-image:url('<%= image_url(r[:image]) %>');">
+                        <a href="<%= dining_restaurant_path(r) %>" class="bbcc-card">
+                            <span class="bbcc-card-image" style="<%= "background-image:url('#{url_for(r.image)}');" if r.image.attached? %>">
                                 <span class="bbcc-card-shade"></span>
-                                <span class="bbcc-card-name"><%= r[:name] %></span>
+                                <span class="bbcc-card-name"><%= r.name %></span>
+                                <span class="bbcc-card-panel">
+                                    <span class="bbcc-card-panel-name"><%= r.name %></span>
+                                    <span class="bbcc-card-desc"><%= r.short_description.to_s.truncate(120) %></span>
+                                </span>
                             </span>
-                            <span class="bbcc-card-desc"><%= r[:desc] %></span>
                         </a>
                     </div>
                 <% end %>

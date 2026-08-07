@@ -16,9 +16,7 @@
                         <span class="bbcc-tile-shade"></span>
                         <span class="bbcc-tile-body">
                             <span class="bbcc-tile-label"><%= section.name %></span>
-                            <% if index == 1 %>
-                                <span class="bbcc-tile-desc"><%= section.short_description.to_s.truncate(150) %></span>
-                            <% end %>
+                            <span class="bbcc-tile-desc"><%= section.short_description.to_s.truncate(150) %></span>
                         </span>
                     <% end %>
                 </div>
@@ -28,7 +26,10 @@
                     <%= link_to club_life_section_path(section), class: "bbcc-tile bbcc-tile-sm",
                                 style: ("background-image:url('#{url_for(section.image)}');" if section.image.attached?) do %>
                         <span class="bbcc-tile-shade"></span>
-                        <span class="bbcc-tile-body"><span class="bbcc-tile-label"><%= section.name %></span></span>
+                        <span class="bbcc-tile-body">
+                            <span class="bbcc-tile-label"><%= section.name %></span>
+                            <span class="bbcc-tile-desc"><%= section.short_description.to_s.truncate(90) %></span>
+                        </span>
                     <% end %>
                 </div>
             <% end %>

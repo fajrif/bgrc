@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_08_06_000001) do
+ActiveRecord::Schema[7.1].define(version: 2026_08_07_000004) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -90,6 +90,16 @@ ActiveRecord::Schema[7.1].define(version: 2026_08_06_000001) do
     t.datetime "updated_at", null: false
     t.integer "role_id", default: 0, null: false
     t.index ["email"], name: "index_admins_on_email", unique: true
+  end
+
+  create_table "amenities", force: :cascade do |t|
+    t.jsonb "name", default: {}
+    t.jsonb "short_description", default: {}
+    t.integer "facility_id"
+    t.integer "position", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["facility_id"], name: "index_amenities_on_facility_id"
   end
 
   create_table "articles", force: :cascade do |t|
@@ -461,6 +471,16 @@ ActiveRecord::Schema[7.1].define(version: 2026_08_06_000001) do
     t.decimal "price", default: "0.0", null: false
   end
 
+  create_table "menus", force: :cascade do |t|
+    t.jsonb "name", default: {}
+    t.jsonb "short_description", default: {}
+    t.integer "restaurant_id"
+    t.integer "position", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["restaurant_id"], name: "index_menus_on_restaurant_id"
+  end
+
   create_table "packages", force: :cascade do |t|
     t.jsonb "name", default: {}
     t.jsonb "short_description", default: {}
@@ -557,6 +577,21 @@ ActiveRecord::Schema[7.1].define(version: 2026_08_06_000001) do
     t.boolean "active", default: true, null: false
     t.boolean "hide", default: false, null: false
     t.date "end_date"
+  end
+
+  create_table "restaurants", force: :cascade do |t|
+    t.jsonb "slug", default: {}
+    t.jsonb "name", default: {}
+    t.jsonb "short_description", default: {}
+    t.jsonb "description", default: {}
+    t.integer "position", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.jsonb "banner_description", default: {}
+    t.jsonb "description1", default: {}
+    t.jsonb "description2", default: {}
+    t.index ["name"], name: "index_restaurants_on_name", unique: true
+    t.index ["slug"], name: "index_restaurants_on_slug", unique: true
   end
 
   create_table "roles", force: :cascade do |t|

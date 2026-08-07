@@ -87,9 +87,20 @@ Rails.application.routes.draw do
 			resources :facilities do
 				member do
           delete "delete_attachment_image/:asset_id" => "facilities#delete_attachment_image", :as => :delete_attachment_image
+          delete "delete_banner/:asset_id" => "facilities#delete_banner", :as => :delete_banner
           delete "delete_image/:asset_id" => "facilities#delete_image", :as => :delete_image
         end
       end
+      resources :amenities
+      resources :restaurants do
+        member do
+          delete "delete_banner/:asset_id" => "restaurants#delete_banner", :as => :delete_banner
+          delete "delete_middle_banner/:asset_id" => "restaurants#delete_middle_banner", :as => :delete_middle_banner
+          delete "delete_attachment_image/:asset_id" => "restaurants#delete_attachment_image", :as => :delete_attachment_image
+          delete "delete_image/:asset_id" => "restaurants#delete_image", :as => :delete_image
+        end
+      end
+      resources :menus
       resources :wellnesses do
         member do
           delete "delete_attachment_image/:asset_id" => "wellnesses#delete_attachment_image", :as => :delete_attachment_image
@@ -236,7 +247,8 @@ Rails.application.routes.draw do
     match 'gallery', to: 'home#gallery', via: :get, as: :gallery
     match 'our-team', to: 'home#our_team', via: :get, as: :our_team
     match 'mits-academy', to: 'home#mits_academy', via: :get, as: :mits_academy
-    match 'restaurant', to: 'restaurant#index', via: :get, as: :restaurant
+    get 'dining',     to: 'restaurants#index', as: :dining
+    get 'dining/:id', to: 'restaurants#show',  as: :dining_restaurant
     match 'search', to: 'search#index', via: :get, as: :search
     match 'search_selection', to: 'search#search_selection', via: :get, as: :search_selection
     match 'courts/:id/calculate_price', to: 'courts#calculate_price', via: :get, as: :calculate_price

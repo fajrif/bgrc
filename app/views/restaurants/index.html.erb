@@ -1,0 +1,61 @@
+<%= render "shared/page_hero", banner: @banner, crumbs: [{ label: "Dining" }] %>
+
+<!-- start dining venues -->
+<section class="bbcc-section bbcc-features">
+    <div class="container-lg">
+        <div class="row g-3 g-lg-4">
+            <% @restaurants.each do |restaurant| %>
+                <div class="col-12 col-md-4">
+                    <%= link_to dining_restaurant_path(restaurant), class: "bbcc-tile bbcc-tile-sm",
+                                style: ("background-image:url('#{url_for(restaurant.image)}');" if restaurant.image.attached?) do %>
+                        <span class="bbcc-tile-shade"></span>
+                        <span class="bbcc-tile-body">
+                            <span class="bbcc-tile-label"><%= restaurant.name %></span>
+                            <span class="bbcc-tile-desc"><%= restaurant.short_description.to_s.truncate(90) %></span>
+                        </span>
+                    <% end %>
+                </div>
+            <% end %>
+            <div class="col-12 col-md-4">
+                <a href="<%= root_path %>#grab-go" class="bbcc-tile bbcc-tile-sm"
+                   style="background-image:url('<%= image_url('grab_go.png') %>');">
+                    <span class="bbcc-tile-shade"></span>
+                    <span class="bbcc-tile-body">
+                        <span class="bbcc-tile-label">Grab &amp; Go</span>
+                        <span class="bbcc-tile-desc">Fresh, chef-prepared meals and cold-pressed juices between sets or after a round.</span>
+                    </span>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- end dining venues -->
+
+<!-- start reserve your table -->
+<section class="bbcc-section bbcc-intro">
+    <div class="container-lg">
+        <div class="row g-4 g-lg-5">
+            <div class="col-12 col-lg-4">
+                <h2 class="bbcc-section-title">Reserve Your Table Now</h2>
+            </div>
+            <div class="col-12 col-lg-8">
+                <p class="bbcc-lead">
+                    Five distinct venues, one destination. From casual bites to fine dining, every
+                    table at Bali Beach Country Club tells its own story.
+                </p>
+                <p>
+                    Whichever venue you choose, our team is ready to seat you — for a quiet dinner,
+                    a celebration, or a table for the whole family after a day on the courts.
+                </p>
+                <%= link_to "Read More", get_contact_path, class: "bbcc-btn" %>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- end reserve your table -->
+
+<!-- start dining full banner -->
+<div class="bbcc-fullbanner" style="background-image:url('<%= image_url('middle_banner_resto.png') %>');" role="img" aria-label="Dining at Bali Beach Country Club"></div>
+<!-- end dining full banner -->
+
+<%= render "home/blogs" %>

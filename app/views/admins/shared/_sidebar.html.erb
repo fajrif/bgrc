@@ -99,6 +99,9 @@
 								<a href="<%= admins_facilities_path %>" class="nav-link <%= current_path?('facilities') %>">Facilities</a>
 							</li>
 							<li class="nav-item">
+								<a href="<%= admins_amenities_path %>" class="nav-link <%= current_path?('amenities') %>">Amenities</a>
+							</li>
+							<li class="nav-item">
 								<a href="<%= admins_group_classes_path %>" class="nav-link <%= current_path?('group_classes') %>">Group Classes</a>
 							</li>
 							<li class="nav-item">
@@ -106,6 +109,21 @@
 							</li>
 							<li class="nav-item">
 								<a href="<%= admins_event_rsvps_path %>" class="nav-link <%= current_path?('event_rsvps') %>">Event RSVPs</a>
+							</li>
+						</ul>
+					</div>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link menu-link <%= 'active' if is_admins_dining_page? %>" href="#sidebarDining" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarDining">
+						<i class="ri-restaurant-line"></i> <span data-key="t-landing">Dining</span>
+					</a>
+					<div class="collapse menu-dropdown <%= 'show' if is_admins_dining_page? %>" id="sidebarDining">
+						<ul class="nav nav-sm flex-column">
+							<li class="nav-item">
+								<a href="<%= admins_restaurants_path %>" class="nav-link <%= current_path?('restaurants') %>">Restaurants</a>
+							</li>
+							<li class="nav-item">
+								<a href="<%= admins_menus_path %>" class="nav-link <%= current_path?('menus') %>">Menus</a>
 							</li>
 						</ul>
 					</div>

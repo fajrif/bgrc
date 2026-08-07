@@ -4,12 +4,12 @@
   crumbs << { label: @section.name }
   gallery_initial = 6
 %>
-<%# each section fronts its own photo, falling back to its root's, then to the shared Club Life banner %>
+<%# each section fronts its own hero banner, falling back to its root's, then to the shared Club Life banner %>
 <%
-  hero_image = if @section.image.attached?
-    url_for(@section.image)
-  elsif @root&.image&.attached?
-    url_for(@root.image)
+  hero_image = if @section.banner.attached?
+    url_for(@section.banner)
+  elsif @root&.banner&.attached?
+    url_for(@root.banner)
   elsif @banner&.image&.attached?
     url_for(@banner.image)
   end
@@ -69,17 +69,29 @@
     <!-- end club life pricing -->
 <% end %>
 
-<% if @children.any? && @use_overlay_cards %>
+<% if @amenities.any? %>
+    <!-- start club life facilities (card-only, no page of their own) -->
+    <section class="bbcc-section bbcc-cat-row">
+        <div class="container-lg">
+            <div class="bbcc-section-head bbcc-section-head-center">
+                <h2 class="bbcc-section-title">BBCC <%= @section.name %> Facilities</h2>
+            </div>
+            <div class="row g-4">
+                <% @amenities.each do |amenity| %>
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <%= render "shared/category_card", facility: amenity %>
+                    </div>
+                <% end %>
+            </div>
+        </div>
+    </section>
+    <!-- end club life facilities -->
+<% elsif @children.any? && @use_overlay_cards %>
     <!-- start club life categories -->
     <section class="bbcc-section bbcc-cat-row">
         <div class="container-lg">
-            <% if @section.sport_id.present? %>
-                <%# a sport page lists its own venues; the Racquet Sports root needs no
-                    heading, its h1 two sections above already says the same thing %>
-                <div class="bbcc-section-head bbcc-section-head-center">
-                    <h2 class="bbcc-section-title">BBCC <%= @section.name %> Facilities</h2>
-                </div>
-            <% end %>
+            <%# the Racquet Sports root needs no heading, its h1 two sections
+                above already says the same thing %>
             <div class="row g-4">
                 <% @children.each do |child| %>
                     <div class="col-12 col-md-6 col-lg-4">

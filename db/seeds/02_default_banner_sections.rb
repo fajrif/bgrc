@@ -10,7 +10,7 @@ puts "ensure all banner sections"
   "Golf", "Tennis", "Padel", "Pickleball",
   "FAQ", "Gallery", "Our Team", "MITS Academy",
   "Disclaimer", "Privacy Policy", "Terms & Conditions",
-  "Club Life", "Highlights",
+  "Club Life", "Highlights", "Dining",
 ].each do |name|
   section = BannerSection.find_or_create_by!(name: name)
   puts "Banner section: #{section.name}"

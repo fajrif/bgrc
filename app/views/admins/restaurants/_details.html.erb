@@ -1,0 +1,86 @@
+<table class="table table-hover">
+	<tr>
+		<td style="width:15%;"><b>ID</b></td>
+		<td><%= @restaurant.id %></td>
+	</tr>
+	<% if @restaurant.banner.attached? %>
+	<tr>
+		<td><b>Banner</b></td>
+		<td>
+			<%= image_tag @restaurant.banner.variant(resize_to_limit: [160,160]) %>
+			<%= link_to delete_banner_admins_restaurant_path(@restaurant.id, @restaurant.banner.id), :class => "ms-2 btn btn-danger btn-sm", :data => { :confirm => 'Are You sure want to delete this image?' }, :method => :delete do %>
+				<i class="ri-delete-bin-fill"></i>
+			<% end %>
+		</td>
+	</tr>
+	<% end %>
+	<% if @restaurant.middle_banner.attached? %>
+	<tr>
+		<td><b>Middle Banner</b></td>
+		<td>
+			<%= image_tag @restaurant.middle_banner.variant(resize_to_limit: [160,160]) %>
+			<%= link_to delete_middle_banner_admins_restaurant_path(@restaurant.id, @restaurant.middle_banner.id), :class => "ms-2 btn btn-danger btn-sm", :data => { :confirm => 'Are You sure want to delete this image?' }, :method => :delete do %>
+				<i class="ri-delete-bin-fill"></i>
+			<% end %>
+		</td>
+	</tr>
+	<% end %>
+	<% if @restaurant.image.attached? %>
+	<tr>
+		<td><b>Image</b></td>
+		<td>
+			<%= image_tag @restaurant.image.variant(resize_to_limit: [100,100]) %>
+			<%= link_to delete_attachment_image_admins_restaurant_path(@restaurant.id, @restaurant.image.id), :class => "ms-2 btn btn-danger btn-sm", :data => { :confirm => 'Are You sure want to delete this image?' }, :method => :delete do %>
+				<i class="ri-delete-bin-fill"></i>
+			<% end %>
+		</td>
+	</tr>
+	<% end %>
+	<% if @restaurant.images.attached? %>
+	<tr>
+		<td><b>Image Gallery</b></td>
+		<td>
+			<% @restaurant.images.each do |img| %>
+				<div class="d-flex align-items-center mb-2">
+					<%= image_tag img.variant(resize_to_limit: [100,100]) %>
+					<%= link_to delete_image_admins_restaurant_path(@restaurant.id, img.id), :class => "ms-2 btn btn-danger btn-sm", :data => { :confirm => 'Are You sure want to delete this image?' }, :method => :delete do %>
+						<i class="ri-delete-bin-fill"></i>
+					<% end %>
+				</div>
+			<% end %>
+		</td>
+	</tr>
+	<% end %>
+	<tr>
+		<td><b>Name</b></td>
+		<td><h5 class="fs-14 mb-0 text-body"><%= @restaurant.name %></h5></td>
+	</tr>
+	<tr>
+		<td><b>Position</b></td>
+		<td><%= @restaurant.position %></td>
+	</tr>
+	<tr>
+		<td><b>Short Description</b></td>
+		<td><%= @restaurant.short_description %></td>
+	</tr>
+	<tr>
+		<td><b>Banner Description</b></td>
+		<td><%= @restaurant.banner_description %></td>
+	</tr>
+	<tr>
+		<td><b>Description</b></td>
+		<td><%= @restaurant.description %></td>
+	</tr>
+	<tr>
+		<td><b>Description 1 (two-column text)</b></td>
+		<td><%= @restaurant.description1 %></td>
+	</tr>
+	<tr>
+		<td><b>Description 2 (paired with image)</b></td>
+		<td><%= @restaurant.description2 %></td>
+	</tr>
+	<tr>
+		<td><b>Menus</b></td>
+		<td><%= @restaurant.menus.count %> — <%= link_to "Manage menus", admins_menus_path(restaurant_id: @restaurant.id) %></td>
+	</tr>
+</table>

@@ -2,9 +2,10 @@ class HomeController < ApplicationController
 
   def index
 		# get public home — data-backed sections only; other sections are static.
-    @testimonials = Testimonial.first(6)
+    @testimonials = Testimonial.order(created_at: :desc).limit(10)
     @articles = Article.where(status: 1).first(3)
     @faqs = Question.where(section: "general").limit(6)
+    @restaurants = Restaurant.order(:position)
   end
 
   def about
@@ -50,12 +51,12 @@ class HomeController < ApplicationController
       "tennis"     => sport_images("Tennis"),
       "padel"      => sport_images("Padel"),
       "pickleball" => sport_images("Pickleball"),
-      "fitness"    => [facility_image("GYM")].compact,
+      "fitness"    => [facility_image("Gym")].compact,
       "spa"        => [facility_image("Yoga"), facility_image("Pilates"), facility_image("Recovery")].compact,
-      "dining"     => [facility_image("Restaurant")].compact,
+      "dining"     => Restaurant.all.filter_map { |r| r.image if r.image.attached? },
       "events"     => Event.all.map(&:image) + RecurringEvent.active.map(&:image),
       "club_life"  => [facility_image("Pro Shop"), facility_image("Locker Room"),
-                        facility_image("Swimming Pool"), facility_image("Golf Course")].compact
+                        facility_image("Lap Pool"), facility_image("Golf Course")].compact
     }
 
     @section = @galleries.key?(params[:category]) ? params[:category] : "all"

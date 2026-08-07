@@ -37,4 +37,17 @@ jQuery(document).ready(function($){
 	$(".datepicker").flatpickr({"altInput":true, "altFormat": "d/m/Y", "enableTime": false, "disableMobile":true, "dateFormat":"d/m/Y"});
 	var maxBookingDate = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000);
 	$(".datecourtpicker").flatpickr({"altInput":true, minDate: "today", maxDate: maxBookingDate, "altFormat": "d/m/Y", "enableTime": false, "disableMobile":true, "dateFormat":"d/m/Y"});
+
+	// Accordions (Events, FAQ, ...): opening one <details> closes its siblings
+	// within the same .bbcc-accordion/.bbcc-faq-list group.
+	document.querySelectorAll('.bbcc-accordion, .bbcc-faq-list').forEach(function (group) {
+		var items = group.querySelectorAll(':scope > details');
+		items.forEach(function (item) {
+			item.addEventListener('toggle', function () {
+				if (item.open) {
+					items.forEach(function (other) { if (other !== item) other.open = false; });
+				}
+			});
+		});
+	});
 });

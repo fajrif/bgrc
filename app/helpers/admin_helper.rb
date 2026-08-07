@@ -252,12 +252,18 @@ module AdminHelper
 		controller.controller_name == "coaches"
   end
 
+	def is_admins_dining_page?
+		controller.controller_name == "restaurants" ||
+		controller.controller_name == "menus"
+	end
+
 	def is_admins_sports_page?
 		controller.controller_name == "sports" ||
 		controller.controller_name == "courts" ||
 		controller.controller_name == "business_hours" ||
 		controller.controller_name == "costs" ||
 		controller.controller_name == "facilities" ||
+		controller.controller_name == "amenities" ||
 		controller.controller_name == "group_classes" ||
 		controller.controller_name == "packages" ||
 		controller.controller_name == "events" ||

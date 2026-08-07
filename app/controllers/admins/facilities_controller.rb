@@ -56,6 +56,14 @@ class Admins::FacilitiesController < Admins::BaseController
 		redirect_to admins_facility_path(@facility.id)
 	end
 
+	def delete_banner
+		if @asset = ActiveStorage::Attachment.find(params[:asset_id])
+			flash[:notice] = "Successfully delete banner."
+			@facility.banner.purge
+		end
+		redirect_to admins_facility_path(@facility.id)
+	end
+
 	def delete_image
 		if @image = ActiveStorage::Attachment.find(params[:asset_id])
 			flash[:notice] = "Successfully delete image gallery."
@@ -67,7 +75,7 @@ class Admins::FacilitiesController < Admins::BaseController
   private
 
   def params_facility
-    params.require(:facility).permit(:image, :name, :short_description, :description,
+    params.require(:facility).permit(:image, :banner, :name, :short_description, :description,
 																			:parent_id, :sport_id, :position, :club_life,
 																			:cta_label, :cta_url, images: [])
   end

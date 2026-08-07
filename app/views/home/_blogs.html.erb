@@ -24,7 +24,7 @@
                             </span>
                             <%= link_to article.title, get_blog_path(article), class: "bbcc-post-title" %>
                             <p class="bbcc-post-excerpt"><%= article.short_description.to_s.truncate(120) %></p>
-                            <%= link_to "Read More", get_blog_path(article), class: "bbcc-link" %>
+                            <%= link_to "Read More", get_blog_path(article), class: "bbcc-btn" %>
                         </div>
                     </article>
                 </div>

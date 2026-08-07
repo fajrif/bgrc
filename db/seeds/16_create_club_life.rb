@@ -11,13 +11,19 @@ end
 
 # Upserts one node of the tree. `rename_from` lets an existing facility be adopted
 # under its Club Life name instead of creating a near-duplicate record.
-def club_life_node!(en_name, attrs: {}, id: {}, image: nil, gallery: [], rename_from: nil)
+# `replace_image:` purges whatever image is already attached first — normally
+# an admin edit should win over the seed, but a few root sections still carry
+# a placeholder photo that a real one needs to replace outright.
+def club_life_node!(en_name, attrs: {}, id: {}, image: nil, gallery: [], rename_from: nil, replace_image: false)
 	record   = rename_from ? club_life_find(rename_from) : nil
 	record ||= club_life_find(en_name) || Facility.new
 
 	record.assign_attributes(attrs.merge(name: en_name))
-	if image.present? && !record.image.attached?
-		record.image.attach(io: CLUB_LIFE_IMAGES.join(image).open, filename: File.basename(image))
+	if image.present?
+		record.image.purge if replace_image && record.image.attached?
+		if !record.image.attached?
+			record.image.attach(io: CLUB_LIFE_IMAGES.join(image).open, filename: File.basename(image))
+		end
 	end
 	record.save!
 
@@ -182,13 +188,39 @@ pickleball = club_life_node!(
 )
 
 # -------------------------------------------- RACQUET SPORT FACILITIES
-# The venues listed on each sport page. They are deliberately one level below a
-# Club Life child, so `Facility#in_club_life?` is false for them and they get no
-# page of their own — they exist to be shown as cards on their parent's page.
-#
-# Facility names are globally unique, so each one is sport-qualified.
-# Photography is borrowed from the sport's own gallery until real photos are
-# uploaded through the admin panel.
+# The venues listed on each sport page have no page of their own — they exist
+# only to be shown as a card on their sport's page — so they're `Amenity`
+# rows (belongs_to :facility), not `Facility` rows. Earlier seed runs created
+# them as Facility grandchildren before that split existed; remove those
+# stray rows so the facilities table only ever holds records with a real page.
+%w[
+	Tennis\ Centre\ Court Tennis\ Practice\ Wall Tennis\ Floodlit\ Courts
+	Tennis\ Pro\ Shop\ Counter Tennis\ Player\ Lounge
+	Padel\ Glass\ Courts Padel\ Viewing\ Deck Padel\ Equipment\ Hire
+	Pickleball\ Courts Pickleball\ Social\ Area Pickleball\ Paddle\ Hire
+].each { |old_name| club_life_find(old_name)&.destroy }
+
+def amenity!(facility, en_name, en_desc:, id_name:, id_desc:, image:, position:)
+	record = Amenity.find_by("name @> ?", { en: en_name }.to_json) || Amenity.new
+	record.facility = facility
+	record.position = position
+	record.name = en_name
+	record.short_description = en_desc
+	if image.present? && !record.image.attached?
+		record.image.attach(io: CLUB_LIFE_IMAGES.join(image).open, filename: File.basename(image))
+	end
+	record.save!
+
+	Mobility.with_locale(:id) do
+		record.name = id_name
+		record.short_description = id_desc
+		record.save!
+	end
+
+	puts "Amenity: #{record.name} (#{facility.en_name})"
+	record
+end
+
 racquet_facilities = [
 	{ parent: tennis, sport_slug: "tennis", items: [
 		{ en: "Tennis Centre Court", id_name: "Lapangan Utama Tenis", photo: "gallery-1.png",
@@ -235,22 +267,20 @@ racquet_facilities.each do |group|
 	next if group[:parent].blank?
 
 	group[:items].each_with_index do |item, index|
-		club_life_node!(
+		amenity!(
+			group[:parent],
 			item[:en],
-			attrs: {
-				club_life: false, parent_id: group[:parent].id, position: index + 1,
-				cta_label: "", cta_url: "",
-				short_description: item[:en_desc],
-				description: item[:en_desc]
-			},
-			id: { name: item[:id_name], short_description: item[:id_desc], description: item[:id_desc] },
-			image: "sports/#{group[:sport_slug]}/#{item[:photo]}"
+			en_desc: item[:en_desc],
+			id_name: item[:id_name],
+			id_desc: item[:id_desc],
+			image: "sports/#{group[:sport_slug]}/#{item[:photo]}",
+			position: index + 1
 		)
 	end
 end
 
 # ------------------------------------------------------------- FITNESS
-club_life_node!(
+fitness = club_life_node!(
 	"Fitness",
 	attrs: {
 		club_life: true, position: 3, parent_id: nil, sport_id: nil,
@@ -264,8 +294,92 @@ club_life_node!(
 		description: "Area gym mencakup beban bebas, mesin resistensi, dan kardio, dengan ruang yang cukup untuk berlatih tanpa mengantre. Yoga dan pilates berlangsung di studio di sebelahnya, dan kolam renang terbuka untuk berenang di luar jam kelas.\n\nKeanggotaan mencakup akses gym; jadwal kelas dan personal training diatur melalui front desk.",
 		cta_label: "Hubungi Kami"
 	},
-	image: "facilities/gym.png",
+	image: "fitness.png",
+	replace_image: true,
 	gallery: ["facilities/gym.png", "facilities/pilates.png", "facilities/yoga.png", "facilities/swimming-pool.png"]
+)
+
+club_life_node!(
+	"Gym",
+	rename_from: "GYM",
+	attrs: {
+		club_life: false, parent_id: fitness.id, position: 1,
+		cta_label: "Enquire", cta_url: "/contact",
+		short_description: "Free weights, resistance machines and cardio, open through the day.",
+		description: "The gym floor is laid out so free weights, resistance machines and cardio each have their own space — there is always somewhere to train without waiting on equipment. Staff are on hand during peak hours, and personal training can be arranged through the front desk."
+	},
+	id: {
+		name: "Gym",
+		short_description: "Beban bebas, mesin resistensi, dan kardio, buka sepanjang hari.",
+		description: "Area gym ditata sehingga beban bebas, mesin resistensi, dan kardio masing-masing memiliki ruang tersendiri — selalu ada tempat untuk berlatih tanpa menunggu alat. Staf siap membantu pada jam sibuk, dan personal training dapat diatur melalui front desk.",
+		cta_label: "Hubungi Kami"
+	}
+)
+
+club_life_node!(
+	"Gyrotonic",
+	attrs: {
+		club_life: false, parent_id: fitness.id, position: 2,
+		cta_label: "Enquire", cta_url: "/contact",
+		short_description: "Machine-based movement work that builds strength without the strain.",
+		description: "Gyrotonic sessions use the studio's specialist equipment to move the spine and joints through their full range, building strength and coordination with far less strain than a conventional weights session. Sessions are one-on-one and booked through the front desk."
+	},
+	id: {
+		name: "Gyrotonic",
+		short_description: "Latihan gerak berbasis alat yang membangun kekuatan tanpa membebani tubuh.",
+		description: "Sesi Gyrotonic menggunakan alat khusus studio untuk menggerakkan tulang belakang dan sendi secara menyeluruh, membangun kekuatan dan koordinasi dengan beban yang jauh lebih ringan dibanding latihan beban biasa. Sesi bersifat privat dan dipesan melalui front desk.",
+		cta_label: "Hubungi Kami"
+	},
+	image: "facilities/pilates.png" # placeholder — replace with a Gyrotonic studio photo via admin
+)
+
+club_life_node!(
+	"Pilates",
+	attrs: {
+		club_life: false, parent_id: fitness.id, position: 3,
+		cta_label: "Enquire", cta_url: "/contact",
+		short_description: "Studio reformer and mat classes for core strength and posture.",
+		description: "Our pilates studio runs reformer and mat sessions through the day, in small groups so instructors can correct form as you go. It is a popular pairing with the gym for members building strength without adding bulk."
+	},
+	id: {
+		name: "Pilates",
+		short_description: "Kelas reformer dan mat untuk kekuatan inti tubuh dan postur.",
+		description: "Studio pilates kami menjalankan sesi reformer dan mat sepanjang hari, dalam grup kecil sehingga instruktur dapat mengoreksi gerakan Anda. Populer dipadukan dengan gym bagi anggota yang membangun kekuatan tanpa menambah massa otot.",
+		cta_label: "Hubungi Kami"
+	}
+)
+
+club_life_node!(
+	"Yoga",
+	attrs: {
+		club_life: false, parent_id: fitness.id, position: 4,
+		cta_label: "Enquire", cta_url: "/contact",
+		short_description: "Daily classes from gentle flow to power yoga, in a dedicated studio.",
+		description: "Classes run daily in the studio, spanning gentle flow, power yoga and everything in between, so members can find a pace that suits them. Mats and props are provided — just bring yourself."
+	},
+	id: {
+		name: "Yoga",
+		short_description: "Kelas harian dari flow ringan hingga power yoga, di studio khusus.",
+		description: "Kelas berlangsung setiap hari di studio, mencakup flow ringan, power yoga, dan berbagai variasi di antaranya, sehingga anggota dapat menemukan ritme yang sesuai. Matras dan perlengkapan disediakan — Anda tinggal datang.",
+		cta_label: "Hubungi Kami"
+	}
+)
+
+club_life_node!(
+	"Lap Pool",
+	rename_from: "Swimming Pool",
+	attrs: {
+		club_life: false, parent_id: fitness.id, position: 5,
+		cta_label: "Enquire", cta_url: "/contact",
+		short_description: "Open for lap swimming outside of class hours.",
+		description: "The lap pool sits alongside the gym and is open for members through the day, outside of any scheduled class hours. Lanes are marked for continuous laps, and towels are available at the front desk."
+	},
+	id: {
+		name: "Kolam Renang",
+		short_description: "Terbuka untuk berenang di luar jam kelas.",
+		description: "Kolam renang berada di samping gym dan terbuka bagi anggota sepanjang hari, di luar jadwal kelas. Jalur ditandai untuk renang berkelanjutan, dan handuk tersedia di front desk.",
+		cta_label: "Hubungi Kami"
+	}
 )
 
 # ---------------------------------------------------------- BEACH CLUB
@@ -283,7 +397,8 @@ club_life_node!(
 		description: "Beach club adalah tempat hari berjalan lebih lambat. Kursi santai dan area teduh membentang di sepanjang pool deck, makanan dan minuman diantar dari restoran, dan tempat ini buka hingga malam.\n\nArea ini juga paling sering dipesan untuk acara privat — hubungi kami jika Anda ingin mengadakan acara di sini.",
 		cta_label: "Hubungi Kami"
 	},
-	image: "facilities/swimming-pool.png" # placeholder — replace with a beach club photo via admin
+	image: "beach_club.png",
+	replace_image: true
 )
 
 # ------------------------------------------------------- SPA + WELLNESS
@@ -301,7 +416,8 @@ spa = club_life_node!(
 		description: "Wellness di klub kami mencakup tiga hal yang saling berkaitan: perawatan spa tradisional, pemulihan fisik untuk anggota yang berlatih keras, dan program jangka panjang untuk kualitas penuaan.\n\nPerawatan dijalankan oleh tim spesialis kami dan dipesan melalui front desk.",
 		cta_label: "Hubungi Kami"
 	},
-	image: "facilities/yoga.png", # placeholder — replace with a spa photo via admin
+	image: "spa_wellness.png",
+	replace_image: true,
 	gallery: ["facilities/yoga.png", "facilities/pilates.png", "facilities/recovery-center.png"]
 )
 

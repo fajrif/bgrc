@@ -10,7 +10,11 @@ class Facility < ApplicationRecord
 					 class_name: "Facility", foreign_key: :parent_id, dependent: :nullify
 	belongs_to :sport, optional: true
 
+	# Card-only content with no page of its own (venue listings, restaurants, ...).
+	has_many :amenities, -> { order(position: :asc, id: :asc) }, dependent: :destroy
+
 	has_one_attached :image, dependent: :purge
+	has_one_attached :banner, dependent: :purge
 	has_many_attached :images, dependent: :purge
 
 	validates_presence_of :name, :short_description, :description

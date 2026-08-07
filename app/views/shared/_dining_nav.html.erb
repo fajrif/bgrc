@@ -1,0 +1,8 @@
+<%# locals: restaurants:, active: — a Restaurant, or nil %>
+<nav class="bbcc-faq-nav" aria-label="Dining venues">
+    <% restaurants.each do |restaurant| %>
+        <%= link_to restaurant.name, dining_restaurant_path(restaurant),
+                    class: ["bbcc-faq-nav-link", ("active" if active == restaurant)] %>
+    <% end %>
+    <a href="<%= root_path %>#grab-go" class="bbcc-faq-nav-link">Grab &amp; Go</a>
+</nav>
