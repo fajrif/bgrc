@@ -1,6 +1,21 @@
 Article.delete_all
 puts "create all Blogs"
 
+# Resolve categories directly rather than relying on @cat1-@cat4 having been
+# set by 04_create_categories.rb in the same process — this file is often run
+# standalone (e.g. `bin/rails runner 'load ...05_create_articles.rb'`), and
+# `belongs_to :category` is required, so a nil category used to fail `.save`
+# silently (no exception) while the puts below still printed regardless.
+def find_or_create_category!(en_name, id_name)
+	Category.find_by("name @> ?", { en: en_name }.to_json) || Category.find_by(name: en_name) ||
+		Category.create!(name: en_name).tap { |c| Mobility.with_locale(:id) { c.name = id_name; c.save! } }
+end
+
+@cat1 ||= find_or_create_category!("Padel", "Padel")
+@cat2 ||= find_or_create_category!("Golf", "Golf")
+@cat3 ||= find_or_create_category!("Tennis", "Tenis")
+@cat4 ||= find_or_create_category!("Pickleball", "Pickleball")
+
 # Create Article
 title = FFaker::Book.title
 news1 = Article.new(title: title, category: @cat3)
