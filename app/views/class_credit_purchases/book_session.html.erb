@@ -1,29 +1,36 @@
 <%= content_for :head do %>
+  <%# main.css is FullCalendar's core stylesheet %>
   <%= stylesheet_link_tag "main.css" %>
 <% end %>
 
-<section class="pt-5 pb-5 bg-extra-dark-gray">
-  <div class="container">
-    <div class="row align-items-center">
-      <div class="col-12 col-md-8">
-        <h6 class="alt-font text-white mb-1">Book Session — <%= @group_class.name %></h6>
-        <p class="text-medium text-small mb-0">
-          <%= @credit_purchase.sessions_remaining %> session(s) remaining
-          &nbsp;&middot;&nbsp; Order <%= @credit_purchase.order_id %>
+<%= render "shared/breadcrumb", crumbs: [{ label: "Class Credits", path: users_class_credits_path }, { label: @group_class.name }] %>
+
+<!-- start book session -->
+<section class="bbcc-section bbcc-hub">
+  <div class="container-lg">
+    <div class="bbcc-schedule-head">
+      <div>
+        <h1 class="bbcc-hub-heading bbcc-schedule-title">Book Session &mdash; <%= @group_class.name %></h1>
+        <p class="bbcc-schedule-range">
+          <%= @credit_purchase.sessions_remaining %> session(s) remaining &middot; Order <%= @credit_purchase.order_id %>
         </p>
       </div>
-      <div class="col-12 col-md-4 text-md-end mt-2 mt-md-0">
-        <%= link_to "&#8592; Back to Class Credits".html_safe, users_class_credits_path, class: "btn btn-outline-light btn-small text-extra-small" %>
-      </div>
+      <%= link_to "&larr; Back to Class Credits".html_safe, users_class_credits_path, class: "bbcc-link" %>
+    </div>
+
+    <div id="claimResults">
+      <% if @court %>
+        <%= render "claim_results" %>
+      <% else %>
+        <div class="bbcc-table-empty">
+          <p>No court is set up for this class yet.</p>
+          <%= link_to "Contact Us", get_contact_path, class: "bbcc-btn" %>
+        </div>
+      <% end %>
     </div>
   </div>
 </section>
-
-<section id="claim-results-wrap" class="pt-5 wow animate__fadeIn">
-  <div id="claimResults">
-    <%= render "claim_results" if @court %>
-  </div>
-</section>
+<!-- end book session -->
 
 <%= content_for :tail do %>
   <%= javascript_include_tag "fullcalendar.js" %>

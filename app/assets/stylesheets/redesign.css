@@ -498,6 +498,7 @@ body.bbcc-no-scroll { overflow: hidden; }
   margin: 10px 0 18px;
 }
 .bbcc-featured-post-body p { margin-bottom: 14px; }
+.bbcc-featured-post-body .bbcc-btn { align-self: flex-start; }
 
 /* =====================================================================
    ARTICLE SHOW
@@ -538,6 +539,7 @@ body.bbcc-no-scroll { overflow: hidden; }
 .bbcc-article-cta-image { height: 100%; min-height: 260px; background-size: cover; background-position: center; }
 .bbcc-article-cta-body { background: var(--bbcc-bg-alt); padding: 48px; height: 100%; display: flex; flex-direction: column; justify-content: center; }
 .bbcc-article-cta-body p { margin: 18px 0 26px; }
+.bbcc-article-cta-body .bbcc-btn { align-self: flex-start; }
 
 /* =====================================================================
    OUR TEAM PAGE
@@ -1006,7 +1008,8 @@ button.bbcc-teeslot:focus-visible { outline: 2px solid var(--bbcc-ink); outline-
   --fc-event-border-color: #e0e0e0;
   --fc-event-text-color: var(--bbcc-ink);
 }
-.bbcc-schedule #calendar { max-width: none; margin: 0; }
+.bbcc-schedule #calendar,
+.bbcc-schedule #claim-calendar { max-width: none; margin: 0; }
 .bbcc-schedule .fc-theme-standard td,
 .bbcc-schedule .fc-theme-standard th { border-color: var(--bbcc-line); }
 .bbcc-schedule .fc .fc-col-header-cell { padding: 15px 4px; background: #fff; }
