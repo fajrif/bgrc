@@ -15,8 +15,23 @@ end
 # an admin edit should win over the seed, but a few root sections still carry
 # a placeholder photo that a real one needs to replace outright.
 def club_life_node!(en_name, attrs: {}, id: {}, image: nil, gallery: [], rename_from: nil, replace_image: false)
-	record   = rename_from ? club_life_find(rename_from) : nil
-	record ||= club_life_find(en_name) || Facility.new
+	old_record = rename_from ? club_life_find(rename_from) : nil
+	record     = club_life_find(en_name)
+
+	if old_record && record && old_record.id != record.id
+		# 06_create_facilities.rb doesn't know `rename_from` is the same
+		# facility under an old name, so on a database that still has the old
+		# name it creates a fresh row instead of finding this one — leaving a
+		# duplicate that would otherwise crash the rename below on a uniqueness
+		# violation. Drop the stale pre-rename record and keep the one already
+		# sitting at the new name.
+		puts "Club Life: deleting duplicate #{old_record.name.inspect} (id #{old_record.id}), keeping #{record.name.inspect} (id #{record.id})"
+		old_record.destroy
+	elsif old_record
+		record = old_record
+	end
+
+	record ||= Facility.new
 
 	record.assign_attributes(attrs.merge(name: en_name))
 	if image.present?
