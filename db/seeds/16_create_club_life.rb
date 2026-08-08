@@ -113,7 +113,9 @@ club_life_node!(
 		description: "Les dijalankan oleh tim pelatih kami dan dapat diambil secara privat, semi-privat, atau dalam grup kecil. Sesi mencakup keseluruhan permainan: driving, iron, short game, dan putting.",
 		cta_label: "Lihat Kelas"
 	},
-	image: "sports/golf/gallery-3.png" # placeholder — replace with an academy photo via admin
+	image: "sports/golf/gallery-3.png", # placeholder — replace with an academy photo via admin
+	gallery: ["sports/golf/gallery-3.png", "sports/golf/gallery-1.png", "sports/golf/gallery-4.png",
+						"sports/golf/gallery-6.png", "sports/golf/gallery-2.png", "sports/golf/gallery-5.png"]
 )
 
 club_life_node!(
@@ -130,7 +132,9 @@ club_life_node!(
 		description: "Driving range berada di samping tee pertama dan buka sepanjang hari. Stik dapat disewa di pro shop, dan pelatih kami siap membantu jika Anda membutuhkan arahan.",
 		cta_label: "Hubungi Kami"
 	},
-	image: "sports/golf/gallery-5.png" # placeholder — replace with a driving range photo via admin
+	image: "sports/golf/gallery-5.png", # placeholder — replace with a driving range photo via admin
+	gallery: ["sports/golf/gallery-5.png", "sports/golf/gallery-2.png", "sports/golf/gallery-6.png",
+						"sports/golf/gallery-4.png", "sports/golf/gallery-1.png", "sports/golf/gallery-3.png"]
 )
 
 # ------------------------------------------------------- RACQUET SPORTS
@@ -148,7 +152,9 @@ racquet = club_life_node!(
 		description: "Tiga olahraga raket berbagi sudut klub yang sama, sehingga Anda dapat berpindah di antaranya semudah mengganti sepatu. Lapangan dapat dipesan per jam, dan sesi berpelatih tersedia sebagai les privat, kelas grup, dan kelas sosial sepanjang minggu.\n\nProgram pelatihan kami dijalankan bersama MITS Academy.",
 		cta_label: "Lihat Kelas"
 	},
-	image: "banners/banner-tennis.png"
+	image: "banners/banner-tennis.png",
+	gallery: ["sports/tennis/gallery-1.png", "sports/padel/gallery-1.png", "sports/pickleball/gallery-1.png",
+						"sports/tennis/gallery-4.png", "sports/padel/gallery-3.png", "sports/pickleball/gallery-2.png"]
 )
 
 tennis = club_life_node!(
@@ -413,7 +419,9 @@ club_life_node!(
 		cta_label: "Hubungi Kami"
 	},
 	image: "beach_club.png",
-	replace_image: true
+	replace_image: true,
+	gallery: ["beach_club.png", "new-banners/banner-beach-club.png", "facilities/swimming-pool.png",
+						"new-banners/banner-lap-pool.png", "resto/mezzaluna.png", "banners/banner-events.png"]
 )
 
 # ------------------------------------------------------- SPA + WELLNESS
@@ -451,6 +459,7 @@ club_life_node!(
 		cta_label: "Hubungi Kami"
 	},
 	image: "facilities/pilates.png" # placeholder — replace with a spa treatment photo via admin
+	# gallery lives in 23_create_spa_pages.rb, which uses the real spa photography
 )
 
 club_life_node!(
@@ -468,6 +477,7 @@ club_life_node!(
 		description: "Pusat pemulihan dirancang untuk anggota yang berlatih paling keras — sauna, ruang peregangan, dan penanganan pemulihan di antara sesi latihan.",
 		cta_label: "Hubungi Kami"
 	}
+	# gallery lives in 23_create_spa_pages.rb, which uses the real spa photography
 )
 
 club_life_node!(
@@ -485,6 +495,7 @@ club_life_node!(
 		cta_label: "Hubungi Kami"
 	},
 	image: "facilities/yoga.png" # placeholder — replace with an anti-aging photo via admin
+	# gallery lives in 23_create_spa_pages.rb, which uses the real spa photography
 )
 
 puts "Club Life sections: #{Facility.club_life_roots.count} roots, #{Facility.where.not(parent_id: nil).count} children"

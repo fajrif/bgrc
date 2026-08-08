@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_08_07_000005) do
+ActiveRecord::Schema[7.1].define(version: 2026_08_08_000007) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -31,6 +31,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_08_07_000005) do
     t.bigint "record_id", null: false
     t.bigint "blob_id", null: false
     t.datetime "created_at", null: false
+    t.integer "position", default: 0, null: false
     t.index ["blob_id"], name: "index_active_storage_attachments_on_blob_id"
     t.index ["record_type", "record_id", "name", "blob_id"], name: "index_active_storage_attachments_uniqueness", unique: true
   end
@@ -285,10 +286,36 @@ ActiveRecord::Schema[7.1].define(version: 2026_08_07_000005) do
     t.boolean "club_life", default: false, null: false
     t.jsonb "cta_label", default: {}
     t.string "cta_url", default: "", null: false
+    t.jsonb "facilities_intro", default: {}
+    t.boolean "show_pricing", default: true, null: false
+    t.jsonb "treatments_title", default: {}
+    t.boolean "show_specialists", default: true, null: false
     t.index ["name"], name: "index_facilities_on_name", unique: true
     t.index ["parent_id"], name: "index_facilities_on_parent_id"
     t.index ["slug"], name: "index_facilities_on_slug", unique: true
     t.index ["sport_id"], name: "index_facilities_on_sport_id"
+  end
+
+  create_table "facility_details", force: :cascade do |t|
+    t.integer "facility_id"
+    t.jsonb "title", default: {}
+    t.jsonb "body", default: {}
+    t.integer "position", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["facility_id"], name: "index_facility_details_on_facility_id"
+  end
+
+  create_table "facility_rates", force: :cascade do |t|
+    t.integer "facility_id"
+    t.jsonb "name", default: {}
+    t.jsonb "access", default: {}
+    t.string "time", default: "", null: false
+    t.string "price", default: "", null: false
+    t.integer "position", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["facility_id"], name: "index_facility_rates_on_facility_id"
   end
 
   create_table "friendly_id_slugs", force: :cascade do |t|
@@ -643,6 +670,18 @@ ActiveRecord::Schema[7.1].define(version: 2026_08_07_000005) do
     t.string "comment", default: "", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "treatments", force: :cascade do |t|
+    t.integer "facility_id"
+    t.jsonb "name", default: {}
+    t.jsonb "short_description", default: {}
+    t.string "duration", default: "", null: false
+    t.string "price", default: "", null: false
+    t.integer "position", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["facility_id"], name: "index_treatments_on_facility_id"
   end
 
   create_table "users", force: :cascade do |t|

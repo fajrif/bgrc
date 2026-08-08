@@ -1,0 +1,42 @@
+<%= simple_form_for @facility_rate, url: (@facility_rate.new_record? ? admins_facility_rates_path : admins_facility_rate_path(@facility_rate.id)), method: (@facility_rate.new_record? ? :post : :put) do |f| %>
+	<div class="row">
+		<div class="col-lg-8">
+			<div class="card">
+				<div class="card-body">
+					<%= f.error_notification %>
+					<fieldset>
+						<%= f.input :name, as: :string, placeholder: "Monthly Membership" %>
+						<%= f.input :time, as: :string, placeholder: "06:00 AM – 05:00 PM", hint: "Leave blank to hide the Time line." %>
+						<%= f.input :access, as: :string, placeholder: "Unlimited daily access", hint: "Leave blank to hide the Access line." %>
+						<%= f.input :price, as: :string, placeholder: "Rp 650.000" %>
+					</fieldset>
+					<%= f.error :base %>
+					<div class="form-actions">
+						<%= f.button :submit, :class => 'btn btn-secondary' %>
+						<% unless @facility_rate.new_record? %>
+							<%= link_to "Cancel", admins_facility_rate_path(@facility_rate.id), :class => 'btn btn-light' %>
+						<% else %>
+							<%= link_to "Cancel", admins_facility_rates_path, :class => 'btn btn-light' %>
+						<% end %>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-lg-4">
+			<div class="row">
+				<%= render "admins/shared/error_messages", :target => @facility_rate, col: 'col-lg-12' %>
+				<div class="col-lg-12">
+					<div class="card">
+						<div class="card-header">
+							<h5 class="card-title mb-0">Settings</h5>
+						</div>
+						<div class="card-body">
+							<%= f.association :facility, hint: "Rates entered here replace the linked sport's court pricing on that page" %>
+							<%= f.input :position, as: :integer %>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+<% end %>

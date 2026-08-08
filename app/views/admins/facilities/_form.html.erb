@@ -7,10 +7,15 @@
 					<fieldset>
 						<%= f.input :image, as: :file, input_html: { class: "mb-3", accept: "image/gif, image/png, image/jpg, image/jpeg, image/webp" } %>
 						<%= f.input :banner, as: :file, hint: "Used as the hero photo on this section's own page.", input_html: { class: "mb-3", accept: "image/gif, image/png, image/jpg, image/jpeg, image/webp" } %>
+						<%= f.input :middle_banner, as: :file, hint: "Container-width photo shown between the intro and the pricing row.", input_html: { class: "mb-3", accept: "image/gif, image/png, image/jpg, image/jpeg, image/webp" } %>
 						<%= f.input :images, as: :file, label: "Image Gallery", input_html: { class: "mb-3", accept: "image/gif, image/png, image/jpg, image/jpeg, image/webp", multiple: true } %>
 						<%= f.input :name, as: :string %>
 						<%= f.input :short_description, as: :text %>
 						<%= f.input :description, as: :text %>
+						<%= f.input :facilities_intro, as: :text, label: "Facilities intro", input_html: { rows: 3 },
+												hint: "Paragraph under the \"BBCC … Facilities\" heading." %>
+						<%= f.input :treatments_title, as: :string, label: "Treatments heading", placeholder: "Treatment",
+												hint: "Heading over the treatment cards — e.g. \"Services\". Defaults to \"Treatment\"." %>
 					</fieldset>
 					<%= f.error :base %>
 					<div class="form-actions">
@@ -40,6 +45,8 @@
 							<%= f.association :sport, as: :select, include_blank: "— none —",
 													hint: "Links this page to a sport for its gallery and group classes." %>
 							<%= f.input :position, as: :integer %>
+							<%= f.input :show_pricing, as: :boolean, label: "Show pricing section", hint: "Untick to hide the pricing row on this page without deleting the rates." %>
+							<%= f.input :show_specialists, as: :boolean, label: "Show specialists section", hint: "Spa + Wellness pages only — the shared Our Specialists row." %>
 							<%= f.input :cta_label, as: :string, label: "Button label", placeholder: "Book Now" %>
 							<%= f.input :cta_url, as: :string, label: "Button link", placeholder: "/golf" %>
 						</div>

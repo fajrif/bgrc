@@ -11,6 +11,11 @@
 								<i class="ri-search-line"></i>
 							</div>
 						</div>
+						<div class="col-md-3">
+							<%= select_tag :facility_id,
+														 options_for_select(Facility.order(:position, :id).map { |f| [f.name, f.id] }, params[:facility_id]),
+														 include_blank: "All Facilities", class: "form-select filter_select" %>
+						</div>
 						<div class="col-sm-auto ms-auto">
 							<div class="hstack gap-2">
 								<a class="btn btn-success add-btn" href="<%= new_admins_amenity_path %>"><i class="ri-add-line align-bottom me-1"></i> Add amenity</a>

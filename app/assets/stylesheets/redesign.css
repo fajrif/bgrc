@@ -90,9 +90,34 @@ body.bbcc-no-scroll { overflow: hidden; }
 /* =====================================================================
    HEADER
    ===================================================================== */
-.bbcc-header { position: relative; z-index: 1000; background: #fff; }
+/* A vendored stylesheet pins html/body to `height: 100%`, which caps the sticky
+   header's containing block at one viewport — it would unstick as soon as the
+   page scrolled past that. Let the page grow with its content instead; the
+   full-height intent is preserved by min-height. */
+html, body { height: auto; min-height: 100%; }
 
-.bbcc-topbar { background: var(--bbcc-topbar); color: #fff; }
+/* the header rides along as the page scrolls; once past the topbar it folds
+   down to just the navigation so it keeps as little of the screen as possible */
+.bbcc-header {
+  position: sticky; top: 0; z-index: 1000; background: #fff;
+  transition: box-shadow .25s ease;
+}
+.bbcc-header-stuck { box-shadow: 0 2px 14px rgba(0, 0, 0, .09); }
+
+.bbcc-topbar {
+  background: var(--bbcc-topbar); color: #fff;
+  overflow: hidden; max-height: 60px; transition: max-height .25s ease;
+}
+.bbcc-header-stuck .bbcc-topbar { max-height: 0; }
+.bbcc-navbar-inner { transition: min-height .25s ease; }
+.bbcc-header-stuck .bbcc-navbar-inner { min-height: 68px; }
+.bbcc-logo img { transition: height .25s ease; }
+.bbcc-header-stuck .bbcc-logo img { height: 38px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .bbcc-header, .bbcc-topbar, .bbcc-navbar-inner, .bbcc-logo img { transition: none; }
+}
+
 .bbcc-topbar-inner {
   display: flex; align-items: center; justify-content: space-between;
   min-height: 40px;
@@ -309,6 +334,9 @@ body.bbcc-no-scroll { overflow: hidden; }
 .bbcc-accordion-icon::before { top: 6px; left: 0; width: 14px; height: 2px; }
 .bbcc-accordion-icon::after { top: 0; left: 6px; width: 2px; height: 14px; }
 .bbcc-accordion-item[open] .bbcc-accordion-icon::after { opacity: 0; }
+/* the panel keeps `open` until its closing animation finishes, so the icon is
+   turned back by the closing class instead of waiting on the attribute */
+.bbcc-accordion-item.is-closing .bbcc-accordion-icon::after { opacity: 1; }
 .bbcc-accordion-body { padding: 0 4px 24px; }
 .bbcc-accordion-body p { margin-bottom: 12px; }
 
@@ -454,6 +482,8 @@ body.bbcc-no-scroll { overflow: hidden; }
 .bbcc-faq-item[open] summary { color: var(--bbcc-ink); font-weight: 600; }
 .bbcc-faq-item-icon { flex: 0 0 auto; color: var(--bbcc-ink-soft); font-size: 14px; transition: transform .2s; }
 .bbcc-faq-item[open] .bbcc-faq-item-icon { transform: rotate(90deg); color: var(--bbcc-ink); }
+.bbcc-faq-item.is-closing summary { color: var(--bbcc-ink-soft); font-weight: 400; }
+.bbcc-faq-item.is-closing .bbcc-faq-item-icon { transform: none; color: var(--bbcc-ink-soft); }
 .bbcc-faq-item-body { padding: 0 0 24px; color: var(--bbcc-ink-soft); line-height: 1.7; }
 .bbcc-faq-item-body p { margin-bottom: 12px; }
 .bbcc-faq-item-body ul { padding-left: 20px; margin-bottom: 12px; }
@@ -622,6 +652,22 @@ body.bbcc-no-scroll { overflow: hidden; }
 .bbcc-clublife-body p:last-child { margin-bottom: 24px; }
 .bbcc-clublife-photo-hidden { display: none; }
 
+/* info block — a titled run of facts under the intro copy: opening hours,
+   capacity, pool specifications. A section shows as many as it has. */
+.bbcc-detail-title {
+  font-family: "Mona Sans", sans-serif;
+  font-size: 22px; font-weight: 500; color: var(--bbcc-ink-soft);
+  margin: 24px 0 14px;
+}
+.bbcc-detail-body p { font-size: 15px; line-height: 1.65; color: var(--bbcc-ink-soft); margin-bottom: 14px; }
+.bbcc-detail-body p:last-child { margin-bottom: 24px; }
+
+/* middle banner — a container-width photo break between the intro and pricing */
+.bbcc-midbanner-image {
+  display: block; width: 100%; height: 460px;
+  background-size: cover; background-position: center;
+}
+
 /* category card — photo with the name over it; hovering reveals a dark panel
    holding the name at the top and the description at the bottom.
    Used by the Racquet Sports children and the per-sport facilities grid. */
@@ -697,6 +743,11 @@ body.bbcc-no-scroll { overflow: hidden; }
 .bbcc-service-card-desc { color: var(--bbcc-ink-soft); line-height: 1.6; margin: 0 0 20px; }
 .bbcc-service-card .bbcc-post-meta { margin-bottom: 10px; }
 .bbcc-service-card-body .bbcc-btn { margin-top: auto; }
+
+/* treatment card — a service card carrying a duration/price pair above its CTA */
+.bbcc-treatment-card .bbcc-service-card-desc { margin-bottom: 10px; }
+.bbcc-treatment-meta { display: flex; flex-direction: column; gap: 2px; margin: 0 0 20px; }
+.bbcc-treatment-meta span { font-size: 14px; color: var(--bbcc-ink-soft); line-height: 1.5; }
 .bbcc-btn-block { display: block; width: 100%; text-align: center; }
 
 .bbcc-specialists .text-center { margin-top: 36px; }
@@ -1232,6 +1283,7 @@ button.bbcc-teeslot:focus-visible { outline: 2px solid var(--bbcc-ink); outline-
   .bbcc-hero-search-btn { width: 100%; padding: 16px; }
   .bbcc-tile-lg, .bbcc-tile-sm { height: 220px; }
   .bbcc-fullbanner { height: 260px; }
+  .bbcc-midbanner-image { height: 260px; }
   .bbcc-footer-links { gap: 40px; }
   .bbcc-footer-bottom-inner { justify-content: flex-start; }
   .bbcc-social-grid { grid-template-columns: repeat(2, 1fr); }

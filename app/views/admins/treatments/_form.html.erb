@@ -1,0 +1,43 @@
+<%= simple_form_for @treatment, url: (@treatment.new_record? ? admins_treatments_path : admins_treatment_path(@treatment.id)), method: (@treatment.new_record? ? :post : :put) do |f| %>
+	<div class="row">
+		<div class="col-lg-8">
+			<div class="card">
+				<div class="card-body">
+					<%= f.error_notification %>
+					<fieldset>
+						<%= f.input :image, as: :file, input_html: { class: "mb-3", accept: "image/gif, image/png, image/jpg, image/jpeg, image/webp" } %>
+						<%= f.input :name, as: :string, placeholder: "Massage" %>
+						<%= f.input :short_description, as: :text, input_html: { rows: 3 } %>
+						<%= f.input :duration, as: :string, placeholder: "60 minutes", hint: "Leave blank to hide the Duration line." %>
+						<%= f.input :price, as: :string, placeholder: "Rp 800.000", hint: "Leave blank to hide the Price line." %>
+					</fieldset>
+					<%= f.error :base %>
+					<div class="form-actions">
+						<%= f.button :submit, :class => 'btn btn-secondary' %>
+						<% unless @treatment.new_record? %>
+							<%= link_to "Cancel", admins_treatment_path(@treatment.id), :class => 'btn btn-light' %>
+						<% else %>
+							<%= link_to "Cancel", admins_treatments_path, :class => 'btn btn-light' %>
+						<% end %>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-lg-4">
+			<div class="row">
+				<%= render "admins/shared/error_messages", :target => @treatment, col: 'col-lg-12' %>
+				<div class="col-lg-12">
+					<div class="card">
+						<div class="card-header">
+							<h5 class="card-title mb-0">Settings</h5>
+						</div>
+						<div class="card-body">
+							<%= f.association :facility, hint: "The page this treatment is listed on" %>
+							<%= f.input :position, as: :integer %>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+<% end %>

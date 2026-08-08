@@ -32,6 +32,16 @@
                         <p><%= para %></p>
                     <% end %>
                 </div>
+                <%# free-form info blocks — opening hours, capacity, pool specs, ... %>
+                <% @details.each do |detail| %>
+                    <h2 class="bbcc-detail-title"><%= detail.title %></h2>
+                    <div class="bbcc-detail-body">
+                        <%# a blank line opens a new block, a single newline just breaks the line %>
+                        <% detail.body.to_s.split(/\n{2,}/).each do |para| %>
+                            <p><%= safe_join(para.split("\n").map(&:strip), tag.br) %></p>
+                        <% end %>
+                    </div>
+                <% end %>
                 <% if @section.cta_url.present? %>
                     <%= link_to (@section.cta_label.presence || "Book Now"), @section.cta_url, class: "bbcc-btn" %>
                 <% end %>
@@ -41,25 +51,40 @@
 </section>
 <!-- end club life section -->
 
-<% if @rate_cards.any? %>
+<% if @section.middle_banner.attached? %>
+    <!-- start club life middle banner -->
+    <section class="bbcc-section bbcc-midbanner">
+        <div class="container-lg">
+            <span class="bbcc-midbanner-image" style="background-image:url('<%= url_for(@section.middle_banner) %>');"
+                  role="img" aria-label="<%= @section.name %>"></span>
+        </div>
+    </section>
+    <!-- end club life middle banner -->
+<% end %>
+
+<% if @rate_cards.any? && @section.show_pricing? %>
     <!-- start club life pricing -->
     <section class="bbcc-section bbcc-rate-row bbcc-section-alt">
         <div class="container-lg">
             <div class="bbcc-section-head bbcc-section-head-center">
                 <h2 class="bbcc-section-title">BBCC <%= @section.name %> Pricing</h2>
             </div>
+            <% book_path = @section.sport_id.present? ? search_path(sport_id: @section.sport_id) : (@section.cta_url.presence || get_contact_path) %>
             <div class="row g-4">
                 <% @rate_cards.each do |rate| %>
                     <div class="col-12 col-sm-6 col-lg-3">
                         <article class="bbcc-rate-card">
-                            <i class="fa-solid fa-table-tennis-paddle-ball bbcc-rate-card-icon" aria-hidden="true"></i>
+                            <% if @sport_rates %>
+                                <i class="fa-solid fa-table-tennis-paddle-ball bbcc-rate-card-icon" aria-hidden="true"></i>
+                            <% end %>
                             <h3 class="bbcc-rate-card-title"><%= rate[:name] %></h3>
                             <p class="bbcc-rate-card-meta">
-                                <span>Time: <%= rate[:time] %></span>
-                                <span>Duration: <%= rate[:duration] %></span>
+                                <% if rate[:time].present? %><span>Time: <%= rate[:time] %></span><% end %>
+                                <% if rate[:duration].present? %><span>Duration: <%= rate[:duration] %></span><% end %>
+                                <% if rate[:access].present? %><span>Access: <%= rate[:access] %></span><% end %>
                                 <span>Price: <%= rate[:price] %></span>
                             </p>
-                            <%= link_to "Book Now", search_path(sport_id: @section.sport_id), class: "bbcc-btn bbcc-btn-block" %>
+                            <%= link_to "Book Now", book_path, class: "bbcc-btn bbcc-btn-block" %>
                         </article>
                     </div>
                 <% end %>
@@ -75,10 +100,16 @@
         <div class="container-lg">
             <div class="bbcc-section-head bbcc-section-head-center">
                 <h2 class="bbcc-section-title">BBCC <%= @section.name %> Facilities</h2>
+                <% if @section.facilities_intro.present? %>
+                    <p class="bbcc-lead bbcc-section-sub"><%= @section.facilities_intro %></p>
+                <% end %>
             </div>
+            <%# a trailing row of two runs half-width each, so the mosaic never
+                leaves a third of the row empty %>
+            <% pairs_last = @amenities.size % 3 == 2 %>
             <div class="row g-4">
-                <% @amenities.each do |amenity| %>
-                    <div class="col-12 col-md-6 col-lg-4">
+                <% @amenities.each_with_index do |amenity, index| %>
+                    <div class="col-12 col-md-6 <%= pairs_last && index >= @amenities.size - 2 ? "col-lg-6" : "col-lg-4" %>">
                         <%= render "shared/category_card", facility: amenity %>
                     </div>
                 <% end %>
@@ -135,6 +166,43 @@
         </div>
     </section>
     <!-- end club life children -->
+<% end %>
+
+<% if @treatments.any? %>
+    <!-- start club life treatments -->
+    <section class="bbcc-section bbcc-service-row">
+        <div class="container-lg">
+            <div class="bbcc-section-head bbcc-section-head-center">
+                <h2 class="bbcc-section-title"><%= @section.treatments_title.presence || "Treatment" %></h2>
+            </div>
+            <% book_path = @section.cta_url.presence || get_contact_path %>
+            <div class="row g-4">
+                <% @treatments.each do |treatment| %>
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <article class="bbcc-service-card bbcc-treatment-card">
+                            <span class="bbcc-service-card-image">
+                                <% if treatment.image.attached? %>
+                                    <%= image_tag treatment.image.variant(resize_to_fill: [750, 500]), alt: treatment.name %>
+                                <% else %>
+                                    <span class="bbcc-post-image-ph" style="background-image:url('<%= image_url('images/image-4.png') %>');"></span>
+                                <% end %>
+                            </span>
+                            <div class="bbcc-service-card-body">
+                                <h3 class="bbcc-service-card-title"><%= treatment.name %></h3>
+                                <p class="bbcc-service-card-desc"><%= treatment.short_description %></p>
+                                <p class="bbcc-treatment-meta">
+                                    <% if treatment.duration.present? %><span>Duration: <%= treatment.duration %></span><% end %>
+                                    <% if treatment.price.present? %><span>Price: <%= treatment.price %></span><% end %>
+                                </p>
+                                <%= link_to "Book Now", book_path, class: "bbcc-btn bbcc-btn-block" %>
+                            </div>
+                        </article>
+                    </div>
+                <% end %>
+            </div>
+        </div>
+    </section>
+    <!-- end club life treatments -->
 <% end %>
 
 <% if @group_classes.any? %>

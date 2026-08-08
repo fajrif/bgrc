@@ -35,8 +35,34 @@ coaches = [
 	},
 ]
 
-coaches.each do |attrs|
-	team_member = TeamMember.new(name: attrs[:name], department: "sports", position: attrs[:position])
+# Specialists — the wellness team fronted on the Anti Aging page and on
+# Our Team. Photos reuse the coach portraits until real ones are supplied.
+specialists = [
+	{
+		name: "dr. Putu Ananda Sari", position: 1, photo: "coach-2.png",
+		role_en: "Longevity Physician",
+		bio_en: "Leads our anti-aging consultations, planning programmes around bloodwork, movement and recovery rather than single treatments.",
+		role_id: "Dokter Longevity",
+		bio_id: "Memimpin konsultasi anti-aging kami, merancang program berdasarkan hasil laboratorium, gerak, dan pemulihan, bukan sekadar perawatan tunggal.",
+	},
+	{
+		name: "I Wayan Adi Nugraha", position: 2, photo: "coach-1.png",
+		role_en: "Recovery Therapist",
+		bio_en: "Works with members training through the week, combining deep tissue therapy with contrast bathing and guided stretching.",
+		role_id: "Terapis Pemulihan",
+		bio_id: "Menangani anggota yang berlatih sepanjang minggu, memadukan terapi deep tissue dengan mandi kontras dan peregangan terpandu.",
+	},
+	{
+		name: "I Made Bagus Wirawan", position: 3, photo: "coach-3.png",
+		role_en: "Spa & Skin Specialist",
+		bio_en: "Plans facial and skin renewal courses, and trains the treatment team on every protocol offered at the spa.",
+		role_id: "Spesialis Spa & Kulit",
+		bio_id: "Merancang rangkaian facial dan peremajaan kulit, serta melatih tim perawatan pada setiap protokol yang ditawarkan di spa.",
+	},
+]
+
+def create_team_member!(attrs, department:)
+	team_member = TeamMember.new(name: attrs[:name], department: department, position: attrs[:position])
 	team_member.photo.attach(io: Rails.root.join("vendor/assets/images/coaches/#{attrs[:photo]}").open, filename: attrs[:photo])
 	team_member.role = attrs[:role_en]
 	team_member.bio = attrs[:bio_en]
@@ -44,6 +70,9 @@ coaches.each do |attrs|
 		team_member.role = attrs[:role_id]
 		team_member.bio = attrs[:bio_id]
 	}
-	team_member.save
-	puts "Create team member: #{team_member.name}"
+	team_member.save!
+	puts "Create team member: #{team_member.name} (#{department})"
 end
+
+coaches.each { |attrs| create_team_member!(attrs, department: "sports") }
+specialists.each { |attrs| create_team_member!(attrs, department: "specialists") }

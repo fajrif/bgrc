@@ -1,0 +1,41 @@
+<%= simple_form_for @facility_detail, url: (@facility_detail.new_record? ? admins_facility_details_path : admins_facility_detail_path(@facility_detail.id)), method: (@facility_detail.new_record? ? :post : :put) do |f| %>
+	<div class="row">
+		<div class="col-lg-8">
+			<div class="card">
+				<div class="card-body">
+					<%= f.error_notification %>
+					<fieldset>
+						<%= f.input :title, as: :string, placeholder: "Operating Hours" %>
+						<%= f.input :body, as: :text, input_html: { rows: 8 },
+												hint: "One fact per line. Leave a blank line to start a new paragraph." %>
+					</fieldset>
+					<%= f.error :base %>
+					<div class="form-actions">
+						<%= f.button :submit, :class => 'btn btn-secondary' %>
+						<% unless @facility_detail.new_record? %>
+							<%= link_to "Cancel", admins_facility_detail_path(@facility_detail.id), :class => 'btn btn-light' %>
+						<% else %>
+							<%= link_to "Cancel", admins_facility_details_path, :class => 'btn btn-light' %>
+						<% end %>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-lg-4">
+			<div class="row">
+				<%= render "admins/shared/error_messages", :target => @facility_detail, col: 'col-lg-12' %>
+				<div class="col-lg-12">
+					<div class="card">
+						<div class="card-header">
+							<h5 class="card-title mb-0">Settings</h5>
+						</div>
+						<div class="card-body">
+							<%= f.association :facility, hint: "The page this block is shown on, under the intro copy" %>
+							<%= f.input :position, as: :integer %>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+<% end %>

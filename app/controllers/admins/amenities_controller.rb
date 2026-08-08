@@ -7,8 +7,9 @@ class Admins::AmenitiesController < Admins::BaseController
 		else
 			criteria = Amenity.where("name ->> :key ILIKE :value", key: I18n.locale.to_s, value: "%#{params[:search]}%")
 		end
+		criteria = criteria.where(facility_id: params[:facility_id]) if params[:facility_id].present?
 
-    @amenities = criteria.page(params[:page]).per(10)
+    @amenities = criteria.order(facility_id: :asc, position: :asc).page(params[:page]).per(10)
 
     respond_to do |format|
       format.html

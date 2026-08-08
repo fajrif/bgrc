@@ -1,4 +1,6 @@
 class Sport < ApplicationRecord
+	include OrderedImages
+
 	extend Mobility
   translates :short_description, :description
 

@@ -1,0 +1,22 @@
+<table class="table table-hover">
+	<tr>
+		<td style="width:15%;"><b>ID</b></td>
+		<td><%= @facility_detail.id %></td>
+	</tr>
+	<tr>
+		<td><b>Title</b></td>
+		<td><h5 class="fs-14 mb-0 text-body"><%= @facility_detail.title %></h5></td>
+	</tr>
+	<tr>
+		<td><b>Body</b></td>
+		<td><%= simple_format @facility_detail.body %></td>
+	</tr>
+	<tr>
+		<td><b>Facility</b></td>
+		<td><%= blank_or_not(@facility_detail.facility&.name) %></td>
+	</tr>
+	<tr>
+		<td><b>Position</b></td>
+		<td><%= @facility_detail.position %></td>
+	</tr>
+</table>

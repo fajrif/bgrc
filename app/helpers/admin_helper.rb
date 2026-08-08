@@ -264,6 +264,9 @@ module AdminHelper
 		controller.controller_name == "costs" ||
 		controller.controller_name == "facilities" ||
 		controller.controller_name == "amenities" ||
+		controller.controller_name == "facility_details" ||
+		controller.controller_name == "facility_rates" ||
+		controller.controller_name == "treatments" ||
 		controller.controller_name == "group_classes" ||
 		controller.controller_name == "packages" ||
 		controller.controller_name == "events" ||

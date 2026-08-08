@@ -25,21 +25,50 @@
 		</td>
 	</tr>
 	<% end %>
-	<% if @facility.images.attached? %>
+	<% if @facility.middle_banner.attached? %>
 	<tr>
-		<td><b>Image Gallery</b></td>
+		<td><b>Middle Banner</b></td>
 		<td>
-			<% @facility.images.each do |img| %>
-				<div class="d-flex align-items-center mb-2">
-					<%= image_tag img.variant(resize_to_limit: [100,100]) %>
-					<%= link_to delete_image_admins_facility_path(@facility.id, img.id), :class => "ms-2 btn btn-danger btn-sm", :data => { :confirm => 'Are You sure want to delete this image?' }, :method => :delete do %>
-						<i class="ri-delete-bin-fill"></i>
-					<% end %>
-				</div>
+			<%= image_tag @facility.middle_banner.variant(resize_to_limit: [100,100]) %>
+			<%= link_to delete_middle_banner_admins_facility_path(@facility.id, @facility.middle_banner.id), :class => "ms-2 btn btn-danger btn-sm", :data => { :confirm => 'Are You sure want to delete this banner?' }, :method => :delete do %>
+				<i class="ri-delete-bin-fill"></i>
 			<% end %>
 		</td>
 	</tr>
 	<% end %>
+	<tr>
+		<td><b>Image Gallery</b></td>
+		<td>
+			<% gallery = @facility.ordered_images.to_a %>
+			<% if gallery.any? %>
+				<% gallery.each_with_index do |img, index| %>
+					<div class="d-flex align-items-center mb-2">
+						<%= image_tag img.variant(resize_to_limit: [100,100]) %>
+						<span class="ms-2 text-muted"><%= index + 1 %></span>
+						<%= link_to move_image_up_admins_facility_path(@facility.id, img.id), :class => "ms-2 btn btn-light btn-sm #{'disabled' if index.zero?}", :method => :put, :title => "Move up" do %>
+							<i class="ri-arrow-up-line"></i>
+						<% end %>
+						<%= link_to move_image_down_admins_facility_path(@facility.id, img.id), :class => "ms-1 btn btn-light btn-sm #{'disabled' if index == gallery.size - 1}", :method => :put, :title => "Move down" do %>
+							<i class="ri-arrow-down-line"></i>
+						<% end %>
+						<%= link_to delete_image_admins_facility_path(@facility.id, img.id), :class => "ms-2 btn btn-danger btn-sm", :data => { :confirm => 'Are You sure want to delete this image?' }, :method => :delete do %>
+							<i class="ri-delete-bin-fill"></i>
+						<% end %>
+					</div>
+				<% end %>
+			<% else %>
+				<span class="text-muted">No gallery photos uploaded.</span>
+			<% end %>
+			<% if @facility.gallery_inherited? %>
+				<div class="mt-2 text-muted">
+					<i class="ri-information-line"></i>
+					The public page shows <b><%= @facility.sport.name %></b>'s gallery instead
+					&mdash; a linked sport's photos win over this facility's own.
+					<%= link_to "Edit that gallery", admins_sport_path(@facility.sport_id) %>.
+				</div>
+			<% end %>
+		</td>
+	</tr>
 	<tr>
 		<td><b>Name</b></td>
 		<td><h5 class="fs-14 mb-0 text-body"><%= @facility.name %></h5></td>
@@ -65,6 +94,26 @@
 		<td><%= @facility.position %></td>
 	</tr>
 	<tr>
+		<td><b>Pricing Section</b></td>
+		<td>
+			<% if @facility.show_pricing? %>
+				<span class="badge bg-success">Shown</span>
+			<% else %>
+				<span class="badge bg-secondary">Hidden</span>
+			<% end %>
+		</td>
+	</tr>
+	<tr>
+		<td><b>Specialists Section</b></td>
+		<td>
+			<% if @facility.show_specialists? %>
+				<span class="badge bg-success">Shown</span>
+			<% else %>
+				<span class="badge bg-secondary">Hidden</span>
+			<% end %>
+		</td>
+	</tr>
+	<tr>
 		<td><b>Button</b></td>
 		<td><%= @facility.cta_label.presence || "—" %> <%= "→ #{@facility.cta_url}" if @facility.cta_url.present? %></td>
 	</tr>
@@ -76,4 +125,51 @@
 		<td><b>Description</b></td>
 		<td><%= @facility.description %></td>
 	</tr>
+	<tr>
+		<td><b>Facilities Intro</b></td>
+		<td><%= @facility.facilities_intro.presence || "—" %></td>
+	</tr>
+	<tr>
+		<td><b>Treatments Heading</b></td>
+		<td><%= @facility.treatments_title.presence || "Treatment" %></td>
+	</tr>
 </table>
+
+<% if @facility.treatments.any? %>
+	<h5 class="mt-4 mb-2">Treatments</h5>
+	<table class="table table-hover">
+		<% @facility.treatments.each do |treatment| %>
+			<tr>
+				<td style="width:25%;"><b><%= treatment.name %></b></td>
+				<td><%= [treatment.duration.presence, treatment.price.presence].compact.join(" &middot; ").html_safe %></td>
+				<td style="width:10%;" class="text-end"><%= link_to "Edit", edit_admins_treatment_path(treatment.id), class: "btn btn-light btn-sm" %></td>
+			</tr>
+		<% end %>
+	</table>
+<% end %>
+
+<% if @facility.facility_details.any? %>
+	<h5 class="mt-4 mb-2">Info Blocks</h5>
+	<table class="table table-hover">
+		<% @facility.facility_details.each do |detail| %>
+			<tr>
+				<td style="width:25%;"><b><%= detail.title %></b></td>
+				<td><%= simple_format detail.body %></td>
+				<td style="width:10%;" class="text-end"><%= link_to "Edit", edit_admins_facility_detail_path(detail.id), class: "btn btn-light btn-sm" %></td>
+			</tr>
+		<% end %>
+	</table>
+<% end %>
+
+<% if @facility.facility_rates.any? %>
+	<h5 class="mt-4 mb-2">Pricing</h5>
+	<table class="table table-hover">
+		<% @facility.facility_rates.each do |rate| %>
+			<tr>
+				<td style="width:25%;"><b><%= rate.name %></b></td>
+				<td><%= [rate.time.presence, rate.access.presence, rate.price.presence].compact.join(" &middot; ").html_safe %></td>
+				<td style="width:10%;" class="text-end"><%= link_to "Edit", edit_admins_facility_rate_path(rate.id), class: "btn btn-light btn-sm" %></td>
+			</tr>
+		<% end %>
+	</table>
+<% end %>

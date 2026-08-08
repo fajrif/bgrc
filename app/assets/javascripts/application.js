@@ -38,14 +38,95 @@ jQuery(document).ready(function($){
 	var maxBookingDate = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000);
 	$(".datecourtpicker").flatpickr({"altInput":true, minDate: "today", maxDate: maxBookingDate, "altFormat": "d/m/Y", "enableTime": false, "disableMobile":true, "dateFormat":"d/m/Y"});
 
+	// Sticky header: past the topbar the header folds down to just the navbar.
+	// The trigger is measured once up front, since the topbar collapses to zero
+	// height as soon as the class lands.
+	var stickyHeader = document.querySelector('.bbcc-header');
+	if (stickyHeader) {
+		var stickyTopbar = stickyHeader.querySelector('.bbcc-topbar');
+		var stickyTrigger = stickyTopbar ? stickyTopbar.offsetHeight : 10;
+		var isStuck = false;
+
+		var onHeaderScroll = function () {
+			var shouldStick = window.pageYOffset > stickyTrigger;
+			if (shouldStick === isStuck) return;
+			isStuck = shouldStick;
+			stickyHeader.classList.toggle('bbcc-header-stuck', isStuck);
+		};
+
+		window.addEventListener('scroll', onHeaderScroll, { passive: true });
+		onHeaderScroll();
+	}
+
 	// Accordions (Events, FAQ, ...): opening one <details> closes its siblings
 	// within the same .bbcc-accordion/.bbcc-faq-list group.
+	//
+	// A bare <details> snaps open because its content is display:none while
+	// closed and so has nothing to transition from, so the panel height is
+	// animated by hand and `open` is flipped at the ends of that animation.
+	var ACCORDION_MS = 260;
+	var ACCORDION_EASING = 'cubic-bezier(.4, 0, .2, 1)';
+	var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+	function accordionPanel(details) {
+		return details.querySelector('.bbcc-accordion-body, .bbcc-faq-item-body');
+	}
+
+	function accordionAnimate(panel, from, to, onDone) {
+		if (panel.bbccAnim) panel.bbccAnim.cancel();
+		panel.style.overflow = 'hidden';
+		// fill:forwards holds the last frame, otherwise the panel snaps back to
+		// its natural height for a frame before onfinish applies the real state
+		panel.bbccAnim = panel.animate(
+			{ height: [from + 'px', to + 'px'], opacity: [from ? 1 : 0, to ? 1 : 0] },
+			{ duration: ACCORDION_MS, easing: ACCORDION_EASING, fill: 'forwards' }
+		);
+		panel.bbccAnim.onfinish = function () {
+			var anim = panel.bbccAnim;
+			panel.bbccAnim = null;
+			onDone();
+			panel.style.overflow = '';
+			if (anim) anim.cancel(); // release the fill now the real state is set
+		};
+	}
+
+	function accordionCollapse(details) {
+		var panel = accordionPanel(details);
+		if (!details.open || !panel) return;
+		if (reduceMotion) { details.open = false; return; }
+
+		// the icon belongs to the panel it controls, so it turns back as the
+		// panel closes rather than waiting for `open` to drop at the end
+		details.classList.add('is-closing');
+		accordionAnimate(panel, panel.offsetHeight, 0, function () {
+			details.classList.remove('is-closing');
+			details.open = false;
+		});
+	}
+
+	function accordionExpand(details) {
+		var panel = accordionPanel(details);
+		if (!panel) return;
+		details.classList.remove('is-closing');
+		details.open = true;
+		if (reduceMotion) return;
+
+		accordionAnimate(panel, 0, panel.offsetHeight, function () {});
+	}
+
 	document.querySelectorAll('.bbcc-accordion, .bbcc-faq-list').forEach(function (group) {
 		var items = group.querySelectorAll(':scope > details');
 		items.forEach(function (item) {
-			item.addEventListener('toggle', function () {
-				if (item.open) {
-					items.forEach(function (other) { if (other !== item) other.open = false; });
+			var summary = item.querySelector('summary');
+			if (!summary || !accordionPanel(item)) return;
+
+			summary.addEventListener('click', function (e) {
+				e.preventDefault();
+				if (item.open && !item.classList.contains('is-closing')) {
+					accordionCollapse(item);
+				} else {
+					items.forEach(function (other) { if (other !== item) accordionCollapse(other); });
+					accordionExpand(item);
 				}
 			});
 		});

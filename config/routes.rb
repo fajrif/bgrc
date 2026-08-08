@@ -89,10 +89,16 @@ Rails.application.routes.draw do
 				member do
           delete "delete_attachment_image/:asset_id" => "facilities#delete_attachment_image", :as => :delete_attachment_image
           delete "delete_banner/:asset_id" => "facilities#delete_banner", :as => :delete_banner
+          delete "delete_middle_banner/:asset_id" => "facilities#delete_middle_banner", :as => :delete_middle_banner
           delete "delete_image/:asset_id" => "facilities#delete_image", :as => :delete_image
+          put "move_image_up/:asset_id" => "facilities#move_image_up", :as => :move_image_up
+          put "move_image_down/:asset_id" => "facilities#move_image_down", :as => :move_image_down
         end
       end
       resources :amenities
+      resources :facility_details
+      resources :facility_rates
+      resources :treatments
       resources :restaurants do
         member do
           delete "delete_banner/:asset_id" => "restaurants#delete_banner", :as => :delete_banner
