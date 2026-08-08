@@ -38,14 +38,16 @@ jQuery(document).ready(function($){
 	var maxBookingDate = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000);
 	$(".datecourtpicker").flatpickr({"altInput":true, minDate: "today", maxDate: maxBookingDate, "altFormat": "d/m/Y", "enableTime": false, "disableMobile":true, "dateFormat":"d/m/Y"});
 
-	// Sticky header: past the topbar the header folds down to just the navbar.
-	// The trigger is measured once up front, since the topbar collapses to zero
-	// height as soon as the class lands.
+	// Sticky header: parked at minus the topbar height, so the topbar scrolls
+	// away and only the navbar stays pinned. Measured here rather than hardcoded
+	// because the topbar can wrap to two lines on a narrow screen.
 	var stickyHeader = document.querySelector('.bbcc-header');
 	if (stickyHeader) {
 		var stickyTopbar = stickyHeader.querySelector('.bbcc-topbar');
 		var stickyTrigger = stickyTopbar ? stickyTopbar.offsetHeight : 10;
 		var isStuck = false;
+
+		if (stickyTopbar) stickyHeader.style.top = -stickyTrigger + 'px';
 
 		var onHeaderScroll = function () {
 			var shouldStick = window.pageYOffset > stickyTrigger;

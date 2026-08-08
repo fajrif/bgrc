@@ -96,19 +96,17 @@ body.bbcc-no-scroll { overflow: hidden; }
    full-height intent is preserved by min-height. */
 html, body { height: auto; min-height: 100%; }
 
-/* the header rides along as the page scrolls; once past the topbar it folds
-   down to just the navigation so it keeps as little of the screen as possible */
+/* The header rides along as the page scrolls. Its sticky `top` is set in JS to
+   minus the topbar height, so the topbar simply scrolls out of view and only
+   the navigation stays pinned — no clipping, which a max-height fold would
+   need and which would cut off the account dropdown. */
 .bbcc-header {
   position: sticky; top: 0; z-index: 1000; background: #fff;
   transition: box-shadow .25s ease;
 }
 .bbcc-header-stuck { box-shadow: 0 2px 14px rgba(0, 0, 0, .09); }
 
-.bbcc-topbar {
-  background: var(--bbcc-topbar); color: #fff;
-  overflow: hidden; max-height: 60px; transition: max-height .25s ease;
-}
-.bbcc-header-stuck .bbcc-topbar { max-height: 0; }
+.bbcc-topbar { background: var(--bbcc-topbar); color: #fff; }
 .bbcc-navbar-inner { transition: min-height .25s ease; }
 .bbcc-header-stuck .bbcc-navbar-inner { min-height: 68px; }
 .bbcc-logo img { transition: height .25s ease; }
@@ -1312,4 +1310,17 @@ button.bbcc-teeslot:focus-visible { outline: 2px solid var(--bbcc-ink); outline-
   .bbcc-schedule-control { flex: 1 1 46%; }
   .bbcc-schedule-filters { width: 100%; }
   .bbcc-booking-panel .bbcc-btn { width: 100%; }
+}
+
+/* =====================================================================
+   LEGACY BOOTSTRAP CARDS (booking flow)
+   The booking pages still build on Bootstrap cards. Bring them in line with
+   the rest of the redesign: square corners and one hairline border, no
+   drop shadow. The `.box-shadow`/`.border-0` pairing has been dropped from
+   the markup; this squares off what Bootstrap itself rounds.
+   ===================================================================== */
+.card {
+  --bs-card-border-radius: 0;
+  --bs-card-inner-border-radius: 0;
+  --bs-card-border-color: var(--bbcc-line);
 }
