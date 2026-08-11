@@ -1,0 +1,44 @@
+<%= render "shared/breadcrumb", crumbs: [{ label: "Book", path: book_path }, { label: "Dining" }] %>
+
+<section class="bbcc-section bbcc-hub">
+    <div class="container-lg">
+        <%= render "shared/booking_hub_tabs", active: :dining %>
+
+        <div class="row g-4 g-lg-5">
+            <div class="col-12 col-lg-4">
+                <h2 class="bbcc-hub-heading">Dining</h2>
+                <p class="bbcc-lead">
+                    Tables are reserved with each venue directly. Tell us the restaurant, the date and
+                    your party size, and we will confirm the booking &mdash; or seat you on arrival if
+                    the room is quiet.
+                </p>
+                <%= link_to "Reserve a Table", get_contact_path, class: "bbcc-btn" %>
+                <p class="mt-3 mb-0"><%= link_to "Browse all venues", dining_path %></p>
+            </div>
+
+            <div class="col-12 col-lg-8">
+                <div class="row g-4">
+                    <% @restaurants.each do |restaurant| %>
+                        <div class="col-12 col-md-6">
+                            <article class="bbcc-service-card">
+                                <%= link_to dining_restaurant_path(restaurant), class: "bbcc-service-card-image" do %>
+                                    <% if restaurant.image.attached? %>
+                                        <%= image_tag restaurant.image.variant(resize_to_fill: [750, 500]), alt: restaurant.name %>
+                                    <% else %>
+                                        <span class="bbcc-post-image-ph" style="background-image:url('<%= image_url('images/image-4.png') %>');"></span>
+                                    <% end %>
+                                <% end %>
+                                <div class="bbcc-service-card-body">
+                                    <%= link_to restaurant.name, dining_restaurant_path(restaurant), class: "bbcc-service-card-title" %>
+                                    <p class="bbcc-service-card-desc"><%= restaurant.short_description.to_s.truncate(120) %></p>
+                                </div>
+                            </article>
+                        </div>
+                    <% end %>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<%= render "home/blogs" %>

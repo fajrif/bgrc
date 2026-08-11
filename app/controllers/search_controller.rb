@@ -134,16 +134,25 @@ class SearchController < ApplicationController
   private
 
   def set_parameter
-    if params[:sport_id].blank?
+    # /book/racquet-sports is a sitemap URL in its own right, so arriving with no
+    # sport picked opens the first racquet sport that actually has courts rather
+    # than bouncing back to the homepage.
+    @sport = params[:sport_id].present? ? Sport.find(params[:sport_id]) : default_racquet_sport
+    if @sport.nil?
       redirect_to root_path, flash: { warning: "Please select a sport to search." } and return
     end
-    @sport = Sport.find(params[:sport_id])
     # the homepage hero offers every sport, but golf has no courts to put on the
     # week grid — send it to the tee-time page instead of an empty schedule
     if @sport.golf? && @sport.courts.empty?
       redirect_to golf_path and return
     end
     @pax = params[:pax].presence || 4
+  end
+
+  # Golf is booked by tee time, not on the week grid, so it is never the default.
+  def default_racquet_sport
+    sports = Sport.includes(:courts).order(:id)
+    sports.find { |sport| !sport.golf? && sport.courts.any? } || sports.first
   end
 
 end

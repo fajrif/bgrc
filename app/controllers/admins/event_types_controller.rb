@@ -3,9 +3,9 @@ class Admins::EventTypesController < Admins::BaseController
 
   def index
 		if params[:search].blank?
-			criteria = EventType.all
+			criteria = EventType.ordered
 		else
-			criteria = EventType.where("name ->> :key ILIKE :value", key: I18n.locale.to_s, value: "%#{params[:search]}%")
+			criteria = EventType.ordered.where("name ->> :key ILIKE :value", key: I18n.locale.to_s, value: "%#{params[:search]}%")
 		end
 
     @event_types = criteria.page(params[:page]).per(10)
@@ -49,10 +49,37 @@ class Admins::EventTypesController < Admins::BaseController
     redirect_to admins_event_types_url, :notice => "Successfully destroyed event type."
   end
 
+	def delete_banner
+		if ActiveStorage::Attachment.find_by(id: params[:asset_id])
+			flash[:notice] = "Successfully delete banner."
+			@event_type.banner.purge
+		end
+		redirect_to admins_event_type_path(@event_type.id)
+	end
+
+	def delete_image
+		if (image = ActiveStorage::Attachment.find_by(id: params[:asset_id]))
+			flash[:notice] = "Successfully delete image gallery."
+			image.purge
+		end
+		redirect_to admins_event_type_path(@event_type.id)
+	end
+
+	def move_image_up
+		@event_type.move_image!(params[:asset_id], -1)
+		redirect_to admins_event_type_path(@event_type.id)
+	end
+
+	def move_image_down
+		@event_type.move_image!(params[:asset_id], 1)
+		redirect_to admins_event_type_path(@event_type.id)
+	end
+
   private
 
   def params_event_type
-    params.require(:event_type).permit(:name, :short_description, :image, :position)
+    params.require(:event_type).permit(:name, :short_description, :description,
+																			 :image, :banner, :position, images: [])
   end
 
   def set_event_type

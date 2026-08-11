@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_08_08_000007) do
+ActiveRecord::Schema[7.1].define(version: 2026_08_11_000001) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -256,6 +256,9 @@ ActiveRecord::Schema[7.1].define(version: 2026_08_08_000007) do
     t.integer "position", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.jsonb "slug", default: {}
+    t.jsonb "description", default: {}
+    t.index ["slug"], name: "index_event_types_on_slug", unique: true
   end
 
   create_table "events", force: :cascade do |t|

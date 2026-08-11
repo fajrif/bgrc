@@ -7,7 +7,7 @@ class FacilitiesController < ApplicationController
 
   def show
 		@facility = Facility.friendly.find(params[:id])
-		return redirect_to club_life_section_path(@facility), status: :moved_permanently if @facility.in_club_life?
+		return redirect_to helpers.club_life_page_path(@facility), status: :moved_permanently if @facility.in_club_life?
 
 		@meta_title = @facility.name
 		@meta_desc = @facility.short_description

@@ -1,5 +1,13 @@
 module ApplicationHelper
 
+	# The one place that knows where a Club Life page lives. Sections sit at
+	# /club-life/<slug>, their children one level down under the parent, so
+	# every link goes through here rather than picking a route helper by hand.
+	def club_life_page_path(facility)
+		return club_life_section_path(facility) if facility.parent_id.blank?
+		club_life_child_path(facility.parent, facility)
+	end
+
 	def is_mobile_request?
 		request.user_agent =~ /Mobile|webOS/
 	end

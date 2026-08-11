@@ -9,7 +9,7 @@
             <% lead, *rest = @sections.to_a %>
             <div class="row g-3 g-lg-4">
                 <div class="col-12">
-                    <%= link_to club_life_section_path(lead), class: "bbcc-tile bbcc-tile-wide",
+                    <%= link_to club_life_page_path(lead), class: "bbcc-tile bbcc-tile-wide",
                                 style: ("background-image:url('#{url_for(lead.image)}');" if lead.image.attached?) do %>
                         <span class="bbcc-tile-shade"></span>
                         <span class="bbcc-tile-body">
@@ -20,7 +20,7 @@
                 </div>
                 <% rest.each do |section| %>
                     <div class="col-12 col-md-6">
-                        <%= link_to club_life_section_path(section), class: "bbcc-tile bbcc-tile-lg",
+                        <%= link_to club_life_page_path(section), class: "bbcc-tile bbcc-tile-lg",
                                     style: ("background-image:url('#{url_for(section.image)}');" if section.image.attached?) do %>
                             <span class="bbcc-tile-shade"></span>
                             <span class="bbcc-tile-body">

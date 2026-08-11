@@ -3,6 +3,10 @@
 		<td style="width:15%;"><b>ID</b></td>
 		<td><%= @event_type.id %></td>
 	</tr>
+	<tr>
+		<td><b>Public Page</b></td>
+		<td><%= link_to event_type_path(@event_type), event_type_path(@event_type) %></td>
+	</tr>
 	<% if @event_type.image.attached? %>
 	<tr>
 		<td><b>Image</b></td>
@@ -11,6 +15,42 @@
 		</td>
 	</tr>
 	<% end %>
+	<% if @event_type.banner.attached? %>
+	<tr>
+		<td><b>Banner</b></td>
+		<td>
+			<%= image_tag @event_type.banner.variant(resize_to_limit: [100,100]) %>
+			<%= link_to delete_banner_admins_event_type_path(@event_type.id, @event_type.banner.id), :class => "ms-2 btn btn-danger btn-sm", :data => { :confirm => 'Are You sure want to delete this banner?' }, :method => :delete do %>
+				<i class="ri-delete-bin-fill"></i>
+			<% end %>
+		</td>
+	</tr>
+	<% end %>
+	<tr>
+		<td><b>Image Gallery</b></td>
+		<td>
+			<% gallery = @event_type.ordered_images.to_a %>
+			<% if gallery.any? %>
+				<% gallery.each_with_index do |img, index| %>
+					<div class="d-flex align-items-center mb-2">
+						<%= image_tag img.variant(resize_to_limit: [100,100]) %>
+						<span class="ms-2 text-muted"><%= index + 1 %></span>
+						<%= link_to move_image_up_admins_event_type_path(@event_type.id, img.id), :class => "ms-2 btn btn-light btn-sm #{'disabled' if index.zero?}", :method => :put, :title => "Move up" do %>
+							<i class="ri-arrow-up-line"></i>
+						<% end %>
+						<%= link_to move_image_down_admins_event_type_path(@event_type.id, img.id), :class => "ms-1 btn btn-light btn-sm #{'disabled' if index == gallery.size - 1}", :method => :put, :title => "Move down" do %>
+							<i class="ri-arrow-down-line"></i>
+						<% end %>
+						<%= link_to delete_image_admins_event_type_path(@event_type.id, img.id), :class => "ms-2 btn btn-danger btn-sm", :data => { :confirm => 'Are You sure want to delete this image?' }, :method => :delete do %>
+							<i class="ri-delete-bin-fill"></i>
+						<% end %>
+					</div>
+				<% end %>
+			<% else %>
+				<span class="text-muted">No gallery photos uploaded.</span>
+			<% end %>
+		</td>
+	</tr>
 	<tr>
 		<td><b>Name</b></td>
 		<td><h5 class="fs-14 mb-0 text-body"><%= @event_type.name %></h5></td>
@@ -18,6 +58,10 @@
 	<tr>
 		<td><b>Short Description</b></td>
 		<td><%= @event_type.short_description %></td>
+	</tr>
+	<tr>
+		<td><b>Description</b></td>
+		<td><%= simple_format @event_type.description %></td>
 	</tr>
 	<tr>
 		<td><b>Position</b></td>

@@ -16,16 +16,6 @@
                     <% end %>
                 </div>
             <% end %>
-            <div class="col-12 col-md-4">
-                <a href="<%= root_path %>#grab-go" class="bbcc-tile bbcc-tile-sm"
-                   style="background-image:url('<%= image_url('grab_go.png') %>');">
-                    <span class="bbcc-tile-shade"></span>
-                    <span class="bbcc-tile-body">
-                        <span class="bbcc-tile-label">Grab &amp; Go</span>
-                        <span class="bbcc-tile-desc">Fresh, chef-prepared meals and cold-pressed juices between sets or after a round.</span>
-                    </span>
-                </a>
-            </div>
         </div>
     </div>
 </section>
@@ -40,8 +30,8 @@
             </div>
             <div class="col-12 col-lg-8">
                 <p class="bbcc-lead">
-                    Five distinct venues, one destination. From casual bites to fine dining, every
-                    table at Bali Beach Country Club tells its own story.
+                    <%= pluralize(@restaurants.size, "distinct venue") %>, one destination. From casual
+                    bites to fine dining, every table at Bali Beach Country Club tells its own story.
                 </p>
                 <p>
                     Whichever venue you choose, our team is ready to seat you — for a quiet dinner,

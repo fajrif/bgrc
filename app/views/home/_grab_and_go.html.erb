@@ -15,7 +15,8 @@
                     Order ahead and pick up on your way to the court, or have it waiting after your game.
                     Quality ingredients, quick service, no compromise.
                 </p>
-                <a href="<%= dining_path %>" class="bbcc-btn">Order Now</a>
+                <% grab_and_go = Restaurant.find_by("name @> ?", { en: "Grab & Go" }.to_json) %>
+                <a href="<%= grab_and_go ? dining_restaurant_path(grab_and_go) : dining_path %>" class="bbcc-btn">Order Now</a>
             </div>
         </div>
     </div>

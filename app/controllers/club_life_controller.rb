@@ -1,5 +1,11 @@
 class ClubLifeController < ApplicationController
+  include LocalizedLookup
+
   before_action :set_banner
+
+  # Two Golf children were given shorter slugs when Club Life sections moved
+  # under their parent (/club-life/golf/course). Their old URLs still resolve.
+  RENAMED_SLUGS = { "golf-course" => "course", "golf-lessons-academy" => "lessons" }.freeze
 
   def index
     # get public club life — the five top-level sections, in display order
@@ -8,7 +14,8 @@ class ClubLifeController < ApplicationController
   end
 
   def show
-    @section = Facility.friendly.find(params[:id])
+    @section = resolve_section
+    return if performed?
     raise ActiveRecord::RecordNotFound unless @section.in_club_life?
 
     @root      = @section.club_life_root
@@ -40,6 +47,31 @@ class ClubLifeController < ApplicationController
   end
 
   private
+
+  # A page is addressed as /club-life/<section> or /club-life/<section>/<child>.
+  # Anything that reaches the right record by another address — a child at its
+  # pre-nesting flat URL, a renamed slug, or the other locale's slug — is sent
+  # on to the canonical one, so each page answers at exactly one address.
+  def resolve_section
+    section = find_facility(params[:section])
+    raise ActiveRecord::RecordNotFound if section.nil?
+
+    if params[:id].present?
+      child = find_facility(params[:id])
+      raise ActiveRecord::RecordNotFound unless child && child.parent_id == section.id
+      target = child
+    else
+      target = section
+    end
+
+    canonical = helpers.club_life_page_path(target)
+    return redirect_to canonical, status: :moved_permanently if request.path != canonical
+    target
+  end
+
+  def find_facility(slug)
+    find_by_localized_slug(Facility, RENAMED_SLUGS.fetch(slug, slug))
+  end
 
   def set_banner
     @banner = BannerSection.where(name: "Club Life").first&.banners&.first

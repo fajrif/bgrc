@@ -9,12 +9,21 @@ def club_life_find(en_name)
 	Facility.find_by("name @> ?", { en: en_name }.to_json)
 end
 
+# Writes a slug for the locale currently in effect. It has to be a save of its
+# own: friendly_id regenerates the slug from the name whenever the name changed,
+# so an explicit slug assigned in that same save would be overwritten.
+def club_life_slug!(record, slug)
+	return if slug.blank? || record.slug == slug
+	record.slug = slug
+	record.save!
+end
+
 # Upserts one node of the tree. `rename_from` lets an existing facility be adopted
 # under its Club Life name instead of creating a near-duplicate record.
 # `replace_image:` purges whatever image is already attached first — normally
 # an admin edit should win over the seed, but a few root sections still carry
 # a placeholder photo that a real one needs to replace outright.
-def club_life_node!(en_name, attrs: {}, id: {}, image: nil, gallery: [], rename_from: nil, replace_image: false)
+def club_life_node!(en_name, attrs: {}, id: {}, image: nil, gallery: [], rename_from: nil, replace_image: false, slug: nil)
 	old_record = rename_from ? club_life_find(rename_from) : nil
 	record     = club_life_find(en_name)
 
@@ -41,6 +50,7 @@ def club_life_node!(en_name, attrs: {}, id: {}, image: nil, gallery: [], rename_
 		end
 	end
 	record.save!
+	club_life_slug!(record, slug)
 
 	Mobility.with_locale(:id) do
 		record.name = id[:name] if id[:name].present?
@@ -48,6 +58,9 @@ def club_life_node!(en_name, attrs: {}, id: {}, image: nil, gallery: [], rename_
 		record.description = id[:description] if id[:description].present?
 		record.cta_label = id[:cta_label] if id[:cta_label].present?
 		record.save!
+		# Slugs are per-locale, and a few nodes never got an Indonesian one — which
+		# drops /id/club-life back to the numeric id. Fall back to the name.
+		club_life_slug!(record, id[:slug].presence || record.slug.presence || (id[:name].presence || en_name).parameterize)
 	end
 
 	if gallery.any? && !record.images.attached?
@@ -70,7 +83,7 @@ golf = club_life_node!(
 	"Golf",
 	attrs: {
 		club_life: true, position: 1, parent_id: nil, sport_id: golf_sport&.id,
-		cta_label: "Book Tee Time", cta_url: "/golf",
+		cta_label: "Book Tee Time", cta_url: "/book/golf",
 		short_description: "A coastal course at Tuban playable as nine or eighteen holes, with tee times released daily and green fees set per player.",
 		description: "Our course runs along the coast at Tuban and can be played as a nine or an eighteen hole round. Tee times are released on a rolling daily basis and spaced at ten minute intervals, with a maximum of four players per group, so the course never feels crowded.\n\nGreen fees are charged per player and vary between weekdays and weekends. Golf carts, buggies, caddies and club rental can all be added to your booking when you reserve your tee time, so you can arrive with nothing but your shoes."
 	},
@@ -87,16 +100,18 @@ club_life_node!(
 	"Golf Course",
 	attrs: {
 		club_life: false, parent_id: golf.id, position: 1, sport_id: golf_sport&.id,
-		cta_label: "Book Tee Time", cta_url: "/golf",
+		cta_label: "Book Tee Time", cta_url: "/book/golf",
 		short_description: "Nine or eighteen holes, ten minute tee intervals, up to four players per group.",
 		description: "Book a tee time online and choose your round length at checkout. Carts, buggies, caddies and club rental are available as add-ons, and green fees are shown per player before you confirm."
 	},
 	id: {
 		name: "Lapangan Golf",
+		slug: "course",
 		short_description: "Sembilan atau delapan belas hole, interval tee sepuluh menit, hingga empat pemain per grup.",
 		description: "Pesan tee time secara online dan pilih panjang permainan saat checkout. Cart, buggy, caddie, dan penyewaan stik tersedia sebagai tambahan, dan green fee ditampilkan per pemain sebelum Anda mengonfirmasi.",
 		cta_label: "Pesan Tee Time"
-	}
+	},
+	slug: "course" # the parent already says Golf: /club-life/golf/course
 )
 
 club_life_node!(
@@ -115,7 +130,8 @@ club_life_node!(
 	},
 	image: "sports/golf/gallery-3.png", # placeholder — replace with an academy photo via admin
 	gallery: ["sports/golf/gallery-3.png", "sports/golf/gallery-1.png", "sports/golf/gallery-4.png",
-						"sports/golf/gallery-6.png", "sports/golf/gallery-2.png", "sports/golf/gallery-5.png"]
+						"sports/golf/gallery-6.png", "sports/golf/gallery-2.png", "sports/golf/gallery-5.png"],
+	slug: "lessons" # /club-life/golf/lessons
 )
 
 club_life_node!(
@@ -162,7 +178,7 @@ tennis = club_life_node!(
 	rename_from: "Tennis Court",
 	attrs: {
 		club_life: false, parent_id: racquet.id, position: 1, sport_id: tennis_sport&.id,
-		cta_label: "Book a Court", cta_url: "/search?sport_id=#{tennis_sport&.id}",
+		cta_label: "Book a Court", cta_url: "/book/racquet-sports?sport_id=#{tennis_sport&.id}",
 		short_description: "Private lessons, adult and junior group classes, and weekly social classes.",
 		description: "Tennis is the busiest of our racquet programmes. Alongside hourly court bookings we run private and semi-private lessons, adult and child group classes, and two weekly social classes for members who would rather just turn up and play."
 	},
@@ -179,7 +195,7 @@ padel = club_life_node!(
 	rename_from: "Padel Court",
 	attrs: {
 		club_life: false, parent_id: racquet.id, position: 2, sport_id: padel_sport&.id,
-		cta_label: "Book a Court", cta_url: "/search?sport_id=#{padel_sport&.id}",
+		cta_label: "Book a Court", cta_url: "/book/racquet-sports?sport_id=#{padel_sport&.id}",
 		short_description: "Enclosed courts, quick to learn, and a weekly ladies' night.",
 		description: "Padel is the fastest game to pick up of the three — the walls keep the ball in play and rallies last longer, which makes it forgiving for newcomers. Private sessions are available, and our ladies' night runs every Friday afternoon."
 	},
@@ -196,7 +212,7 @@ pickleball = club_life_node!(
 	rename_from: "Pickleball Court",
 	attrs: {
 		club_life: false, parent_id: racquet.id, position: 3, sport_id: pickleball_sport&.id,
-		cta_label: "Book a Court", cta_url: "/search?sport_id=#{pickleball_sport&.id}",
+		cta_label: "Book a Court", cta_url: "/book/racquet-sports?sport_id=#{pickleball_sport&.id}",
 		short_description: "Short court, light paddle, and the easiest way into racquet sports.",
 		description: "Pickleball uses a smaller court and a solid paddle, so points are quick and the learning curve is short. It has become the club's most sociable racquet sport, and courts can be booked by the hour like any other."
 	},

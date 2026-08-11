@@ -77,9 +77,9 @@
 		<td><b>Club Life</b></td>
 		<td>
 			<% if @facility.club_life? %>
-				<span class="badge bg-success">Section</span> &mdash; <%= link_to club_life_section_path(@facility), club_life_section_path(@facility) %>
+				<span class="badge bg-success">Section</span> &mdash; <%= link_to club_life_page_path(@facility), club_life_page_path(@facility) %>
 			<% elsif @facility.parent.present? %>
-				<span class="badge bg-info"><%= @facility.parent.name %></span> &mdash; <%= link_to club_life_section_path(@facility), club_life_section_path(@facility) %>
+				<span class="badge bg-info"><%= @facility.parent.name %></span> &mdash; <%= link_to club_life_page_path(@facility), club_life_page_path(@facility) %>
 			<% else %>
 				<span class="text-muted">Not in the Club Life menu</span>
 			<% end %>

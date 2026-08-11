@@ -1,6 +1,6 @@
 <%
   crumbs = [{ label: "Club Life", path: club_life_path }]
-  crumbs << { label: @root.name, path: club_life_section_path(@root) } if @root && @root != @section
+  crumbs << { label: @root.name, path: club_life_page_path(@root) } if @root && @root != @section
   crumbs << { label: @section.name }
   gallery_initial = 6
 %>
@@ -127,7 +127,7 @@
                 <% @children.each do |child| %>
                     <div class="col-12 col-md-6 col-lg-4">
                         <%= render "shared/category_card", facility: child,
-                                    path: (club_life_section_path(child) if child.in_club_life?) %>
+                                    path: (club_life_page_path(child) if child.in_club_life?) %>
                     </div>
                 <% end %>
             </div>
@@ -145,7 +145,7 @@
                 <% @children.each do |child| %>
                     <div class="col-12 col-md-6 col-lg-4">
                         <article class="bbcc-service-card">
-                            <%= link_to club_life_section_path(child), class: "bbcc-service-card-image" do %>
+                            <%= link_to club_life_page_path(child), class: "bbcc-service-card-image" do %>
                                 <% if child.image.attached? %>
                                     <%= image_tag child.image.variant(resize_to_fill: [750, 500]), alt: child.name %>
                                 <% else %>
@@ -153,10 +153,10 @@
                                 <% end %>
                             <% end %>
                             <div class="bbcc-service-card-body">
-                                <%= link_to child.name, club_life_section_path(child), class: "bbcc-service-card-title" %>
+                                <%= link_to child.name, club_life_page_path(child), class: "bbcc-service-card-title" %>
                                 <p class="bbcc-service-card-desc"><%= child.short_description.to_s.truncate(140) %></p>
                                 <%= link_to (child.cta_label.presence || "Explore"),
-                                            (child.cta_url.presence || club_life_section_path(child)),
+                                            (child.cta_url.presence || club_life_page_path(child)),
                                             class: "bbcc-btn bbcc-btn-block" %>
                             </div>
                         </article>

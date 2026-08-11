@@ -5,12 +5,28 @@ Rails.application.routes.draw do
   # Can be used by load balancers and uptime monitors to verify that the app is live.
   #get "up" => "rails/health#show", as: :rails_health_check
 
+  # 301 a retired URL to its replacement. Rails' own `redirect("/x")` would drop
+  # both the "(:locale)" prefix every public route carries and the query string
+  # (which /search relies on), so the target is rebuilt from the request.
+  moved_to = ->(path) {
+    redirect { |params, request|
+      target = params[:locale].present? ? "/#{params[:locale]}#{path}" : path
+      request.query_string.present? ? "#{target}?#{request.query_string}" : target
+    }
+  }
+
   devise_for :user, :controllers => { :sessions => "users/sessions", :registrations => "users/registrations", :omniauth_callbacks => "users/omniauth_callbacks" }
   devise_scope :user do
     get 'users/sign_up_by_provider' => 'users/registrations#new_by_provider', :as => :new_user_registration_by_provider
     post 'users/sign_up_by_provider' => 'users/registrations#create_by_provider', :as => :user_registration_by_provider
   end
   devise_for :admins, :controllers => { :sessions => "admins/sessions" }
+
+  # Friendly aliases for the two Devise pages the public site links to.
+  devise_scope :user do
+    get 'login',    to: 'users/sessions#new',      as: :login
+    get 'register', to: 'users/registrations#new', as: :register
+  end
 
 	scope "(:locale)", locale: /id/ do
 		namespace :admins do
@@ -73,7 +89,14 @@ Rails.application.routes.draw do
         collection { get :check_overlaps }
       end
       resources :event_rsvps, only: [:index, :show, :destroy]
-      resources :event_types
+      resources :event_types do
+        member do
+          delete "delete_banner/:asset_id" => "event_types#delete_banner", :as => :delete_banner
+          delete "delete_image/:asset_id"  => "event_types#delete_image",  :as => :delete_image
+          put    "move_image_up/:asset_id"   => "event_types#move_image_up",   :as => :move_image_up
+          put    "move_image_down/:asset_id" => "event_types#move_image_down", :as => :move_image_down
+        end
+      end
       resources :purchases, :only => [:index, :show, :destroy] do
         member do
           put "settlement" => "purchases#settlement", :as => :settlement
@@ -156,8 +179,11 @@ Rails.application.routes.draw do
       end
 		end
 
-    namespace :users do
-      resource :account, :only => [:show, :update] do
+    # The member area is addressed as /account/*, but the controllers and the
+    # `users_*` helper names stay put — `path:` moves the URL without touching
+    # the ~40 call sites that build links into it.
+    namespace :users, path: "account" do
+      resource :account, :only => [:show, :update], :path => "" do
 				member do
           delete "delete_photo/:asset_id" => "accounts#delete_photo", :as => :delete_photo
         end
@@ -181,12 +207,24 @@ Rails.application.routes.draw do
         end
       end
       resources :packages, :except => [:edit, :update, :show]
-      resources :payments, :only => [:index, :show]
-      resources :class_credits, :only => [:index, :destroy], :controller => "class_credits"
+      resources :payments, :only => [:index, :show], :path => "payment"
+      resources :class_credits, :only => [:index, :destroy], :controller => "class_credits", :path => "credits"
       resources :golf_reservations, :only => [:index, :destroy] do
         collection { get :history }
       end
     end
+
+    # The member area used to live under /users/*. Three of its segments were
+    # renamed in the move, so the leading one is rewritten before redirecting.
+    get 'users/*rest', to: redirect { |params, request|
+      rest = params[:rest].to_s
+                          .sub(%r{\Aaccount(/|\z)}, '')
+                          .sub(%r{\Aclass_credits(/|\z)}, 'credits\1')
+                          .sub(%r{\Apayments(/|\z)}, 'payment\1')
+      prefix = params[:locale].present? ? "/#{params[:locale]}" : ""
+      target = "#{prefix}/account#{"/#{rest}" if rest.present?}"
+      request.query_string.present? ? "#{target}?#{request.query_string}" : target
+    }
 
 		# For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 		# i18n Scope for id
@@ -206,9 +244,15 @@ Rails.application.routes.draw do
 		# AJAX login for booking modal
 		post "ajax_login" => "ajax_sessions#create", :as => :ajax_login
 
-    # Golf
-    get  'golf',            to: 'golf#index', as: :golf
-    get  'golf/tee_times',  to: 'golf#tee_times', as: :golf_tee_times
+    # Booking hub. Golf and Racquet Sports keep their existing controllers and
+    # helper names — only the address moved — so the ~40 `golf_path`/`search_path`
+    # call sites across the site did not have to change.
+    get 'book',                to: 'book#index',        as: :book
+    get 'book/golf',           to: 'golf#index',        as: :golf
+    get 'book/golf/tee_times', to: 'golf#tee_times',    as: :golf_tee_times
+    get 'book/fitness',        to: 'book#fitness',      as: :book_fitness
+    get 'book/spa-wellness',   to: 'book#spa_wellness', as: :book_spa_wellness
+    get 'book/dining',         to: 'book#dining',       as: :book_dining
     resources :golf_reservations, only: [:new, :create, :show, :destroy] do
       member do
         patch "add_on/:golf_item_id" => "golf_reservations#add_on", as: :add_on
@@ -223,9 +267,12 @@ Rails.application.routes.draw do
 		resources :packages, :only => [:index, :show]
 		resources :facilities, :only => [:index, :show]
 		resources :wellnesses, :only => [:index, :show]
-		resources :events, :only => [:index, :show] do
+		# /events/:slug is an EventType page (Weddings, Corporate, ...). The nested
+		# RSVP route still belongs to the legacy Event model and is left alone.
+		resources :events, :only => [:index] do
       resources :event_rsvps, :only => [:create], :controller => "event_rsvps"
     end
+    get 'events/:id', to: 'events#show', as: :event_type
     resources :class_credit_purchases, :only => [:create, :show] do
       member do
         get  :initiate_payment
@@ -238,26 +285,48 @@ Rails.application.routes.draw do
 		resources :sports, :only => [:show]
 		resources :highlights, :only => [:index, :show]
 
-    # Club Life
-    get 'club-life',     to: 'club_life#index', as: :club_life
-    get 'club-life/:id', to: 'club_life#show',  as: :club_life_section
+    # Club Life — a section sits under its parent: /club-life/racquet-sports/tennis.
+    # Children addressed at their old flat URL are redirected by the controller,
+    # which is also where the two renamed Golf slugs are kept alive.
+    get 'club-life', to: 'club_life#index', as: :club_life
+    # MITS Academy is an About page; Racquet Sports only signposts it.
+    get 'club-life/racquet-sports/mits-academy', to: moved_to.call('/about/mits-academy')
+    get 'club-life/:section',     to: 'club_life#show', as: :club_life_section
+    get 'club-life/:section/:id', to: 'club_life#show', as: :club_life_child
 
     match 'contact', to: 'inquiries#show', via: :get, as: :get_contact
     match 'contact', to: 'inquiries#create', via: :post, as: :contacts
-    match 'blogs', to: 'articles#index', via: :get, as: :blogs
-    match 'blogs/:id', to: 'articles#show', via: :get, as: :get_blog
+    match 'blog', to: 'articles#index', via: :get, as: :blogs
+    match 'blog/:id', to: 'articles#show', via: :get, as: :get_blog
     match 'about', to: 'home#about', via: :get, as: :about
     match 'disclaimer', to: 'home#disclaimer', via: :get, as: :disclaimer
-    match 'privacy', to: 'home#privacy', via: :get, as: :privacy
-    match 'terms', to: 'home#terms', via: :get, as: :terms
+    match 'privacy-policy', to: 'home#privacy', via: :get, as: :privacy
+    match 'terms-conditions', to: 'home#terms', via: :get, as: :terms
     match 'faq', to: 'home#faq', via: :get, as: :faq
-    match 'gallery', to: 'home#gallery', via: :get, as: :gallery
-    match 'our-team', to: 'home#our_team', via: :get, as: :our_team
-    match 'mits-academy', to: 'home#mits_academy', via: :get, as: :mits_academy
+    # The three About sub-pages keep their helper names; only the address moved.
+    match 'about/gallery', to: 'home#gallery', via: :get, as: :gallery
+    match 'about/team', to: 'home#our_team', via: :get, as: :our_team
+    match 'about/mits-academy', to: 'home#mits_academy', via: :get, as: :mits_academy
     get 'dining',     to: 'restaurants#index', as: :dining
     get 'dining/:id', to: 'restaurants#show',  as: :dining_restaurant
-    match 'search', to: 'search#index', via: :get, as: :search
+    match 'book/racquet-sports', to: 'search#index', via: :get, as: :search
     match 'search_selection', to: 'search#search_selection', via: :get, as: :search_selection
+
+    # Retired addresses. `moved_to` keeps the locale prefix and the query string —
+    # /search is always reached with ?sport_id=&date=, and /blogs, /gallery and
+    # /our-team all carry filter params of their own.
+    get 'golf',         to: moved_to.call('/book/golf')
+    get 'search',       to: moved_to.call('/book/racquet-sports')
+    get 'blogs',        to: moved_to.call('/blog')
+    get 'blogs/:id',    to: redirect { |params, request|
+      prefix = params[:locale].present? ? "/#{params[:locale]}" : ""
+      "#{prefix}/blog/#{params[:id]}"
+    }
+    get 'privacy',      to: moved_to.call('/privacy-policy')
+    get 'terms',        to: moved_to.call('/terms-conditions')
+    get 'gallery',      to: moved_to.call('/about/gallery')
+    get 'our-team',     to: moved_to.call('/about/team')
+    get 'mits-academy', to: moved_to.call('/about/mits-academy')
     match 'courts/:id/calculate_price', to: 'courts#calculate_price', via: :get, as: :calculate_price
 		root :to => "home#index"
   end

@@ -5,7 +5,7 @@
         <% expanded = active == section || active&.parent == section %>
         <div class="bbcc-clublife-nav-group<%= " bbcc-clublife-nav-group-open" if expanded && has_children %>">
             <div class="bbcc-clublife-nav-head">
-                <%= link_to section.name, club_life_section_path(section),
+                <%= link_to section.name, club_life_page_path(section),
                             class: ["bbcc-faq-nav-link", ("active" if active == section)] %>
                 <% if has_children %>
                     <button type="button" class="bbcc-clublife-nav-toggle" aria-expanded="<%= expanded %>"
@@ -18,7 +18,7 @@
             <% if has_children %>
                 <div class="bbcc-clublife-nav-children" id="clublife-children-<%= section.id %>" <%= "hidden" unless expanded %>>
                     <% section.children.each do |child| %>
-                        <%= link_to child.name, club_life_section_path(child),
+                        <%= link_to child.name, club_life_page_path(child),
                                     class: ["bbcc-clublife-nav-child", ("active" if active == child)] %>
                     <% end %>
                 </div>

@@ -1,0 +1,69 @@
+<%
+  crumbs = [{ label: "Book" }]
+  # `section:` supplies the tile photo from the Club Life record where there is
+  # one; `image:` is the asset fallback for a section that has never had a photo.
+  categories = [
+    { label: "Golf",           path: golf_path,              section: @golf,    image: "sports/golf.png",
+      desc: "Reserve a tee time on the coastal course, nine or eighteen holes." },
+    { label: "Racquet Sports", path: search_path,            section: @racquet, image: "sports/tennis.png",
+      desc: "Check court availability for tennis, padel and pickleball." },
+    { label: "Fitness",        path: book_fitness_path,      section: @fitness, image: "fitness.png",
+      desc: "Gym, Gyrotonic, Pilates, Yoga and the Lap Pool." },
+    { label: "Spa & Wellness", path: book_spa_wellness_path, section: @spa,     image: "facilities/recovery-center.png",
+      desc: "Treatments, recovery sessions and anti-aging services." },
+    { label: "Dining",         path: book_dining_path,       section: nil,      image: "resto/the_paddock.png",
+      desc: "Reserve a table at any of our restaurants and bars." }
+  ]
+%>
+<%= render "shared/page_hero", banner: @banner, crumbs: crumbs,
+                               hero_title: "Book",
+                               hero_desc: "Tee times, courts, classes, treatments and tables — everything the club offers, in one place." %>
+
+<!-- start booking categories -->
+<section class="bbcc-section bbcc-features">
+    <div class="container-lg">
+        <div class="row g-3 g-lg-4">
+            <% categories.each do |category| %>
+                <% photo = category[:section]&.card_image %>
+                <div class="col-12 col-md-4">
+                    <%= link_to category[:path], class: "bbcc-tile bbcc-tile-sm",
+                                style: "background-image:url('#{photo.present? ? url_for(photo) : image_url(category[:image])}');" do %>
+                        <span class="bbcc-tile-shade"></span>
+                        <span class="bbcc-tile-body">
+                            <span class="bbcc-tile-label"><%= category[:label] %></span>
+                            <span class="bbcc-tile-desc"><%= category[:desc] %></span>
+                        </span>
+                    <% end %>
+                </div>
+            <% end %>
+        </div>
+    </div>
+</section>
+<!-- end booking categories -->
+
+<!-- start how booking works -->
+<section class="bbcc-section bbcc-intro bbcc-section-alt">
+    <div class="container-lg">
+        <div class="row g-4 g-lg-5">
+            <div class="col-12 col-lg-4">
+                <h2 class="bbcc-section-title">How Booking Works</h2>
+            </div>
+            <div class="col-12 col-lg-8">
+                <p class="bbcc-lead">
+                    Golf and racquet sports are booked online — pick your slot, confirm, and pay in
+                    the same session. Everything else is arranged by our team so we can match a coach,
+                    a therapist or a table to what you actually need.
+                </p>
+                <p>
+                    Online bookings are held for ten minutes while you complete payment, after which
+                    the slot is released for someone else. You can review and manage everything you
+                    have booked from your account at any time.
+                </p>
+                <%= link_to "Contact Us", get_contact_path, class: "bbcc-btn" %>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- end how booking works -->
+
+<%= render "home/blogs" %>

@@ -3,10 +3,41 @@ puts "create restaurants"
 RESTAURANT_IMAGES = Rails.root.join("vendor/assets/images/resto")
 BANNER_IMAGES     = Rails.root.join("vendor/assets/images/restaurant")
 
-def upsert_restaurant!(en_name, id_name:, image:, position:,
+# Venue photos live in resto/, but a venue without one of its own (Grab & Go)
+# falls back to the shared image root rather than shipping a duplicate file.
+def restaurant_image_path(image)
+	in_resto = RESTAURANT_IMAGES.join(image)
+	in_resto.exist? ? in_resto : RESTAURANT_IMAGES.parent.join(image)
+end
+
+# `rename_from:` adopts a venue that is already in the database under an earlier
+# name. The slug follows the name (friendly_id regenerates it on rename), which
+# is how "Portobello" becomes /dining/porto.
+# Writes a slug for the locale in effect. It needs a save of its own, because
+# friendly_id regenerates the slug from the name whenever the name changed and
+# would overwrite an explicit slug assigned in that same save.
+def restaurant_slug!(restaurant, slug)
+	return if slug.blank? || restaurant.slug == slug
+	restaurant.slug = slug
+	restaurant.save!
+end
+
+def upsert_restaurant!(en_name, id_name:, image:, position:, rename_from: nil, slug: nil,
 												en_short:, id_short:, en_banner:, id_banner:,
 												en_desc:, id_desc:, en_desc1:, id_desc1:, en_desc2:, id_desc2:)
-	restaurant = Restaurant.find_by("name @> ?", { en: en_name }.to_json) || Restaurant.new
+	old_record = rename_from ? Restaurant.find_by("name @> ?", { en: rename_from }.to_json) : nil
+	restaurant = Restaurant.find_by("name @> ?", { en: en_name }.to_json)
+
+	if old_record && restaurant && old_record.id != restaurant.id
+		# A database seeded after the rename already holds the new name, so the
+		# pre-rename row is a leftover duplicate. Keep the one already renamed.
+		puts "Restaurant: dropping duplicate #{old_record.name.inspect} (id #{old_record.id})"
+		old_record.destroy
+	elsif old_record
+		restaurant = old_record
+	end
+
+	restaurant ||= Restaurant.new
 	restaurant.name = en_name
 	restaurant.short_description = en_short
 	restaurant.banner_description = en_banner
@@ -17,9 +48,10 @@ def upsert_restaurant!(en_name, id_name:, image:, position:,
 
 	restaurant.banner.attach(io: BANNER_IMAGES.join("banner-1.png").open, filename: "banner-1.png") unless restaurant.banner.attached?
 	restaurant.middle_banner.attach(io: BANNER_IMAGES.join("banner-2.png").open, filename: "banner-2.png") unless restaurant.middle_banner.attached?
-	restaurant.image.attach(io: RESTAURANT_IMAGES.join(image).open, filename: image) unless restaurant.image.attached?
+	restaurant.image.attach(io: restaurant_image_path(image).open, filename: image) unless restaurant.image.attached?
 
 	restaurant.save!
+	restaurant_slug!(restaurant, slug)
 
 	Mobility.with_locale(:id) do
 		restaurant.name = id_name
@@ -29,6 +61,7 @@ def upsert_restaurant!(en_name, id_name:, image:, position:,
 		restaurant.description1 = id_desc1
 		restaurant.description2 = id_desc2
 		restaurant.save!
+		restaurant_slug!(restaurant, slug)
 	end
 
 	puts "Restaurant: #{restaurant.name}"
@@ -70,14 +103,14 @@ the_paddock = upsert_restaurant!(
 	id_desc2: "Nikmati suasana santai tanpa terburu-buru di sini — meja menghadap langsung ke lapangan, pelayanan mengikuti ritme Anda bukan ritme dapur, dan tidak ada yang akan meminta Anda beranjak setelah piring dibereskan. Daftar anggur dan koktail dirancang untuk menemani meja Anda dengan nyaman dari makan siang hingga senja, dengan pilihan yang lebih ringan di siang hari dan yang lebih berkarakter saat cahaya mulai meredup di atas lapangan. Ruangan ini dibuat untuk berlama-lama, bukan sekadar makan."
 )
 
-kazumi = upsert_restaurant!(
-	"Kazumi Azayaka", id_name: "Kazumi Azayaka", image: "kazumi.png", position: 2,
+kasumi = upsert_restaurant!(
+	"Kasumi", id_name: "Kasumi", rename_from: "Kazumi Azayaka", image: "kazumi.png", position: 2,
 	en_short: "Japanese small plates and izakaya-style sharing, best enjoyed as the sun goes down.",
 	id_short: "Hidangan kecil Jepang bergaya izakaya untuk dinikmati bersama, paling nikmat saat senja.",
 	en_banner: "Japanese small plates, sharing plates and cocktails in an izakaya atmosphere.",
 	id_banner: "Hidangan kecil Jepang dan koktail dalam suasana izakaya.",
-	en_desc: "Kazumi Azayaka serves Japanese small plates in the izakaya tradition — built for sharing across the table rather than arriving as one dish per person, with a cocktail list of sake, shochu and classic Japanese highballs designed to match. It's a menu meant to be worked through slowly over the course of an evening, plate by plate, rather than ordered all at once, and the open kitchen means you can watch much of it being cooked right in front of you as the night goes on.",
-	id_desc: "Kazumi Azayaka menyajikan hidangan kecil Jepang bergaya izakaya — dirancang untuk dinikmati bersama di meja, bukan satu hidangan per orang, dengan daftar koktail sake, shochu, dan highball khas Jepang yang serasi. Menu ini dirancang untuk dinikmati perlahan sepanjang malam, sedikit demi sedikit, bukan dipesan sekaligus, dan dapur terbuka memungkinkan Anda menyaksikan sebagian besar proses memasaknya langsung di depan mata.",
+	en_desc: "Kasumi serves Japanese small plates in the izakaya tradition — built for sharing across the table rather than arriving as one dish per person, with a cocktail list of sake, shochu and classic Japanese highballs designed to match. It's a menu meant to be worked through slowly over the course of an evening, plate by plate, rather than ordered all at once, and the open kitchen means you can watch much of it being cooked right in front of you as the night goes on.",
+	id_desc: "Kasumi menyajikan hidangan kecil Jepang bergaya izakaya — dirancang untuk dinikmati bersama di meja, bukan satu hidangan per orang, dengan daftar koktail sake, shochu, dan highball khas Jepang yang serasi. Menu ini dirancang untuk dinikmati perlahan sepanjang malam, sedikit demi sedikit, bukan dipesan sekaligus, dan dapur terbuka memungkinkan Anda menyaksikan sebagian besar proses memasaknya langsung di depan mata.",
 	en_desc1: "The room fills up quickest around sunset, when the terrace lighting comes on, the charcoal grill gets going properly, and the kitchen starts sending out its evening specials — usually whatever came in freshest that day. A quieter lunch service runs through the week for members passing between the courts who want something lighter, and the bar counter stays a good option for anyone eating solo or dropping in without much notice.\n\nReservations are taken for parties of four or more, particularly on weekend evenings when tables turn over quickly, but walk-ins are always welcome at the bar counter any night of the week. Staff are happy to build a tasting sequence for first-timers who aren't sure where to start, working through the menu's smaller plates before moving on to anything more substantial.",
 	id_desc1: "Ruangan paling ramai saat matahari terbenam, ketika lampu teras menyala, panggangan arang mulai bekerja penuh, dan dapur mengeluarkan menu spesial malam — biasanya bahan paling segar hari itu. Layanan makan siang yang lebih tenang tersedia sepanjang minggu bagi anggota yang ingin hidangan lebih ringan, dan meja bar tetap menjadi pilihan baik bagi yang makan sendiri atau datang tanpa rencana.\n\nReservasi diterima untuk kelompok empat orang atau lebih, terutama pada malam akhir pekan saat meja cepat berganti, namun tamu tanpa reservasi selalu disambut di meja bar kapan pun. Staf dengan senang hati menyusun rangkaian pencicipan bagi tamu baru yang belum yakin harus mulai dari mana, dimulai dari hidangan kecil sebelum beralih ke yang lebih besar.",
 	en_desc2: "Expect charcoal-grilled skewers straight off the robata, delicate sashimi cut to order, and a rotating list of sake and shochu cocktails that changes with the season and whatever the bar team is experimenting with that month. Portions are intentionally small, which makes it easy to keep ordering through the evening rather than committing to one dish — the kind of menu built for slow grazing over a long night with friends, not a quick meal between other plans.",
@@ -85,7 +118,7 @@ kazumi = upsert_restaurant!(
 )
 
 pit_lane = upsert_restaurant!(
-	"Pit Lane Sportsbar", id_name: "Pit Lane Sportsbar", image: "pit_lane.png", position: 3,
+	"Pit Lane", id_name: "Pit Lane", rename_from: "Pit Lane Sportsbar", image: "pit_lane.png", position: 3,
 	en_short: "Craft drinks and every big match on screen, steps from the racquet courts.",
 	id_short: "Minuman kreasi dan siaran pertandingan besar, hanya beberapa langkah dari lapangan raket.",
 	en_banner: "Craft beer, cocktails and every big match, right off the racquet courts.",
@@ -112,18 +145,33 @@ mezzaluna = upsert_restaurant!(
 	id_desc2: "Dari pasta buatan tangan hingga hidangan utama yang dipanggang di atas api terbuka, setiap piring di sini dirancang untuk meja yang benar-benar ingin berlama-lama, bukan bergegas melewati setiap hidangan. Daftar anggur mencakup pilihan putih yang ringan untuk malam yang hangat hingga merah Italia yang penuh karakter bagi yang ingin menikmati malam sepenuhnya, dan staf selalu siap merekomendasikan padanan untuk hidangan yang Anda pesan."
 )
 
-portobello = upsert_restaurant!(
-	"Portobello", id_name: "Portobello", image: "portobello.png", position: 5,
+porto = upsert_restaurant!(
+	"Porto", id_name: "Porto", rename_from: "Portobello", image: "portobello.png", position: 5,
 	en_short: "A lively table for sharing plates, wine and late-night conversation.",
 	id_short: "Meja yang hidup untuk hidangan berbagi, anggur, dan obrolan hingga larut malam.",
 	en_banner: "Sharing plates, a deep wine list and the latest kitchen on property.",
 	id_banner: "Hidangan berbagi, daftar anggur yang lengkap, dan dapur terbaru di area klub.",
-	en_desc: "Portobello is the liveliest table at the club — small sharing plates, a genuinely deep wine list, and a room that stays open noticeably later than most of the others on property. It's built for evenings that don't have a fixed end time, where one round of plates turns into another and the conversation just keeps going long after other venues on the grounds have already closed their kitchens for the night and switched off the lights.",
-	id_desc: "Portobello adalah meja paling hidup di klub — hidangan kecil untuk berbagi, daftar anggur yang benar-benar lengkap, dan ruangan yang buka jauh lebih larut dibanding sebagian besar area klub lainnya. Dibangun untuk malam yang tidak punya batas waktu, di mana satu putaran hidangan berlanjut ke putaran berikutnya dan obrolan terus mengalir lama setelah tempat lain di area klub sudah menutup dapurnya dan mematikan lampu.",
+	en_desc: "Porto is the liveliest table at the club — small sharing plates, a genuinely deep wine list, and a room that stays open noticeably later than most of the others on property. It's built for evenings that don't have a fixed end time, where one round of plates turns into another and the conversation just keeps going long after other venues on the grounds have already closed their kitchens for the night and switched off the lights.",
+	id_desc: "Porto adalah meja paling hidup di klub — hidangan kecil untuk berbagi, daftar anggur yang benar-benar lengkap, dan ruangan yang buka jauh lebih larut dibanding sebagian besar area klub lainnya. Dibangun untuk malam yang tidak punya batas waktu, di mana satu putaran hidangan berlanjut ke putaran berikutnya dan obrolan terus mengalir lama setelah tempat lain di area klub sudah menutup dapurnya dan mematikan lampu.",
 	en_desc1: "It works equally well for a casual dinner with a couple of plates and a glass of wine, or a much longer evening with the table constantly refilling as new dishes arrive. The bar carries on serving well after the kitchen has taken its last order, so the night doesn't have to end just because the food service has wound down.\n\nWalk-ins are always taken at the bar, while the dining room itself accepts reservations for groups up to eight people. Larger celebrations can be arranged with advance notice, and the team is happy to build a set sharing menu for bigger tables who would rather not order individually off the main menu.",
 	id_desc1: "Cocok untuk makan malam santai dengan beberapa hidangan dan segelas anggur, atau malam yang jauh lebih panjang dengan meja yang terus terisi ulang seiring hidangan baru datang. Bar tetap melayani jauh setelah dapur menerima pesanan terakhirnya, sehingga malam tidak harus berakhir hanya karena layanan makanan sudah selesai.\n\nTamu tanpa reservasi selalu dilayani di bar, sementara ruang makan menerima reservasi untuk kelompok hingga delapan orang. Perayaan yang lebih besar dapat diatur dengan pemberitahuan lebih awal, dan tim dengan senang hati menyusun menu berbagi khusus bagi meja besar yang tidak ingin memesan satu per satu dari menu utama.",
 	en_desc2: "Small plates keep arriving steadily through the night, designed to be ordered a few at a time and shared generously across the table rather than claimed by one person. Each dish is paired with whatever the sommelier happens to be pouring that particular evening, which changes often enough that regulars rarely get the exact same pairing twice — part of what keeps people coming back to the same table again and again.",
 	id_desc2: "Hidangan kecil terus datang secara teratur sepanjang malam, dirancang untuk dipesan beberapa sekaligus dan dinikmati bersama di meja, bukan diklaim satu orang saja. Setiap hidangan dipadukan dengan anggur pilihan sommelier malam itu, yang cukup sering berganti sehingga pelanggan tetap jarang mendapat padanan yang sama persis dua kali — salah satu alasan mereka selalu ingin kembali lagi ke meja yang sama."
+)
+
+grab_and_go = upsert_restaurant!(
+	# friendly_id drops the ampersand entirely, giving "grab-go"; spell it out.
+	"Grab & Go", id_name: "Grab & Go", image: "grab_go.png", position: 6, slug: "grab-and-go",
+	en_short: "Chef-prepared meals, cold-pressed juices and healthy bites, ready when you are.",
+	id_short: "Hidangan siap saji buatan chef, jus dingin, dan camilan sehat yang siap kapan pun Anda butuhkan.",
+	en_banner: "Fresh, chef-prepared food to take with you — order ahead and collect on your way.",
+	id_banner: "Makanan segar buatan chef untuk dibawa — pesan lebih dulu dan ambil dalam perjalanan Anda.",
+	en_desc: "Grab & Go is the club's counter for the days that don't leave room for a sit-down meal. Fuel up between sets or unwind after a round with fresh, chef-prepared food, cold-pressed juices and healthy bites — all made in the same kitchens as the club's restaurants, just packed to travel. Order ahead and collect on your way to the court, or have it waiting for you once your game is done.",
+	id_desc: "Grab & Go adalah konter klub untuk hari-hari yang tidak menyisakan waktu untuk duduk makan. Isi tenaga di antara set atau bersantai setelah bermain dengan makanan segar buatan chef, jus dingin, dan camilan sehat — semuanya dibuat di dapur yang sama dengan restoran klub, hanya dikemas untuk dibawa. Pesan lebih dulu dan ambil dalam perjalanan menuju lapangan, atau biarkan menunggu Anda setelah permainan selesai.",
+	en_desc1: "The counter runs from early morning through to the end of play, with the selection shifting through the day: pastries, fruit and coffee before the first tee times, salads, wraps and rice bowls over lunch, and protein-led plates for anyone coming off a long session in the afternoon. Everything is prepared fresh each morning rather than held over, so the range narrows as the day goes on.\n\nNo booking is needed — walk up and order, or place an order ahead from the club app and collect it when it suits you. Staff can package anything on the counter for the road, and dietary requirements can be accommodated with a little notice.",
+	id_desc1: "Konter buka dari pagi hingga akhir jam permainan, dengan pilihan yang berganti sepanjang hari: pastry, buah, dan kopi sebelum tee time pertama, salad, wrap, dan rice bowl saat makan siang, serta hidangan kaya protein bagi yang baru menyelesaikan sesi panjang di sore hari. Semuanya disiapkan segar setiap pagi, sehingga pilihan menyempit seiring berjalannya hari.\n\nTidak perlu reservasi — datang dan pesan langsung, atau pesan lebih dulu melalui aplikasi klub dan ambil saat Anda sempat. Staf dapat mengemas apa pun dari konter untuk dibawa, dan kebutuhan diet khusus dapat dipenuhi dengan pemberitahuan sebelumnya.",
+	en_desc2: "Quality ingredients, quick service, no compromise. The point of Grab & Go is that a short turnaround between activities shouldn't mean eating badly — the same kitchens, the same sourcing, just built around a schedule that doesn't allow for a long lunch. Cold-pressed juices and smoothies are made to order, and the coffee is the same as you'll find in the restaurants.",
+	id_desc2: "Bahan berkualitas, layanan cepat, tanpa kompromi. Inti dari Grab & Go adalah bahwa jeda singkat di antara aktivitas tidak berarti Anda harus makan sembarangan — dapur yang sama, bahan yang sama, hanya dirancang untuk jadwal yang tidak menyediakan waktu makan siang panjang. Jus dingin dan smoothie dibuat sesuai pesanan, dan kopinya sama dengan yang tersedia di restoran."
 )
 
 menu_items = [
@@ -141,7 +189,7 @@ menu_items = [
 		id_desc: "Iga babi panggang diiris di atas salad rempah pedas dengan cabai dan jeruk nipis." }
 ]
 
-[the_paddock, kazumi, pit_lane, mezzaluna, portobello].each do |restaurant|
+[the_paddock, kasumi, pit_lane, mezzaluna, porto].each do |restaurant|
 	menu_items.each_with_index do |item, i|
 		upsert_menu!(
 			restaurant, item[:en], id_name: item[:id_name],

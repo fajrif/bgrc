@@ -7,15 +7,15 @@
             <% @event_types.each do |type| %>
                 <div class="col-12 col-md-4">
                     <article class="bbcc-service-card">
-                        <span class="bbcc-service-card-image">
+                        <%= link_to event_type_path(type), class: "bbcc-service-card-image" do %>
                             <% if type.image.attached? %>
                                 <%= image_tag type.image.variant(resize_to_fill: [750, 500]), alt: type.name %>
                             <% else %>
                                 <span class="bbcc-post-image-ph" style="background-image:url('<%= image_url('images/image-4.png') %>');"></span>
                             <% end %>
-                        </span>
+                        <% end %>
                         <div class="bbcc-service-card-body">
-                            <h3 class="bbcc-service-card-title"><%= type.name %></h3>
+                            <%= link_to type.name, event_type_path(type), class: "bbcc-service-card-title" %>
                             <p class="bbcc-service-card-desc"><%= type.short_description %></p>
                         </div>
                     </article>

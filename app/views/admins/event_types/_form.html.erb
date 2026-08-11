@@ -8,6 +8,12 @@
 						<%= f.input :image, as: :file, input_html: { class: "mb-3", accept: "image/gif, image/png, image/jpg, image/jpeg, image/webp" } %>
 						<%= f.input :name, as: :string %>
 						<%= f.input :short_description, as: :text, input_html: { rows: 4 } %>
+						<%= f.input :description, as: :text, input_html: { rows: 10 },
+												hint: "Body copy on this event type's own page. Blank lines start a new paragraph." %>
+						<%= f.input :banner, as: :file, input_html: { class: "mb-3", accept: "image/gif, image/png, image/jpg, image/jpeg, image/webp" },
+												hint: "Page hero. Falls back to the shared Events banner when empty." %>
+						<%= f.input :images, as: :file, input_html: { class: "mb-3", multiple: true, accept: "image/gif, image/png, image/jpg, image/jpeg, image/webp" },
+												label: "Gallery images", hint: "Added to the gallery; existing photos are kept." %>
 					</fieldset>
 					<%= f.error :base %>
 					<div class="form-actions">

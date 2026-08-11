@@ -7,7 +7,7 @@ class SportsController < ApplicationController
 		# Sports added later without a section keep the original page.
 		section = Facility.find_by(sport_id: @sport.id, club_life: true) ||
 							Facility.where(sport_id: @sport.id).where.not(parent_id: nil).first
-		return redirect_to club_life_section_path(section), status: :moved_permanently if section&.in_club_life?
+		return redirect_to helpers.club_life_page_path(section), status: :moved_permanently if section&.in_club_life?
 
 		@banner = BannerSection.where(name: @sport.name).first&.banners&.first
 		@meta_title = @sport.name

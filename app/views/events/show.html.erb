@@ -1,0 +1,111 @@
+<%
+  crumbs = [{ label: "Events", path: events_path }, { label: @event_type.name }]
+  paragraphs = @event_type.description.to_s.split(/\n+/)
+  # Prefer a hero uploaded for this occasion, then its card photo, and only fall
+  # back to the shared Events banner — which is a generic club shot.
+  hero = @event_type.banner.attached? ? @event_type.banner : (@event_type.image if @event_type.image.attached?)
+%>
+<%= render "shared/page_hero", banner: @banner, crumbs: crumbs,
+                               hero_image: (url_for(hero) if hero),
+                               hero_title: @event_type.name,
+                               hero_desc: @event_type.short_description %>
+
+<!-- start event type intro -->
+<section class="bbcc-section bbcc-intro">
+    <div class="container-lg">
+        <div class="row g-4 g-lg-5">
+            <div class="col-12 col-lg-4">
+                <h2 class="bbcc-section-title"><%= @event_type.name %></h2>
+            </div>
+            <div class="col-12 col-lg-8">
+                <%# the hero already carries short_description, so the body starts
+                    straight into the detail copy %>
+                <% paragraphs.each_with_index do |paragraph, index| %>
+                    <p class="<%= "bbcc-lead" if index.zero? %>"><%= paragraph %></p>
+                <% end %>
+                <%= link_to "Enquire Now", get_contact_path, class: "bbcc-btn" %>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- end event type intro -->
+
+<%# only when the card photo is not already doing duty as the hero %>
+<% if @event_type.image.attached? && @event_type.banner.attached? %>
+    <!-- start event type banner -->
+    <div class="bbcc-fullbanner" style="background-image:url('<%= url_for(@event_type.image) %>');" role="img" aria-label="<%= @event_type.name %>"></div>
+    <!-- end event type banner -->
+<% end %>
+
+<% if @gallery.any? %>
+    <!-- start event type gallery -->
+    <section class="bbcc-section bbcc-gallery-page bbcc-section-alt">
+        <div class="container-lg">
+            <div class="bbcc-section-head bbcc-section-head-center">
+                <h2 class="bbcc-section-title">Gallery</h2>
+            </div>
+            <div class="bbcc-masonry">
+                <% @gallery.each do |image| %>
+                    <span class="bbcc-masonry-item">
+                        <%= image_tag image.variant(resize_to_limit: [700, 700]), alt: @event_type.name %>
+                    </span>
+                <% end %>
+            </div>
+        </div>
+    </section>
+    <!-- end event type gallery -->
+<% end %>
+
+<!-- start plan your event now -->
+<section class="bbcc-section bbcc-event-cta">
+    <div class="container-lg">
+        <div class="row g-0 align-items-stretch">
+            <div class="col-12 col-lg-6">
+                <div class="bbcc-event-cta-body">
+                    <h2 class="bbcc-section-title">Plan Your <%= @event_type.name %> Now</h2>
+                    <p>
+                        Tell us your date, your guest count and the occasion, and we'll put together a
+                        proposal covering venue, catering, decor and entertainment tailored to your event.
+                    </p>
+                    <p>
+                        Every enquiry gets a dedicated coordinator who stays with you from the first
+                        conversation through to the day itself, and every venue on property &mdash; from
+                        the beach club to the golf course lawns &mdash; can be booked exclusively.
+                    </p>
+                    <%= link_to "Contact Us", get_contact_path, class: "bbcc-btn" %>
+                </div>
+            </div>
+            <div class="col-12 col-lg-6">
+                <div class="bbcc-article-cta-image" style="background-image:url('<%= image_url('facilities/restaurant.png') %>');"></div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- end plan your event now -->
+
+<% if @others.any? %>
+    <!-- start other event types -->
+    <section class="bbcc-section bbcc-service-row">
+        <div class="container-lg">
+            <div class="bbcc-section-head bbcc-section-head-center">
+                <h2 class="bbcc-section-title">Other Occasions</h2>
+            </div>
+            <div class="row g-4 justify-content-center">
+                <% @others.each do |other| %>
+                    <div class="col-12 col-md-4">
+                        <%= link_to event_type_path(other), class: "bbcc-tile bbcc-tile-sm",
+                                    style: ("background-image:url('#{url_for(other.image)}');" if other.image.attached?) do %>
+                            <span class="bbcc-tile-shade"></span>
+                            <span class="bbcc-tile-body">
+                                <span class="bbcc-tile-label"><%= other.name %></span>
+                            </span>
+                        <% end %>
+                    </div>
+                <% end %>
+            </div>
+        </div>
+    </section>
+    <!-- end other event types -->
+<% end %>
+
+<%= render "home/blogs" %>
