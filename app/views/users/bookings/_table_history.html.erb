@@ -27,9 +27,9 @@
           <td><%= booking.try(:group_class).try(:name_with_pax, booking.pax) || '-' %></td>
           <td>
             <% badge = case booking.status
-                       when Booking::PAID      then ""
+                       when Booking::PAID      then "bbcc-badge-paid"
                        when Booking::EXPIRED   then "bbcc-badge-danger"
-                       when Booking::CANCELLED then "bbcc-badge-muted"
+                       when Booking::CANCELLED then "bbcc-badge-danger"
                        else "bbcc-badge-warn"
                        end %>
             <span class="bbcc-badge <%= badge %>"><%= booking.status_label %></span>

@@ -62,7 +62,13 @@
             <% end %>
           </td>
           <td>
-            <span class="bbcc-badge <%= 'bbcc-badge-warn' if booking.is_unpaid? %>"><%= booking.status_label %></span>
+            <% badge = case booking.status
+                       when Booking::PAID      then "bbcc-badge-paid"
+                       when Booking::EXPIRED   then "bbcc-badge-danger"
+                       when Booking::CANCELLED then "bbcc-badge-danger"
+                       else "bbcc-badge-warn"
+                       end %>
+            <span class="bbcc-badge <%= badge %>"><%= booking.status_label %></span>
           </td>
           <td><%= booking.total_price_label %></td>
         </tr>

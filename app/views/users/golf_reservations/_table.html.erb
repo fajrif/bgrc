@@ -21,7 +21,8 @@
           <td>
             <% badge = if res.is_unpaid?  then "bbcc-badge-warn"
                        elsif res.expired? then "bbcc-badge-danger"
-                       elsif res.cancelled? then "bbcc-badge-muted"
+                       elsif res.cancelled? then "bbcc-badge-danger"
+                       else "bbcc-badge-paid"
                        end %>
             <span class="bbcc-badge <%= badge %>"><%= res.status_label %></span>
           </td>

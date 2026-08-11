@@ -5,7 +5,7 @@
 
 :root {
   --bbcc-ink: #2b2b2b;         /* primary text */
-  --bbcc-ink-soft: #6b6b6b;    /* muted text */
+  --bbcc-ink-soft: #4d4d4d;    /* muted text */
   --bbcc-dark: #3a3a3a;        /* charcoal buttons / bars */
   --bbcc-dark-hover: #232323;
   --bbcc-topbar: #8c8c8c;      /* medium-gray topbar */
@@ -139,6 +139,7 @@ html, body { height: auto; min-height: 100%; }
   display: inline-flex; align-items: center; gap: 12px;
   background: none; border: 0; padding: 0; cursor: pointer;
 }
+.bbcc-menu-toggle-right { display: none; }
 .bbcc-burger { display: inline-flex; flex-direction: column; justify-content: center; gap: 5px; width: 26px; }
 .bbcc-burger span { display: block; height: 2px; width: 100%; background: var(--bbcc-ink); transition: .2s; }
 .bbcc-menu-label { text-transform: uppercase; letter-spacing: 2px; font-size: 14px; color: var(--bbcc-ink); }
@@ -180,12 +181,36 @@ html, body { height: auto; min-height: 100%; }
 .bbcc-offcanvas-nav ul { list-style: none; margin: 0; padding: 0; }
 .bbcc-offcanvas-nav li { margin-bottom: 22px; }
 .bbcc-offcanvas-nav a {
+  display: inline-block; width: fit-content;
   font-family: "Mona Sans", sans-serif;
   text-transform: uppercase; letter-spacing: 2px;
   font-size: 22px; font-weight: 400; color: var(--bbcc-ink);
+  padding-bottom: 2px; border-bottom: 2px solid transparent;
   transition: color .2s;
 }
 .bbcc-offcanvas-nav a:hover { color: var(--bbcc-ink-soft); text-decoration: none; }
+/* current page, at any nesting level: bold + underline, like the Club Life sidebar */
+.bbcc-offcanvas-nav a.active { color: var(--bbcc-ink); font-weight: 600; border-bottom-color: var(--bbcc-ink); }
+
+/* collapsible groups (Book, Club Life, Dining, Events, About Us) */
+.bbcc-offcanvas-group-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.bbcc-offcanvas-toggle { background: none; border: 0; padding: 4px; cursor: pointer; color: var(--bbcc-ink); flex-shrink: 0; }
+.bbcc-offcanvas-toggle i { font-size: 15px; transition: transform .2s; }
+.bbcc-offcanvas-toggle[aria-expanded="true"] i { transform: rotate(180deg); }
+.bbcc-offcanvas-children { display: flex; flex-direction: column; gap: 16px; padding-left: 20px; margin-top: 16px; }
+.bbcc-offcanvas-children[hidden] { display: none; }
+/* qualified under .bbcc-offcanvas-nav so this outweighs the base ".bbcc-offcanvas-nav a"
+   rule above (class+type beats a lone class on specificity) */
+.bbcc-offcanvas-nav .bbcc-offcanvas-child {
+  font-family: "Mona Sans", sans-serif; text-transform: uppercase; letter-spacing: 1.5px;
+  font-size: 18px; font-weight: 400; color: var(--bbcc-ink-soft); transition: color .2s;
+}
+.bbcc-offcanvas-nav .bbcc-offcanvas-child:hover { color: var(--bbcc-ink); text-decoration: none; }
+/* Club Life section groups (e.g. Golf) nest another toggle level under them, so
+   their own children (e.g. Golf Course) step down a size again to keep the
+   1st/2nd/3rd-level hierarchy readable at a glance. */
+.bbcc-offcanvas-children .bbcc-offcanvas-children { padding-left: 16px; margin-top: 12px; gap: 12px; }
+.bbcc-offcanvas-children .bbcc-offcanvas-children .bbcc-offcanvas-child { font-size: 13px; }
 
 .bbcc-offcanvas-auth {
   margin-top: auto; padding-top: 30px;
@@ -798,8 +823,10 @@ html, body { height: auto; min-height: 100%; }
   font-size: 11px; letter-spacing: 1px; text-transform: uppercase; white-space: nowrap;
 }
 .bbcc-badge-muted { background: #9c9c9c; }
-.bbcc-badge-warn { background: #b08326; }
-.bbcc-badge-danger { background: #9d4b43; }
+/* paid = soft green; pending/unpaid/expired/cancelled/failed = soft red */
+.bbcc-badge-paid { background: #dcf3e3; color: #1e7a46; }
+.bbcc-badge-warn { background: #fbe1de; color: #a8382c; }
+.bbcc-badge-danger { background: #fbe1de; color: #a8382c; }
 
 .bbcc-btn-sm { padding: 8px 18px; margin-top: 0; font-size: 11px; }
 .bbcc-btn-ghost { background: transparent; color: var(--bbcc-ink); }
@@ -1276,7 +1303,8 @@ button.bbcc-teeslot:focus-visible { outline: 2px solid var(--bbcc-ink); outline-
   .bbcc-navbar-inner { min-height: 70px; }
   .bbcc-logo img { height: 38px; }
   .bbcc-menu-label { display: none; }
-  .bbcc-book-btn { padding: 11px 18px; font-size: 11px; }
+  .bbcc-book-btn { display: none; }
+  .bbcc-menu-toggle-right { display: inline-flex; }
   .bbcc-hero-field { flex: 1 1 100%; border-right: 0; border-bottom: 1px solid var(--bbcc-line); }
   .bbcc-hero-search-btn { width: 100%; padding: 16px; }
   .bbcc-tile-lg, .bbcc-tile-sm { height: 220px; }
