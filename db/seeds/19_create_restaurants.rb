@@ -195,9 +195,8 @@ grab_and_go = upsert_restaurant!(
 	id_desc2: "Bahan berkualitas, layanan cepat, tanpa kompromi. Inti dari Grab & Go adalah bahwa jeda singkat di antara aktivitas tidak berarti Anda harus makan sembarangan — dapur yang sama, bahan yang sama, hanya dirancang untuk jadwal yang tidak menyediakan waktu makan siang panjang. Jus dingin dan smoothie dibuat sesuai pesanan, dan kopinya sama dengan yang tersedia di restoran."
 )
 
-# Categories are seeded by 24_create_menu_categories.rb. If that hasn't run yet the
-# lookups come back nil and the items are seeded unpriced — re-running this file
-# afterwards fills them in.
+# Categories are seeded by 19_create_menu_categories.rb, which sorts before this
+# file (Dir[...].sort in db/seeds.rb) so the lookups below are always populated.
 CATEGORIES = MenuCategory.all.index_by(&:slug)
 
 # The dish photography in vendor/assets/images/restaurant is a set of four, so the
