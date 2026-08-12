@@ -95,7 +95,7 @@ jQuery(function ($) {
   if (typeof Swiper !== 'undefined') {
     $('.bbcc-swiper').each(function () {
       var el = this;
-      new Swiper(el, {
+      var options = {
         slidesPerView: 1.15,
         spaceBetween: 16,
         grabCursor: true,
@@ -112,7 +112,11 @@ jQuery(function ($) {
           992: { slidesPerView: 3, spaceBetween: 24 },
           1200: { slidesPerView: 4, spaceBetween: 24 }
         }
-      });
+      };
+      if (el.classList.contains('bbcc-testimonials-swiper')) {
+        options.autoplay = { delay: 5000, disableOnInteraction: false, pauseOnMouseEnter: true };
+      }
+      new Swiper(el, options);
     });
   }
 });

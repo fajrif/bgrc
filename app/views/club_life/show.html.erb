@@ -43,7 +43,9 @@
                     </div>
                 <% end %>
                 <% if @section.cta_url.present? %>
-                    <%= link_to (@section.cta_label.presence || "Book Now"), @section.cta_url, class: "bbcc-btn" %>
+                    <% cta_external = @section.cta_url.start_with?("http://", "https://") %>
+                    <%= link_to (@section.cta_label.presence || "Book Now"), @section.cta_url, class: "bbcc-btn",
+                                target: (cta_external ? "_blank" : nil), rel: (cta_external ? "noopener" : nil) %>
                 <% end %>
             </div>
         </div>
@@ -275,7 +277,10 @@
                                 <% end %>
                             </span>
                             <div class="bbcc-team-card-body">
-                                <span class="bbcc-team-card-dept"><%= coach.sport&.name %></span>
+                                <div class="bbcc-team-card-meta">
+                                    <span class="bbcc-team-card-dept"><%= coach.sport&.name %></span>
+                                    <span class="bbcc-badge bbcc-badge-muted"><%= coach.level_label %></span>
+                                </div>
                                 <span class="bbcc-team-card-name"><%= coach.name %></span>
                                 <span class="bbcc-team-card-role"><%= coach.role %></span>
                                 <p class="bbcc-team-card-bio"><%= coach.bio.to_s.truncate(160) %></p>

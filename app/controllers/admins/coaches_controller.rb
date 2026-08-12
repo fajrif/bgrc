@@ -48,7 +48,7 @@ class Admins::CoachesController < Admins::BaseController
   private
 
   def params_coach
-    params.require(:coach).permit(:name, :email, :phone, :gender, :photo, :price, :sport_id, :role, :bio)
+    params.require(:coach).permit(:name, :email, :phone, :gender, :photo, :price, :sport_id, :role, :bio, :level)
   end
 
   def set_coach

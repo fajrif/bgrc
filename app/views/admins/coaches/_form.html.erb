@@ -35,6 +35,7 @@
 						<div class="card-body">
               <%= f.association :sport, include_blank: "— No sport —", hint: "Sets which Club Life page lists this coach" %>
               <%= f.input :gender, as: :select, collection: [['1', 'Male'], ['0', 'Female']], label_method: :second, value_method: :first %>
+              <%= f.input :level, as: :select, collection: Coach::LEVELS.map { |value, label| [label, value] }, label_method: :first, value_method: :last, include_blank: false, hint: "Shown as a badge on the coach's public profile" %>
               <%= f.input :price %>
 						</div>
 					</div>

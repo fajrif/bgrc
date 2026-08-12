@@ -15,7 +15,7 @@
                             <summary><%= event_type.name %><span class="bbcc-accordion-icon"></span></summary>
                             <div class="bbcc-accordion-body">
                                 <p><%= event_type.short_description %></p>
-                                <%= link_to "Enquire now", get_contact_path, class: "bbcc-btn" %>
+                                <%= link_to "Learn More", event_type_path(event_type), class: "bbcc-btn" %>
                             </div>
                         </details>
                     <% end %>

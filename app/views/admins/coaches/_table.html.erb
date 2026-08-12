@@ -5,6 +5,7 @@
 				<th class="text-center">ID</th>
 				<th>Photo</th>
 				<th>Name</th>
+				<th>Level</th>
 				<th>Sport</th>
 				<th>Contact</th>
 				<th>Price</th>
@@ -19,6 +20,10 @@
 					<td>
 						<h5 class="fs-14 mb-1"><%= link_to coach.name, admins_coach_path(coach.id), class: "text-body" %></h5>
 						<p class="text-muted mb-0"><%= coach.role %></p>
+					</td>
+					<td>
+						<% level_color = { Coach::BEGINNER => "success", Coach::INTERMEDIATE => "info", Coach::PRO => "warning" }[coach.level] %>
+						<span class="badge bg-<%= level_color %>-subtle text-<%= level_color %>"><%= coach.level_label %></span>
 					</td>
 					<td><%= blank_or_not(coach.sport&.name) %></td>
 					<td>

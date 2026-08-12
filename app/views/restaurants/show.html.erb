@@ -27,7 +27,7 @@
             <div class="col-12 col-lg-9">
                 <h2 class="bbcc-section-title"><%= @restaurant.name %></h2>
                 <p class="bbcc-lead"><%= @restaurant.description %></p>
-                <%= link_to "Reserve Now", get_contact_path, class: "bbcc-btn" %>
+                <%= link_to @restaurant.slug == "grab-and-go" ? "Order Now" : "Reserve Now", get_contact_path, class: "bbcc-btn" %>
             </div>
         </div>
     </div>
@@ -141,7 +141,7 @@
             </div>
             <div class="col-12 col-lg-8">
                 <p class="bbcc-lead"><%= dine_now_text %></p>
-                <%= link_to "Read More", get_contact_path, class: "bbcc-btn" %>
+                <%= link_to "Reserve Now", get_contact_path, class: "bbcc-btn" %>
             </div>
         </div>
     </div>

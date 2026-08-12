@@ -4,6 +4,12 @@ class Coach < ApplicationRecord
 
 	default_scope { order(id: :asc) }
 
+	BEGINNER     = 0
+	INTERMEDIATE = 1
+	PRO          = 2
+
+	LEVELS = { BEGINNER => "Beginner", INTERMEDIATE => "Intermediate", PRO => "Pro" }.freeze
+
 	has_one_attached :photo, dependent: :purge
 	has_many :bookings
 	belongs_to :sport, optional: true
@@ -27,6 +33,10 @@ class Coach < ApplicationRecord
 
 	def gender_label
 		self.gender == 0 ? "Female" : "Male"
+	end
+
+	def level_label
+		LEVELS[self.level] || LEVELS[BEGINNER]
 	end
 
 	def name_with_price

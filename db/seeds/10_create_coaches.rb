@@ -90,7 +90,8 @@ coaches.each do |attrs|
 
   coach.assign_attributes(
     name: attrs[:name], phone: attrs[:phone], gender: attrs[:gender],
-    price: attrs[:price], sport: sports[attrs[:sport]]
+    price: attrs[:price], sport: sports[attrs[:sport]],
+    level: [Coach::BEGINNER, Coach::INTERMEDIATE, Coach::PRO].sample
   )
   coach.role = attrs[:role_en]
   coach.bio  = attrs[:bio_en]

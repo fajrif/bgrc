@@ -7,7 +7,7 @@
         <div class="bbcc-section-head bbcc-section-head-center">
             <h2 class="bbcc-section-title">BBCC Highlights</h2>
         </div>
-        <div class="row g-4">
+        <div class="row g-4 mb-5">
             <% bbcc_highlights.each do |highlight| %>
                 <div class="col-12 col-md-6 col-lg-4">
                     <article class="bbcc-post">
@@ -27,6 +27,9 @@
                     </article>
                 </div>
             <% end %>
+        </div>
+        <div class="text-center">
+            <%= link_to "View All Highlights", highlights_path, class: "bbcc-btn" %>
         </div>
     </div>
 </section>

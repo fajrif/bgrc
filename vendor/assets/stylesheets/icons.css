@@ -1,3 +1,13 @@
+@font-face {
+  font-family: "Material Design Icons";
+  src: url("materialdesignicons-webfont.eot");
+  src: url("materialdesignicons-webfont.eot?#iefix") format("embedded-opentype"),
+       url("materialdesignicons-webfont.woff2") format("woff2"),
+       url("materialdesignicons-webfont.woff") format("woff"),
+       url("materialdesignicons-webfont.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
 .mdi:before,
 .mdi-set {
   display: inline-block;

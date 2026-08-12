@@ -28,6 +28,11 @@
     <td><%= @coach.gender_label %></td>
 	</tr>
 	<tr>
+		<td><b>Level</b></td>
+    <% level_color = { Coach::BEGINNER => "success", Coach::INTERMEDIATE => "info", Coach::PRO => "warning" }[@coach.level] %>
+    <td><span class="badge bg-<%= level_color %>-subtle text-<%= level_color %>"><%= @coach.level_label %></span></td>
+	</tr>
+	<tr>
 		<td><b>Price</b></td>
     <td><%= @coach.price_label %></td>
 	</tr>

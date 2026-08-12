@@ -46,6 +46,7 @@
                     <div class="swiper-slide">
                         <div class="bbcc-card bbcc-coach-card">
                             <span class="bbcc-card-image" style="<%= "background-image:url('#{url_for(coach.photo)}');" if coach.photo.attached? %>">
+                                <span class="bbcc-badge bbcc-badge-muted bbcc-coach-card-badge"><%= coach.level_label %></span>
                                 <span class="bbcc-card-shade"></span>
                                 <span class="bbcc-card-name"><%= coach.name %></span>
                             </span>
@@ -81,7 +82,7 @@
                         Members and guests training here can tap into that wider network of coaching
                         expertise and playing opportunities.
                     </p>
-                    <a href="https://wearemits.com" target="_blank" rel="noopener" class="bbcc-btn">Visit MITS Australia</a>
+                    <a href="https://wearemits.com" target="_blank" rel="noopener" class="bbcc-btn text-center">Visit MITS Australia</a>
                 </div>
             </div>
         </div>

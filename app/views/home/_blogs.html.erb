@@ -4,7 +4,7 @@
         <div class="bbcc-section-head bbcc-section-head-center">
             <h2 class="bbcc-section-title">Blog</h2>
         </div>
-        <div class="row g-4">
+        <div class="row g-4 mb-5">
             <% @articles.each do |article| %>
                 <div class="col-12 col-md-6 col-lg-4">
                     <article class="bbcc-post">
@@ -24,11 +24,14 @@
                             </span>
                             <%= link_to article.title, get_blog_path(article), class: "bbcc-post-title" %>
                             <p class="bbcc-post-excerpt"><%= article.short_description.to_s.truncate(120) %></p>
-                            <%= link_to "Read More", get_blog_path(article), class: "bbcc-btn" %>
+                            <%= link_to "Read Blog", get_blog_path(article), class: "bbcc-btn" %>
                         </div>
                     </article>
                 </div>
             <% end %>
+        </div>
+        <div class="text-center">
+            <%= link_to "View All Blog", blogs_path, class: "bbcc-btn" %>
         </div>
     </div>
 </section>

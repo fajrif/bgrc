@@ -424,7 +424,7 @@ club_life_node!(
 	"Beach Club",
 	attrs: {
 		club_life: true, position: 4, parent_id: nil, sport_id: nil,
-		cta_label: "Enquire", cta_url: "/contact",
+		cta_label: "Visit Beach Club", cta_url: "https://balibeachcountryclub.com/",
 		short_description: "Loungers, shade and the pool deck, a short walk from the courts.",
 		description: "The beach club is where the day slows down. Loungers and shade run along the pool deck, food and drinks come across from the restaurant, and it stays open into the evening.\n\nIt is also the part of the club most often booked for private events — get in touch if you would like to hold something here."
 	},
@@ -432,7 +432,7 @@ club_life_node!(
 		name: "Beach Club",
 		short_description: "Kursi santai, area teduh, dan pool deck, hanya beberapa langkah dari lapangan.",
 		description: "Beach club adalah tempat hari berjalan lebih lambat. Kursi santai dan area teduh membentang di sepanjang pool deck, makanan dan minuman diantar dari restoran, dan tempat ini buka hingga malam.\n\nArea ini juga paling sering dipesan untuk acara privat — hubungi kami jika Anda ingin mengadakan acara di sini.",
-		cta_label: "Hubungi Kami"
+		cta_label: "Kunjungi Beach Club"
 	},
 	image: "beach_club.png",
 	replace_image: true,

@@ -111,3 +111,99 @@ Mobility.with_locale(:id) {
   news6.save
 }
 puts "Create Blog: #{news6.title}"
+
+# Create Article
+title = FFaker::Book.title
+news7 = Article.new(title: title, category: @cat4)
+news7.image.attach(io: Rails.root.join("vendor/assets/images/banners/banner-1.png").open, filename: "banner-1.png")
+news7.short_description = FFaker::Lorem.paragraphs(3).join(" ")
+news7.content = FFaker::Lorem.paragraphs(30).join(" ")
+news7.save
+Mobility.with_locale(:id) {
+  news7.title = title
+  news7.short_description = FFaker::Lorem.paragraphs(3).join(" ")
+  news7.content = FFaker::Lorem.paragraphs(30).join(" ")
+  news7.published_date = DateTime.strptime('05/21/2024 1:46 AM', '%m/%d/%Y %I:%M %p')
+  news7.save
+}
+puts "Create Blog: #{news7.title}"
+
+# Create Article
+title = FFaker::Book.title
+news8 = Article.new(title: title, category: @cat1)
+news8.image.attach(io: Rails.root.join("vendor/assets/images/banners/banner-2.png").open, filename: "banner-2.png")
+news8.short_description = FFaker::Lorem.paragraphs(3).join(" ")
+news8.content = FFaker::Lorem.paragraphs(30).join(" ")
+news8.save
+Mobility.with_locale(:id) {
+  news8.title = title
+  news8.short_description = FFaker::Lorem.paragraphs(3).join(" ")
+  news8.content = FFaker::Lorem.paragraphs(30).join(" ")
+  news8.published_date = DateTime.strptime('05/21/2024 1:46 AM', '%m/%d/%Y %I:%M %p')
+  news8.save
+}
+puts "Create Blog: #{news8.title}"
+
+# Create Article
+title = FFaker::Book.title
+news9 = Article.new(title: title, category: @cat2)
+news9.image.attach(io: Rails.root.join("vendor/assets/images/banners/banner-3.png").open, filename: "banner-3.png")
+news9.short_description = FFaker::Lorem.paragraphs(3).join(" ")
+news9.content = FFaker::Lorem.paragraphs(30).join(" ")
+news9.save
+Mobility.with_locale(:id) {
+  news9.title = title
+  news9.short_description = FFaker::Lorem.paragraphs(3).join(" ")
+  news9.content = FFaker::Lorem.paragraphs(30).join(" ")
+  news9.published_date = DateTime.strptime('05/21/2024 1:46 AM', '%m/%d/%Y %I:%M %p')
+  news9.save
+}
+puts "Create Blog: #{news9.title}"
+
+# Create Article
+title = FFaker::Book.title
+news10 = Article.new(title: title, category: @cat3)
+news10.image.attach(io: Rails.root.join("vendor/assets/images/banners/banner-10.png").open, filename: "banner-10.png")
+news10.short_description = FFaker::Lorem.paragraphs(3).join(" ")
+news10.content = FFaker::Lorem.paragraphs(30).join(" ")
+news10.save
+Mobility.with_locale(:id) {
+  news10.title = title
+  news10.short_description = FFaker::Lorem.paragraphs(3).join(" ")
+  news10.content = FFaker::Lorem.paragraphs(30).join(" ")
+  news10.published_date = DateTime.strptime('05/21/2024 1:46 AM', '%m/%d/%Y %I:%M %p')
+  news10.save
+}
+puts "Create Blog: #{news10.title}"
+
+# Create Article
+title = FFaker::Book.title
+news11 = Article.new(title: title, category: @cat1)
+news11.image.attach(io: Rails.root.join("vendor/assets/images/images/image-1.png").open, filename: "image-1.png")
+news11.short_description = FFaker::Lorem.paragraphs(3).join(" ")
+news11.content = FFaker::Lorem.paragraphs(30).join(" ")
+news11.save
+Mobility.with_locale(:id) {
+  news11.title = title
+  news11.short_description = FFaker::Lorem.paragraphs(3).join(" ")
+  news11.content = FFaker::Lorem.paragraphs(30).join(" ")
+  news11.published_date = DateTime.strptime('05/21/2024 1:46 AM', '%m/%d/%Y %I:%M %p')
+  news11.save
+}
+puts "Create Blog: #{news11.title}"
+
+# Create Article
+title = FFaker::Book.title
+news12 = Article.new(title: title, category: @cat4)
+news12.image.attach(io: Rails.root.join("vendor/assets/images/images/image-2.png").open, filename: "image-2.png")
+news12.short_description = FFaker::Lorem.paragraphs(3).join(" ")
+news12.content = FFaker::Lorem.paragraphs(30).join(" ")
+news12.save
+Mobility.with_locale(:id) {
+  news12.title = title
+  news12.short_description = FFaker::Lorem.paragraphs(3).join(" ")
+  news12.content = FFaker::Lorem.paragraphs(30).join(" ")
+  news12.published_date = DateTime.strptime('05/21/2024 1:46 AM', '%m/%d/%Y %I:%M %p')
+  news12.save
+}
+puts "Create Blog: #{news12.title}"

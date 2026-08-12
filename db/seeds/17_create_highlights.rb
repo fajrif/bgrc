@@ -109,4 +109,81 @@ highlight!(
 	image: "images/image-3.png"
 )
 
+highlight!(
+	"Sunrise Yoga on the Lawn",
+	attrs: {
+		status: 1, position: 6, tags: "Daily",
+		short_description: "Early morning yoga on the club lawn, led by our resident instructors before the day heats up.",
+		content: "<p>Mats go down at first light on the lawn overlooking the course, with sessions paced for a calm, easy start to the day rather than a hard workout.</p><p>Open to all levels — mats are provided, and the session wraps in time for breakfast at the restaurant.</p>"
+	},
+	id: {
+		title: "Yoga Pagi di Lapangan Rumput",
+		short_description: "Yoga pagi hari di lapangan rumput klub, dipandu instruktur tetap kami sebelum hari mulai terik.",
+		content: "<p>Matras digelar saat fajar di lapangan rumput menghadap lapangan golf, dengan sesi yang dirancang untuk awal hari yang tenang.</p><p>Terbuka untuk semua level — matras disediakan, dan sesi selesai tepat waktu untuk sarapan di restoran.</p>"
+	},
+	image: "facilities/yoga.png"
+)
+
+highlight!(
+	"Beach Club Sunset Social",
+	attrs: {
+		status: 1, position: 7, tags: "Fridays",
+		short_description: "A relaxed Friday evening gathering at the Beach Club, with live music and a casual bar menu as the sun goes down.",
+		content: "<p>Every Friday the Beach Club opens up for an evening social — loungers by the water, a casual bar menu and light live music as the sky turns.</p><p>No booking required for members; just walk in after your last game or round and stay for the evening.</p>"
+	},
+	id: {
+		title: "Sosial Sunset di Beach Club",
+		short_description: "Kumpul santai Jumat sore di Beach Club, dengan musik live dan menu bar kasual saat matahari terbenam.",
+		content: "<p>Setiap Jumat, Beach Club dibuka untuk sosial malam — kursi santai di tepi air, menu bar kasual, dan musik live ringan saat langit berubah warna.</p><p>Tidak perlu reservasi untuk anggota; cukup datang setelah permainan atau putaran terakhir Anda dan nikmati malamnya.</p>"
+	},
+	image: "beach_club.png"
+)
+
+highlight!(
+	"Junior Golf Academy",
+	category: cat_golf,
+	attrs: {
+		status: 1, position: 8, tags: "Weekly",
+		short_description: "Weekly coaching for young golfers, from first swings on the range through to supervised rounds on the course.",
+		content: "<p>The junior academy runs weekly sessions grouped by age and experience, starting on the range before progressing to supervised holes on the course.</p><p>Clubs are available to borrow for beginners, and places are booked through the coaching schedule.</p>"
+	},
+	id: {
+		title: "Akademi Golf Junior",
+		short_description: "Pelatihan mingguan untuk pegolf muda, mulai dari ayunan pertama di driving range hingga putaran di lapangan dengan pengawasan.",
+		content: "<p>Akademi junior mengadakan sesi mingguan yang dikelompokkan berdasarkan usia dan pengalaman, dimulai dari driving range sebelum lanjut ke hole di lapangan dengan pengawasan.</p><p>Stik golf tersedia untuk dipinjam bagi pemula, dan tempat dipesan melalui jadwal pelatihan.</p>"
+	},
+	image: "sports/golf/gallery-2.png"
+)
+
+highlight!(
+	"Members' Padel Ladder",
+	category: cat_padel,
+	attrs: {
+		status: 1, position: 9, tags: "Monthly",
+		short_description: "A running monthly ladder for padel members — win to climb, with standings posted at the pro shop.",
+		content: "<p>The ladder runs continuously through the month; results are logged after each match and standings are posted at the pro shop and updated online.</p><p>Matches are arranged directly between members within a rung of each other, so games stay competitive without needing to schedule a full bracket.</p>"
+	},
+	id: {
+		title: "Tangga Peringkat Padel Anggota",
+		short_description: "Kompetisi tangga peringkat padel bulanan untuk anggota — menang untuk naik peringkat, hasil ditempel di pro shop.",
+		content: "<p>Tangga peringkat berjalan sepanjang bulan; hasil dicatat setelah setiap pertandingan dan peringkat ditempel di pro shop serta diperbarui secara online.</p><p>Pertandingan diatur langsung antar anggota pada peringkat yang berdekatan, sehingga permainan tetap kompetitif tanpa perlu menjadwalkan bagan penuh.</p>"
+	},
+	image: "sports/padel/gallery-2.png"
+)
+
+highlight!(
+	"Spa Recovery Weekends",
+	attrs: {
+		status: 1, position: 10, tags: "Weekends",
+		short_description: "Weekend recovery packages pairing spa treatments with our recovery center facilities for members after a heavy week of play.",
+		content: "<p>Recovery weekends pair a spa treatment with time in the recovery center — ice bath, sauna and stretch area — booked as a single slot rather than separately.</p><p>Popular after tournament weekends; book a day ahead through the spa desk as slots are limited.</p>"
+	},
+	id: {
+		title: "Akhir Pekan Pemulihan Spa",
+		short_description: "Paket pemulihan akhir pekan yang memadukan perawatan spa dengan fasilitas recovery center untuk anggota setelah minggu bermain yang berat.",
+		content: "<p>Akhir pekan pemulihan memadukan perawatan spa dengan waktu di recovery center — ice bath, sauna, dan area peregangan — dipesan sebagai satu slot, bukan terpisah.</p><p>Populer setelah akhir pekan turnamen; pesan sehari sebelumnya melalui meja spa karena slot terbatas.</p>"
+	},
+	image: "downloads/treatment-2.png"
+)
+
 puts "Highlights: #{Highlight.count}"
