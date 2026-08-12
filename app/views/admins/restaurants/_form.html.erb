@@ -15,6 +15,9 @@
 						<%= f.input :description, as: :text, hint: "The intro lead paragraph shown at the top of the page" %>
 						<%= f.input :description1, as: :text, label: "Description (two-column text section)", hint: "Split into two paragraphs with a blank line between them", input_html: { rows: 4 } %>
 						<%= f.input :description2, as: :text, label: "Description (paired with the image)", input_html: { rows: 4 } %>
+						<%= f.input :concept, as: :string, label: "Concept", hint: "Shown as a labelled line under the intro copy. Leave blank to hide it." %>
+						<%= f.input :operating_hours, as: :string, label: "Operating Hours", hint: "e.g. 06:00 AM – 09:00 PM" %>
+						<%= f.input :location_note, as: :string, label: "Location", hint: "Where on the property guests will find this venue" %>
 					</fieldset>
 					<%= f.error :base %>
 					<div class="form-actions">

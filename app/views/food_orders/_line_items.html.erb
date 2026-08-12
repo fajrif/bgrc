@@ -1,0 +1,23 @@
+<%# locals: food_order: %>
+<div class="bbcc-table-scroll">
+    <table class="bbcc-table">
+        <thead>
+            <tr>
+                <th>Item</th>
+                <th class="bbcc-table-num">Qty</th>
+                <th class="bbcc-table-num">Price</th>
+                <th class="bbcc-table-num">Subtotal</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% food_order.food_order_items.each do |item| %>
+                <tr>
+                    <td><%= item.name %></td>
+                    <td class="bbcc-table-num"><%= item.quantity %></td>
+                    <td class="bbcc-table-num"><%= item.price_label %></td>
+                    <td class="bbcc-table-num"><%= item.total_price_label %></td>
+                </tr>
+            <% end %>
+        </tbody>
+    </table>
+</div>

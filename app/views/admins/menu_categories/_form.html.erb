@@ -1,0 +1,39 @@
+<%= simple_form_for @menu_category, url: (@menu_category.new_record? ? admins_menu_categories_path : admins_menu_category_path(@menu_category.id)), method: (@menu_category.new_record? ? :post : :put) do |f| %>
+	<div class="row">
+		<div class="col-lg-8">
+			<div class="card">
+				<div class="card-body">
+					<%= f.error_notification %>
+					<fieldset>
+						<%= f.input :name, as: :string %>
+						<%= f.input :slug, as: :string, hint: "Used by the filter tabs on the Grab & Go page. Leave blank to generate it from the name." %>
+					</fieldset>
+					<%= f.error :base %>
+					<div class="form-actions">
+						<%= f.button :submit, :class => 'btn btn-secondary' %>
+						<% unless @menu_category.new_record? %>
+							<%= link_to "Cancel", admins_menu_category_path(@menu_category.id), :class => 'btn btn-light' %>
+						<% else %>
+							<%= link_to "Cancel", admins_menu_categories_path, :class => 'btn btn-light' %>
+						<% end %>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-lg-4">
+			<div class="row">
+				<%= render "admins/shared/error_messages", :target => @menu_category, col: 'col-lg-12' %>
+				<div class="col-lg-12">
+					<div class="card">
+						<div class="card-header">
+							<h5 class="card-title mb-0">Settings</h5>
+						</div>
+						<div class="card-body">
+							<%= f.input :position, as: :integer %>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+<% end %>

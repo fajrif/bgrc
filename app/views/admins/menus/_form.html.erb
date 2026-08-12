@@ -8,6 +8,8 @@
 						<%= f.input :image, as: :file, input_html: { class: "mb-3", accept: "image/gif, image/png, image/jpg, image/jpeg, image/webp" } %>
 						<%= f.input :name, as: :string %>
 						<%= f.input :short_description, as: :text, input_html: { rows: 4 } %>
+						<%= f.input :price, as: :integer, label: "Price (Rp.)", hint: "Required once the item is orderable", input_html: { value: @menu.price&.to_i, min: 0, step: 1000 } %>
+						<%= f.input :discount_price, as: :integer, label: "Discounted Price (Rp.)", hint: "Leave blank for no discount. Must be lower than the normal price.", input_html: { value: @menu.discount_price&.to_i, min: 0, step: 1000 } %>
 					</fieldset>
 					<%= f.error :base %>
 					<div class="form-actions">
@@ -31,7 +33,11 @@
 						</div>
 						<div class="card-body">
 							<%= f.association :restaurant, include_blank: "— none —" %>
+							<%= f.association :menu_category, include_blank: "— none —", label: "Menu Category", hint: "Groups the item under a filter tab on the Grab & Go page" %>
 							<%= f.input :position, as: :integer %>
+							<%= f.input :orderable, as: :boolean, label: "Orderable online", hint: "Puts the item on the Grab & Go counter, whichever venue it belongs to" %>
+							<%= f.input :in_stock, as: :boolean, label: "In stock" %>
+							<%= f.input :stock_count, as: :integer, label: "Stock count", hint: "Leave blank for unlimited. Counts down as orders are paid." %>
 						</div>
 					</div>
 				</div>

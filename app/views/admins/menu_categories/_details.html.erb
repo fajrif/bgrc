@@ -1,0 +1,22 @@
+<table class="table table-hover">
+	<tr>
+		<td style="width:15%;"><b>ID</b></td>
+		<td><%= @menu_category.id %></td>
+	</tr>
+	<tr>
+		<td><b>Name</b></td>
+		<td><h5 class="fs-14 mb-0 text-body"><%= @menu_category.name %></h5></td>
+	</tr>
+	<tr>
+		<td><b>Slug</b></td>
+		<td><code><%= @menu_category.slug %></code></td>
+	</tr>
+	<tr>
+		<td><b>Position</b></td>
+		<td><%= @menu_category.position %></td>
+	</tr>
+	<tr>
+		<td><b>Menu Items</b></td>
+		<td><%= @menu_category.menus.count %> &mdash; <%= link_to "Manage menus", admins_menus_path(menu_category_id: @menu_category.id) %></td>
+	</tr>
+</table>

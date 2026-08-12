@@ -745,7 +745,7 @@ html, body { height: auto; min-height: 100%; }
 .bbcc-rate-card .bbcc-btn { margin-top: auto; }
 
 /* class tabs — same look as .bbcc-tabs, but <button> so filtering stays in-page */
-.bbcc-class-tabs .bbcc-tab {
+.bbcc-class-tabs .bbcc-tab, .bbcc-menu-tabs .bbcc-tab {
   background: none; border: 0; border-bottom: 2px solid transparent;
   font-family: inherit; cursor: pointer;
 }
@@ -1027,7 +1027,7 @@ button.bbcc-teeslot:focus-visible { outline: 2px solid var(--bbcc-ink); outline-
   font-size: 18px; color: var(--bbcc-ink-soft); cursor: pointer; transition: color .2s;
 }
 .bbcc-modal-close:hover { color: var(--bbcc-ink); }
-.bbcc-modal-summary { border-top: 1px solid var(--bbcc-line); padding-top: 18px; }
+.bbcc-modal-summary { /*border-top: 1px solid var(--bbcc-line); padding-top: 18px;*/ }
 .bbcc-modal-summary-row { display: flex; justify-content: space-between; gap: 16px; color: var(--bbcc-ink-soft); font-size: 14px; }
 .bbcc-modal-summary-total { margin-top: 8px; color: var(--bbcc-ink); font-size: 1.05rem; font-weight: 700; }
 
@@ -1260,6 +1260,138 @@ button.bbcc-teeslot:focus-visible { outline: 2px solid var(--bbcc-ink); outline-
 .bbcc-footer-legal a.active { color: var(--bbcc-ink); font-weight: 700; text-decoration: underline; }
 
 /* =====================================================================
+   GRAB & GO (menu grid, quantity steppers, cart bar, how it works)
+   ===================================================================== */
+/* labelled lines under the intro copy — Concept / Operating Hours / Location */
+.bbcc-factlist { margin: 0 0 8px; }
+.bbcc-factlist-row { display: flex; flex-wrap: wrap; gap: 6px; line-height: 1.7; }
+.bbcc-factlist-row dt { font-weight: 600; color: var(--bbcc-ink); }
+.bbcc-factlist-row dd { margin: 0; color: var(--bbcc-ink-soft); }
+
+/* menu item card — square thumbnail on the left, details and stepper on the right */
+.bbcc-menu-card {
+  display: flex; gap: 18px; height: 100%; padding: 16px;
+  background: var(--bbcc-bg); border: 1px solid var(--bbcc-line);
+  transition: border-color .2s;
+}
+.bbcc-menu-card-picked { border-color: var(--bbcc-dark); }
+.bbcc-menu-card-thumb {
+  flex: 0 0 110px; width: 110px; height: 110px;
+  background: #dedede; overflow: hidden;
+}
+.bbcc-menu-card-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.bbcc-menu-card-body { display: flex; flex-direction: column; flex: 1 1 auto; min-width: 0; }
+.bbcc-menu-card-cat { font-size: 13px; color: var(--bbcc-ink-soft); margin-bottom: 4px; }
+.bbcc-menu-card-name {
+  font-family: "Mona Sans", sans-serif; text-transform: uppercase; letter-spacing: 1px;
+  font-size: 15px; font-weight: 600; color: var(--bbcc-ink); margin: 0 0 6px; line-height: normal;
+}
+.bbcc-menu-card-price { font-size: 15px; color: var(--bbcc-ink); margin: 0 0 14px; }
+.bbcc-menu-card-was { margin-left: 8px; font-size: 13px; color: var(--bbcc-ink-soft); }
+.bbcc-menu-card .bbcc-qty, .bbcc-menu-card .bbcc-badge { margin-top: auto; align-self: flex-start; }
+/* sold out — still listed, so a guest knows the dish exists */
+.bbcc-menu-card-out { opacity: .55; }
+
+/* quantity stepper — the bbcc-token counterpart of the legacy .qty-input */
+.bbcc-qty { display: inline-flex; align-items: center; gap: 4px; }
+.bbcc-qty-btn {
+  width: 30px; height: 30px; padding: 0; line-height: 1;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--bbcc-dark); border: 1px solid var(--bbcc-dark); border-radius: 0;
+  color: #fff; font-size: 16px; font-family: inherit; cursor: pointer;
+  transition: background .2s;
+}
+.bbcc-qty-btn:hover { background: var(--bbcc-dark-hover); }
+.bbcc-qty-value { min-width: 34px; text-align: center; font-size: 15px; color: var(--bbcc-ink); }
+
+.bbcc-menu-col-hidden { display: none; }
+
+/* sticky cart bar — revealed by the page's JS once something is in the basket */
+.bbcc-cart-bar {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 1030;
+  background: var(--bbcc-bg); border-top: 1px solid var(--bbcc-line);
+  box-shadow: 0 -2px 12px rgba(0, 0, 0, .08);
+}
+.bbcc-cart-bar[hidden] { display: none; }
+.bbcc-cart-bar-inner {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 16px; padding: 14px 0;
+}
+.bbcc-cart-bar-summary { display: flex; align-items: baseline; gap: 16px; min-width: 0; }
+.bbcc-cart-bar-count {
+  text-transform: uppercase; letter-spacing: 1px; font-size: 12px; color: var(--bbcc-ink-soft);
+}
+.bbcc-cart-bar-total { font-size: 18px; font-weight: 700; color: var(--bbcc-ink); }
+.bbcc-cart-bar-actions { display: flex; gap: 10px; flex-shrink: 0; }
+.bbcc-cart-bar-actions .bbcc-btn { margin-top: 0; }
+/* the bar floats over the last section, so give the page room to scroll past it */
+.bbcc-grabgo-menu ~ .bbcc-section:last-of-type { padding-bottom: 140px; }
+
+.bbcc-modal-note { font-size: 13px; color: var(--bbcc-ink-soft); margin: 16px 0 0; }
+
+/* order page — confirmation, countdown and payment panel */
+.bbcc-order-card, .bbcc-order-aside { border: 1px solid var(--bbcc-line); padding: 30px; height: 100%; }
+.bbcc-order-head {
+  display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start;
+  gap: 20px; margin-bottom: 24px;
+}
+.bbcc-order-label {
+  display: block; text-transform: uppercase; letter-spacing: 1.5px;
+  font-size: 11px; color: var(--bbcc-ink-soft); margin-bottom: 4px;
+}
+.bbcc-order-id {
+  font-family: "Mona Sans", sans-serif; font-size: 1.35rem; font-weight: 700;
+  letter-spacing: 1px; color: var(--bbcc-ink); margin: 0; line-height: normal;
+}
+.bbcc-order-qr { width: 110px; }
+.bbcc-order-qr svg { width: 100%; height: auto; display: block; }
+.bbcc-order-facts { margin-bottom: 26px; }
+.bbcc-order-aside-title {
+  font-family: "Mona Sans", sans-serif; text-transform: uppercase; letter-spacing: 2px;
+  font-size: 13px; font-weight: 700; color: var(--bbcc-ink); margin: 0 0 22px;
+}
+
+.bbcc-countdown {
+  display: flex; flex-direction: column; align-items: center; gap: 4px; text-align: center;
+  padding: 18px; margin-bottom: 24px; background: var(--bbcc-bg-alt); border: 1px solid var(--bbcc-line);
+}
+.bbcc-countdown-label, .bbcc-countdown-note { font-size: 12px; color: var(--bbcc-ink-soft); }
+.bbcc-countdown-value {
+  font-family: monospace; font-size: 34px; font-weight: 700; letter-spacing: 2px; color: var(--bbcc-ink);
+}
+.bbcc-countdown-urgent .bbcc-countdown-value { color: #a8382c; }
+.bbcc-countdown-over { opacity: .5; }
+
+.bbcc-ordersum-row {
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  padding: 10px 0; font-size: 14px; color: var(--bbcc-ink-soft);
+}
+.bbcc-ordersum-total {
+  border-top: 1px solid var(--bbcc-line); margin-top: 6px; padding-top: 16px;
+  font-size: 1.05rem; font-weight: 700; color: var(--bbcc-ink);
+}
+.bbcc-ordersum-actions { margin-top: 22px; }
+.bbcc-ordersum-actions .bbcc-btn { margin-top: 10px; }
+.bbcc-ordersum-note { font-size: 13px; color: var(--bbcc-ink-soft); margin: 0; }
+.bbcc-ordersum-expired { font-size: 14px; color: #a8382c; margin: 0; }
+
+@media print {
+  .bbcc-print-hide, .bbcc-header, .bbcc-footer, .bbcc-breadcrumb { display: none !important; }
+}
+
+/* how it works — a left-to-right process strip */
+.bbcc-steps { display: flex; align-items: stretch; justify-content: center; gap: 16px; flex-wrap: wrap; }
+.bbcc-step {
+  display: flex; align-items: center; gap: 16px; flex: 1 1 240px; max-width: 340px;
+  padding: 22px 26px; background: #dedede;
+}
+.bbcc-step-icon { font-size: 24px; color: var(--bbcc-ink); line-height: 1; }
+.bbcc-step-label {
+  font-family: "Mona Sans", sans-serif; font-size: 18px; font-weight: 600; color: var(--bbcc-ink);
+}
+.bbcc-step-arrow { display: flex; align-items: center; color: var(--bbcc-ink-soft); font-size: 18px; }
+
+/* =====================================================================
    RESPONSIVE
    ===================================================================== */
 /* between lg and xl the grid keeps 7 columns in a narrow column, so it tightens up */
@@ -1272,6 +1404,10 @@ button.bbcc-teeslot:focus-visible { outline: 2px solid var(--bbcc-ink); outline-
 }
 
 @media (max-width: 991px) {
+  /* the arrows only read as a flow on one line; stacked steps don't need them */
+  .bbcc-steps { flex-direction: column; align-items: stretch; }
+  .bbcc-step { max-width: none; }
+  .bbcc-step-arrow { transform: rotate(90deg); justify-content: center; }
   .bbcc-hero { min-height: 60vh; }
   .bbcc-events-image, .bbcc-location-map iframe { height: 320px; }
   .bbcc-location-overlay { position: static; padding-top: 0; }
@@ -1301,6 +1437,10 @@ button.bbcc-teeslot:focus-visible { outline: 2px solid var(--bbcc-ink); outline-
 }
 
 @media (max-width: 767px) {
+  .bbcc-menu-card-thumb { flex-basis: 88px; width: 88px; height: 88px; }
+  /* the total and the actions each get a line rather than being squeezed */
+  .bbcc-cart-bar-inner { flex-direction: column; align-items: stretch; gap: 10px; }
+  .bbcc-cart-bar-actions .bbcc-btn { flex: 1 1 auto; text-align: center; }
   .bbcc-section { padding: 52px 0; }
   .bbcc-navbar-inner { min-height: 70px; }
   .bbcc-logo img { height: 38px; }

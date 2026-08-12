@@ -1,0 +1,13 @@
+<!-- start my order history -->
+<section class="bbcc-section bbcc-account">
+    <div class="container-lg">
+        <%= render "users/shared/account_nav" %>
+        <%= render "view_switch" %>
+
+        <div id="ordersTable">
+            <%= render "table" %>
+        </div>
+        <%= paginate @food_orders, theme: "bbcc" %>
+    </div>
+</section>
+<!-- end my order history -->

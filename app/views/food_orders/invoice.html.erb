@@ -1,0 +1,35 @@
+<section class="bbcc-section bbcc-order-page">
+    <div class="container-lg">
+        <div class="bbcc-receipt">
+            <div class="bbcc-receipt-head">
+                <div>
+                    <h1 class="bbcc-receipt-title">Bali Beach Country Club</h1>
+                    <p class="mb-0"><%= raw(configatron.location_address) %></p>
+                </div>
+                <div class="bbcc-receipt-meta">
+                    <h2 class="bbcc-receipt-title">Order <%= @food_order.order_id %></h2>
+                    <p class="mb-0"><%= @food_order.created_at.strftime("%d %b %Y, %H:%M") %></p>
+                    <p class="mb-0"><%= @food_order.status_label %></p>
+                </div>
+            </div>
+
+            <dl class="bbcc-factlist bbcc-order-facts">
+                <div class="bbcc-factlist-row"><dt>Name:</dt><dd><%= @food_order.customer_name %></dd></div>
+                <div class="bbcc-factlist-row"><dt>Phone:</dt><dd><%= @food_order.customer_phone %></dd></div>
+                <div class="bbcc-factlist-row"><dt>Collect at:</dt><dd><%= FoodOrder::PICKUP_LOCATION %></dd></div>
+            </dl>
+
+            <%= render "food_orders/line_items", food_order: @food_order %>
+
+            <div class="bbcc-ordersum-row bbcc-ordersum-total">
+                <span>Total</span>
+                <span><%= @food_order.total_price_label %></span>
+            </div>
+
+            <div class="bbcc-ordersum-actions bbcc-print-hide">
+                <button type="button" class="bbcc-btn bbcc-btn-block" onclick="window.print()">Print</button>
+                <%= link_to "Back to Order", food_order_path(@food_order.order_id), class: "bbcc-btn bbcc-btn-light bbcc-btn-block" %>
+            </div>
+        </div>
+    </div>
+</section>

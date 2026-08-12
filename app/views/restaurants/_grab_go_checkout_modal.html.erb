@@ -1,0 +1,58 @@
+<div class="modal fade bbcc-modal" id="grabGoCheckoutModal" tabindex="-1" aria-labelledby="grabGoCheckoutLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="bbcc-modal-title" id="grabGoCheckoutLabel">Your Order</h2>
+                <button type="button" class="bbcc-modal-close" data-bs-dismiss="modal" aria-label="Close">
+                    <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+                </button>
+            </div>
+
+            <%= form_tag food_orders_path, method: :post, id: "grab-go-checkout-form" do %>
+                <div class="modal-body">
+                    <%# The basket lives in the page's JS until this point; it is serialised
+                        into this field on submit and re-priced from the database server-side. %>
+                    <input type="hidden" name="items" id="grab-go-items-input">
+
+                    <div class="bbcc-modal-summary" id="grab-go-summary"></div>
+
+                    <div class="bbcc-modal-summary-row bbcc-modal-summary-total">
+                        <span>Total</span>
+                        <span id="grab-go-modal-total">Rp. 0</span>
+                    </div>
+
+                    <div class="bbcc-modal-callout">
+                        <span class="bbcc-modal-label">Pick up at</span>
+                        <span class="bbcc-modal-value"><%= FoodOrder::PICKUP_LOCATION %></span>
+                    </div>
+
+                    <div class="bbcc-field">
+                        <label for="grab_go_customer_name">Full Name</label>
+                        <input type="text" name="customer_name" id="grab_go_customer_name" required
+                               value="<%= current_user&.full_name %>">
+                    </div>
+
+                    <div class="bbcc-field">
+                        <label for="grab_go_customer_phone">Phone Number</label>
+                        <input type="tel" name="customer_phone" id="grab_go_customer_phone" required
+                               value="<%= current_user&.phone %>">
+                    </div>
+
+                    <div class="bbcc-field">
+                        <label for="grab_go_notes">Notes (allergies, collection time, anything else)</label>
+                        <input type="text" name="notes" id="grab_go_notes">
+                    </div>
+
+                    <p class="bbcc-modal-note">
+                        You have 10 minutes to complete payment once the order is placed.
+                    </p>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="bbcc-btn bbcc-btn-light" data-bs-dismiss="modal">Keep Browsing</button>
+                    <button type="submit" class="bbcc-btn" id="grab-go-submit">Place Order</button>
+                </div>
+            <% end %>
+        </div>
+    </div>
+</div>

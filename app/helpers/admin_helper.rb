@@ -254,7 +254,9 @@ module AdminHelper
 
 	def is_admins_dining_page?
 		controller.controller_name == "restaurants" ||
-		controller.controller_name == "menus"
+		controller.controller_name == "menus" ||
+		controller.controller_name == "menu_categories" ||
+		controller.controller_name == "food_orders"
 	end
 
 	def is_admins_sports_page?

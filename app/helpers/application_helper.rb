@@ -123,6 +123,10 @@ module ApplicationHelper
 		controller.controller_name == "payments"
 	end
 
+	def is_users_orders_page?
+		controller.controller_name == "food_orders"
+	end
+
 	def is_users_golf_page?
 		controller.controller_name == "golf_reservations"
 	end
@@ -141,6 +145,7 @@ module ApplicationHelper
 		when "Booking" then "Booking"
 		when "ClassCreditPurchase" then "Class Credit"
 		when "GolfReservation" then "Golf"
+		when "FoodOrder" then "Grab & Go Order"
 		else type.to_s.underscore.humanize
 		end
 	end

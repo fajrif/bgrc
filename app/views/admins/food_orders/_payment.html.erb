@@ -1,0 +1,48 @@
+<%# locals: purchase: — the gateway response is the audit trail, same as bookings %>
+<table class="table table-hover mb-3">
+	<tr>
+		<td style="width:25%;"><b>Status Code</b></td>
+		<td>
+			<%= purchase.status_code %>
+			<span class="text-muted ms-2"><%= purchase.status_message %></span>
+		</td>
+	</tr>
+	<tr>
+		<td><b>Gross Amount</b></td>
+		<td><%= purchase.price_label %></td>
+	</tr>
+	<tr>
+		<td><b>Payment Type</b></td>
+		<td><%= blank_or_not(purchase.payment_type) %></td>
+	</tr>
+	<tr>
+		<td><b>Transaction Status</b></td>
+		<td><%= blank_or_not(purchase.transaction_status) %></td>
+	</tr>
+	<tr>
+		<td><b>Transaction ID</b></td>
+		<td><%= blank_or_not(purchase.transaction_id) %></td>
+	</tr>
+	<tr>
+		<td><b>Transaction Time</b></td>
+		<td><%= blank_or_not(purchase.transaction_time) %></td>
+	</tr>
+	<tr>
+		<td><b>Fraud Status</b></td>
+		<td><%= blank_or_not(purchase.fraud_status) %></td>
+	</tr>
+	<tr>
+		<td><b>Bank / Card</b></td>
+		<td><%= blank_or_not([purchase.bank, purchase.card_type, purchase.masked_card].compact_blank.join(" · ")) %></td>
+	</tr>
+	<tr>
+		<td><b>Channel Response</b></td>
+		<td><%= blank_or_not([purchase.channel_response_code, purchase.channel_response_message].compact_blank.join(" · ")) %></td>
+	</tr>
+	<tr>
+		<td><b>Recorded</b></td>
+		<td><%= purchase.created_at.strftime("%d/%m/%Y %H:%M") %></td>
+	</tr>
+</table>
+
+<%= link_to "Open full payment record", admins_purchase_path(purchase), class: "btn btn-soft-secondary btn-sm" %>

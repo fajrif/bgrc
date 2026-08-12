@@ -1,6 +1,9 @@
 class Restaurant < ApplicationRecord
 	extend Mobility
 	translates :slug, :name, :short_description, :description, :banner_description, :description1, :description2
+	# Optional labelled lines under the intro copy. Not validated — most venues
+	# leave them blank and the block is skipped entirely when they are.
+	translates :concept, :operating_hours, :location_note
 
 	extend FriendlyId
 	friendly_id :name, use: :mobility

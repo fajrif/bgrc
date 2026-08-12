@@ -1,0 +1,58 @@
+<div class="modal fade" id="disclaimerModal" tabindex="-1" aria-labelledby="disclaimerModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="disclaimerModalLabel">Before You Pay</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p class="text-medium mb-4">
+                    Your order goes to the kitchen as soon as payment clears, and is prepared for
+                    collection at the <%= FoodOrder::PICKUP_LOCATION.downcase %>.
+                </p>
+
+                <% ["cancellation_policy", "refund_policy", "terms_and_conditions"].each do |key| %>
+                    <% if snippet = Snippet.find_by_key(key) %>
+                        <h6 class="text-black font-weight-600 mb-2"><%= snippet.title %></h6>
+                        <div class="text-medium mb-4"><%= snippet.content %></div>
+                    <% end %>
+                <% end %>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light-gray btn-small text-medium" data-bs-dismiss="modal">Cancel</button>
+                <a href="#" id="btn-agree-pay" class="btn btn-dark-gray btn-medium text-medium text-white">I Agree &amp; Pay</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+  (function () {
+    var button = document.getElementById('btn-agree-pay');
+    if (!button) return;
+
+    button.addEventListener('click', function (event) {
+      event.preventDefault();
+
+      var modalEl = document.getElementById('disclaimerModal');
+      if (modalEl && typeof bootstrap !== 'undefined') {
+        var modal = bootstrap.Modal.getInstance(modalEl);
+        if (modal) modal.hide();
+      }
+
+      // Fetches a fresh Midtrans snap token, then opens the dialog — the response
+      // is the script in users/purchases/new.js.erb.
+      $.ajax({
+        url: '<%= users_new_purchase_path("food_order", @food_order.id.to_s) %>',
+        type: 'GET',
+        dataType: 'script',
+        beforeSend: function (xhr) {
+          xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'));
+        },
+        error: function () {
+          alert('An error occurred while processing payment. Please try again.');
+        }
+      });
+    });
+  })();
+</script>

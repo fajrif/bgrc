@@ -1,0 +1,55 @@
+<%# locals: food_order: %>
+<%
+  badge = case food_order.status
+          when FoodOrder::PAID      then "bbcc-badge-paid"
+          when FoodOrder::EXPIRED   then "bbcc-badge-danger"
+          when FoodOrder::CANCELLED then "bbcc-badge-danger"
+          else "bbcc-badge-warn"
+          end
+%>
+<div class="bbcc-ordersum-row">
+    <span>Status</span>
+    <span class="bbcc-badge <%= badge %>"><%= food_order.status_label %></span>
+</div>
+<div class="bbcc-ordersum-row">
+    <span>Items</span>
+    <span><%= food_order.items_count %></span>
+</div>
+<div class="bbcc-ordersum-row bbcc-ordersum-total">
+    <span>Total</span>
+    <span><%= food_order.total_price_label %></span>
+</div>
+
+<% if food_order.is_unpaid? %>
+    <div id="payment-actions" class="bbcc-ordersum-actions">
+        <% if user_signed_in? %>
+            <a href="#" class="bbcc-btn bbcc-btn-block" data-bs-toggle="modal" data-bs-target="#disclaimerModal">Pay Now</a>
+        <% else %>
+            <a href="#" class="bbcc-btn bbcc-btn-block" data-bs-toggle="modal" data-bs-target="#loginModal">Pay Now</a>
+        <% end %>
+        <%= link_to "Cancel Order", food_order_path(food_order.order_id),
+                    class: "bbcc-btn bbcc-btn-light bbcc-btn-block",
+                    method: :delete, data: { confirm: "Cancel this order?" } %>
+    </div>
+    <div id="expired-actions" class="bbcc-ordersum-actions" style="display:none;">
+        <p class="bbcc-ordersum-expired"><strong>The time limit for payment has expired.</strong></p>
+        <%= link_to "Back to Menu", dining_restaurant_path(RestaurantsController::GRAB_AND_GO_SLUG), class: "bbcc-btn bbcc-btn-block" %>
+    </div>
+<% elsif food_order.paid? %>
+    <div class="bbcc-ordersum-actions">
+        <p class="bbcc-ordersum-note">
+            Show this order at the <%= FoodOrder::PICKUP_LOCATION.downcase %> when you collect.
+        </p>
+        <%= link_to "Order Again", dining_restaurant_path(RestaurantsController::GRAB_AND_GO_SLUG), class: "bbcc-btn bbcc-btn-block" %>
+    </div>
+<% elsif food_order.expired? %>
+    <div class="bbcc-ordersum-actions">
+        <p class="bbcc-ordersum-expired"><strong>The time limit for payment has expired.</strong></p>
+        <%= link_to "Back to Menu", dining_restaurant_path(RestaurantsController::GRAB_AND_GO_SLUG), class: "bbcc-btn bbcc-btn-block" %>
+    </div>
+<% else %>
+    <div class="bbcc-ordersum-actions">
+        <p class="bbcc-ordersum-note">This order was cancelled.</p>
+        <%= link_to "Back to Menu", dining_restaurant_path(RestaurantsController::GRAB_AND_GO_SLUG), class: "bbcc-btn bbcc-btn-block" %>
+    </div>
+<% end %>

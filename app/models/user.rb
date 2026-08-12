@@ -15,6 +15,7 @@ class User < ApplicationRecord
 	has_many :golf_reservations
 	has_many :class_credit_purchases
 	has_many :group_class_registrations
+	has_many :food_orders
 
 	validates_presence_of :full_name, :email, :phone, :dob, :gender, :nationality
 	validates :password, presence: true, on: :create
@@ -63,6 +64,14 @@ class User < ApplicationRecord
 
 	def booking_history
 		self.bookings.where(status: [Booking::PAID, Booking::EXPIRED, Booking::CANCELLED])
+	end
+
+	def current_food_orders
+		self.food_orders.where(status: [FoodOrder::UNPAID, FoodOrder::PAID])
+	end
+
+	def food_order_history
+		self.food_orders.where(status: [FoodOrder::PAID, FoodOrder::EXPIRED, FoodOrder::CANCELLED])
 	end
 
 	def is_profile_completed?

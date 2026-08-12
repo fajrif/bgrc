@@ -80,6 +80,18 @@
 		<td><%= @restaurant.description2 %></td>
 	</tr>
 	<tr>
+		<td><b>Concept</b></td>
+		<td><%= blank_or_not(@restaurant.concept) %></td>
+	</tr>
+	<tr>
+		<td><b>Operating Hours</b></td>
+		<td><%= blank_or_not(@restaurant.operating_hours) %></td>
+	</tr>
+	<tr>
+		<td><b>Location</b></td>
+		<td><%= blank_or_not(@restaurant.location_note) %></td>
+	</tr>
+	<tr>
 		<td><b>Menus</b></td>
 		<td><%= @restaurant.menus.count %> — <%= link_to "Manage menus", admins_menus_path(restaurant_id: @restaurant.id) %></td>
 	</tr>

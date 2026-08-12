@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_08_12_000001) do
+ActiveRecord::Schema[7.1].define(version: 2026_08_12_000006) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -322,6 +322,36 @@ ActiveRecord::Schema[7.1].define(version: 2026_08_12_000001) do
     t.index ["facility_id"], name: "index_facility_rates_on_facility_id"
   end
 
+  create_table "food_order_items", force: :cascade do |t|
+    t.bigint "food_order_id", null: false
+    t.bigint "menu_id", null: false
+    t.string "name", default: "", null: false
+    t.integer "quantity", default: 1, null: false
+    t.decimal "price", precision: 15, scale: 2, default: "0.0", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["food_order_id"], name: "index_food_order_items_on_food_order_id"
+    t.index ["menu_id"], name: "index_food_order_items_on_menu_id"
+  end
+
+  create_table "food_orders", force: :cascade do |t|
+    t.integer "user_id"
+    t.string "order_id", null: false
+    t.integer "status", default: 0, null: false
+    t.integer "fulfillment_status", default: 0, null: false
+    t.decimal "total_price", precision: 15, scale: 2, default: "0.0", null: false
+    t.datetime "expires_at"
+    t.datetime "pickup_at"
+    t.string "customer_name"
+    t.string "customer_phone"
+    t.text "notes"
+    t.boolean "refunded", default: false, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["order_id"], name: "index_food_orders_on_order_id", unique: true
+    t.index ["user_id"], name: "index_food_orders_on_user_id"
+  end
+
   create_table "friendly_id_slugs", force: :cascade do |t|
     t.string "slug", null: false
     t.integer "sluggable_id", null: false
@@ -510,6 +540,15 @@ ActiveRecord::Schema[7.1].define(version: 2026_08_12_000001) do
     t.decimal "price", default: "0.0", null: false
   end
 
+  create_table "menu_categories", force: :cascade do |t|
+    t.jsonb "name", default: {}
+    t.string "slug", null: false
+    t.integer "position", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["slug"], name: "index_menu_categories_on_slug", unique: true
+  end
+
   create_table "menus", force: :cascade do |t|
     t.jsonb "name", default: {}
     t.jsonb "short_description", default: {}
@@ -517,6 +556,14 @@ ActiveRecord::Schema[7.1].define(version: 2026_08_12_000001) do
     t.integer "position", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "menu_category_id"
+    t.decimal "price", precision: 15, scale: 2, default: "0.0", null: false
+    t.decimal "discount_price", precision: 15, scale: 2
+    t.boolean "in_stock", default: true, null: false
+    t.integer "stock_count"
+    t.boolean "orderable", default: false, null: false
+    t.index ["menu_category_id"], name: "index_menus_on_menu_category_id"
+    t.index ["orderable"], name: "index_menus_on_orderable"
     t.index ["restaurant_id"], name: "index_menus_on_restaurant_id"
   end
 
@@ -629,6 +676,9 @@ ActiveRecord::Schema[7.1].define(version: 2026_08_12_000001) do
     t.jsonb "banner_description", default: {}
     t.jsonb "description1", default: {}
     t.jsonb "description2", default: {}
+    t.jsonb "concept", default: {}
+    t.jsonb "operating_hours", default: {}
+    t.jsonb "location_note", default: {}
     t.index ["name"], name: "index_restaurants_on_name", unique: true
     t.index ["slug"], name: "index_restaurants_on_slug", unique: true
   end

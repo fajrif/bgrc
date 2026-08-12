@@ -1,0 +1,71 @@
+<% status_color = { FoodOrder::PAID => "success", FoodOrder::UNPAID => "warning", FoodOrder::EXPIRED => "danger", FoodOrder::CANCELLED => "danger" }[@food_order.status] || "secondary" %>
+<table class="table table-hover">
+	<tr>
+		<td style="width:25%;"><b>Order ID</b></td>
+		<td><%= @food_order.order_id %></td>
+	</tr>
+	<tr>
+		<td><b>Payment Status</b></td>
+		<td><span class="badge bg-<%= status_color %>-subtle text-<%= status_color %>"><%= @food_order.status_label %></span></td>
+	</tr>
+	<tr>
+		<td><b>Customer</b></td>
+		<td>
+			<%= @food_order.customer_name %> &mdash; <%= @food_order.customer_phone %>
+			<% if @food_order.user %>
+				<br/><%= link_to @food_order.user.email, admins_user_path(@food_order.user) %>
+			<% else %>
+				<br/><span class="badge bg-secondary-subtle text-secondary">Guest</span>
+			<% end %>
+		</td>
+	</tr>
+	<tr>
+		<td><b>Pick Up</b></td>
+		<td><%= @food_order.pickup_label %><br/><span class="text-muted"><%= FoodOrder::PICKUP_LOCATION %></span></td>
+	</tr>
+	<% if @food_order.notes.present? %>
+	<tr>
+		<td><b>Notes</b></td>
+		<td><%= @food_order.notes %></td>
+	</tr>
+	<% end %>
+	<tr>
+		<td><b>Placed</b></td>
+		<td><%= @food_order.created_at.strftime("%d/%m/%Y %H:%M") %></td>
+	</tr>
+	<% if @food_order.is_unpaid? %>
+	<tr>
+		<td><b>Payment Expires</b></td>
+		<td><%= @food_order.expires_at&.strftime("%d/%m/%Y %H:%M") %> (<%= @food_order.time_remaining %>s remaining)</td>
+	</tr>
+	<% end %>
+</table>
+
+<table class="table table-hover align-middle">
+	<thead class="table-light">
+		<tr>
+			<th>Item</th>
+			<th>From</th>
+			<th class="text-center">Qty</th>
+			<th class="text-end">Price</th>
+			<th class="text-end">Subtotal</th>
+		</tr>
+	</thead>
+	<tbody>
+		<% @food_order.food_order_items.each do |item| %>
+			<tr>
+				<td><%= item.name %></td>
+				<td><%= blank_or_not(item.menu&.restaurant&.name) %></td>
+				<td class="text-center"><%= item.quantity %></td>
+				<td class="text-end"><%= item.price_label %></td>
+				<td class="text-end"><%= item.total_price_label %></td>
+			</tr>
+		<% end %>
+	</tbody>
+	<tfoot>
+		<tr>
+			<th colspan="4" class="text-end">Total</th>
+			<th class="text-end"><%= @food_order.total_price_label %></th>
+		</tr>
+	</tfoot>
+</table>

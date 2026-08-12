@@ -86,7 +86,7 @@ class Admins::RestaurantsController < Admins::BaseController
   def params_restaurant
     params.require(:restaurant).permit(:banner, :banner_description, :middle_banner, :image, :name,
                                         :short_description, :description, :description1, :description2,
-                                        :position, images: [])
+                                        :position, :concept, :operating_hours, :location_note, images: [])
   end
 
   def set_restaurant

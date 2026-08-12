@@ -1,0 +1,41 @@
+<%# locals: food_order: %>
+<div style="display:flex;justify-content:center;margin-bottom:30px;">
+  <table cellspacing="0" cellpadding="6" style="border-collapse:collapse;color:rgb(80,80,80)">
+    <tbody>
+      <tr>
+        <td style="padding:0 12px;font-size:16px;">Order ID:</td>
+        <td style="padding:0 12px;font-size:16px;"><%= food_order.order_id %></td>
+      </tr>
+      <tr>
+        <td style="padding:0 12px;font-size:16px;">Name:</td>
+        <td style="padding:0 12px;font-size:16px;"><%= food_order.customer_name %></td>
+      </tr>
+      <tr>
+        <td style="padding:0 12px;font-size:16px;">Phone:</td>
+        <td style="padding:0 12px;font-size:16px;"><%= food_order.customer_phone %></td>
+      </tr>
+      <tr>
+        <td style="padding:0 12px;font-size:16px;vertical-align:top;">Items:</td>
+        <td style="padding:0 12px;font-size:16px;">
+          <% food_order.food_order_items.each do |item| %>
+            <%= item.item_with_quantity %> &ndash; <%= item.total_price_label %><br/>
+          <% end %>
+        </td>
+      </tr>
+      <% if food_order.notes.present? %>
+        <tr>
+          <td style="padding:0 12px;font-size:16px;vertical-align:top;">Notes:</td>
+          <td style="padding:0 12px;font-size:16px;"><%= food_order.notes %></td>
+        </tr>
+      <% end %>
+      <tr>
+        <td style="padding:0 12px;font-size:16px;">Pick up:</td>
+        <td style="padding:0 12px;font-size:16px;"><%= FoodOrder::PICKUP_LOCATION %></td>
+      </tr>
+      <tr>
+        <td style="padding:6px 12px;font-size:16px;font-weight:bold;">Total:</td>
+        <td style="padding:6px 12px;font-size:16px;font-weight:bold;"><%= food_order.total_price_label %></td>
+      </tr>
+    </tbody>
+  </table>
+</div>

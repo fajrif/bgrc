@@ -1,6 +1,9 @@
 $("#forFlashMessage").html("<%= escape_javascript(flash_message2) %>");
 <% if @golf_reservation %>
 $("#itemListsPayment").html("<%= escape_javascript(render("golf_reservations/item_lists_payment")) %>");
+<% elsif @food_order %>
+$("#itemLists").html("<%= escape_javascript(render("food_orders/line_items", food_order: @food_order)) %>");
+$("#itemListsPayment").html("<%= escape_javascript(render("food_orders/payment_panel", food_order: @food_order)) %>");
 <% else %>
 $("#itemLists").html("<%= escape_javascript(render("users/bookings/item_lists")) %>");
 $("#itemListsPayment").html("<%= escape_javascript(render("users/bookings/item_lists_payment")) %>");

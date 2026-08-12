@@ -6,6 +6,9 @@
 				<th>Photo</th>
 				<th>Name</th>
 				<th>Restaurant</th>
+				<th>Category</th>
+				<th>Price</th>
+				<th>Stock</th>
 				<th>Position</th>
 				<th>Action</th>
 			</tr>
@@ -20,6 +23,20 @@
 						<p class="text-muted mb-0"><%= menu.short_description.to_s.truncate(60) %></p>
 					</td>
 					<td><%= blank_or_not(menu.restaurant&.name) %></td>
+					<td><%= blank_or_not(menu.menu_category&.name) %></td>
+					<td>
+						<%= menu.price_label %>
+						<% if menu.discounted? %>
+							<br/><del class="text-muted fs-12"><%= menu.original_price_label %></del>
+						<% end %>
+					</td>
+					<td>
+						<% if menu.orderable? %>
+							<span class="badge <%= menu.available? ? "bg-success-subtle text-success" : "bg-danger-subtle text-danger" %>"><%= menu.stock_label %></span>
+						<% else %>
+							<span class="badge bg-secondary-subtle text-secondary">Not orderable</span>
+						<% end %>
+					</td>
 					<td><%= menu.position %></td>
 					<td>
 						<div class="dropdown">

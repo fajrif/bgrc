@@ -12,14 +12,7 @@ class ApiMidtrans
 				"order_id" => purchase.order_id.to_s,
 				"gross_amount" => purchase.gross_amount.to_i
 			},
-			"item_details" => [{
-				"id" => purchase.productable.id.to_s,
-				"price" => purchase.gross_amount.to_i,
-				"quantity" => 1,
-				"name" => purchase.productable.name,
-				"category" => purchase.productable_type.to_s,
-				"merchant_name" => "Flex"
-			}],
+			"item_details" => item_details(purchase),
 			"customer_details" => {
 				"first_name" => purchase.user.full_name,
 				"email" => purchase.user.email
@@ -59,6 +52,25 @@ class ApiMidtrans
 	rescue StandardError => e
 		Rails.logger.error "message: #{e.message}"
 		return nil
+	end
+
+	# Most products are a single line — one booking, one tee time, one credit pack.
+	# A product made of several priced things (a Grab & Go order) can hand over its
+	# own breakdown instead; Midtrans only requires the lines to sum to gross_amount.
+	def self.item_details(purchase)
+		if purchase.productable.respond_to?(:midtrans_item_details)
+			lines = purchase.productable.midtrans_item_details
+			return lines if lines.present?
+		end
+
+		[{
+			"id" => purchase.productable.id.to_s,
+			"price" => purchase.gross_amount.to_i,
+			"quantity" => 1,
+			"name" => purchase.productable.name,
+			"category" => purchase.productable_type.to_s,
+			"merchant_name" => "Flex"
+		}]
 	end
 
 end

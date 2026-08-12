@@ -1,0 +1,9 @@
+<%# sub-navigation for the "My Orders" tab: current orders and past ones %>
+<div class="bbcc-viewswitch">
+    <%= link_to users_food_orders_path, class: ["bbcc-viewswitch-btn", ("active" if action_name == "index")] do %>
+        <i class="fa-solid fa-list-ul"></i> Current Orders
+    <% end %>
+    <%= link_to history_users_food_orders_path, class: ["bbcc-viewswitch-btn", ("active" if action_name == "history")] do %>
+        <i class="fa-solid fa-clock-rotate-left"></i> History
+    <% end %>
+</div>

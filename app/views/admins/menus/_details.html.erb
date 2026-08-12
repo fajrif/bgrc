@@ -24,6 +24,38 @@
 		<td><%= blank_or_not(@menu.restaurant&.name) %></td>
 	</tr>
 	<tr>
+		<td><b>Menu Category</b></td>
+		<td><%= blank_or_not(@menu.menu_category&.name) %></td>
+	</tr>
+	<tr>
+		<td><b>Price</b></td>
+		<td>
+			<%= @menu.price_label %>
+			<% if @menu.discounted? %>
+				<del class="text-muted ms-2"><%= @menu.original_price_label %></del>
+			<% end %>
+		</td>
+	</tr>
+	<tr>
+		<td><b>Orderable Online</b></td>
+		<td>
+			<% if @menu.orderable? %>
+				<span class="badge bg-success-subtle text-success">Yes</span>
+			<% else %>
+				<span class="badge bg-secondary-subtle text-secondary">No</span>
+			<% end %>
+		</td>
+	</tr>
+	<tr>
+		<td><b>Stock</b></td>
+		<td>
+			<span class="badge <%= @menu.available? ? "bg-success-subtle text-success" : "bg-danger-subtle text-danger" %>"><%= @menu.stock_label %></span>
+			<% if @menu.stock_count.nil? %>
+				<span class="text-muted ms-2">Unlimited</span>
+			<% end %>
+		</td>
+	</tr>
+	<tr>
 		<td><b>Position</b></td>
 		<td><%= @menu.position %></td>
 	</tr>

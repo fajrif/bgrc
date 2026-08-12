@@ -4,6 +4,8 @@ class Admins::MenusController < Admins::BaseController
   def index
 		criteria = Menu.all
 		criteria = criteria.where(restaurant_id: params[:restaurant_id]) if params[:restaurant_id].present?
+		criteria = criteria.where(menu_category_id: params[:menu_category_id]) if params[:menu_category_id].present?
+		criteria = criteria.where(orderable: params[:orderable] == "1") if params[:orderable].present?
 		criteria = criteria.where("name ->> :key ILIKE :value", key: I18n.locale.to_s, value: "%#{params[:search]}%") if params[:search].present?
 
     @menus = criteria.page(params[:page]).per(10)
@@ -50,7 +52,8 @@ class Admins::MenusController < Admins::BaseController
   private
 
   def params_menu
-    params.require(:menu).permit(:name, :short_description, :image, :restaurant_id, :position)
+    params.require(:menu).permit(:name, :short_description, :image, :restaurant_id, :position,
+                                 :menu_category_id, :price, :discount_price, :in_stock, :stock_count, :orderable)
   end
 
   def set_menu

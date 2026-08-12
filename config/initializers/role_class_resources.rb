@@ -25,6 +25,8 @@ ADMIN_CLASS_RESOURCES = [
 	"report_types",
 	"categories",
 	"menus",
+	"menu_categories",
+	"food_orders",
 	"member_types",
 	"banner_sections"
 ]

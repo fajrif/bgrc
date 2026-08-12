@@ -24,7 +24,8 @@ end
 
 def upsert_restaurant!(en_name, id_name:, image:, position:, rename_from: nil, slug: nil,
 												en_short:, id_short:, en_banner:, id_banner:,
-												en_desc:, id_desc:, en_desc1:, id_desc1:, en_desc2:, id_desc2:)
+												en_desc:, id_desc:, en_desc1:, id_desc1:, en_desc2:, id_desc2:,
+												en_concept: nil, id_concept: nil, hours: nil, en_location: nil, id_location: nil)
 	old_record = rename_from ? Restaurant.find_by("name @> ?", { en: rename_from }.to_json) : nil
 	restaurant = Restaurant.find_by("name @> ?", { en: en_name }.to_json)
 
@@ -45,6 +46,11 @@ def upsert_restaurant!(en_name, id_name:, image:, position:, rename_from: nil, s
 	restaurant.description1 = en_desc1
 	restaurant.description2 = en_desc2
 	restaurant.position = position
+	# The three labelled intro lines. Only Grab & Go uses them today, so the other
+	# venues pass nothing and the block stays hidden on their pages.
+	restaurant.concept = en_concept if en_concept
+	restaurant.operating_hours = hours if hours
+	restaurant.location_note = en_location if en_location
 
 	restaurant.banner.attach(io: BANNER_IMAGES.join("banner-1.png").open, filename: "banner-1.png") unless restaurant.banner.attached?
 	restaurant.middle_banner.attach(io: BANNER_IMAGES.join("banner-2.png").open, filename: "banner-2.png") unless restaurant.middle_banner.attached?
@@ -60,6 +66,9 @@ def upsert_restaurant!(en_name, id_name:, image:, position:, rename_from: nil, s
 		restaurant.description = id_desc
 		restaurant.description1 = id_desc1
 		restaurant.description2 = id_desc2
+		restaurant.concept = id_concept if id_concept
+		restaurant.operating_hours = hours if hours
+		restaurant.location_note = id_location if id_location
 		restaurant.save!
 		restaurant_slug!(restaurant, slug)
 	end
@@ -68,12 +77,19 @@ def upsert_restaurant!(en_name, id_name:, image:, position:, rename_from: nil, s
 	restaurant
 end
 
-def upsert_menu!(restaurant, en_name, id_name:, en_desc:, id_desc:, image:, position:)
+def upsert_menu!(restaurant, en_name, id_name:, en_desc:, id_desc:, image:, position:,
+                 price: 0, discount_price: nil, category: nil, stock_count: nil, orderable: false)
 	menu = restaurant.menus.find_by("name @> ?", { en: en_name }.to_json) || Menu.new
 	menu.restaurant = restaurant
 	menu.position = position
 	menu.name = en_name
 	menu.short_description = en_desc
+	menu.price = price
+	menu.discount_price = discount_price
+	menu.menu_category = category
+	menu.stock_count = stock_count
+	menu.in_stock = stock_count.nil? || stock_count.positive?
+	menu.orderable = orderable
 	menu.image.attach(io: MENU_IMAGES.join(image).open, filename: image) unless menu.image.attached?
 	menu.save!
 
@@ -170,30 +186,110 @@ grab_and_go = upsert_restaurant!(
 	id_desc: "Grab & Go adalah konter klub untuk hari-hari yang tidak menyisakan waktu untuk duduk makan. Isi tenaga di antara set atau bersantai setelah bermain dengan makanan segar buatan chef, jus dingin, dan camilan sehat — semuanya dibuat di dapur yang sama dengan restoran klub, hanya dikemas untuk dibawa. Pesan lebih dulu dan ambil dalam perjalanan menuju lapangan, atau biarkan menunggu Anda setelah permainan selesai.",
 	en_desc1: "The counter runs from early morning through to the end of play, with the selection shifting through the day: pastries, fruit and coffee before the first tee times, salads, wraps and rice bowls over lunch, and protein-led plates for anyone coming off a long session in the afternoon. Everything is prepared fresh each morning rather than held over, so the range narrows as the day goes on.\n\nNo booking is needed — walk up and order, or place an order ahead from the club app and collect it when it suits you. Staff can package anything on the counter for the road, and dietary requirements can be accommodated with a little notice.",
 	id_desc1: "Konter buka dari pagi hingga akhir jam permainan, dengan pilihan yang berganti sepanjang hari: pastry, buah, dan kopi sebelum tee time pertama, salad, wrap, dan rice bowl saat makan siang, serta hidangan kaya protein bagi yang baru menyelesaikan sesi panjang di sore hari. Semuanya disiapkan segar setiap pagi, sehingga pilihan menyempit seiring berjalannya hari.\n\nTidak perlu reservasi — datang dan pesan langsung, atau pesan lebih dulu melalui aplikasi klub dan ambil saat Anda sempat. Staf dapat mengemas apa pun dari konter untuk dibawa, dan kebutuhan diet khusus dapat dipenuhi dengan pemberitahuan sebelumnya.",
+	en_concept: "Quick bites, healthy options, post-workout fuel",
+	id_concept: "Hidangan cepat, pilihan sehat, tenaga setelah berolahraga",
+	hours: "06:00 AM – 09:00 PM",
+	en_location: "Inside Bali Beach Country Club, near the main clubhouse area",
+	id_location: "Di dalam Bali Beach Country Club, dekat area clubhouse utama",
 	en_desc2: "Quality ingredients, quick service, no compromise. The point of Grab & Go is that a short turnaround between activities shouldn't mean eating badly — the same kitchens, the same sourcing, just built around a schedule that doesn't allow for a long lunch. Cold-pressed juices and smoothies are made to order, and the coffee is the same as you'll find in the restaurants.",
 	id_desc2: "Bahan berkualitas, layanan cepat, tanpa kompromi. Inti dari Grab & Go adalah bahwa jeda singkat di antara aktivitas tidak berarti Anda harus makan sembarangan — dapur yang sama, bahan yang sama, hanya dirancang untuk jadwal yang tidak menyediakan waktu makan siang panjang. Jus dingin dan smoothie dibuat sesuai pesanan, dan kopinya sama dengan yang tersedia di restoran."
 )
 
+# Categories are seeded by 24_create_menu_categories.rb. If that hasn't run yet the
+# lookups come back nil and the items are seeded unpriced — re-running this file
+# afterwards fills them in.
+CATEGORIES = MenuCategory.all.index_by(&:slug)
+
+# The dish photography in vendor/assets/images/restaurant is a set of four, so the
+# menu below cycles through it. Swap in real photos per item when they land.
+DISH_PHOTOS = [
+	"laksa.png",
+	"yellow-noodles-cup-with-crispy-pork-slices-pork-meatballs-together-with-thai-food-style-noodles.png",
+	"thai-food-with-spicy-minced-pork-serve-with-sticky-rice-fried-chicken.png",
+	"spicy-pork-chops-black-cup-consisting-lemons-chili-side-dishes.png"
+].freeze
+
 menu_items = [
-	{ en: "Laksa", id_name: "Laksa", image: "laksa.png",
+	{ en: "Laksa", id_name: "Laksa", image: "laksa.png", price: 85_000, category: "salad-bowls",
 		en_desc: "Coconut curry noodle soup with prawns and a soft-boiled egg.",
 		id_desc: "Sup mie kari santan dengan udang dan telur setengah matang." },
 	{ en: "Egg Noodle Soup with Crispy Pork", id_name: "Sup Mie Telur dengan Babi Renyah", image: "yellow-noodles-cup-with-crispy-pork-slices-pork-meatballs-together-with-thai-food-style-noodles.png",
+		price: 95_000, category: "salad-bowls",
 		en_desc: "Yellow egg noodles with crispy pork belly, pork meatballs and fresh herbs.",
 		id_desc: "Mie telur kuning dengan perut babi renyah, bakso babi, dan rempah segar." },
 	{ en: "Larb Moo with Sticky Rice", id_name: "Larb Moo dengan Nasi Ketan", image: "thai-food-with-spicy-minced-pork-serve-with-sticky-rice-fried-chicken.png",
+		price: 90_000, category: "salad-bowls",
 		en_desc: "Spicy minced pork salad with herbs, lime and sticky rice on the side.",
 		id_desc: "Salad babi cincang pedas dengan rempah, jeruk nipis, dan nasi ketan." },
 	{ en: "Spicy Pork Chop Salad", id_name: "Salad Iga Babi Pedas", image: "spicy-pork-chops-black-cup-consisting-lemons-chili-side-dishes.png",
+		price: 110_000, category: "salad-bowls",
 		en_desc: "Grilled pork chop sliced over a spicy herb salad with chili and lime.",
 		id_desc: "Iga babi panggang diiris di atas salad rempah pedas dengan cabai dan jeruk nipis." }
 ]
 
 [the_paddock, kasumi, pit_lane, mezzaluna, porto].each do |restaurant|
 	menu_items.each_with_index do |item, i|
+		# Every venue shows these four as menu highlights, but only The Paddock's
+		# are put on the Grab & Go counter — five identical cards pooled from five
+		# kitchens would read as a bug rather than a choice. Flip `orderable` on any
+		# other venue's item in the admin panel to add it to the counter.
 		upsert_menu!(
 			restaurant, item[:en], id_name: item[:id_name],
-			en_desc: item[:en_desc], id_desc: item[:id_desc], image: item[:image], position: i + 1
+			en_desc: item[:en_desc], id_desc: item[:id_desc], image: item[:image], position: i + 1,
+			price: item[:price], category: CATEGORIES[item[:category]],
+			orderable: restaurant == the_paddock
 		)
 	end
 end
+
+# The Grab & Go counter's own menu — the four categories the order page filters by.
+grab_go_items = [
+	{ en: "Green Reset Smoothie", id_name: "Smoothie Green Reset", category: "smoothies-shakes", price: 65_000,
+		en_desc: "Spinach, green apple, cucumber, lime and coconut water.",
+		id_desc: "Bayam, apel hijau, mentimun, jeruk nipis, dan air kelapa." },
+	{ en: "Banana Protein Shake", id_name: "Protein Shake Pisang", category: "smoothies-shakes", price: 75_000, discount_price: 60_000,
+		en_desc: "Banana, peanut butter, oat milk and a scoop of whey.",
+		id_desc: "Pisang, selai kacang, susu oat, dan satu takar whey." },
+	{ en: "Dragon Fruit Cooler", id_name: "Dragon Fruit Cooler", category: "smoothies-shakes", price: 60_000,
+		en_desc: "Cold-pressed dragon fruit, pineapple and mint over ice.",
+		id_desc: "Buah naga, nanas, dan mint yang diperas dingin dengan es." },
+	{ en: "Chicken Caesar Bowl", id_name: "Chicken Caesar Bowl", category: "salad-bowls", price: 95_000,
+		en_desc: "Grilled chicken, cos lettuce, shaved parmesan and sourdough croutons.",
+		id_desc: "Ayam panggang, selada cos, serutan parmesan, dan crouton sourdough." },
+	{ en: "Tuna Poke Bowl", id_name: "Tuna Poke Bowl", category: "salad-bowls", price: 120_000, stock_count: 8,
+		en_desc: "Seared tuna, brown rice, edamame, avocado and sesame dressing.",
+		id_desc: "Tuna panggang sebentar, nasi merah, edamame, alpukat, dan saus wijen." },
+	{ en: "Quinoa Garden Bowl", id_name: "Quinoa Garden Bowl", category: "salad-bowls", price: 85_000,
+		en_desc: "Quinoa, roast pumpkin, chickpeas, feta and a lemon dressing.",
+		id_desc: "Quinoa, labu panggang, buncis, feta, dan saus lemon." },
+	{ en: "Club Chicken Wrap", id_name: "Wrap Ayam Club", category: "sandwiches-wraps", price: 80_000,
+		en_desc: "Grilled chicken, avocado, tomato and garlic aioli in a warm tortilla.",
+		id_desc: "Ayam panggang, alpukat, tomat, dan aioli bawang dalam tortilla hangat." },
+	{ en: "Smoked Salmon Bagel", id_name: "Bagel Salmon Asap", category: "sandwiches-wraps", price: 105_000,
+		en_desc: "Smoked salmon, cream cheese, capers and red onion.",
+		id_desc: "Salmon asap, cream cheese, caper, dan bawang merah." },
+	{ en: "Halloumi & Roast Veg Wrap", id_name: "Wrap Halloumi & Sayur Panggang", category: "sandwiches-wraps", price: 78_000,
+		en_desc: "Grilled halloumi, roast capsicum, zucchini and basil pesto.",
+		id_desc: "Halloumi panggang, paprika panggang, zucchini, dan pesto basil." },
+	{ en: "Trail Mix Pot", id_name: "Pot Trail Mix", category: "snacks", price: 45_000,
+		en_desc: "Almonds, cashews, dried mango and dark chocolate.",
+		id_desc: "Almond, mete, mangga kering, dan cokelat hitam." },
+	{ en: "Greek Yoghurt & Granola", id_name: "Yoghurt Yunani & Granola", category: "snacks", price: 55_000, discount_price: 45_000,
+		en_desc: "Thick Greek yoghurt, house granola and local honey.",
+		id_desc: "Yoghurt Yunani kental, granola buatan sendiri, dan madu lokal." },
+	{ en: "Banana Bread Slice", id_name: "Roti Pisang", category: "snacks", price: 40_000, stock_count: 0,
+		en_desc: "Baked each morning, served warm with salted butter.",
+		id_desc: "Dipanggang setiap pagi, disajikan hangat dengan mentega asin." }
+]
+
+grab_go_items.each_with_index do |item, i|
+	upsert_menu!(
+		grab_and_go, item[:en], id_name: item[:id_name],
+		en_desc: item[:en_desc], id_desc: item[:id_desc],
+		image: DISH_PHOTOS[i % DISH_PHOTOS.size], position: i + 1,
+		price: item[:price], discount_price: item[:discount_price],
+		category: CATEGORIES[item[:category]], stock_count: item[:stock_count], orderable: true
+	)
+end
+
+puts "Menu items on sale: #{Menu.orderable.count} (#{Menu.available.count} in stock)"

@@ -1,0 +1,49 @@
+<div class="bbcc-table-scroll">
+    <table class="bbcc-table">
+        <thead>
+            <tr>
+                <th>Order ID</th>
+                <th>Placed</th>
+                <th class="bbcc-table-num">Items</th>
+                <th>Pick Up</th>
+                <th>Kitchen</th>
+                <th>Status</th>
+                <th class="bbcc-table-num">Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% @food_orders.each do |food_order| %>
+                <%
+                  badge = case food_order.status
+                          when FoodOrder::PAID      then "bbcc-badge-paid"
+                          when FoodOrder::EXPIRED   then "bbcc-badge-danger"
+                          when FoodOrder::CANCELLED then "bbcc-badge-danger"
+                          else "bbcc-badge-warn"
+                          end
+                %>
+                <tr>
+                    <td><%= link_to food_order.order_id, food_order_path(food_order.order_id), class: "bbcc-table-id" %></td>
+                    <td><%= food_order.created_at.strftime("%d %b %Y, %H:%M") %></td>
+                    <td class="bbcc-table-num"><%= food_order.items_count %></td>
+                    <td><%= food_order.pickup_label %></td>
+                    <td><%= food_order.paid? ? food_order.fulfillment_label : "—" %></td>
+                    <td>
+                        <span class="bbcc-badge <%= badge %>"><%= food_order.status_label %></span>
+                        <% if food_order.cashier_order? %>
+                            <span class="bbcc-badge bbcc-badge-muted">Cashier</span>
+                        <% end %>
+                    </td>
+                    <td class="bbcc-table-num"><%= food_order.total_price_label %></td>
+                </tr>
+            <% end %>
+            <% if @food_orders.empty? %>
+                <tr>
+                    <td colspan="7" class="bbcc-table-empty">
+                        Nothing here yet.
+                        <%= link_to "Browse the Grab & Go menu", dining_restaurant_path(RestaurantsController::GRAB_AND_GO_SLUG), class: "bbcc-link" %>
+                    </td>
+                </tr>
+            <% end %>
+        </tbody>
+    </table>
+</div>

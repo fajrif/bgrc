@@ -68,6 +68,9 @@ class Purchase < ApplicationRecord
     elsif self.productable.is_a?(ClassCreditPurchase)
       self.productable.mark_paid!
       self.productable.book_initial_session!
+    elsif self.productable.is_a?(FoodOrder)
+      self.productable.paid!
+      self.productable.send_email_notification!
 		end
 	end
 

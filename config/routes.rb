@@ -131,6 +131,14 @@ Rails.application.routes.draw do
         end
       end
       resources :menus
+      resources :menu_categories
+      resources :food_orders, only: [:index, :show, :destroy] do
+        member do
+          put "fulfillment" => "food_orders#fulfillment", :as => :fulfillment
+          put "cancel" => "food_orders#cancel", :as => :cancel
+          post "cashier_payment" => "food_orders#cashier_payment", :as => :cashier_payment
+        end
+      end
       resources :wellnesses do
         member do
           delete "delete_attachment_image/:asset_id" => "wellnesses#delete_attachment_image", :as => :delete_attachment_image
@@ -212,6 +220,9 @@ Rails.application.routes.draw do
       resources :golf_reservations, :only => [:index, :destroy] do
         collection { get :history }
       end
+      resources :food_orders, :only => [:index], :path => "orders" do
+        collection { get :history }
+      end
     end
 
     # The member area used to live under /users/*. Three of its segments were
@@ -238,6 +249,15 @@ Rails.application.routes.draw do
 				post "expire" => "bookings#expire", :as => :expire
 				get :invoice
 				post :pay_with_credit
+			end
+		end
+
+		# Grab & Go orders. Guests can place one; payment is what needs an account,
+		# so these sit outside the users namespace like bookings and golf.
+		resources :food_orders, path: "orders", only: [:create, :show, :destroy] do
+			member do
+				post :expire
+				get  :invoice
 			end
 		end
 

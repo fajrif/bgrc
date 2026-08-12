@@ -1,0 +1,33 @@
+<%# locals: menu: — a Menu that passed Menu.orderable, in stock or not %>
+<div class="col-12 col-md-6 col-lg-4 bbcc-menu-col" data-category="<%= menu.menu_category&.slug %>">
+    <article class="bbcc-menu-card<%= " bbcc-menu-card-out" unless menu.available? %>"
+             data-menu-id="<%= menu.id %>"
+             data-price="<%= menu.effective_price.to_i %>"
+             data-name="<%= menu.name %>"
+             data-max="<%= menu.stock_count %>">
+        <span class="bbcc-menu-card-thumb">
+            <% if menu.image.attached? %>
+                <%= image_tag menu.image.variant(resize_to_fill: [300, 300]), alt: menu.name %>
+            <% end %>
+        </span>
+        <div class="bbcc-menu-card-body">
+            <span class="bbcc-menu-card-cat"><%= menu.menu_category&.name %></span>
+            <h3 class="bbcc-menu-card-name"><%= menu.name %></h3>
+            <p class="bbcc-menu-card-price">
+                <%= menu.price_label %>
+                <% if menu.discounted? %>
+                    <s class="bbcc-menu-card-was"><%= menu.original_price_label %></s>
+                <% end %>
+            </p>
+            <% if menu.available? %>
+                <div class="bbcc-qty">
+                    <button type="button" class="bbcc-qty-btn bbcc-qty-minus" aria-label="Remove one <%= menu.name %>">&minus;</button>
+                    <output class="bbcc-qty-value" aria-live="polite">0</output>
+                    <button type="button" class="bbcc-qty-btn bbcc-qty-plus" aria-label="Add one <%= menu.name %>">+</button>
+                </div>
+            <% else %>
+                <span class="bbcc-badge bbcc-badge-muted">Sold out</span>
+            <% end %>
+        </div>
+    </article>
+</div>

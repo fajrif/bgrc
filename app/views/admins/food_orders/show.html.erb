@@ -1,0 +1,73 @@
+<% title_page("Order #{@food_order.order_id}") %>
+<div class="row">
+	<div class="col-lg-8">
+		<div class="card card-box">
+			<div class="card-header">
+				<h5 class="card-title mb-0">Order Details</h5>
+			</div>
+			<div class="card-body">
+				<%= render "details" %>
+			</div>
+		</div>
+
+		<div class="card card-box">
+			<div class="card-header">
+				<h5 class="card-title mb-0">Payment</h5>
+			</div>
+			<div class="card-body">
+				<% if @food_order.purchase %>
+					<%= render "payment", purchase: @food_order.purchase %>
+				<% else %>
+					<p class="text-muted mb-0">No payment has been attempted for this order yet.</p>
+				<% end %>
+			</div>
+		</div>
+	</div>
+
+	<div class="col-lg-4">
+		<div class="card card-box">
+			<div class="card-header">
+				<h5 class="card-title mb-0">Kitchen Queue</h5>
+			</div>
+			<div class="card-body">
+				<% if @food_order.paid? %>
+					<p class="mb-3">
+						Current status:
+						<span class="badge bg-primary-subtle text-primary"><%= @food_order.fulfillment_label %></span>
+					</p>
+					<div class="d-grid gap-2">
+						<% FoodOrder::FULFILLMENT_LABELS.each do |value, label| %>
+							<% next if value == @food_order.fulfillment_status %>
+							<%= link_to "Mark as #{label}", fulfillment_admins_food_order_path(@food_order, fulfillment_status: value),
+										method: :put, class: "btn btn-soft-primary btn-sm" %>
+						<% end %>
+					</div>
+				<% else %>
+					<p class="text-muted mb-0">The kitchen queue opens once the order is paid.</p>
+				<% end %>
+			</div>
+		</div>
+
+		<div class="card card-box">
+			<div class="card-header">
+				<h5 class="card-title mb-0">Actions</h5>
+			</div>
+			<div class="card-body">
+				<div class="d-grid gap-2">
+					<% if @food_order.is_unpaid? %>
+						<%= link_to "Record Cashier Payment", cashier_payment_admins_food_order_path(@food_order),
+									method: :post, class: "btn btn-success",
+									data: { confirm: "Mark this order as paid at the counter?" } %>
+						<%= link_to "Cancel Order", cancel_admins_food_order_path(@food_order),
+									method: :put, class: "btn btn-warning",
+									data: { confirm: "Cancel this order?" } %>
+					<% end %>
+					<%= link_to "View All Orders", admins_food_orders_path, class: "btn btn-light" %>
+					<%= link_to "Delete Order", admins_food_order_path(@food_order),
+								method: :delete, class: "btn btn-danger",
+								data: { confirm: "Delete this order permanently?" } %>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
