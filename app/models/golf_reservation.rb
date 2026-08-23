@@ -157,11 +157,20 @@ class GolfReservation < ApplicationRecord
     qrcode.as_svg(color: "000", shape_rendering: "crispEdges", module_size: 8, standalone: true, use_path: true)
   end
 
-  def self.check_available?(golf_course, tee_time_datetime)
-    !golf_course.golf_reservations
-                .where(status: [UNPAID, PAID])
-                .where(tee_time: tee_time_datetime)
-                .exists?
+  def self.players_booked_for(golf_course, tee_time_datetime, excluding: nil)
+    scope = golf_course.golf_reservations
+                       .where(status: [UNPAID, PAID])
+                       .where(tee_time: tee_time_datetime)
+    scope = scope.where.not(id: excluding.id) if excluding&.persisted?
+    scope.sum(:players_count)
+  end
+
+  def self.remaining_capacity_for(golf_course, tee_time_datetime, excluding: nil)
+    [golf_course.max_players - players_booked_for(golf_course, tee_time_datetime, excluding: excluding), 0].max
+  end
+
+  def self.check_available?(golf_course, tee_time_datetime, players_count = 1, excluding: nil)
+    remaining_capacity_for(golf_course, tee_time_datetime, excluding: excluding) >= players_count
   end
 
   def self.expire_stale_reservations!

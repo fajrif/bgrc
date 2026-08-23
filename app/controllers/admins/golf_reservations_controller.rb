@@ -44,7 +44,7 @@ class Admins::GolfReservationsController < Admins::BaseController
 
     if @golf_reservation.valid?
       golf_course = @golf_reservation.golf_course
-      if GolfReservation.check_available?(golf_course, @golf_reservation.tee_time)
+      if GolfReservation.check_available?(golf_course, @golf_reservation.tee_time, @golf_reservation.players_count)
         if @golf_reservation.save
           @golf_reservation.create_purchase_record! if @golf_reservation.user.present?
           redirect_to admins_golf_reservation_path(@golf_reservation), notice: "Reservation created and marked as paid."
@@ -53,7 +53,8 @@ class Admins::GolfReservationsController < Admins::BaseController
           render :new
         end
       else
-        flash.now[:alert] = "That tee time is already booked."
+        remaining = GolfReservation.remaining_capacity_for(golf_course, @golf_reservation.tee_time)
+        flash.now[:alert] = remaining.zero? ? "That tee time is fully booked." : "Only #{remaining} spot#{'s' unless remaining == 1} remaining for that tee time."
         render :new
       end
     else
@@ -67,7 +68,7 @@ class Admins::GolfReservationsController < Admins::BaseController
     date = Date.parse(params[:date])
     slots = golf_course.available_tee_times(date)
     render json: slots.map { |s|
-      { label: s[:time].strftime("%H:%M"), value: s[:time].strftime("%Y-%m-%dT%H:%M:%S"), available: s[:available] }
+      { label: s[:time].strftime("%H:%M"), value: s[:time].strftime("%Y-%m-%dT%H:%M:%S"), available: s[:available], remaining: s[:remaining] }
     }
   rescue
     render json: []
@@ -86,6 +87,20 @@ class Admins::GolfReservationsController < Admins::BaseController
       params_golf_reservation_safe
     else
       params_golf_reservation_full
+    end
+
+    if permitted.key?("tee_time") || permitted.key?("players_count")
+      golf_course = permitted[:golf_course_id].present? ? GolfCourse.find(permitted[:golf_course_id]) : @golf_reservation.golf_course
+      tee_time = permitted[:tee_time].present? ? (DateTime.parse(permitted[:tee_time]) rescue @golf_reservation.tee_time) : @golf_reservation.tee_time
+      players_count = permitted[:players_count].presence&.to_i || @golf_reservation.players_count
+
+      unless GolfReservation.check_available?(golf_course, tee_time, players_count, excluding: @golf_reservation)
+        remaining = GolfReservation.remaining_capacity_for(golf_course, tee_time, excluding: @golf_reservation)
+        flash.now[:alert] = remaining.zero? ? "That tee time is fully booked." : "Only #{remaining} spot#{'s' unless remaining == 1} remaining for that tee time."
+        @golf_courses = GolfCourse.all
+        @users = User.all.order(name: :asc)
+        render :edit and return
+      end
     end
 
     if @golf_reservation.update(permitted)

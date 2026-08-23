@@ -50,12 +50,13 @@
           <p class="text-muted">No rates configured.</p>
         <% else %>
           <table class="table table-sm">
-            <thead><tr><th>Holes</th><th>Day Type</th><th>Price (per player)</th><th></th></tr></thead>
+            <thead><tr><th>Holes</th><th>Day Type</th><th>Time Window</th><th>Price (per player)</th><th></th></tr></thead>
             <tbody>
               <% @golf_rates.each do |rate| %>
                 <tr>
                   <td><%= rate.holes %> Holes</td>
                   <td><%= rate.day_type.capitalize %></td>
+                  <td><%= rate.windowed? ? "#{rate.start_time}–#{rate.end_time}" : "All day" %></td>
                   <td><%= rate.price_label %></td>
                   <td>
                     <%= link_to "Edit", edit_admins_golf_rate_path(rate), class: "btn btn-sm btn-secondary" %>

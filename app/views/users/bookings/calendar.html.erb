@@ -38,6 +38,10 @@
                         <span style="display:inline-block;width:14px;height:14px;background:#ffc107;border:1.5px solid #e6a800;border-radius:2px;flex-shrink:0;"></span>
                         <span class="text-muted">Awaiting Payment</span>
                     </div>
+                    <div class="d-flex align-items-center gap-1">
+                        <span style="display:inline-block;width:14px;height:14px;background:#E9F5FF;border:1.5px solid #3AA0FF;border-radius:2px;flex-shrink:0;"></span>
+                        <span class="text-muted">Golf</span>
+                    </div>
                 </div>
 
                 <div id="user-schedule-calendar"></div>
@@ -46,6 +50,37 @@
     </div>
 </section>
 
+<div class="modal fade bbcc-modal" id="scheduleDetailModal" tabindex="-1" aria-labelledby="scheduleDetailModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="bbcc-modal-title" id="scheduleDetailModalLabel">Booking Details</h2>
+        <button type="button" class="bbcc-modal-close" data-bs-dismiss="modal" aria-label="Close">
+          <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="bbcc-modal-callout">
+          <span class="bbcc-modal-label">Booking ID</span>
+          <span class="bbcc-modal-value" id="sd-order-id">—</span>
+        </div>
+        <div class="bbcc-modal-group">
+          <div class="bbcc-modal-summary-row"><span>Type</span><span id="sd-type">—</span></div>
+          <div class="bbcc-modal-summary-row"><span>Date &amp; Time</span><span id="sd-date">—</span></div>
+          <div class="bbcc-modal-summary-row"><span id="sd-subtitle-label">Court</span><span id="sd-subtitle">—</span></div>
+          <div class="bbcc-modal-summary-row"><span>Status</span><span id="sd-status">—</span></div>
+          <div class="bbcc-modal-summary-row"><span id="sd-pax-label">Pax</span><span id="sd-pax">—</span></div>
+          <div class="bbcc-modal-summary-row bbcc-modal-summary-total" id="sd-price-row"><span>Price</span><span id="sd-price">—</span></div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="bbcc-btn bbcc-btn-light" data-bs-dismiss="modal">Close</button>
+        <a href="#" id="sd-detail-link" class="bbcc-btn">View Full Details</a>
+      </div>
+    </div>
+  </div>
+</div>
+
 <%= content_for :tail do %>
   <%= javascript_include_tag "fullcalendar.js" %>
   <%= javascript_include_tag "moment-with-locales.min.js" %>
@@ -53,8 +88,11 @@
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       var calendarEl = document.getElementById('user-schedule-calendar');
+      var detailModalEl = document.getElementById('scheduleDetailModal');
+      var detailModal = detailModalEl ? new bootstrap.Modal(detailModalEl) : null;
+
       var calendar = new FullCalendar.Calendar(calendarEl, {
-        initialView: 'timeGridWeek',
+        initialView: 'dayGridMonth',
         initialDate: '<%= Date.today.strftime('%Y-%m-%d') %>',
         headerToolbar: {
           left: 'prev,next today',
@@ -62,21 +100,37 @@
           right: ''
         },
         navLinks: false,
-        allDaySlot: false,
-        slotDuration: '01:00',
-        slotMinTime: '06:00:00',
-        slotMaxTime: '23:00:00',
-        eventTimeFormat: { hour: '2-digit', minute: '2-digit', hour12: false },
         events: '<%= calendar_users_bookings_path(format: :json) %>',
         eventClick: function(info) {
           info.jsEvent.preventDefault();
-          if (info.event.url) {
-            window.location.href = info.event.url;
-          } else if (info.event.extendedProps.signUpUrl) {
-            window.open(info.event.extendedProps.signUpUrl, '_blank');
-          } else if (info.event.extendedProps.classUrl) {
-            window.location.href = info.event.extendedProps.classUrl;
+          var props = info.event.extendedProps || {};
+
+          document.getElementById('sd-order-id').textContent = props.orderId || info.event.id;
+          document.getElementById('sd-type').textContent = props.type || '—';
+          document.getElementById('sd-date').textContent = props.dateLabel || '—';
+          document.getElementById('sd-subtitle-label').textContent = props.subtitleLabel || 'Court';
+          document.getElementById('sd-subtitle').textContent = props.subtitle || '—';
+          document.getElementById('sd-status').textContent = props.statusLabel || '—';
+          document.getElementById('sd-pax-label').textContent = props.paxLabel || 'Pax';
+          document.getElementById('sd-pax').textContent = (props.pax !== undefined && props.pax !== null) ? props.pax : '—';
+
+          var priceRow = document.getElementById('sd-price-row');
+          if (props.priceLabel) {
+            priceRow.style.display = '';
+            document.getElementById('sd-price').textContent = props.priceLabel;
+          } else {
+            priceRow.style.display = 'none';
           }
+
+          var link = document.getElementById('sd-detail-link');
+          if (props.detailUrl) {
+            link.href = props.detailUrl;
+            link.style.display = '';
+          } else {
+            link.style.display = 'none';
+          }
+
+          if (detailModal) detailModal.show();
         }
       });
       calendar.setOption('height', 'auto');

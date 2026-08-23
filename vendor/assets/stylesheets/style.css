@@ -1824,7 +1824,7 @@ textarea.input-bg {
 .btn.btn-dark-gray:hover,
 .btn.btn-dark-gray:focus {
   background: transparent;
-  color: var(--dark-grey-color);
+  color: var(--dark-grey-color) !important;
 }
 .btn.btn-light-gray {
   background: #dbdbdb;

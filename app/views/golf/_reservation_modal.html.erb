@@ -67,10 +67,31 @@
 
 <script>
 (function() {
-  var rates = <%= golf_course.golf_rates.each_with_object({}) { |r, h| (h[r.day_type] ||= {})[r.holes.to_s] = r.price.to_i }.to_json.html_safe %>;
+  var rates = <%=
+    golf_course.golf_rates.group_by(&:day_type).transform_values { |day_rates|
+      day_rates.group_by { |r| r.holes.to_s }.transform_values { |group|
+        group.map { |r| { start: r.start_time, end: r.end_time, price: r.price.to_i } }
+      }
+    }.to_json.html_safe
+  %>;
 
   function formatRupiah(amount) {
     return 'Rp. ' + amount.toLocaleString('id-ID');
+  }
+
+  function resolveRate(dayType, holes, timeStr) {
+    var entries = (rates[dayType] || {})[holes] || [];
+    var windowMatch = null;
+    var baseMatch = null;
+    entries.forEach(function(entry) {
+      if (entry.start && entry.end) {
+        if (timeStr >= entry.start && timeStr < entry.end) windowMatch = entry;
+      } else {
+        baseMatch = entry;
+      }
+    });
+    var match = windowMatch || baseMatch;
+    return match ? match.price : 0;
   }
 
   window.updateModalPrice = function() {
@@ -88,6 +109,7 @@
     var dt      = new Date(teeTimeVal);
     var day     = dt.getDay();
     var dayType = (day === 0 || day === 6) ? 'weekend' : 'weekday';
+    var timeStr = ('0' + dt.getHours()).slice(-2) + ':' + ('0' + dt.getMinutes()).slice(-2);
 
     var holesEl = document.querySelector('input[name="holes"]:checked');
     var holes   = holesEl ? holesEl.value : null;
@@ -95,12 +117,26 @@
     var playersEl = document.getElementById('modal_players_count');
     var players   = playersEl ? parseInt(playersEl.value) : 1;
 
-    var dayRates  = rates[dayType] || {};
-    var rate      = holes && dayRates[holes] ? dayRates[holes] : 0;
-    var greenFee  = rate * players;
+    var rate     = holes ? resolveRate(dayType, holes, timeStr) : 0;
+    var greenFee = rate * players;
 
     rateEl.textContent = rate > 0 ? formatRupiah(rate) + ' / player' : '—';
     feeEl.textContent  = greenFee > 0 ? formatRupiah(greenFee) : '—';
+  };
+
+  window.setModalMaxPlayers = function(remaining) {
+    var select = document.getElementById('modal_players_count');
+    if (!select) return;
+    var max = Math.max(1, Math.min(4, remaining || 4));
+    var current = select.value;
+    select.innerHTML = '';
+    for (var n = 1; n <= max; n++) {
+      var opt = document.createElement('option');
+      opt.value = n;
+      opt.textContent = n + (n === 1 ? ' Player' : ' Players');
+      select.appendChild(opt);
+    }
+    if (current && parseInt(current, 10) <= max) select.value = current;
   };
 
   document.addEventListener('DOMContentLoaded', function() {

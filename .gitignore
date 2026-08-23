@@ -50,3 +50,5 @@ CLAUDE.md
 # Testing artifacts (AI agent scenarios, screenshots, bug reports)
 docs/testing/
 .agent-artifacts/
+
+PROJECT_VALUATION_NOTES.md

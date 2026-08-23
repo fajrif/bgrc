@@ -40,17 +40,20 @@ class GolfCourse < ApplicationRecord
       t += self.interval_minutes.minutes
     end
 
-    booked_times = self.golf_reservations
-                       .where(status: [GolfReservation::UNPAID, GolfReservation::PAID])
-                       .where("tee_time::date = ?", date)
-                       .pluck(:tee_time)
-                       .map { |tt| tt.in_time_zone.strftime("%H:%M") }
+    booked_counts = self.golf_reservations
+                        .where(status: [GolfReservation::UNPAID, GolfReservation::PAID])
+                        .where("tee_time::date = ?", date)
+                        .group(:tee_time)
+                        .sum(:players_count)
+                        .transform_keys { |tt| tt.in_time_zone.strftime("%H:%M") }
 
     slots.map do |slot|
       if date == Date.current && slot <= now
-        { time: slot, available: false, past: true }
+        { time: slot, available: false, past: true, remaining: 0 }
       else
-        { time: slot, available: !booked_times.include?(slot.strftime("%H:%M")) }
+        booked = booked_counts[slot.strftime("%H:%M")] || 0
+        remaining = [self.max_players - booked, 0].max
+        { time: slot, available: remaining > 0, remaining: remaining, past: false }
       end
     end
   end

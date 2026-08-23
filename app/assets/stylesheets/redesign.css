@@ -106,6 +106,12 @@ html, body { height: auto; min-height: 100%; }
 }
 .bbcc-header-stuck { box-shadow: 0 2px 14px rgba(0, 0, 0, .09); }
 
+/* vendor/assets/stylesheets/responsive.css zeroes out `header .container-lg`
+   padding below 767px for the old bootsnav navbar — restore Bootstrap's
+   default gutter for our own header so its content isn't flush to the
+   viewport edge on mobile. */
+.bbcc-header .container-lg { padding-left: .75rem; padding-right: .75rem; }
+
 .bbcc-topbar { background: var(--bbcc-topbar); color: #fff; }
 .bbcc-navbar-inner { transition: min-height .25s ease; }
 .bbcc-header-stuck .bbcc-navbar-inner { min-height: 68px; }
@@ -942,7 +948,7 @@ html, body { height: auto; min-height: 100%; }
   font-family: "Mona Sans", sans-serif; text-transform: uppercase; letter-spacing: 1px;
   font-size: 1.45rem; font-weight: 600; color: var(--bbcc-ink); margin: 0 0 18px;
 }
-.bbcc-hub-list + .bbcc-hub-heading { margin-top: 52px; }
+.bbcc-hub-list + .bbcc-hub-heading { margin-top: 32px; }
 .bbcc-hub-list { list-style: none; margin: 0; padding: 0; }
 .bbcc-hub-list li { color: var(--bbcc-ink); line-height: 1.65; }
 
@@ -950,7 +956,8 @@ html, body { height: auto; min-height: 100%; }
 .bbcc-fees-table th {
   padding: 0 24px 8px 0; text-align: left; font-weight: 600; font-size: 15px; color: var(--bbcc-ink);
 }
-.bbcc-fees-table td { padding: 4px 24px 4px 0; color: var(--bbcc-ink); font-size: 15px; }
+.bbcc-fees-table td { padding: 8px 24px 8px 0; color: var(--bbcc-ink); font-size: 15px; }
+.bbcc-fees-subtext { display: block; margin-top: 2px; line-height: normal; font-weight: 500; font-size: 12px; color: var(--bbcc-ink-soft); }
 
 .bbcc-hub-photo { margin-top: 44px; }
 .bbcc-hub-photo img { width: 100%; height: 240px; object-fit: cover; display: block; }
@@ -979,9 +986,20 @@ html, body { height: auto; min-height: 100%; }
 }
 button.bbcc-teeslot:hover, button.bbcc-teeslot:focus { background: var(--bbcc-dark); color: #fff; }
 button.bbcc-teeslot:focus-visible { outline: 2px solid var(--bbcc-ink); outline-offset: 2px; }
+
+/* Availability gradient — greenest at full capacity, warming as slots run out */
+.bbcc-teeslot-remaining-4 { background: #ECFEED; color: #1d5c22; }
+.bbcc-teeslot-remaining-3 { background: #F6FADD; color: #4c5c15; }
+.bbcc-teeslot-remaining-2 { background: #FFF3D6; color: #5c4413; }
+.bbcc-teeslot-remaining-1 { background: #FFE3D6; color: #5c2c13; }
+button.bbcc-teeslot-remaining-4:hover, button.bbcc-teeslot-remaining-4:focus { background: #5BF651; color: #16401a; }
+button.bbcc-teeslot-remaining-3:hover, button.bbcc-teeslot-remaining-3:focus { background: #C7DE5C; color: #3c4813; }
+button.bbcc-teeslot-remaining-2:hover, button.bbcc-teeslot-remaining-2:focus { background: #F5B33D; color: #4a3200; }
+button.bbcc-teeslot-remaining-1:hover, button.bbcc-teeslot-remaining-1:focus { background: #F0813D; color: #fff; }
+
 .bbcc-teeslot-booked {
   color: var(--bbcc-ink-soft); cursor: not-allowed;
-  background: repeating-linear-gradient(-45deg, #ededed, #ededed 5px, #e0e0e0 5px, #e0e0e0 10px);
+  background: repeating-linear-gradient(-45deg, #FBEAEA, #FBEAEA 5px, #F3D2D2 5px, #F3D2D2 10px);
 }
 .bbcc-teeslot-past { background: #f6f6f6; color: #bdbdbd; cursor: not-allowed; }
 
@@ -991,8 +1009,12 @@ button.bbcc-teeslot:focus-visible { outline: 2px solid var(--bbcc-ink); outline-
 }
 .bbcc-teetime-legend span { display: inline-flex; align-items: center; gap: 9px; }
 .bbcc-teetime-swatch { width: 15px; height: 15px; background: #dedede; display: inline-block; }
+.bbcc-teetime-swatch-4 { background: #ECFEED; }
+.bbcc-teetime-swatch-3 { background: #F6FADD; }
+.bbcc-teetime-swatch-2 { background: #FFF3D6; }
+.bbcc-teetime-swatch-1 { background: #FFE3D6; }
 .bbcc-teetime-swatch-booked {
-  background: repeating-linear-gradient(-45deg, #ededed, #ededed 4px, #e0e0e0 4px, #e0e0e0 8px);
+  background: repeating-linear-gradient(-45deg, #FBEAEA, #FBEAEA 4px, #F3D2D2 4px, #F3D2D2 8px);
 }
 .bbcc-teetime-swatch-past { background: #f6f6f6; border: 1px solid var(--bbcc-line); }
 

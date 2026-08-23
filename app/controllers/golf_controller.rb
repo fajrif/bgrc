@@ -14,6 +14,6 @@ class GolfController < ApplicationController
     end
     date = params[:date].present? ? Date.parse(params[:date]) : Date.today
     slots = @golf_course.available_tee_times(date)
-    render json: slots.map { |s| { time: s[:time].strftime("%H:%M"), available: s[:available], past: s[:past] } }
+    render json: slots.map { |s| { time: s[:time].strftime("%H:%M"), available: s[:available], past: s[:past], remaining: s[:remaining] } }
   end
 end

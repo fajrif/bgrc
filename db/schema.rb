@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_08_12_000006) do
+ActiveRecord::Schema[7.1].define(version: 2026_08_23_000001) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -420,6 +420,8 @@ ActiveRecord::Schema[7.1].define(version: 2026_08_12_000006) do
     t.string "label"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "start_time"
+    t.string "end_time"
     t.index ["golf_course_id"], name: "index_golf_rates_on_golf_course_id"
   end
 

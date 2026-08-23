@@ -26,7 +26,19 @@ class Users::BookingsController < Users::BaseController
 			            url: booking_path(b.order_id),
 			            start: b.date.strftime('%Y-%m-%dT%H:%M'),
 			            end: b.end_date.strftime('%Y-%m-%dT%H:%M'),
-			            backgroundColor: bg, borderColor: br, textColor: tx, allDay: false }
+			            backgroundColor: bg, borderColor: br, textColor: tx, allDay: false,
+			            extendedProps: {
+			              type: "Court Booking",
+			              orderId: b.order_id,
+			              dateLabel: b.date.strftime("%A, %d %b %Y — %I:%M %p"),
+			              subtitleLabel: "Court",
+			              subtitle: b.court.try(:name_label),
+			              statusLabel: b.status_label,
+			              paxLabel: "Pax",
+			              pax: b.pax,
+			              priceLabel: b.total_price_label,
+			              detailUrl: booking_path(b.order_id)
+			            } }
 		end
 
 		current_user.group_class_registrations.active
@@ -44,7 +56,51 @@ class Users::BookingsController < Users::BaseController
 				backgroundColor: color,
 				borderColor: color,
 				textColor: '#fff',
-				allDay: false
+				allDay: false,
+				extendedProps: {
+					type: "Group Class",
+					orderId: nil,
+					dateLabel: reg.session_date.strftime("%A, %d %b %Y — %I:%M %p"),
+					subtitleLabel: "Class",
+					subtitle: gc.name,
+					statusLabel: reg.status_label,
+					paxLabel: "Pax",
+					pax: reg.pax,
+					priceLabel: nil,
+					detailUrl: class_credit_purchase_path(reg.class_credit_purchase)
+				}
+			}
+		end
+
+		current_user.golf_reservations
+		            .where(status: [GolfReservation::UNPAID, GolfReservation::PAID])
+		            .where("tee_time >= ? AND tee_time < ?", start_date, end_date)
+		            .includes(:golf_course)
+		            .each do |g|
+			bg = g.status == GolfReservation::PAID ? "#E9F5FF" : "#ffe8b3"
+			br = g.status == GolfReservation::PAID ? "#3AA0FF" : "#d98c00"
+			tx = g.status == GolfReservation::PAID ? "#0a4a7a" : "#000"
+			estimated_hours = g.holes.to_i <= 9 ? 2 : 4.5
+			events << {
+				id: "golf-#{g.id}",
+				title: "Golf — #{g.golf_course.try(:name) || g.order_id}",
+				url: golf_reservation_path(g.order_id),
+				start: g.tee_time.strftime('%Y-%m-%dT%H:%M'),
+				end: (g.tee_time + estimated_hours.hours).strftime('%Y-%m-%dT%H:%M'),
+				backgroundColor: bg, borderColor: br, textColor: tx, allDay: false,
+				extendedProps: {
+					type: "Golf",
+					orderId: g.order_id,
+					dateLabel: g.tee_time_label,
+					subtitleLabel: "Course",
+					subtitle: g.golf_course.try(:name),
+					statusLabel: g.status_label,
+					paxLabel: "Players",
+					pax: g.players_count,
+					holesLabel: g.holes_label,
+					priceLabel: g.total_price_label,
+					detailUrl: golf_reservation_path(g.order_id)
+				}
 			}
 		end
 

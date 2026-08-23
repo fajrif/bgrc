@@ -34,10 +34,13 @@
             <div class="mb-4">
               <label class="text-medium font-weight-600 mb-2 d-block" for="players_count">Number of Players</label>
               <select name="players_count" id="players_count" class="form-select text-medium">
-                <% [1, 2, 3, 4].each do |n| %>
+                <% (1..[@remaining || 4, 4].min).each do |n| %>
                   <option value="<%= n %>"><%= n %> <%= "Player".pluralize(n) %></option>
                 <% end %>
               </select>
+              <% if @remaining.present? && @remaining < 4 %>
+                <small class="text-medium-gray"><%= @remaining %> spot<%= "s" unless @remaining == 1 %> remaining for this tee time.</small>
+              <% end %>
             </div>
 
             <!-- Holes -->

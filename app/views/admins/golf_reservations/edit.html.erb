@@ -136,23 +136,46 @@ jQuery(document).ready(function($) {
     var date = $("#edit_tee_date_picker").val();
     var $select = $("#edit_tee_time_select");
     var currentTeeTime = "<%= @golf_reservation.tee_time&.strftime('%Y-%m-%dT%H:%M:%S') %>";
+    // This reservation's own players already count toward the booked sum for its
+    // current tee_time, so add them back for that one slot — otherwise it would
+    // look like it has less room than it actually does (competing against itself).
+    var ownPlayersCount = <%= @golf_reservation.players_count.to_json %>;
 
     if (!courseId || !date) return;
 
     $.getJSON("<%= tee_times_admins_golf_reservations_path %>", { golf_course_id: courseId, date: date }, function(slots) {
       var options = slots.map(function(s) {
         var selected = (s.value === currentTeeTime) ? ' selected' : '';
-        var disabled = !s.available && s.value !== currentTeeTime ? ' disabled' : '';
-        return '<option value="' + s.value + '"' + selected + disabled + '>' + s.label + (disabled ? ' (booked)' : '') + '</option>';
+        var effectiveRemaining = s.remaining + (s.value === currentTeeTime ? ownPlayersCount : 0);
+        var disabled = effectiveRemaining <= 0 && s.value !== currentTeeTime ? ' disabled' : '';
+        var suffix = disabled ? ' (booked)' : ' (' + effectiveRemaining + ' left)';
+        return '<option value="' + s.value + '" data-remaining="' + effectiveRemaining + '"' + selected + disabled + '>' + s.label + suffix + '</option>';
       }).join('');
       $select.html(options || '<option value="">No slots available</option>');
+      updatePlayersCap();
     });
+  }
+
+  function updatePlayersCap() {
+    var remaining = parseInt($("#edit_tee_time_select option:selected").data("remaining"), 10);
+    if (isNaN(remaining)) remaining = 4;
+    var max = Math.max(1, Math.min(4, remaining));
+    var $playersSelect = $("#golf_reservation_players_count");
+    var current = $playersSelect.val();
+    var options = "";
+    for (var n = 1; n <= max; n++) {
+      options += '<option value="' + n + '">' + n + '</option>';
+    }
+    $playersSelect.html(options);
+    if (current && parseInt(current, 10) <= max) $playersSelect.val(current);
   }
 
   $("#edit_golf_course_select").on("change", function() {
     renderHoles($(this).val());
     loadTeeTimes();
   });
+
+  $("#edit_tee_time_select").on("change", updatePlayersCap);
 
   // Load tee times for current date on page load
   loadTeeTimes();

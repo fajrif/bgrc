@@ -25,6 +25,20 @@ rates.each do |r|
     rate.label = r[:label]
   end
 end
+
+# Sundown / sunset premium window rates
+window_rates = [
+  { holes: 9,  day_type: :weekday, start_time: "16:00", end_time: "18:00", price: 700_000,   label: "Weekday Sundown 9 Holes" },
+  { holes: 9,  day_type: :weekend, start_time: "16:00", end_time: "18:00", price: 900_000,   label: "Weekend Sundown 9 Holes" },
+  { holes: 18, day_type: :weekday, start_time: "16:00", end_time: "18:00", price: 1_000_000, label: "Weekday Sundown 18 Holes" },
+  { holes: 18, day_type: :weekend, start_time: "16:00", end_time: "18:00", price: 1_200_000, label: "Weekend Sundown 18 Holes" },
+]
+window_rates.each do |r|
+  GolfRate.find_or_create_by!(golf_course: golf_course, holes: r[:holes], day_type: r[:day_type], start_time: r[:start_time], end_time: r[:end_time]) do |rate|
+    rate.price = r[:price]
+    rate.label = r[:label]
+  end
+end
 puts "  Created #{GolfRate.count} golf rates"
 
 # Add-on items

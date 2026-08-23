@@ -17,9 +17,8 @@
                     <h2 class="bbcc-hub-heading">Course Details</h2>
                     <ul class="bbcc-hub-list">
                         <li>Available Holes: <%= @golf_course.holes_list.join(" / ") %> Holes</li>
-                        <li>Tee Time Interval: Every <%= @golf_course.interval_minutes %> minutes</li>
+                        <li>Tee Time Interval: <%= @golf_course.interval_minutes %> minutes</li>
                         <li>Max Players Per Group: <%= @golf_course.max_players %></li>
-                        <li>Location: <%= @golf_course.location %></li>
                     </ul>
 
                     <% if @golf_course.golf_rates.any? %>
@@ -34,12 +33,38 @@
                             </thead>
                             <tbody>
                                 <% @golf_course.holes_list.each do |holes| %>
-                                    <% weekday = @golf_course.golf_rates.find_by(holes: holes, day_type: :weekday) %>
-                                    <% weekend = @golf_course.golf_rates.find_by(holes: holes, day_type: :weekend) %>
+                                    <% weekday = @golf_course.golf_rates.find_by(holes: holes, day_type: :weekday, start_time: nil) %>
+                                    <% weekend = @golf_course.golf_rates.find_by(holes: holes, day_type: :weekend, start_time: nil) %>
                                     <tr>
                                         <td><%= holes %> Holes</td>
                                         <td><%= weekday&.price_label || "—" %></td>
                                         <td><%= weekend&.price_label || "—" %></td>
+                                    </tr>
+                                <% end %>
+                            </tbody>
+                        </table>
+                    <% end %>
+
+                    <% window_rates = @golf_course.golf_rates.where.not(start_time: nil, end_time: nil) %>
+                    <% if window_rates.any? %>
+                        <h2 class="bbcc-hub-heading">Time-Based Pricing</h2>
+                        <table class="bbcc-fees-table">
+                            <thead>
+                                <tr>
+                                    <th>Holes</th>
+                                    <th>Time</th>
+                                    <th>Price</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% window_rates.order(:holes, :start_time).each do |rate| %>
+                                    <tr>
+                                        <td><%= rate.holes %> Holes</td>
+                                        <td>
+                                            <%= rate.start_time %>&ndash;<%= rate.end_time %><br>
+                                            <span class="bbcc-fees-subtext"><%= rate.day_type.capitalize %></span>
+                                        </td>
+                                        <td><%= rate.price_label %></td>
                                     </tr>
                                 <% end %>
                             </tbody>
@@ -78,7 +103,10 @@
                         </div>
 
                         <div class="bbcc-teetime-legend">
-                            <span><i class="bbcc-teetime-swatch"></i>Available</span>
+                            <span><i class="bbcc-teetime-swatch bbcc-teetime-swatch-4"></i>4 Left</span>
+                            <span><i class="bbcc-teetime-swatch bbcc-teetime-swatch-3"></i>3 Left</span>
+                            <span><i class="bbcc-teetime-swatch bbcc-teetime-swatch-2"></i>2 Left</span>
+                            <span><i class="bbcc-teetime-swatch bbcc-teetime-swatch-1"></i>1 Left</span>
                             <span><i class="bbcc-teetime-swatch bbcc-teetime-swatch-booked"></i>Booked</span>
                             <span><i class="bbcc-teetime-swatch bbcc-teetime-swatch-past"></i>Passed</span>
                         </div>
@@ -110,12 +138,13 @@
     return dt.toLocaleDateString('en-US', options) + ' — ' + time;
   }
 
-  function openReservationModal(time, apiDate) {
+  function openReservationModal(time, apiDate, remaining) {
     var isoStr = apiDate + 'T' + time;
     document.getElementById('modal-tee-time-input').value = isoStr;
     document.getElementById('modal-tee-time-display').textContent = formatTeeTimeLabel(apiDate, time);
     document.getElementById('modal-tee-time-error').style.display = 'none';
     document.getElementById('modal-tee-time-error').textContent = '';
+    if (typeof window.setModalMaxPlayers === 'function') window.setModalMaxPlayers(remaining);
     if (typeof window.updateModalPrice === 'function') window.updateModalPrice();
     var modal = new bootstrap.Modal(document.getElementById('reservationModal'));
     modal.show();
@@ -128,10 +157,13 @@
     }
     if (!slot.available) {
       return '<div class="col"><span class="bbcc-teeslot bbcc-teeslot-booked" ' +
-             'title="Already booked">' + slot.time + '</span></div>';
+             'title="Fully booked">' + slot.time + '</span></div>';
     }
-    return '<div class="col"><button type="button" class="bbcc-teeslot tee-slot-btn" ' +
-           'data-time="' + slot.time + '" data-date="' + apiDate + '">' + slot.time + '</button></div>';
+    var remainingLabel = slot.remaining + ' spot' + (slot.remaining === 1 ? '' : 's') + ' left';
+    var tier = Math.min(slot.remaining, 4);
+    return '<div class="col"><button type="button" class="bbcc-teeslot bbcc-teeslot-remaining-' + tier + ' tee-slot-btn" ' +
+           'data-time="' + slot.time + '" data-date="' + apiDate + '" data-remaining="' + slot.remaining + '">' +
+           slot.time + '<br><small style="font-weight:400;">' + remainingLabel + '</small></button></div>';
   }
 
   function loadTeeTimes(dateStr) {
@@ -164,7 +196,7 @@
       // Attach modal-open handlers to available slot buttons
       grid.querySelectorAll('.tee-slot-btn').forEach(function(btn) {
         btn.addEventListener('click', function() {
-          openReservationModal(btn.dataset.time, btn.dataset.date);
+          openReservationModal(btn.dataset.time, btn.dataset.date, parseInt(btn.dataset.remaining, 10));
         });
       });
     })

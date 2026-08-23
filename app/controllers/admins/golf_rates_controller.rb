@@ -50,6 +50,6 @@ class Admins::GolfRatesController < Admins::BaseController
   end
 
   def params_golf_rate
-    params.require(:golf_rate).permit(:holes, :day_type, :price, :label)
+    params.require(:golf_rate).permit(:holes, :day_type, :price, :label, :start_time, :end_time)
   end
 end

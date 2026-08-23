@@ -11,6 +11,13 @@ class GolfReservationsController < ApplicationController
     @tee_time = params[:tee_time]
     @date     = params[:date]
     @golf_reservation = GolfReservation.new(golf_course: @golf_course)
+
+    if @tee_time.present?
+      parsed_tee_time = DateTime.parse(@tee_time) rescue nil
+      @remaining = parsed_tee_time ? GolfReservation.remaining_capacity_for(@golf_course, parsed_tee_time) : @golf_course.max_players
+    else
+      @remaining = @golf_course.max_players
+    end
   end
 
   def create
@@ -42,8 +49,10 @@ class GolfReservationsController < ApplicationController
       redirect_to golf_path, alert: "Bookings can only be made up to 30 days in advance." and return
     end
 
-    unless GolfReservation.check_available?(@golf_course, tee_time)
-      redirect_to golf_path, alert: "Sorry, that tee time is no longer available." and return
+    unless GolfReservation.check_available?(@golf_course, tee_time, players_count)
+      remaining = GolfReservation.remaining_capacity_for(@golf_course, tee_time)
+      message = remaining.zero? ? "Sorry, that tee time is fully booked." : "Only #{remaining} spot#{'s' unless remaining == 1} remaining for that tee time — please choose a smaller party size or another slot."
+      redirect_to golf_path, alert: message and return
     end
 
     @golf_reservation = GolfReservation.new(
