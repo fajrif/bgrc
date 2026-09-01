@@ -1,7 +1,14 @@
-<%# locals: hero_image:, and optional selected_sport_id: to pre-choose a sport %>
+<%# locals: hero_image:, optional selected_sport_id: to pre-choose a sport,
+   #        and optional hero_video: (asset filename) for a full-bleed autoplaying banner %>
 <% selected_sport_id = local_assigns[:selected_sport_id] %>
+<% hero_video = local_assigns[:hero_video] %>
 <!-- start hero + availability search -->
 <section class="bbcc-hero" style="background-image:url('<%= hero_image %>');">
+    <% if hero_video %>
+        <video class="bbcc-hero-video" autoplay muted loop playsinline preload="auto" aria-hidden="true">
+            <source src="<%= asset_path(hero_video) %>" type="video/mp4">
+        </video>
+    <% end %>
     <div class="bbcc-hero-overlay"></div>
     <div class="container-lg">
         <div class="bbcc-hero-search">

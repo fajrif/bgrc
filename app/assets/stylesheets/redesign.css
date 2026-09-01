@@ -146,6 +146,7 @@ html, body { height: auto; min-height: 100%; }
   background: none; border: 0; padding: 0; cursor: pointer;
 }
 .bbcc-menu-toggle-right { display: none; }
+.bbcc-book-btn-mobile { display: none; }
 .bbcc-burger { display: inline-flex; flex-direction: column; justify-content: center; gap: 5px; width: 26px; }
 .bbcc-burger span { display: block; height: 2px; width: 100%; background: var(--bbcc-ink); transition: .2s; }
 .bbcc-menu-label { text-transform: uppercase; letter-spacing: 2px; font-size: 14px; color: var(--bbcc-ink); }
@@ -156,6 +157,13 @@ html, body { height: auto; min-height: 100%; }
   padding: 10px 30px; border: 1px solid var(--bbcc-dark); transition: background .2s;
 }
 .bbcc-book-btn:hover, .bbcc-book-btn:focus { background: var(--bbcc-dark-hover); color: #fff; text-decoration: none; }
+
+.bbcc-book-btn-mobile {
+  padding: 2px 18px;
+  font-size: 11px;
+  letter-spacing: 1.5px;
+}
+.bbcc-book-btn-mobile:hover, .bbcc-book-btn-mobile:focus { background: var(--bbcc-dark-hover); color: #fff; text-decoration: none; }
 
 /* =====================================================================
    OFF-CANVAS LEFT MENU
@@ -240,6 +248,11 @@ html, body { height: auto; min-height: 100%; }
   background-size: cover; background-position: center;
 }
 .bbcc-hero-overlay { position: absolute; inset: 0; background: rgba(0,0,0,.28); }
+.bbcc-hero-video {
+  position: absolute; inset: 0; z-index: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+}
 .bbcc-hero .container-lg { position: relative; z-index: 2; width: 100%; }
 
 .bbcc-hero-search { background: #fff; box-shadow: 0 24px 60px rgba(0,0,0,.18); }
@@ -1468,7 +1481,7 @@ button.bbcc-teeslot-remaining-1:hover, button.bbcc-teeslot-remaining-1:focus { b
   .bbcc-logo img { height: 38px; }
   .bbcc-menu-label { display: none; }
   .bbcc-book-btn { display: none; }
-  .bbcc-menu-toggle-right { display: inline-flex; }
+  .bbcc-book-btn-mobile { display: inline-flex; align-items: center; justify-content: center; }
   .bbcc-hero-field { flex: 1 1 100%; border-right: 0; border-bottom: 1px solid var(--bbcc-line); }
   .bbcc-hero-search-btn { width: 100%; padding: 16px; }
   .bbcc-tile-lg, .bbcc-tile-sm { height: 220px; }

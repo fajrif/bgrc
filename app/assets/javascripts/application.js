@@ -38,19 +38,15 @@ jQuery(document).ready(function($){
 	var maxBookingDate = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000);
 	$(".datecourtpicker").flatpickr({"altInput":true, minDate: "today", maxDate: maxBookingDate, "altFormat": "d/m/Y", "enableTime": false, "disableMobile":true, "dateFormat":"d/m/Y"});
 
-	// Sticky header: parked at minus the topbar height, so the topbar scrolls
-	// away and only the navbar stays pinned. Measured here rather than hardcoded
-	// because the topbar can wrap to two lines on a narrow screen.
+	// Sticky header: parked at the top and given a shadow once the page has
+	// scrolled past the navbar, so the navigation stays pinned as the visitor
+	// moves down the page.
 	var stickyHeader = document.querySelector('.bbcc-header');
 	if (stickyHeader) {
-		var stickyTopbar = stickyHeader.querySelector('.bbcc-topbar');
-		var stickyTrigger = stickyTopbar ? stickyTopbar.offsetHeight : 10;
 		var isStuck = false;
 
-		if (stickyTopbar) stickyHeader.style.top = -stickyTrigger + 'px';
-
 		var onHeaderScroll = function () {
-			var shouldStick = window.pageYOffset > stickyTrigger;
+			var shouldStick = window.pageYOffset > 0;
 			if (shouldStick === isStuck) return;
 			isStuck = shouldStick;
 			stickyHeader.classList.toggle('bbcc-header-stuck', isStuck);

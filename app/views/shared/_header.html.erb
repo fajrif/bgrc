@@ -1,30 +1,5 @@
 <!-- start header -->
 <header class="bbcc-header">
-    <!-- topbar -->
-    <div class="bbcc-topbar">
-        <div class="container-lg">
-            <div class="bbcc-topbar-inner">
-                <div class="bbcc-topbar-left">
-                    <a href="<%= faq_path %>">FAQ</a>
-                </div>
-                <div class="bbcc-topbar-right">
-                    <% if user_signed_in? %>
-                        <div class="btn-group dropdown-style-1">
-                            <button type="button" class="btn dropdown-toggle bbcc-topbar-user text-uppercase" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <%= current_user.full_name %>
-                            </button>
-                            <%= get_current_user_menu_routes %>
-                        </div>
-                    <% else %>
-                        <a href="<%= new_user_registration_path %>" title="Sign Up">Sign Up</a>
-                        <span class="bbcc-topbar-sep">|</span>
-                        <a href="<%= new_user_session_path %>" title="Log In">Log In</a>
-                    <% end %>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- end topbar -->
     <!-- start navbar -->
     <div class="bbcc-navbar">
         <div class="container-lg">
@@ -36,10 +11,8 @@
                 <%= link_to root_path, class: "bbcc-logo" do %>
                     <%= image_tag "bbcc-logo.png", alt: "Bali Beach Country Club" %>
                 <% end %>
-                <a href="<%= book_path %>" class="bbcc-book-btn">Book Now</a>
-                <button type="button" class="bbcc-menu-toggle bbcc-menu-toggle-right" id="offcanvas-open-right" aria-label="Open menu" aria-controls="offcanvas-menu" aria-expanded="false">
-                    <span class="bbcc-burger" aria-hidden="true"><span></span><span></span><span></span></span>
-                </button>
+                <a href="<%= golf_path %>" class="bbcc-book-btn">Book Now</a>
+                <a href="<%= golf_path %>" class="bbcc-book-btn bbcc-book-btn-mobile">Book</a>
             </div>
         </div>
     </div>
@@ -54,61 +27,31 @@
         <button type="button" class="bbcc-offcanvas-close" id="offcanvas-close" aria-label="Close menu">&times;</button>
         <nav class="bbcc-offcanvas-nav">
             <% current_path = request.path
-               offcanvas_club_life = Facility.club_life_roots.includes(:children)
-               offcanvas_restaurants = Restaurant.order(:position)
-               offcanvas_event_types = EventType.ordered
-               offcanvas_book_children = [
-                 ["Golf", golf_path],
-                 ["Racquet Sports", search_path],
-                 ["Fitness", book_fitness_path],
-                 ["Spa & Wellness", book_spa_wellness_path],
-                 ["Dining", book_dining_path]
-               ]
-               offcanvas_about_children = [
-                 ["Our Team", our_team_path],
-                 ["MITS Academy", mits_academy_path],
-                 ["Gallery", gallery_path]
-               ]
+               club_life_roots = Facility.club_life_roots.includes(:children)
+               restaurants = Restaurant.order(:position)
 
-               # An item's branch stays expanded whenever the current page is that
-               # item's own root page or one of its descendants, so reopening the
-               # menu lands on whatever section the visitor is already reading.
                active_class = ->(path) { " active" if path == current_path }
-               book_expanded = current_path == book_path || offcanvas_book_children.any? { |_, path| path == current_path }
-               about_expanded = current_path == about_path || offcanvas_about_children.any? { |_, path| path == current_path }
-               dining_expanded = current_path == dining_path || offcanvas_restaurants.any? { |r| dining_restaurant_path(r) == current_path }
-               events_expanded = current_path == events_path || offcanvas_event_types.any? { |t| event_type_path(t) == current_path }
-               clublife_expanded = current_path == club_life_path ||
-                 offcanvas_club_life.any? { |s| club_life_page_path(s) == current_path || s.children.any? { |c| club_life_page_path(c) == current_path } } %>
+
+               # The first level of Club Life and Dining is always shown open;
+               # deeper nested groups only expand while the visitor is on them.
+               child_active = ->(children) do
+                 children.any? { |c| club_life_page_path(c) == current_path }
+               end %>
             <ul>
-                <li class="bbcc-offcanvas-group<%= ' bbcc-offcanvas-group-open' if book_expanded %>">
-                    <div class="bbcc-offcanvas-group-head">
-                        <a href="<%= book_path %>" class="<%= active_class.call(book_path) %>">Book</a>
-                        <button type="button" class="bbcc-offcanvas-toggle" aria-expanded="<%= book_expanded %>"
-                                aria-controls="offcanvas-book" aria-label="Toggle Book sections">
-                            <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
-                        </button>
-                    </div>
-                    <div class="bbcc-offcanvas-children" id="offcanvas-book" <%= "hidden" unless book_expanded %>>
-                        <% offcanvas_book_children.each do |label, path| %>
-                            <a class="bbcc-offcanvas-child<%= active_class.call(path) %>" href="<%= path %>"><%= label %></a>
-                        <% end %>
-                    </div>
-                </li>
-                <li class="bbcc-offcanvas-group<%= ' bbcc-offcanvas-group-open' if clublife_expanded %>">
+                <li><a href="<%= root_path %>" class="<%= active_class.call(root_path) %>">Home</a></li>
+                <li class="bbcc-offcanvas-group bbcc-offcanvas-group-open">
                     <div class="bbcc-offcanvas-group-head">
                         <a href="<%= club_life_path %>" class="<%= active_class.call(club_life_path) %>">Club Life</a>
-                        <button type="button" class="bbcc-offcanvas-toggle" aria-expanded="<%= clublife_expanded %>"
+                        <button type="button" class="bbcc-offcanvas-toggle" aria-expanded="true"
                                 aria-controls="offcanvas-clublife" aria-label="Toggle Club Life sections">
                             <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
                         </button>
                     </div>
-                    <div class="bbcc-offcanvas-children" id="offcanvas-clublife" <%= "hidden" unless clublife_expanded %>>
-                        <% offcanvas_club_life.each do |section| %>
-                            <% section_active = club_life_page_path(section) == current_path
-                               child_active = section.children.find { |c| club_life_page_path(c) == current_path }
-                               subgroup_expanded = section_active || child_active.present? %>
+                    <div class="bbcc-offcanvas-children" id="offcanvas-clublife">
+                        <% club_life_roots.each do |section| %>
+                            <% section_active = club_life_page_path(section) == current_path %>
                             <% if section.children.any? %>
+                                <% subgroup_expanded = section_active || child_active.call(section.children) %>
                                 <div class="bbcc-offcanvas-group<%= ' bbcc-offcanvas-group-open' if subgroup_expanded %>">
                                     <div class="bbcc-offcanvas-group-head">
                                         <a class="bbcc-offcanvas-child<%= ' active' if section_active %>" href="<%= club_life_page_path(section) %>"><%= section.name %></a>
@@ -129,54 +72,20 @@
                         <% end %>
                     </div>
                 </li>
-                <li class="bbcc-offcanvas-group<%= ' bbcc-offcanvas-group-open' if dining_expanded %>">
+                <li class="bbcc-offcanvas-group bbcc-offcanvas-group-open">
                     <div class="bbcc-offcanvas-group-head">
                         <a href="<%= dining_path %>" class="<%= active_class.call(dining_path) %>">Dining</a>
-                        <button type="button" class="bbcc-offcanvas-toggle" aria-expanded="<%= dining_expanded %>"
+                        <button type="button" class="bbcc-offcanvas-toggle" aria-expanded="true"
                                 aria-controls="offcanvas-dining" aria-label="Toggle Dining venues">
                             <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
                         </button>
                     </div>
-                    <div class="bbcc-offcanvas-children" id="offcanvas-dining" <%= "hidden" unless dining_expanded %>>
-                        <% offcanvas_restaurants.each do |restaurant| %>
+                    <div class="bbcc-offcanvas-children" id="offcanvas-dining">
+                        <% restaurants.each do |restaurant| %>
                             <a class="bbcc-offcanvas-child<%= active_class.call(dining_restaurant_path(restaurant)) %>" href="<%= dining_restaurant_path(restaurant) %>"><%= restaurant.name %></a>
                         <% end %>
                     </div>
                 </li>
-                <li class="bbcc-offcanvas-group<%= ' bbcc-offcanvas-group-open' if events_expanded %>">
-                    <div class="bbcc-offcanvas-group-head">
-                        <a href="<%= events_path %>" class="<%= active_class.call(events_path) %>">Events</a>
-                        <button type="button" class="bbcc-offcanvas-toggle" aria-expanded="<%= events_expanded %>"
-                                aria-controls="offcanvas-events" aria-label="Toggle Event types">
-                            <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
-                        </button>
-                    </div>
-                    <div class="bbcc-offcanvas-children" id="offcanvas-events" <%= "hidden" unless events_expanded %>>
-                        <% offcanvas_event_types.each do |event_type| %>
-                            <a class="bbcc-offcanvas-child<%= active_class.call(event_type_path(event_type)) %>" href="<%= event_type_path(event_type) %>"><%= event_type.name %></a>
-                        <% end %>
-                    </div>
-                </li>
-                <li><a href="<%= highlights_path %>" class="<%= active_class.call(highlights_path) %>">Highlights</a></li>
-                <li><a href="<%= blogs_path %>" class="<%= active_class.call(blogs_path) %>">Blog</a></li>
-                <li class="bbcc-offcanvas-group<%= ' bbcc-offcanvas-group-open' if about_expanded %>">
-                    <div class="bbcc-offcanvas-group-head">
-                        <a href="<%= about_path %>" class="<%= active_class.call(about_path) %>">About Us</a>
-                        <button type="button" class="bbcc-offcanvas-toggle" aria-expanded="<%= about_expanded %>"
-                                aria-controls="offcanvas-about" aria-label="Toggle About Us sections">
-                            <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
-                        </button>
-                    </div>
-                    <div class="bbcc-offcanvas-children" id="offcanvas-about" <%= "hidden" unless about_expanded %>>
-                        <% offcanvas_about_children.each do |label, path| %>
-                            <a class="bbcc-offcanvas-child<%= active_class.call(path) %>" href="<%= path %>"><%= label %></a>
-                        <% end %>
-                    </div>
-                </li>
-                <li><a href="<%= get_contact_path %>" class="<%= active_class.call(get_contact_path) %>">Contact</a></li>
-                <% if user_signed_in? %>
-                    <li><a href="<%= users_account_path %>" class="<%= active_class.call(users_account_path) %>">My Account</a></li>
-                <% end %>
             </ul>
         </nav>
         <div class="bbcc-offcanvas-auth">
