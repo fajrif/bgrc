@@ -1,7 +1,7 @@
 class User < ApplicationRecord
   # Include default devise modules. Others available are:
   #  :lockable, :timeoutable, :trackable
-  devise :database_authenticatable, :registerable, # :confirmable,
+  devise :database_authenticatable, :registerable, :confirmable,
          :recoverable, :rememberable, :validatable, :omniauthable, :omniauth_providers => [:google_oauth2]
 
   include OmniauthableExtension
@@ -17,7 +17,11 @@ class User < ApplicationRecord
 	has_many :group_class_registrations
 	has_many :food_orders
 
-	validates_presence_of :full_name, :email, :phone, :dob, :gender, :nationality
+	validates_presence_of :full_name, :email, :phone, :gender
+	# admin_created is a persisted column, so walk-in accounts created at the
+	# counter stay saveable later on (password reset, profile edits) even while
+	# their profile is still incomplete. Public self-registration never sets it.
+	validates_presence_of :dob, :nationality, unless: :admin_created?
 	validates :password, presence: true, on: :create
 	validates_uniqueness_of :email
 

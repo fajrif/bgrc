@@ -21,9 +21,20 @@
 
           <div class="mb-3">
             <label class="form-label">User <span class="text-muted">(optional — leave blank for guest)</span></label>
-            <%= select_tag "golf_reservation[user_id]",
-                options_from_collection_for_select(@users, :id, :name_with_email, @golf_reservation.user_id),
-                class: "form-select", include_blank: "Guest (no user)" %>
+            <%# form-control, not form-select: admin.js auto-upgrades every
+                .form-select:not(.choices-skip) into a Choices.js widget. %>
+            <div class="input-group">
+              <%= hidden_field_tag "golf_reservation[user_id]", @golf_reservation.user_id, id: "cashier_user_id" %>
+              <input type="text" id="cashier_user_label" class="form-control" readonly
+                     placeholder="Guest (no user)"
+                     value="<%= @golf_reservation.user.try(:name_with_email) %>">
+              <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#userPickerModal">
+                <i class="ri-user-search-line align-bottom me-1"></i> Select User
+              </button>
+              <button type="button" class="btn btn-outline-secondary" id="cashier_user_clear" title="Book as guest">
+                <i class="ri-close-line align-bottom"></i>
+              </button>
+            </div>
           </div>
 
           <div class="row mb-3">
@@ -68,9 +79,23 @@
   </div>
 </div>
 
+<%= render "admins/shared/user_picker_modal" %>
+
 <%= content_for :tail do %>
 <script>
+// Called by the picker modal (and by create.js.erb) once a user is chosen.
+window.selectUserForBooking = function(id, label) {
+  jQuery("#cashier_user_id").val(id);
+  jQuery("#cashier_user_label").val(label);
+};
+
 jQuery(document).ready(function($) {
+  // Golf reservations may be booked without a user.
+  $("#cashier_user_clear").on("click", function() {
+    $("#cashier_user_id").val("");
+    $("#cashier_user_label").val("");
+  });
+
   var courseData = <%= raw @golf_courses.map { |c| { id: c.id, holes: c.holes_list } }.to_json %>;
 
   var datePicker = $("#tee_date_picker").flatpickr({

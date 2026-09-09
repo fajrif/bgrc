@@ -37,14 +37,12 @@ class Admins::GolfReservationsController < Admins::BaseController
   def new
     @golf_reservation = GolfReservation.new
     @golf_courses = GolfCourse.all
-    @users = User.all.order(name: :asc)
   end
 
   def create
     @golf_reservation = GolfReservation.new(params_golf_reservation_create)
     @golf_reservation.status = GolfReservation::PAID
     @golf_courses = GolfCourse.all
-    @users = User.all.order(name: :asc)
 
     if @golf_reservation.valid?
       golf_course = @golf_reservation.golf_course

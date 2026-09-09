@@ -1,0 +1,14 @@
+<% if @user.persisted? %>
+	// Hand the new user back to the page, then close the modal.
+	if (typeof window.selectUserForBooking === "function") {
+		window.selectUserForBooking(<%= @user.id %>, "<%= escape_javascript(@user.name_with_email) %>");
+	}
+	bootstrap.Modal.getInstance(document.getElementById("userPickerModal")).hide();
+
+	// On admins/users there is no picker to fill, so refresh the table instead.
+	if (typeof window.selectUserForBooking !== "function" && $("#index_table").length) {
+		$.get("<%= admins_users_path %>", $("#index_search").serialize(), null, "script");
+	}
+<% else %>
+	$("#user-picker-create-form").html("<%= escape_javascript(render("admins/users/picker_form", :user => @user)) %>");
+<% end %>

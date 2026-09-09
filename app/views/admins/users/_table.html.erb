@@ -5,6 +5,7 @@
 				<th class="text-center">ID</th>
 				<th>Name</th>
 				<th>Email</th>
+				<th>Verified</th>
 				<th>Register At</th>
 				<th>Action</th>
 			</tr>
@@ -17,6 +18,13 @@
 						<h5 class="fs-14 mb-1"><%= link_to user.full_name, admins_user_path(user.id), class: "text-body" %></h5>
 					</td>
 					<td><%= user.email %></td>
+					<td>
+						<% if user.confirmed? %>
+							<span class="badge bg-success-subtle text-success">Verified</span>
+						<% else %>
+							<span class="badge bg-warning-subtle text-warning">Unverified</span>
+						<% end %>
+					</td>
 					<td><%= user.created_at.strftime('%d-%m-%Y %H:%M %p') %></td>
 					<td>
 						<div class="dropdown">
@@ -32,6 +40,21 @@
 								<li>
 									<%= link_to edit_admins_user_path(user.id), class: "dropdown-item edit-list" do %>
 										<i class="ri-pencil-fill align-bottom me-2 text-muted"></i> Edit
+									<% end %>
+								</li>
+								<li class="dropdown-divider"></li>
+								<% unless user.confirmed? %>
+									<li>
+										<%= link_to send_confirmation_admins_user_path(user.id), :method => :post,
+												:data => { :confirm => "Send verification email to #{user.email}?" }, class: "dropdown-item" do %>
+											<i class="ri-mail-check-line align-bottom me-2 text-muted"></i> Send Verification Email
+										<% end %>
+									</li>
+								<% end %>
+								<li>
+									<%= link_to send_reset_password_admins_user_path(user.id), :method => :post,
+											:data => { :confirm => "Send reset password email to #{user.email}?" }, class: "dropdown-item" do %>
+										<i class="ri-lock-password-line align-bottom me-2 text-muted"></i> Send Reset Password
 									<% end %>
 								</li>
 								<li class="dropdown-divider"></li>

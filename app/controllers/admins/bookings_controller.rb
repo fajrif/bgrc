@@ -127,7 +127,6 @@ class Admins::BookingsController < Admins::BaseController
     @booking = Booking.new
     @booking.date = DateTime.parse(params[:date]) rescue nil if params[:date].present?
     @booking.court_id = params[:court_id] if params[:court_id].present?
-    @users = User.all.order(name: :asc)
   end
 
   def create_cashier_booking
@@ -140,16 +139,13 @@ class Admins::BookingsController < Admins::BaseController
           @booking.create_purchase_record!
           redirect_to invoice_admins_booking_path(@booking.id), :notice => "Successfully created cashier booking."
         else
-          @users = User.all.order(name: :asc)
           render :cashier_booking
         end
       else
         flash.now[:alert] = 'Booking date not available'
-        @users = User.all.order(name: :asc)
         render :cashier_booking
       end
     else
-      @users = User.all.order(name: :asc)
       render :cashier_booking
     end
   end

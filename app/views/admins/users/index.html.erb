@@ -12,13 +12,18 @@
 							</div>
 						</div>
 						<div class="col-sm-auto ms-auto">
-							<div class="dropdown">
-								<a href="#" class="btn btn-success dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-									<i class="ri-file-excel-line align-bottom me-1"></i> Export Data
-								</a>
-								<div class="dropdown-menu" style="">
-									<a id="btn-export-page" class="dropdown-item" href="#">Current Page</a>
-									<a class="dropdown-item" href="<%= export_all_admins_users_path(format: :xls) %>">All Pages</a>
+							<div class="hstack gap-2">
+								<button type="button" class="btn btn-success add-btn" data-bs-toggle="modal" data-bs-target="#userPickerModal">
+									<i class="ri-add-line align-bottom me-1"></i> Add User
+								</button>
+								<div class="dropdown">
+									<a href="#" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+										<i class="ri-file-excel-line align-bottom me-1"></i> Export Data
+									</a>
+									<div class="dropdown-menu" style="">
+										<a id="btn-export-page" class="dropdown-item" href="#">Current Page</a>
+										<a class="dropdown-item" href="<%= export_all_admins_users_path(format: :xls) %>">All Pages</a>
+									</div>
 								</div>
 							</div>
 						</div>
@@ -33,3 +38,5 @@
 	<!--end col-->
 </div>
 <!--end row-->
+
+<%= render "admins/shared/user_picker_modal", :create_only => true %>

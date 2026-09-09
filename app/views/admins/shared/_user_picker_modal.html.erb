@@ -1,0 +1,96 @@
+<%#
+  Searchable user picker used by the cashier booking forms (all four sports) and
+  the admins/users index. Renders the modal only - the page that includes it owns
+  the trigger button and defines window.selectUserForBooking(id, label).
+
+  Locals:
+    create_only - hide the "Find Existing" tab (used on admins/users where the
+                  page itself is already the search UI). Defaults to false.
+%>
+<% create_only = defined?(create_only) ? create_only : false %>
+
+<div class="modal fade" id="userPickerModal" tabindex="-1" aria-labelledby="userPickerModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="userPickerModalLabel"><%= create_only ? "Add User" : "Select User" %></h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+
+			<div class="modal-body">
+				<% unless create_only %>
+					<ul class="nav nav-tabs nav-tabs-custom mb-3" role="tablist">
+						<li class="nav-item">
+							<a class="nav-link active" data-bs-toggle="tab" href="#userPickerFindTab" role="tab">
+								<i class="ri-search-line align-bottom me-1"></i> Find Existing
+							</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" data-bs-toggle="tab" href="#userPickerCreateTab" role="tab">
+								<i class="ri-user-add-line align-bottom me-1"></i> Create New
+							</a>
+						</li>
+					</ul>
+				<% end %>
+
+				<div class="tab-content">
+					<% unless create_only %>
+						<div class="tab-pane active" id="userPickerFindTab" role="tabpanel">
+							<div class="form-icon mb-3">
+								<input type="text" id="user-picker-search" class="form-control form-control-icon"
+											 placeholder="Search by name or email ..." autocomplete="off">
+								<i class="ri-search-line"></i>
+							</div>
+							<div id="user-search-results">
+								<p class="text-muted text-center mb-0 py-3">Type at least 2 characters to search.</p>
+							</div>
+						</div>
+					<% end %>
+
+					<div class="tab-pane <%= "active" if create_only %>" id="userPickerCreateTab" role="tabpanel">
+						<div id="user-picker-create-form">
+							<%= render "admins/users/picker_form", :user => User.new %>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<%= content_for :tail do %>
+<script>
+	jQuery(document).ready(function($) {
+		var $modal = $("#userPickerModal");
+		if (!$modal.length) return;
+
+		// Live search. Mirrors the length guard used by #index_search in admin.js,
+		// and responds with search.js.erb which fills #user-search-results.
+		var searchTimer = null;
+		$modal.on("keyup", "#user-picker-search", function() {
+			var term = this.value;
+			clearTimeout(searchTimer);
+			if (term.length > 0 && term.length < 2) return;
+
+			searchTimer = setTimeout(function() {
+				$.get("<%= search_admins_users_path %>", { term: term }, null, "script");
+			}, 250);
+		});
+
+		// Picking a result hands off to the page-level hook, then closes the modal.
+		$modal.on("click", ".user-result-item", function(e) {
+			e.preventDefault();
+			if (typeof window.selectUserForBooking === "function") {
+				window.selectUserForBooking($(this).data("user-id"), $(this).data("user-label"));
+			}
+			bootstrap.Modal.getInstance(document.getElementById("userPickerModal")).hide();
+		});
+
+		// Reset back to a clean state each time it opens.
+		$modal.on("show.bs.modal", function() {
+			$("#user-picker-search").val("");
+			$("#user-search-results").html('<p class="text-muted text-center mb-0 py-3">Type at least 2 characters to search.</p>');
+		});
+	});
+</script>
+<% end %>

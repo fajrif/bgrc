@@ -15,7 +15,7 @@ Rails.application.routes.draw do
     }
   }
 
-  devise_for :user, :controllers => { :sessions => "users/sessions", :registrations => "users/registrations", :omniauth_callbacks => "users/omniauth_callbacks" }
+  devise_for :user, :controllers => { :sessions => "users/sessions", :registrations => "users/registrations", :omniauth_callbacks => "users/omniauth_callbacks", :passwords => "users/devise_passwords" }
   devise_scope :user do
     get 'users/sign_up_by_provider' => 'users/registrations#new_by_provider', :as => :new_user_registration_by_provider
     post 'users/sign_up_by_provider' => 'users/registrations#create_by_provider', :as => :user_registration_by_provider
@@ -36,9 +36,14 @@ Rails.application.routes.draw do
 
 			resources :admins
 			resources :snippets
-      resources :users, :except => [:new, :create] do
+      resources :users, :except => [:new] do
 				collection do
 					get "export_all" => "users#export_all", :constraints => { :format => :xls }, :as => :export_all
+					get :search
+				end
+				member do
+					post :send_confirmation
+					post :send_reset_password
 				end
       end
 			resources :testimonials

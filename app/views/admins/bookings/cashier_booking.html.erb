@@ -18,7 +18,17 @@
 
           <div class="mb-3">
             <label class="form-label">User</label>
-            <%= f.collection_select :user_id, @users, :id, :name_with_email, { include_blank: "Select User" }, class: "form-select" %>
+            <%# form-control, not form-select: admin.js auto-upgrades every
+                .form-select:not(.choices-skip) into a Choices.js widget. %>
+            <div class="input-group">
+              <%= f.hidden_field :user_id, id: "cashier_user_id" %>
+              <input type="text" id="cashier_user_label" class="form-control" readonly
+                     placeholder="No user selected"
+                     value="<%= f.object.user.try(:name_with_email) %>">
+              <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#userPickerModal">
+                <i class="ri-user-search-line align-bottom me-1"></i> Select User
+              </button>
+            </div>
           </div>
 
           <div class="row mb-3">
@@ -52,8 +62,16 @@
   </div>
 </div>
 
+<%= render "admins/shared/user_picker_modal" %>
+
 <%= content_for :tail do %>
 <script>
+  // Called by the picker modal (and by create.js.erb) once a user is chosen.
+  window.selectUserForBooking = function(id, label) {
+    jQuery("#cashier_user_id").val(id);
+    jQuery("#cashier_user_label").val(label);
+  };
+
   jQuery(document).ready(function($){
     $(".datetimepicker").flatpickr({"altInput":true, "altFormat": "d/m/Y H:i", "enableTime": true, "minuteIncrement": 15, "disableMobile":true, "dateFormat":"d/m/Y H:i"});
 
