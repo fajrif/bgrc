@@ -13,7 +13,15 @@
                       include_blank: "— Select Category —" %>
               </div>
               <div class="col-md-6">
-                <%= f.association :sport, as: :select, include_blank: "— Select Sport —" %>
+                <% if @group_class.sport.present? %>
+                  <label class="form-label">Sport</label>
+                  <select class="form-select" disabled>
+                    <option selected><%= @group_class.sport.name %></option>
+                  </select>
+                  <%= f.input :sport_id, as: :hidden %>
+                <% else %>
+                  <%= f.association :sport, as: :select, include_blank: "— Select Sport —" %>
+                <% end %>
               </div>
             </div>
             <div class="row">

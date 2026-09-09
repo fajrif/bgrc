@@ -1,4 +1,4 @@
-<% title_page("Group Class Details") %>
+<% title_page("Group Class Details", sport_slug: @group_class.sport&.slug) %>
 <div class="row">
 	<div class="col-md-12 col-sm-12">
 		<div class="card card-box">
@@ -9,7 +9,7 @@
 				<div class="form-actions">
 					<%= link_to 'Edit', edit_admins_group_class_path(@group_class), :class => 'btn btn-secondary' %>
 					<%= link_to 'Destroy', admins_group_class_path(@group_class), :confirm => 'Are you sure?', :method => :delete, :class => 'btn btn-danger' %>
-					<%= link_to 'View All', admins_group_classes_path, :class => 'btn btn-light' %>
+					<%= link_to 'View All', admins_group_classes_path(sport_slug: @group_class.sport&.slug), :class => 'btn btn-light' %>
 				</div>
 			</div>
 		</div>

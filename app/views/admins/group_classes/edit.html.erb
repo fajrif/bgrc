@@ -1,2 +1,2 @@
-<% title_page("Edit Group Class") %>
+<% title_page(@group_class.sport ? "Edit #{@group_class.sport.name} Group Class" : "Edit Group Class", sport_slug: @group_class.sport&.slug) %>
 <%= render "form" %>

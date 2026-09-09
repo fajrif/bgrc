@@ -1,11 +1,10 @@
 class Admins::GroupClassesController < Admins::BaseController
 	before_action :set_group_class, except: [:index, :new, :create]
+  before_action :set_current_sport, only: [:index, :new, :create]
 
   def index
-    @sports = Sport.all
-    criteria = GroupClass.all
-    criteria = criteria.where("name ILIKE ?", "%#{params[:search]}%") if params[:search].present?
-    criteria = criteria.where(sport_id: params[:sport_id]) if params[:sport_id].present?
+    criteria = GroupClass.where("name ILIKE ?", "%#{params[:search]}%")
+    criteria = criteria.where(sport_id: @current_sport.id) if @current_sport
     criteria = criteria.where(category: params[:category]) if params[:category].present?
 
     @group_classes = criteria.page(params[:page]).per(10)
@@ -18,7 +17,7 @@ class Admins::GroupClassesController < Admins::BaseController
   end
 
   def new
-    @group_class = GroupClass.new
+    @group_class = GroupClass.new(sport: @current_sport)
   end
 
   def create
@@ -59,5 +58,11 @@ class Admins::GroupClassesController < Admins::BaseController
 
   def set_group_class
 		@group_class = GroupClass.find(params[:id])
+  end
+
+  def set_current_sport
+    @current_sport = Sport.friendly.find(params[:sport_slug]) if params[:sport_slug].present?
+  rescue ActiveRecord::RecordNotFound
+    @current_sport = nil
   end
 end

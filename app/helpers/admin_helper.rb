@@ -283,7 +283,6 @@ module AdminHelper
 		controller.controller_name == "facility_details" ||
 		controller.controller_name == "facility_rates" ||
 		controller.controller_name == "treatments" ||
-		controller.controller_name == "group_classes" ||
 		controller.controller_name == "packages" ||
 		controller.controller_name == "events" ||
 		controller.controller_name == "recurring_events" ||
@@ -318,12 +317,12 @@ module AdminHelper
 		controller.controller_name == "golf_reservations"
 	end
 
-	# Tennis/Padel/Pickleball share the same bookings/courts controllers, scoped by
-	# ?sport_slug=. Plain controller-name checks can't tell the sections apart, so
-	# match on the slug too — used for both the dropdown's active/expanded state and
-	# each sub-link's active state.
+	# Tennis/Padel/Pickleball share the same bookings/courts/group_classes controllers,
+	# scoped by ?sport_slug=. Plain controller-name checks can't tell the sections
+	# apart, so match on the slug too — used for both the dropdown's active/expanded
+	# state and each sub-link's active state.
 	def is_admins_sport_section_page?(slug)
-		%w[bookings courts].include?(controller.controller_name) && params[:sport_slug] == slug
+		%w[bookings courts group_classes].include?(controller.controller_name) && params[:sport_slug] == slug
 	end
 
 end

@@ -57,9 +57,6 @@
 								<a href="<%= admins_treatments_path %>" class="nav-link <%= current_path?('treatments') %>">Treatments</a>
 							</li>
 							<li class="nav-item">
-								<a href="<%= admins_group_classes_path %>" class="nav-link <%= current_path?('group_classes') %>">Group Classes</a>
-							</li>
-							<li class="nav-item">
 								<a href="<%= admins_recurring_events_path %>" class="nav-link <%= current_path?('recurring_events') %>">Recurring Events</a>
 							</li>
 							<li class="nav-item">
@@ -101,6 +98,9 @@
 							<li class="nav-item">
 								<a href="<%= admins_courts_path(sport_slug: 'tennis') %>" class="nav-link <%= 'active' if is_admins_sport_section_page?('tennis') && controller.controller_name == 'courts' %>">Courts</a>
 							</li>
+							<li class="nav-item">
+								<a href="<%= admins_group_classes_path(sport_slug: 'tennis') %>" class="nav-link <%= 'active' if is_admins_sport_section_page?('tennis') && controller.controller_name == 'group_classes' %>">Group Classes</a>
+							</li>
 						</ul>
 					</div>
 				</li>
@@ -119,6 +119,9 @@
 							<li class="nav-item">
 								<a href="<%= admins_courts_path(sport_slug: 'padel') %>" class="nav-link <%= 'active' if is_admins_sport_section_page?('padel') && controller.controller_name == 'courts' %>">Courts</a>
 							</li>
+							<li class="nav-item">
+								<a href="<%= admins_group_classes_path(sport_slug: 'padel') %>" class="nav-link <%= 'active' if is_admins_sport_section_page?('padel') && controller.controller_name == 'group_classes' %>">Group Classes</a>
+							</li>
 						</ul>
 					</div>
 				</li>
@@ -136,6 +139,9 @@
 							</li>
 							<li class="nav-item">
 								<a href="<%= admins_courts_path(sport_slug: 'pickleball') %>" class="nav-link <%= 'active' if is_admins_sport_section_page?('pickleball') && controller.controller_name == 'courts' %>">Courts</a>
+							</li>
+							<li class="nav-item">
+								<a href="<%= admins_group_classes_path(sport_slug: 'pickleball') %>" class="nav-link <%= 'active' if is_admins_sport_section_page?('pickleball') && controller.controller_name == 'group_classes' %>">Group Classes</a>
 							</li>
 						</ul>
 					</div>

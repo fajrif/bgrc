@@ -1,2 +1,2 @@
-<% title_page("Create New Group Class") %>
+<% title_page(@current_sport ? "New #{@current_sport.name} Group Class" : "Create New Group Class", sport_slug: @current_sport&.slug) %>
 <%= render "form" %>
