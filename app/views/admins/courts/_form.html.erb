@@ -1,15 +1,61 @@
 <%= simple_form_for @court, url: (@court.new_record? ? admins_courts_path : admins_court_path(@court.id)), method: (@court.new_record? ? :post : :put) do |f| %>
 	<div class="row">
 		<div class="col-lg-8">
-			<div class="card">
+			<%= render "admins/shared/error_messages", :target => @court, col: '' %>
+
+			<div class="card mb-4">
+				<div class="card-header">
+					<h5 class="card-title mb-0">Info</h5>
+				</div>
 				<div class="card-body">
 					<%= f.error_notification %>
 					<fieldset>
 						<%= f.input :name, as: :string %>
-            <%= f.input :location, as: :string %>
-            <%= f.input :info, as: :text %>
-            <%= f.input :instructions, as: :text %>
-            <%= f.input :description, as: :text %>
+						<%= f.input :location, as: :string %>
+						<%= f.input :info, as: :text %>
+						<%= f.input :instructions, as: :text %>
+						<%= f.input :description, as: :text %>
+					</fieldset>
+				</div>
+			</div>
+
+			<div class="card">
+				<div class="card-header">
+					<h5 class="card-title mb-0">Settings</h5>
+				</div>
+				<div class="card-body">
+					<fieldset>
+						<div class="row">
+							<div class="col-md-6">
+								<% if @court.sport.present? %>
+									<div class="mb-3">
+										<label class="form-label">Sport</label>
+										<select class="form-select" disabled>
+											<option selected><%= @court.sport.name %></option>
+										</select>
+									</div>
+									<%= f.input :sport_id, as: :hidden %>
+								<% else %>
+									<%= f.association :sport, as: :select, wrapper: :vertical_select %>
+								<% end %>
+							</div>
+							<div class="col-md-6">
+								<%= f.association :court_type, as: :select, wrapper: :vertical_select %>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-6">
+								<%= f.input :price, wrapper: :vertical_form_plain %>
+							</div>
+							<div class="col-md-6">
+								<%= f.input :min_duration, wrapper: :vertical_form_plain %>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-6">
+								<%= f.input :status, as: :select, collection: [[0, 'Available'], [1, 'Not Available']], label_method: :second, value_method: :first, include_blank: false, wrapper: :vertical_select %>
+							</div>
+						</div>
 					</fieldset>
 					<%= f.error :base %>
 					<div class="form-actions">
@@ -19,25 +65,6 @@
 						<% else %>
 							<%= link_to "Cancel", admins_courts_path, :class => 'btn btn-light' %>
 						<% end %>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="col-lg-4">
-			<div class="row">
-				<%= render "admins/shared/error_messages", :target => @court, col: 'col-lg-12' %>
-				<div class="col-lg-12">
-					<div class="card">
-						<div class="card-header">
-							<h5 class="card-title mb-0">Settings</h5>
-						</div>
-						<div class="card-body">
-              <%= f.association :sport, as: :select %>
-              <%= f.association :court_type, as: :select %>
-              <%= f.input :price %>
-              <%= f.input :min_duration %>
-              <%= f.input :status, as: :select, collection: [[0, 'Available'], [1, 'Not Available']], label_method: :second, value_method: :first, include_blank: false %>
-						</div>
 					</div>
 				</div>
 			</div>

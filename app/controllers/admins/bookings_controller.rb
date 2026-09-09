@@ -1,9 +1,11 @@
 class Admins::BookingsController < Admins::BaseController
-	before_action :set_courts, only: [:calendar]
+	before_action :set_current_sport, only: [:index, :calendar, :cashier_booking, :create_cashier_booking]
+	before_action :set_courts, only: [:calendar, :cashier_booking, :create_cashier_booking]
 	before_action :set_booking, except: [:index, :calendar, :new, :create, :cashier_booking, :create_cashier_booking, :check_slot, :export_all]
 
   def index
     criteria = Booking.where("order_id ILIKE ?", "%#{params[:search]}%")
+    criteria = criteria.joins(:court).where(courts: { sport_id: @current_sport.id }) if @current_sport
     @bookings = criteria.page(params[:page]).per(10)
     respond_to do |format|
       format.html # index.html.erb
@@ -125,9 +127,7 @@ class Admins::BookingsController < Admins::BaseController
     @booking = Booking.new
     @booking.date = DateTime.parse(params[:date]) rescue nil if params[:date].present?
     @booking.court_id = params[:court_id] if params[:court_id].present?
-    @courts = Court.all
     @users = User.all.order(name: :asc)
-    @sports = Sport.all
   end
 
   def create_cashier_booking
@@ -140,22 +140,16 @@ class Admins::BookingsController < Admins::BaseController
           @booking.create_purchase_record!
           redirect_to invoice_admins_booking_path(@booking.id), :notice => "Successfully created cashier booking."
         else
-          @courts = Court.all
           @users = User.all.order(name: :asc)
-          @sports = Sport.all
           render :cashier_booking
         end
       else
         flash.now[:alert] = 'Booking date not available'
-        @courts = Court.all
         @users = User.all.order(name: :asc)
-        @sports = Sport.all
         render :cashier_booking
       end
     else
-      @courts = Court.all
       @users = User.all.order(name: :asc)
-      @sports = Sport.all
       render :cashier_booking
     end
   end
@@ -240,7 +234,15 @@ class Admins::BookingsController < Admins::BaseController
   end
 
 	def set_courts
-    @courts = Court.unscoped.order(name: :asc)
+    criteria = Court.unscoped.order(name: :asc)
+    criteria = criteria.where(sport_id: @current_sport.id) if @current_sport
+    @courts = criteria
 	end
+
+  def set_current_sport
+    @current_sport = Sport.friendly.find(params[:sport_slug]) if params[:sport_slug].present?
+  rescue ActiveRecord::RecordNotFound
+    @current_sport = nil
+  end
 
 end

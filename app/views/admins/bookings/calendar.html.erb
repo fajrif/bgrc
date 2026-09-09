@@ -1,16 +1,17 @@
-<% title_page("Bookings Calendar") %>
+<% title_page(@current_sport ? "#{@current_sport.name} Booking Calendar" : "Bookings Calendar", sport_slug: @current_sport&.slug) %>
 <div class="row">
     <div class="col-12">
         <div class="row">
             <div class="col-xl-3">
                 <div class="card card-h-100">
                     <div class="card-body">
-                        <a href="<%= cashier_booking_admins_bookings_path %>" class="btn btn-primary w-100"><i class="mdi mdi-plus"></i> Create New Booking</a>
+                        <a href="<%= cashier_booking_admins_bookings_path(sport_slug: params[:sport_slug]) %>" class="btn btn-primary w-100"><i class="mdi mdi-plus"></i> Create New Booking</a>
                         <div>
                             <br/>
                             <p class="text-muted">Search by Court and Dates</p>
                             <%= form_tag calendar_admins_bookings_url, { :method => :get } do %>
                               <div class="form-search">
+                                <%= hidden_field_tag :sport_slug, params[:sport_slug] if params[:sport_slug].present? %>
                                 <%= select_tag :court_id, options_from_collection_for_select(@courts, 'id', 'name_label', @court.id), class: "form-select mb-2" %>
                                 <%= select_tag :month, options_for_select((1..12).map {|m| [Date::MONTHNAMES[m], m]}, @month), class: "form-select mb-2" %>
                                 <%= select_tag :year, options_for_select((Date.today.year-5..Date.today.year+1).to_a.reverse, @year), class: "form-select mb-2" %>
@@ -81,7 +82,7 @@
     document.addEventListener("DOMContentLoaded", function () {
         var defaultEvents = <%= @events.html_safe %>;
         var courtId = <%= @court.id %>;
-        var cashierBookingUrl = "<%= cashier_booking_admins_bookings_path %>";
+        var cashierBookingUrl = "<%= cashier_booking_admins_bookings_path(sport_slug: params[:sport_slug]) %>";
 
         var calendarEl = document.getElementById('calendar');
 
@@ -115,7 +116,8 @@
 
             select: function(info) {
                 var start = info.startStr.replace('T', ' ').substring(0, 16);
-                var url = cashierBookingUrl + "?date=" + encodeURIComponent(start) + "&court_id=" + courtId;
+                var separator = cashierBookingUrl.indexOf('?') === -1 ? '?' : '&';
+                var url = cashierBookingUrl + separator + "date=" + encodeURIComponent(start) + "&court_id=" + courtId;
                 window.location.href = url;
             },
 

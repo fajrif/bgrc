@@ -1,4 +1,4 @@
-<% title_page("Invoice - #{@booking.order_id}") %>
+<% title_page("Invoice - #{@booking.order_id}", sport_slug: @booking.court&.sport&.slug) %>
 
 <div class="row">
   <div class="col-md-12">

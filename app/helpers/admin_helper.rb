@@ -70,12 +70,32 @@ module AdminHelper
 		raw("Currently there are no data #{model.model_name.human.pluralize.downcase} at the moment. Please create one by clicking #{link_to "here", new_link}.")
 	end
 
-	def title_page(page_title)
+	SPORT_TITLE_THEMES = {
+		"golf"       => { icon: "bbcc-icons/golf.png",       color: "#517882" },
+		"tennis"     => { icon: "bbcc-icons/tennis.png",     color: "#5F7894" },
+		"padel"      => { icon: "bbcc-icons/padel.png",      color: "#8A6B9D" },
+		"pickleball" => { icon: "bbcc-icons/pickleball.png", color: "#A6774E" },
+	}.freeze
+
+	def sport_title_theme(slug)
+		SPORT_TITLE_THEMES[slug.to_s]
+	end
+
+	def title_page(page_title, sport_slug: nil)
     content_for(:title) do
 			content_tag(:div, :class => "row") do
 				content_tag(:div, :class => "col-12") do
-					content_tag(:div, :class => "page-title-box d-sm-flex align-items-center justify-content-between") do
-						content_tag(:h4, page_title, :class => "mb-sm-0")
+					theme = sport_slug && sport_title_theme(sport_slug)
+					box_class = "page-title-box d-sm-flex align-items-center justify-content-between"
+					box_class += " sport-title-box" if theme
+					content_tag(:div, :class => box_class, :style => (theme ? "background-color: #{theme[:color]};" : nil)) do
+						if theme
+							content_tag(:h4, :class => "mb-sm-0 text-white d-flex align-items-center gap-2") do
+								image_tag(theme[:icon], class: "sport-title-icon", alt: "") + page_title
+							end
+						else
+							content_tag(:h4, page_title, :class => "mb-sm-0")
+						end
 					end
 				end
 			end
@@ -237,19 +257,12 @@ module AdminHelper
 		controller.controller_name == "categories"
   end
 
-  def is_admins_banners_page?
-		controller.controller_name == "banners" ||
-		controller.controller_name == "banner_sections"
-  end
-
   def is_admins_page?
 		controller.controller_name == "admins"
   end
 
   def is_admins_users_page?
-		controller.controller_name == "users" ||
-		controller.controller_name == "bookings" ||
-		controller.controller_name == "coaches"
+		controller.controller_name == "users"
   end
 
 	def is_admins_dining_page?
@@ -261,7 +274,8 @@ module AdminHelper
 
 	def is_admins_sports_page?
 		controller.controller_name == "sports" ||
-		controller.controller_name == "courts" ||
+		controller.controller_name == "coaches" ||
+		controller.controller_name == "items" ||
 		controller.controller_name == "business_hours" ||
 		controller.controller_name == "costs" ||
 		controller.controller_name == "facilities" ||
@@ -274,16 +288,18 @@ module AdminHelper
 		controller.controller_name == "events" ||
 		controller.controller_name == "recurring_events" ||
 		controller.controller_name == "event_rsvps" ||
-		controller.controller_name == "event_types" ||
 		controller.controller_name == "promos"
 	end
 
 	def is_admins_others_page?
+		controller.controller_name == "banners" ||
+		controller.controller_name == "banner_sections" ||
+		controller.controller_name == "team_members" ||
 		controller.controller_name == "testimonials" ||
-		controller.controller_name == "items" ||
 		controller.controller_name == "purchases" ||
 		controller.controller_name == "class_credit_purchases" ||
-		controller.controller_name == "questions"
+		controller.controller_name == "questions" ||
+		controller.controller_name == "event_types"
 	end
 
 	def is_admins_admins_page?
@@ -300,6 +316,14 @@ module AdminHelper
 		controller.controller_name == "golf_rates" ||
 		controller.controller_name == "golf_items" ||
 		controller.controller_name == "golf_reservations"
+	end
+
+	# Tennis/Padel/Pickleball share the same bookings/courts controllers, scoped by
+	# ?sport_slug=. Plain controller-name checks can't tell the sections apart, so
+	# match on the slug too — used for both the dropdown's active/expanded state and
+	# each sub-link's active state.
+	def is_admins_sport_section_page?(slug)
+		%w[bookings courts].include?(controller.controller_name) && params[:sport_slug] == slug
 	end
 
 end

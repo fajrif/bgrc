@@ -1,2 +1,2 @@
-<% title_page("Create New Booking") %>
+<% title_page("Create New Booking", sport_slug: @booking.court&.sport&.slug) %>
 <%= render "form" %>

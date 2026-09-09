@@ -27,16 +27,136 @@
 					</a>
 				</li>
 				<li class="nav-item">
-					<a class="nav-link menu-link <%= 'active' if is_admins_banners_page? %>" href="#sidebarBanners" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarBanners">
-						<i class="ri-image-fill"></i> <span data-key="t-landing">Banners</span>
+					<a class="nav-link menu-link <%= 'active' if is_admins_sports_page? %>" href="#sidebarSports" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarSports">
+						<i class="ri-basketball-line"></i> <span data-key="t-landing">Sports</span>
 					</a>
-					<div class="collapse menu-dropdown <%= 'show' if is_admins_banners_page? %>" id="sidebarBanners">
+					<div class="collapse menu-dropdown <%= 'show' if is_admins_sports_page? %>" id="sidebarSports">
 						<ul class="nav nav-sm flex-column">
 							<li class="nav-item">
-								<a href="<%= admins_banners_path %>" class="nav-link <%= current_path?('banners') %>">Banners</a>
+								<a href="<%= admins_sports_path %>" class="nav-link <%= current_path?('sports') %>">Sports</a>
 							</li>
 							<li class="nav-item">
-								<a href="<%= admins_banner_sections_path %>" class="nav-link <%= current_path?('banner_sections') %>">Banner Sections</a>
+								<a href="<%= admins_coaches_path %>" class="nav-link <%= current_path?('coaches') %>">Coaches</a>
+							</li>
+							<li class="nav-item">
+								<a href="<%= admins_items_path %>" class="nav-link <%= current_path?('items') %>">Items</a>
+							</li>
+							<li class="nav-item">
+								<a href="<%= admins_facilities_path %>" class="nav-link <%= current_path?('facilities') %>">Facilities</a>
+							</li>
+							<li class="nav-item">
+								<a href="<%= admins_amenities_path %>" class="nav-link <%= current_path?('amenities') %>">Amenities</a>
+							</li>
+							<li class="nav-item">
+								<a href="<%= admins_facility_details_path %>" class="nav-link <%= current_path?('facility_details') %>">Facility Info Blocks</a>
+							</li>
+							<li class="nav-item">
+								<a href="<%= admins_facility_rates_path %>" class="nav-link <%= current_path?('facility_rates') %>">Facility Pricing</a>
+							</li>
+							<li class="nav-item">
+								<a href="<%= admins_treatments_path %>" class="nav-link <%= current_path?('treatments') %>">Treatments</a>
+							</li>
+							<li class="nav-item">
+								<a href="<%= admins_group_classes_path %>" class="nav-link <%= current_path?('group_classes') %>">Group Classes</a>
+							</li>
+							<li class="nav-item">
+								<a href="<%= admins_recurring_events_path %>" class="nav-link <%= current_path?('recurring_events') %>">Recurring Events</a>
+							</li>
+							<li class="nav-item">
+								<a href="<%= admins_event_rsvps_path %>" class="nav-link <%= current_path?('event_rsvps') %>">Event RSVPs</a>
+							</li>
+						</ul>
+					</div>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link menu-link <%= 'active' if is_admins_golf_page? %>" href="#sidebarGolf" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarGolf">
+						<%= image_tag "bbcc-icons/golf.png", class: "nav-icon-img", alt: "" %> <span data-key="t-landing">Golf</span>
+					</a>
+					<div class="collapse menu-dropdown <%= 'show' if is_admins_golf_page? %>" id="sidebarGolf">
+						<ul class="nav nav-sm flex-column">
+							<li class="nav-item">
+								<a href="<%= admins_golf_reservations_path %>" class="nav-link <%= 'active' if controller.controller_name == 'golf_reservations' && !%w[calendar new].include?(controller.action_name) %>">Bookings</a>
+							</li>
+							<li class="nav-item">
+								<a href="<%= calendar_admins_golf_reservations_path %>" class="nav-link <%= 'active' if controller.controller_name == 'golf_reservations' && controller.action_name == 'calendar' %>">Booking Calendar</a>
+							</li>
+							<li class="nav-item">
+								<a href="<%= admins_golf_courses_path %>" class="nav-link <%= current_path?('golf_courses') %>">Golf Course</a>
+							</li>
+						</ul>
+					</div>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link menu-link <%= 'active' if is_admins_sport_section_page?('tennis') %>" href="#sidebarTennis" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarTennis">
+						<%= image_tag "bbcc-icons/tennis.png", class: "nav-icon-img", alt: "" %> <span data-key="t-landing">Tennis</span>
+					</a>
+					<div class="collapse menu-dropdown <%= 'show' if is_admins_sport_section_page?('tennis') %>" id="sidebarTennis">
+						<ul class="nav nav-sm flex-column">
+							<li class="nav-item">
+								<a href="<%= admins_bookings_path(sport_slug: 'tennis') %>" class="nav-link <%= 'active' if is_admins_sport_section_page?('tennis') && controller.controller_name == 'bookings' && controller.action_name == 'index' %>">Bookings</a>
+							</li>
+							<li class="nav-item">
+								<a href="<%= calendar_admins_bookings_path(sport_slug: 'tennis') %>" class="nav-link <%= 'active' if is_admins_sport_section_page?('tennis') && controller.action_name == 'calendar' %>">Booking Calendar</a>
+							</li>
+							<li class="nav-item">
+								<a href="<%= admins_courts_path(sport_slug: 'tennis') %>" class="nav-link <%= 'active' if is_admins_sport_section_page?('tennis') && controller.controller_name == 'courts' %>">Courts</a>
+							</li>
+						</ul>
+					</div>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link menu-link <%= 'active' if is_admins_sport_section_page?('padel') %>" href="#sidebarPadel" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarPadel">
+						<%= image_tag "bbcc-icons/padel.png", class: "nav-icon-img", alt: "" %> <span data-key="t-landing">Padel</span>
+					</a>
+					<div class="collapse menu-dropdown <%= 'show' if is_admins_sport_section_page?('padel') %>" id="sidebarPadel">
+						<ul class="nav nav-sm flex-column">
+							<li class="nav-item">
+								<a href="<%= admins_bookings_path(sport_slug: 'padel') %>" class="nav-link <%= 'active' if is_admins_sport_section_page?('padel') && controller.controller_name == 'bookings' && controller.action_name == 'index' %>">Bookings</a>
+							</li>
+							<li class="nav-item">
+								<a href="<%= calendar_admins_bookings_path(sport_slug: 'padel') %>" class="nav-link <%= 'active' if is_admins_sport_section_page?('padel') && controller.action_name == 'calendar' %>">Booking Calendar</a>
+							</li>
+							<li class="nav-item">
+								<a href="<%= admins_courts_path(sport_slug: 'padel') %>" class="nav-link <%= 'active' if is_admins_sport_section_page?('padel') && controller.controller_name == 'courts' %>">Courts</a>
+							</li>
+						</ul>
+					</div>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link menu-link <%= 'active' if is_admins_sport_section_page?('pickleball') %>" href="#sidebarPickleball" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarPickleball">
+						<%= image_tag "bbcc-icons/pickleball.png", class: "nav-icon-img", alt: "" %> <span data-key="t-landing">Pickleball</span>
+					</a>
+					<div class="collapse menu-dropdown <%= 'show' if is_admins_sport_section_page?('pickleball') %>" id="sidebarPickleball">
+						<ul class="nav nav-sm flex-column">
+							<li class="nav-item">
+								<a href="<%= admins_bookings_path(sport_slug: 'pickleball') %>" class="nav-link <%= 'active' if is_admins_sport_section_page?('pickleball') && controller.controller_name == 'bookings' && controller.action_name == 'index' %>">Bookings</a>
+							</li>
+							<li class="nav-item">
+								<a href="<%= calendar_admins_bookings_path(sport_slug: 'pickleball') %>" class="nav-link <%= 'active' if is_admins_sport_section_page?('pickleball') && controller.action_name == 'calendar' %>">Booking Calendar</a>
+							</li>
+							<li class="nav-item">
+								<a href="<%= admins_courts_path(sport_slug: 'pickleball') %>" class="nav-link <%= 'active' if is_admins_sport_section_page?('pickleball') && controller.controller_name == 'courts' %>">Courts</a>
+							</li>
+						</ul>
+					</div>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link menu-link <%= 'active' if is_admins_dining_page? %>" href="#sidebarDining" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarDining">
+						<i class="ri-restaurant-line"></i> <span data-key="t-landing">Dining</span>
+					</a>
+					<div class="collapse menu-dropdown <%= 'show' if is_admins_dining_page? %>" id="sidebarDining">
+						<ul class="nav nav-sm flex-column">
+							<li class="nav-item">
+								<a href="<%= admins_restaurants_path %>" class="nav-link <%= current_path?('restaurants') %>">Restaurants</a>
+							</li>
+							<li class="nav-item">
+								<a href="<%= admins_menus_path %>" class="nav-link <%= current_path?('menus') %>">Menus</a>
+							</li>
+							<li class="nav-item">
+								<a href="<%= admins_menu_categories_path %>" class="nav-link <%= current_path?('menu_categories') %>">Menu Categories</a>
+							</li>
+							<li class="nav-item">
+								<a href="<%= admins_food_orders_path %>" class="nav-link <%= current_path?('food_orders') %>">Grab &amp; Go Orders</a>
 							</li>
 						</ul>
 					</div>
@@ -68,96 +188,6 @@
 							<li class="nav-item">
 								<a href="<%= admins_users_path %>" class="nav-link <%= current_path?('users') %>">Users</a>
 							</li>
-							<li class="nav-item">
-								<a href="<%= admins_coaches_path %>" class="nav-link <%= current_path?('coaches') %>">Coaches</a>
-							</li>
-							<li class="nav-item">
-                <a href="<%= admins_bookings_path %>" class="nav-link <%= 'active' if is_bookings_page? %>">Bookings</a>
-							</li>
-							<li class="nav-item">
-                <a href="<%= calendar_admins_bookings_path %>" class="nav-link <%= 'active' if is_calendar_page? %>">Booking Calendar</a>
-							</li>
-							<li class="nav-item">
-                <a href="<%= cashier_booking_admins_bookings_path %>" class="nav-link">Cashier Booking</a>
-							</li>
-						</ul>
-					</div>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link menu-link <%= 'active' if is_admins_sports_page? %>" href="#sidebarSports" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarSports">
-						<i class="ri-basketball-line"></i> <span data-key="t-landing">Sports</span>
-					</a>
-					<div class="collapse menu-dropdown <%= 'show' if is_admins_sports_page? %>" id="sidebarSports">
-						<ul class="nav nav-sm flex-column">
-							<li class="nav-item">
-								<a href="<%= admins_sports_path %>" class="nav-link <%= current_path?('sports') %>">Sports</a>
-							</li>
-							<li class="nav-item">
-								<a href="<%= admins_courts_path %>" class="nav-link <%= current_path?('courts') %>">Courts</a>
-							</li>
-							<li class="nav-item">
-								<a href="<%= admins_facilities_path %>" class="nav-link <%= current_path?('facilities') %>">Facilities</a>
-							</li>
-							<li class="nav-item">
-								<a href="<%= admins_amenities_path %>" class="nav-link <%= current_path?('amenities') %>">Amenities</a>
-							</li>
-							<li class="nav-item">
-								<a href="<%= admins_facility_details_path %>" class="nav-link <%= current_path?('facility_details') %>">Facility Info Blocks</a>
-							</li>
-							<li class="nav-item">
-								<a href="<%= admins_facility_rates_path %>" class="nav-link <%= current_path?('facility_rates') %>">Facility Pricing</a>
-							</li>
-							<li class="nav-item">
-								<a href="<%= admins_treatments_path %>" class="nav-link <%= current_path?('treatments') %>">Treatments</a>
-							</li>
-							<li class="nav-item">
-								<a href="<%= admins_group_classes_path %>" class="nav-link <%= current_path?('group_classes') %>">Group Classes</a>
-							</li>
-							<li class="nav-item">
-								<a href="<%= admins_recurring_events_path %>" class="nav-link <%= current_path?('recurring_events') %>">Recurring Events</a>
-							</li>
-							<li class="nav-item">
-								<a href="<%= admins_event_rsvps_path %>" class="nav-link <%= current_path?('event_rsvps') %>">Event RSVPs</a>
-							</li>
-							<li class="nav-item">
-								<a href="<%= admins_event_types_path %>" class="nav-link <%= current_path?('event_types') %>">Event Types</a>
-							</li>
-						</ul>
-					</div>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link menu-link <%= 'active' if is_admins_dining_page? %>" href="#sidebarDining" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarDining">
-						<i class="ri-restaurant-line"></i> <span data-key="t-landing">Dining</span>
-					</a>
-					<div class="collapse menu-dropdown <%= 'show' if is_admins_dining_page? %>" id="sidebarDining">
-						<ul class="nav nav-sm flex-column">
-							<li class="nav-item">
-								<a href="<%= admins_restaurants_path %>" class="nav-link <%= current_path?('restaurants') %>">Restaurants</a>
-							</li>
-							<li class="nav-item">
-								<a href="<%= admins_menus_path %>" class="nav-link <%= current_path?('menus') %>">Menus</a>
-							</li>
-							<li class="nav-item">
-								<a href="<%= admins_menu_categories_path %>" class="nav-link <%= current_path?('menu_categories') %>">Menu Categories</a>
-							</li>
-							<li class="nav-item">
-								<a href="<%= admins_food_orders_path %>" class="nav-link <%= current_path?('food_orders') %>">Grab &amp; Go Orders</a>
-							</li>
-						</ul>
-					</div>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link menu-link <%= 'active' if is_admins_golf_page? %>" href="#sidebarGolf" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarGolf">
-						<i class="ri-trophy-line"></i> <span data-key="t-landing">Golf</span>
-					</a>
-					<div class="collapse menu-dropdown <%= 'show' if is_admins_golf_page? %>" id="sidebarGolf">
-						<ul class="nav nav-sm flex-column">
-							<li class="nav-item">
-								<a href="<%= admins_golf_courses_path %>" class="nav-link <%= current_path?('golf_courses') %>">Courses</a>
-							</li>
-							<li class="nav-item">
-								<a href="<%= admins_golf_reservations_path %>" class="nav-link <%= current_path?('golf_reservations') %>">Reservations</a>
-							</li>
 						</ul>
 					</div>
 				</li>
@@ -168,6 +198,12 @@
 					<div class="collapse menu-dropdown <%= 'show' if is_admins_others_page? %>" id="sidebarOthers">
 						<ul class="nav nav-sm flex-column">
 							<li class="nav-item">
+								<a href="<%= admins_banners_path %>" class="nav-link <%= current_path?('banners') %>">Banners</a>
+							</li>
+							<li class="nav-item">
+								<a href="<%= admins_banner_sections_path %>" class="nav-link <%= current_path?('banner_sections') %>">Banner Sections</a>
+							</li>
+							<li class="nav-item">
 								<a href="<%= admins_team_members_path %>" class="nav-link <%= current_path?('team_members') %>">Team Members</a>
 							</li>
 							<li class="nav-item">
@@ -177,7 +213,7 @@
 								<a href="<%= admins_questions_path %>" class="nav-link <%= current_path?('questions') %>">FAQ</a>
 							</li>
 							<li class="nav-item">
-								<a href="<%= admins_items_path %>" class="nav-link <%= current_path?('items') %>">Items</a>
+								<a href="<%= admins_event_types_path %>" class="nav-link <%= current_path?('event_types') %>">Event Types</a>
 							</li>
 							<li class="nav-item">
 								<a href="<%= admins_purchases_path %>" class="nav-link <%= current_path?('/purchases') %>">Purchases</a>

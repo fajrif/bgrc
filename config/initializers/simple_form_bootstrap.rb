@@ -79,6 +79,22 @@ SimpleForm.setup do |config|
 		end
   end
 
+  # vertical input without the wrapping row/col-12 — for fields placed inside
+  # a custom grid (e.g. two fields side-by-side in a manually-built .row > .col-md-6)
+  config.wrappers :vertical_form_plain, class: 'mb-3' do |b|
+    b.use :html5
+    b.use :placeholder
+    b.optional :maxlength
+    b.optional :minlength
+    b.optional :pattern
+    b.optional :min_max
+    b.optional :readonly
+    b.use :label, class: 'form-label'
+    b.use :input, class: 'form-control big-input', error_class: 'is-invalid'
+    b.use :full_error, wrap_with: { class: 'invalid-feedback' }
+    b.use :hint, wrap_with: { class: 'form-text' }
+  end
+
   # vertical input for boolean
   config.wrappers :vertical_boolean, tag: 'fieldset', class: 'mb-3' do |b|
     b.use :html5

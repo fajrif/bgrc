@@ -1,2 +1,2 @@
-<% title_page("Edit Court") %>
+<% title_page(@court.sport ? "Edit #{@court.sport.name} Court" : "Edit Court", sport_slug: @court.sport&.slug) %>
 <%= render "form" %>

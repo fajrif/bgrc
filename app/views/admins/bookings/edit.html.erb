@@ -1,4 +1,4 @@
-<% title_page("Edit Booking - Order ID: #{@booking.order_id}") %>
+<% title_page("Edit Booking - Order ID: #{@booking.order_id}", sport_slug: @booking.court&.sport&.slug) %>
 <% if @booking.purchase && @booking.purchase.payment_type == "CASHIER" %>
 <!-- Warning Alert -->
 <div class="alert border-0 alert-success" role="alert">

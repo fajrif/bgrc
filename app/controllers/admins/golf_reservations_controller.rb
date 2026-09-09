@@ -17,6 +17,8 @@ class Admins::GolfReservationsController < Admins::BaseController
     reservations = GolfReservation.unscoped
                                   .where("to_char(tee_time, 'YYYYMM') = ?", "#{@year}#{@month.to_s.rjust(2, '0')}")
 
+    interval = @golf_course&.interval_minutes || 10
+
     @events = JSON[reservations.map do |r|
       color = case r.status
               when GolfReservation::PAID      then "bg-success"
@@ -25,7 +27,9 @@ class Admins::GolfReservationsController < Admins::BaseController
               else "bg-warning"
               end
       { id: r.id, title: "#{r.order_id} (#{r.players_count}p / #{r.holes}h)",
-        start: r.tee_time.strftime('%Y-%m-%dT%H:%M'), allDay: false, className: color,
+        start: r.tee_time.strftime('%Y-%m-%dT%H:%M'),
+        end: (r.tee_time + interval.minutes).strftime('%Y-%m-%dT%H:%M'),
+        allDay: false, className: color,
         url: admins_golf_reservation_path(r) }
     end]
   end

@@ -1,33 +1,118 @@
-<% title_page("Golf Reservations Calendar") %>
+<% title_page("Golf Booking Calendar", sport_slug: "golf") %>
 <div class="row">
-  <div class="col-lg-12">
-    <div class="card">
-      <div class="card-header">
-        <div class="d-flex align-items-center gap-3">
-          <%= link_to "< Prev", calendar_admins_golf_reservations_path(month: @month.to_i == 1 ? 12 : @month.to_i - 1, year: @month.to_i == 1 ? @year.to_i - 1 : @year), class: "btn btn-sm btn-secondary" %>
-          <strong><%= Date::MONTHNAMES[@month.to_i] %> <%= @year %></strong>
-          <%= link_to "Next >", calendar_admins_golf_reservations_path(month: @month.to_i == 12 ? 1 : @month.to_i + 1, year: @month.to_i == 12 ? @year.to_i + 1 : @year), class: "btn btn-sm btn-secondary" %>
-        </div>
-      </div>
-      <div class="card-body">
-        <div id="golf-calendar"></div>
-      </div>
-    </div>
-  </div>
-</div>
+    <div class="col-12">
+        <div class="row">
+            <div class="col-xl-3">
+                <div class="card card-h-100">
+                    <div class="card-body">
+                        <a href="<%= new_admins_golf_reservation_path %>" class="btn btn-primary w-100"><i class="mdi mdi-plus"></i> Create New Reservation</a>
+                        <div>
+                            <br/>
+                            <p class="text-muted">Search by Month and Year</p>
+                            <%= form_tag calendar_admins_golf_reservations_url, { :method => :get } do %>
+                              <div class="form-search">
+                                <%= select_tag :month, options_for_select((1..12).map {|m| [Date::MONTHNAMES[m], m]}, @month), class: "form-select mb-2" %>
+                                <%= select_tag :year, options_for_select((Date.today.year-5..Date.today.year+1).to_a.reverse, @year), class: "form-select mb-2" %>
+                                <div class="text-center">
+                                  <%= submit_tag "Search", class: "btn btn-soft-primary" %>
+                                </div>
+                              </div>
+                            <% end %>
+                        </div>
+                    </div>
+                </div>
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-  if (typeof FullCalendar === 'undefined') return;
-  var calendarEl = document.getElementById('golf-calendar');
-  var calendar = new FullCalendar.Calendar(calendarEl, {
-    initialView: 'dayGridMonth',
-    initialDate: '<%= "#{@year}-#{@month.to_s.rjust(2, '0')}-01" %>',
-    events: <%= @events.html_safe %>,
-    eventClick: function(info) {
-      if (info.event.url) { window.location.href = info.event.url; info.jsEvent.preventDefault(); }
+                <div class="card">
+                    <div class="card-body">
+                        <h6 class="card-title mb-3">Color Legend</h6>
+                        <div class="d-flex align-items-center mb-2">
+                            <span class="badge bg-success me-2">&nbsp;&nbsp;&nbsp;</span>
+                            <span class="small">Booked &amp; Paid</span>
+                        </div>
+                        <div class="d-flex align-items-center mb-2">
+                            <span class="badge bg-warning me-2">&nbsp;&nbsp;&nbsp;</span>
+                            <span class="small">Awaiting Payment</span>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <span class="badge bg-secondary me-2">&nbsp;&nbsp;&nbsp;</span>
+                            <span class="small">Cancelled / Expired</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-body bg-info-subtle">
+                        <div class="d-flex">
+                            <div class="flex-shrink-0">
+                                <i data-feather="calendar" class="text-info icon-dual-info"></i>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h6 class="fs-15">Booking Calendar Tips</h6>
+                                <p class="text-muted mb-0">Click a reservation to view its details.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div> <!-- end col-->
+
+            <div class="col-xl-9">
+                <div class="card card-h-100">
+                    <div class="card-body">
+                        <div id="golf-calendar"></div>
+                    </div>
+                </div>
+            </div><!-- end col -->
+        </div>
+        <!--end row-->
+
+        <div style='clear:both'></div>
+    </div>
+</div> <!-- end row-->
+<%= content_for :tail do %>
+	<%= javascript_include_tag 'admin/fullcalendar/index.global.min.js' %>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var defaultEvents = <%= @events.html_safe %>;
+        var calendarEl = document.getElementById('golf-calendar');
+
+        function getInitialView() {
+            if (window.innerWidth >= 768 && window.innerWidth < 1200) {
+                return 'timeGridWeek';
+            } else if (window.innerWidth <= 768) {
+                return 'listMonth';
+            } else {
+                return 'dayGridMonth';
+            }
+        }
+
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            timeZone: 'local',
+            navLinks: true,
+            initialDate: '<%= "#{@year}-#{@month.to_s.rjust(2, '0')}-01" %>',
+            initialView: getInitialView(),
+            themeSystem: 'bootstrap',
+            headerToolbar: {
+                left: 'title',
+                right: 'dayGridMonth,timeGridWeek,timeGridDay,listMonth'
+            },
+            windowResize: function (view) {
+                var newView = getInitialView();
+                calendar.changeView(newView);
+            },
+            events: defaultEvents,
+
+            eventClick: function(info) {
+                if (info.event.url) { window.location.href = info.event.url; info.jsEvent.preventDefault(); }
+            }
+        });
+
+        calendar.render();
+    });
+  </script>
+
+  <style>
+    .form-search .choices {
+      margin-bottom: 18px;
     }
-  });
-  calendar.render();
-});
-</script>
+  </style>
+<% end %>

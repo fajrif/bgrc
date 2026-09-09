@@ -1,8 +1,10 @@
 class Admins::CourtsController < Admins::BaseController
   before_action :set_court, except: [:index, :new, :create]
+  before_action :set_current_sport, only: [:index, :new, :create]
 
   def index
     criteria = Court.where("name ILIKE ?", "%#{params[:search]}%")
+    criteria = criteria.where(sport_id: @current_sport.id) if @current_sport
     @courts = criteria.page(params[:page]).per(10)
 
     respond_to do |format|
@@ -16,7 +18,7 @@ class Admins::CourtsController < Admins::BaseController
   end
 
   def new
-    @court = Court.new
+    @court = Court.new(sport: @current_sport)
   end
 
   def create
@@ -58,6 +60,12 @@ class Admins::CourtsController < Admins::BaseController
 
   def set_court
 		@court = Court.find(params[:id])
+  end
+
+  def set_current_sport
+    @current_sport = Sport.friendly.find(params[:sport_slug]) if params[:sport_slug].present?
+  rescue ActiveRecord::RecordNotFound
+    @current_sport = nil
   end
 
 end

@@ -18,6 +18,31 @@
 	background: #000;
 	border-right: 1px solid #000;
 }
+.navbar-brand-box .logo img {
+	filter: drop-shadow(1px 0 0 #fff) drop-shadow(-1px 0 0 #fff) drop-shadow(0 1px 0 #fff) drop-shadow(0 -1px 0 #fff);
+}
+.navbar-menu .navbar-nav .nav-link .nav-icon-img {
+	display: inline-block;
+	width: 18px;
+	height: 18px;
+  margin-right: 10px;
+	vertical-align: -4px;
+	filter: brightness(0) invert(1);
+	opacity: .65;
+}
+.navbar-menu .navbar-nav .nav-link:hover .nav-icon-img,
+.navbar-menu .navbar-nav .nav-link.active .nav-icon-img {
+	opacity: 1;
+}
+
+.sport-title-box {
+	border-bottom: none;
+}
+.sport-title-icon {
+	width: 20px;
+	height: 20px;
+	filter: brightness(0) invert(1);
+}
 :is([data-layout=vertical], [data-layout=semibox])[data-sidebar-size=sm] .navbar-menu .navbar-nav .nav-item:hover > a.menu-link,
 :is([data-layout=vertical], [data-layout=semibox])[data-sidebar-size=sm] .navbar-menu .navbar-nav .nav-item:hover > .menu-dropdown,
 :is([data-layout=vertical], [data-layout=semibox])[data-sidebar-size=sm] .navbar-brand-box {

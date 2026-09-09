@@ -1,38 +1,34 @@
-<% title_page("Cashier Booking") %>
+<% title_page(@current_sport ? "Cashier Booking — #{@current_sport.name}" : "Cashier Booking", sport_slug: @current_sport&.slug) %>
 <div class="row">
-	<div class="col-md-12 col-sm-12">
-		<div class="card card-box">
-			<div class="card-body">
+  <div class="col-md-8 col-lg-6">
+    <div class="card">
+      <div class="card-header">
+        <h5 class="mb-0"><%= @current_sport ? "#{@current_sport.name} Cashier Booking" : "Cashier Booking" %></h5>
+        <small class="text-muted">Booking will be immediately marked as Paid.</small>
+      </div>
+      <div class="card-body">
         <%= form_for @booking, url: create_cashier_booking_admins_bookings_path, method: :post do |f| %>
           <%= f.hidden_field :court_type, value: 0 %>
+          <%= hidden_field_tag :sport_slug, params[:sport_slug] if params[:sport_slug].present? %>
 
-          <div class="row mb-4">
-            <div class="col-md-6">
-              <div class="mb-3">
-                <label class="form-label">Court</label>
-                <%= f.collection_select :court_id, @courts, :id, :name_label, { include_blank: "Select Court" }, class: "form-select", id: "cashier_court_id" %>
-              </div>
-            </div>
-            <div class="col-md-6">
-              <div class="mb-3">
-                <label class="form-label">User</label>
-                <%= f.collection_select :user_id, @users, :id, :name_with_email, { include_blank: "Select User" }, class: "form-select" %>
-              </div>
-            </div>
+          <div class="mb-3">
+            <label class="form-label">Court</label>
+            <%= f.collection_select :court_id, @courts, :id, :name_label, { include_blank: "Select Court" }, class: "form-select", id: "cashier_court_id" %>
           </div>
 
-          <div class="row mb-4">
+          <div class="mb-3">
+            <label class="form-label">User</label>
+            <%= f.collection_select :user_id, @users, :id, :name_with_email, { include_blank: "Select User" }, class: "form-select" %>
+          </div>
+
+          <div class="row mb-3">
             <div class="col-md-6">
-              <div class="mb-3">
-                <label class="form-label">Start Date & Time</label>
-                <%= f.text_field :date, class: "form-control datetimepicker", placeholder: "Select date and time", id: "cashier_date", value: get_input_date_value(f.object.date) %>
-              </div>
+              <label class="form-label">Start Date & Time</label>
+              <%= f.text_field :date, class: "form-control datetimepicker", placeholder: "Select date and time", id: "cashier_date", value: get_input_date_value(f.object.date) %>
             </div>
             <div class="col-md-6">
-              <div class="mb-3">
-                <label class="form-label">Duration (hours)</label>
-                <%= f.number_field :duration, class: "form-control", value: 1, min: 1, max: 6, id: "cashier_duration" %>
-              </div>
+              <label class="form-label">Duration (hours)</label>
+              <%= f.number_field :duration, class: "form-control", value: 1, min: 1, max: 6, id: "cashier_duration" %>
             </div>
           </div>
 
@@ -41,23 +37,19 @@
             <div id="slot-conflict-details" class="mt-1 small"></div>
           </div>
 
-          <div class="row mb-4">
-            <div class="col-md-6">
-              <div class="mb-3">
-                <label class="form-label">Pax (number of people)</label>
-                <%= f.number_field :pax, class: "form-control", value: 1, min: 1, max: 8 %>
-              </div>
-            </div>
+          <div class="mb-3">
+            <label class="form-label">Pax (number of people)</label>
+            <%= f.number_field :pax, class: "form-control", value: 1, min: 1, max: 8 %>
           </div>
 
-          <div class="form-actions">
+          <div class="d-flex gap-2">
             <%= f.submit "Create Booking & Payment", class: "btn btn-success", id: "cashier-submit-btn" %>
-            <%= link_to "Cancel", admins_bookings_path, class: "btn btn-light" %>
+            <%= link_to "Cancel", admins_bookings_path(sport_slug: params[:sport_slug]), class: "btn btn-light" %>
           </div>
         <% end %>
-			</div>
-		</div>
-	</div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <%= content_for :tail do %>
