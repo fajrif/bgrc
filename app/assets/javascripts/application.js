@@ -54,6 +54,17 @@ jQuery(document).ready(function($){
 
 		window.addEventListener('scroll', onHeaderScroll, { passive: true });
 		onHeaderScroll();
+
+		// The hero (.bbcc-hero) fills exactly the viewport below the header on
+		// first load, so its real height is measured rather than hardcoded --
+		// the topbar can wrap and the navbar height changes across breakpoints.
+		// Measured before any scroll, so this is the unstuck (taller) height,
+		// which is what the hero should stay sized against as the page scrolls.
+		var setHeaderHeightVar = function () {
+			document.documentElement.style.setProperty('--bbcc-header-h', stickyHeader.offsetHeight + 'px');
+		};
+		setHeaderHeightVar();
+		window.addEventListener('resize', setHeaderHeightVar);
 	}
 
 	// Accordions (Events, FAQ, ...): opening one <details> closes its siblings

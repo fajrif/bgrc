@@ -1,22 +1,51 @@
-<%# locals: active: — :golf, :racquet, :fitness, :spa or :dining %>
+<%# locals: active: — :golf, :racquet (or :tennis/:padel/:pickleball), :fitness, :spa or :dining %>
 <%
 	# Every tab now has a page of its own under /book, so the tabs are a plain
-	# list — no Club Life lookup by English name, and no sport lookup to build
-	# the racquet link (SearchController picks its own default sport).
+	# list — no Club Life lookup by English name. Racquet Sports is the one
+	# exception: it has no page of its own, it's a hover (desktop) / tap
+	# (mobile) flyout onto Tennis/Padel/Pickleball, each with its own page.
 	hub_tabs = [
-		{ key: :golf,    label: "Golf",           icon: "fa-golf-ball-tee",            path: golf_path },
-		{ key: :racquet, label: "Racquet Sports", icon: "fa-table-tennis-paddle-ball", path: search_path },
-		{ key: :fitness, label: "Fitness",        icon: "fa-dumbbell",                 path: book_fitness_path },
-		{ key: :spa,     label: "Spa & Wellness", icon: "fa-spa",                      path: book_spa_wellness_path },
-		{ key: :dining,  label: "Dining",         icon: "fa-utensils",                 path: book_dining_path }
+		{ key: :golf,    label: "Golf",           icon: "bbcc-icons/golf.png",         path: golf_path },
+		{ key: :fitness, label: "Fitness",        icon: "bbcc-icons/fitness.png",      path: book_fitness_path },
+		{ key: :spa,     label: "Spa & Wellness", icon: "bbcc-icons/wellness-spa.png", path: book_spa_wellness_path },
+		{ key: :dining,  label: "Dining",         icon: "bbcc-icons/dining.png",       path: book_dining_path }
+	]
+	racquet_active = [:racquet, :tennis, :padel, :pickleball].include?(active)
+	racquet_children = [
+		{ key: :tennis,     label: "Tennis",     icon: "bbcc-icons/tennis.png",     path: search_tennis_path },
+		{ key: :padel,      label: "Padel",      icon: "bbcc-icons/padel.png",      path: search_padel_path },
+		{ key: :pickleball, label: "Pickleball", icon: "bbcc-icons/pickleball.png", path: search_pickleball_path }
 	]
 %>
 <!-- start booking hub tabs -->
 <nav class="bbcc-hubtabs" aria-label="Booking sections">
-	<% hub_tabs.each do |tab| %>
+	<%= link_to hub_tabs[0][:path], class: ["bbcc-hubtab", ("active" if hub_tabs[0][:key] == active)],
+							aria: { current: ("page" if hub_tabs[0][:key] == active) } do %>
+		<%= image_tag hub_tabs[0][:icon], class: "bbcc-hubtab-icon", alt: "" %>
+		<span><%= hub_tabs[0][:label] %></span>
+	<% end %>
+
+	<div class="bbcc-hubtab-group">
+		<button type="button" class="bbcc-hubtab bbcc-hubtab-toggle<%= " active" if racquet_active %>"
+						aria-expanded="false" aria-controls="racquet-hubtab-children">
+			<%= image_tag "bbcc-icons/tennis.png", class: "bbcc-hubtab-icon", alt: "" %>
+			<span>Racquet Sports</span>
+			<i class="fa-solid fa-chevron-down bbcc-hubtab-caret" aria-hidden="true"></i>
+		</button>
+		<div class="bbcc-hubtab-children" id="racquet-hubtab-children" hidden>
+			<% racquet_children.each do |child| %>
+				<%= link_to child[:path], class: ["bbcc-hubtab-child", ("active" if active == child[:key])] do %>
+					<%= image_tag child[:icon], class: "bbcc-hubtab-child-icon", alt: "" %>
+					<span><%= child[:label] %></span>
+				<% end %>
+			<% end %>
+		</div>
+	</div>
+
+	<% hub_tabs.drop(1).each do |tab| %>
 		<%= link_to tab[:path], class: ["bbcc-hubtab", ("active" if tab[:key] == active)],
 								aria: { current: ("page" if tab[:key] == active) } do %>
-			<i class="fa-solid <%= tab[:icon] %>" aria-hidden="true"></i>
+			<%= image_tag tab[:icon], class: "bbcc-hubtab-icon", alt: "" %>
 			<span><%= tab[:label] %></span>
 		<% end %>
 	<% end %>

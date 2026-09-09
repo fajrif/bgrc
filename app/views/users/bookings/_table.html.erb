@@ -1,6 +1,14 @@
 <% if @bookings.empty? %>
   <div class="bbcc-table-empty">
-    <p>You have no bookings yet.</p>
+    <p>
+      <% if params[:sport] == "golf" %>
+        You have no golf reservations yet.
+      <% elsif params[:sport] == "racquet" %>
+        You have no racquet sports bookings yet.
+      <% else %>
+        You have no bookings yet.
+      <% end %>
+    </p>
     <%= link_to "Book Now", search_path, class: "bbcc-btn" %>
   </div>
 <% else %>
@@ -9,69 +17,99 @@
     <thead>
       <tr>
         <th>Order ID</th>
+        <th>Sport</th>
         <th>Date</th>
-        <th>Duration</th>
-        <th>Court</th>
-        <th>Class Name</th>
+        <th>Details</th>
+        <th>Pax</th>
         <th>Status</th>
         <th>Price</th>
       </tr>
     </thead>
     <tbody>
-      <% @bookings.each do |booking| %>
-        <tr>
-          <td>
-            <%= link_to booking.order_id, booking_path(booking.order_id), class: "bbcc-table-id" %>
-            <% if booking.class_credit_purchase_id.present? && booking.status == Booking::PAID %>
-              <% if booking.created_at > 24.hours.ago %>
-                <button type="button"
-                  class="btn-link border-0 bg-transparent p-0 bbcc-table-note reschedule-trigger"
-                  data-url="<%= return_credit_users_booking_path(booking) %>"
-                  data-message="Cancel this session and return the credit? You can book a different date."
-                  data-bs-toggle="modal" data-bs-target="#rescheduleConfirmModal">
-                  Reschedule
-                </button>
-                <span class="bbcc-table-note">Until <%= (booking.created_at + 24.hours).strftime('%d %b %H:%M') %></span>
+      <% @bookings.each do |item| %>
+        <% if item.is_a?(GolfReservation) %>
+          <tr>
+            <td>
+              <%= link_to item.order_id, golf_reservation_path(item.order_id), class: "bbcc-table-id" %>
+              <% if item.is_unpaid? %>
+                <%= link_to "Cancel", users_golf_reservation_path(item), method: :delete,
+                            data: { confirm: "Cancel this reservation?" },
+                            class: "btn-link border-0 bg-transparent p-0 bbcc-table-note" %>
+              <% end %>
+            </td>
+            <td><i class="fa-solid fa-golf-ball-tee" aria-hidden="true"></i> Golf</td>
+            <td><%= item.tee_time&.strftime('%a %b %d, %Y %I.%M %p') %></td>
+            <td><%= item.golf_course.try(:name) %> &middot; <%= item.holes_label %></td>
+            <td class="bbcc-table-num"><%= item.players_count %></td>
+            <td>
+              <% badge = if item.is_unpaid?    then "bbcc-badge-warn"
+                         elsif item.expired?   then "bbcc-badge-danger"
+                         elsif item.cancelled? then "bbcc-badge-danger"
+                         else "bbcc-badge-paid"
+                         end %>
+              <span class="bbcc-badge <%= badge %>"><%= item.status_label %></span>
+            </td>
+            <td><%= item.total_price_label %></td>
+          </tr>
+        <% else %>
+          <% booking = item %>
+          <tr>
+            <td>
+              <%= link_to booking.order_id, booking_path(booking.order_id), class: "bbcc-table-id" %>
+              <% if booking.class_credit_purchase_id.present? && booking.status == Booking::PAID %>
+                <% if booking.created_at > 24.hours.ago %>
+                  <button type="button"
+                    class="btn-link border-0 bg-transparent p-0 bbcc-table-note reschedule-trigger"
+                    data-url="<%= return_credit_users_booking_path(booking) %>"
+                    data-message="Cancel this session and return the credit? You can book a different date."
+                    data-bs-toggle="modal" data-bs-target="#rescheduleConfirmModal">
+                    Reschedule
+                  </button>
+                  <span class="bbcc-table-note">Until <%= (booking.created_at + 24.hours).strftime('%d %b %H:%M') %></span>
+                <% else %>
+                  <span class="bbcc-table-note">Locked</span>
+                <% end %>
               <% else %>
-                <span class="bbcc-table-note">Locked</span>
+                <% hours_remaining = (booking.date - Time.current) / 1.hour %>
+                <% can_reschedule = booking.status == Booking::PAID &&
+                      booking.group_class_id.present? &&
+                      hours_remaining.between?(12, 24) &&
+                      booking.reschedule_count < (configatron.max_reschedule_count || 2) %>
+                <% if can_reschedule %>
+                  <button type="button"
+                    class="btn-link border-0 bg-transparent p-0 bbcc-table-note reschedule-trigger"
+                    data-url="<%= reschedule_to_credit_users_booking_path(booking) %>"
+                    data-message="Convert this session to a credit? You can rebook later."
+                    data-bs-toggle="modal" data-bs-target="#rescheduleConfirmModal">
+                    Reschedule
+                  </button>
+                <% end %>
               <% end %>
-            <% else %>
-              <% hours_remaining = (booking.date - Time.current) / 1.hour %>
-              <% can_reschedule = booking.status == Booking::PAID &&
-                    booking.group_class_id.present? &&
-                    hours_remaining.between?(12, 24) &&
-                    booking.reschedule_count < (configatron.max_reschedule_count || 2) %>
-              <% if can_reschedule %>
-                <button type="button"
-                  class="btn-link border-0 bg-transparent p-0 bbcc-table-note reschedule-trigger"
-                  data-url="<%= reschedule_to_credit_users_booking_path(booking) %>"
-                  data-message="Convert this session to a credit? You can rebook later."
-                  data-bs-toggle="modal" data-bs-target="#rescheduleConfirmModal">
-                  Reschedule
-                </button>
+            </td>
+            <td><i class="fa-solid fa-table-tennis-paddle-ball" aria-hidden="true"></i> Racquet Sports</td>
+            <td><%= booking.date.strftime('%a %b %d, %Y %I.%M %p') %></td>
+            <td>
+              <%= booking.try(:court).try(:name_label) %> &middot; <%= booking.duration_label %>
+              <% if booking.try(:group_class) %>
+                <br><span class="bbcc-table-note"><%= booking.group_class.try(:name_with_pax, booking.pax) %></span>
               <% end %>
-            <% end %>
-          </td>
-          <td><%= booking.date.strftime('%a %b %d, %Y %I.%M %p') %></td>
-          <td><%= booking.duration_label %></td>
-          <td><%= booking.try(:court).try(:name_label) %></td>
-          <td>
-            <%= booking.try(:group_class).try(:name_with_pax, booking.pax) || '-' %>
-            <% if booking.cashier_booking? %>
-              <span class="bbcc-badge bbcc-badge-muted">Cashier</span>
-            <% end %>
-          </td>
-          <td>
-            <% badge = case booking.status
-                       when Booking::PAID      then "bbcc-badge-paid"
-                       when Booking::EXPIRED   then "bbcc-badge-danger"
-                       when Booking::CANCELLED then "bbcc-badge-danger"
-                       else "bbcc-badge-warn"
-                       end %>
-            <span class="bbcc-badge <%= badge %>"><%= booking.status_label %></span>
-          </td>
-          <td><%= booking.total_price_label %></td>
-        </tr>
+              <% if booking.cashier_booking? %>
+                <span class="bbcc-badge bbcc-badge-muted">Cashier</span>
+              <% end %>
+            </td>
+            <td class="bbcc-table-num"><%= booking.pax %></td>
+            <td>
+              <% badge = case booking.status
+                         when Booking::PAID      then "bbcc-badge-paid"
+                         when Booking::EXPIRED   then "bbcc-badge-danger"
+                         when Booking::CANCELLED then "bbcc-badge-danger"
+                         else "bbcc-badge-warn"
+                         end %>
+              <span class="bbcc-badge <%= badge %>"><%= booking.status_label %></span>
+            </td>
+            <td><%= booking.total_price_label %></td>
+          </tr>
+        <% end %>
       <% end %>
     </tbody>
   </table>

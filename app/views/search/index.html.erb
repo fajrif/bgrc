@@ -8,7 +8,7 @@
 <!-- start booking hub — racquet sports -->
 <section class="bbcc-section bbcc-hub">
 	<div class="container-lg">
-		<%= render "shared/booking_hub_tabs", active: :racquet %>
+		<%= render "shared/booking_hub_tabs", active: @sport.slug.to_sym %>
 
 		<div id="searchResults">
 			<%= render "search_results" %>

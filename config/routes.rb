@@ -278,6 +278,12 @@ Rails.application.routes.draw do
     get 'book/fitness',        to: 'book#fitness',      as: :book_fitness
     get 'book/spa-wellness',   to: 'book#spa_wellness', as: :book_spa_wellness
     get 'book/dining',         to: 'book#dining',       as: :book_dining
+    # Clean per-sport addresses for the Racquet Sports hub tab's flyout. All
+    # three render the exact same search#index page as /book/racquet-sports,
+    # just pre-selecting the sport from the URL instead of a ?sport_id= param.
+    get 'book/tennis',     to: 'search#index', as: :search_tennis,     defaults: { sport_slug: 'tennis' }
+    get 'book/padel',      to: 'search#index', as: :search_padel,      defaults: { sport_slug: 'padel' }
+    get 'book/pickleball', to: 'search#index', as: :search_pickleball, defaults: { sport_slug: 'pickleball' }
     resources :golf_reservations, only: [:new, :create, :show, :destroy] do
       member do
         patch "add_on/:golf_item_id" => "golf_reservations#add_on", as: :add_on

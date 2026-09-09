@@ -1,7 +1,10 @@
 <%
-	# Golf has its own booking page, so the sport picker only lists sports that
-	# actually have courts on this calendar.
-	bookable_sports = Sport.joins(:courts).distinct.order(:name)
+	# Sport is now picked from the Racquet Sports hub tab flyout (see
+	# shared/_booking_hub_tabs), not from a select on this page, but this form
+	# still needs to keep submitting the right sport as the visitor changes
+	# date/court/court-type — see the hidden field and form action below.
+	sport_form_path = { "tennis" => search_tennis_path, "padel" => search_padel_path,
+	                     "pickleball" => search_pickleball_path }.fetch(@sport.slug, search_path)
 %>
 <!-- start court schedule -->
 <%# the heading and filters sit in their own row so the booking rail lines up with
@@ -14,16 +17,13 @@
 				<p class="bbcc-schedule-range"><%= @displayDate %></p>
 			</div>
 
-			<form class="bbcc-schedule-filters" action="<%= search_path %>" method="get" id="court-search-form">
+			<form class="bbcc-schedule-filters" action="<%= sport_form_path %>" method="get" id="court-search-form">
 				<input type="hidden" name="court_type_id" id="court-search-type" value="<%= @court_type&.id %>">
 				<input type="hidden" name="court_id" id="court-search-court" value="<%= @court&.id %>">
-				<div class="bbcc-schedule-control">
-					<select name="sport_id" id="court-search-sport" aria-label="Sport">
-						<% bookable_sports.each do |sport| %>
-							<option value="<%= sport.id %>" <%= "selected" if sport.id == @sport.id %>><%= sport.name %></option>
-						<% end %>
-					</select>
-				</div>
+				<%# defensive fallback: sport_form_path already carries the sport via its
+				    own route default, but this keeps a date change on the right sport even
+				    if @sport somehow doesn't map to one of the three clean routes above %>
+				<input type="hidden" name="sport_id" value="<%= @sport.id %>">
 				<div class="bbcc-schedule-control bbcc-schedule-control-date">
 					<input type="text" name="date" id="court-date-input" aria-label="Date"
 					       value="<%= Date.parse(@date).strftime('%d/%m/%Y') %>" placeholder="Select a date" readonly>

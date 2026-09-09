@@ -242,10 +242,20 @@ html, body { height: auto; min-height: 100%; }
    ===================================================================== */
 .bbcc-hero {
   position: relative;
-  min-height: 74vh;
+  /* fills the viewport below the header on first load, no gap and no peek of
+     the next section — --bbcc-header-h is measured in application.js since
+     the header's real height varies (topbar wraps, breakpoints). The 128px
+     fallback matches the desktop topbar+navbar height for the brief window
+     before that JS runs. */
+  min-height: calc(100vh - var(--bbcc-header-h, 128px));
   display: flex; align-items: flex-end;
   padding: 90px 0 48px;
   background-size: cover; background-position: center;
+}
+@supports (height: 100svh) {
+  /* svh excludes mobile browser chrome (address bar) so the hero doesn't
+     overshoot the real viewport and force a scroll on first load */
+  .bbcc-hero { min-height: calc(100svh - var(--bbcc-header-h, 128px)); }
 }
 .bbcc-hero-overlay { position: absolute; inset: 0; background: rgba(0,0,0,.28); }
 .bbcc-hero-video {
@@ -951,10 +961,27 @@ html, body { height: auto; min-height: 100%; }
   color: var(--bbcc-ink); font-size: 15px; line-height: 1.2;
   transition: background .2s, color .2s, border-color .2s;
 }
-.bbcc-hubtab i { font-size: 19px; color: var(--bbcc-ink-soft); transition: color .2s; }
+.bbcc-hubtab-icon { width: 20px; height: 20px; display: block; transition: filter .2s; }
 .bbcc-hubtab:hover { border-color: var(--bbcc-ink-soft); color: var(--bbcc-ink); text-decoration: none; }
 .bbcc-hubtab.active { background: var(--bbcc-dark); border-color: var(--bbcc-dark); color: #fff; }
-.bbcc-hubtab.active i { color: #fff; }
+/* bbcc-icons are dark line art by default; force white to read on the dark active state */
+.bbcc-hubtab.active .bbcc-hubtab-icon { filter: brightness(0) invert(1); }
+
+/* Racquet Sports tab: a toggle (same look as the plain tabs) that reveals
+   Tennis/Padel/Pickleball — hover on desktop, tap on mobile. See the two
+   responsive blocks below for how each mode is wired. */
+.bbcc-hubtab-group { position: relative; }
+.bbcc-hubtab-toggle { width: 100%; /*justify-content: space-between;*/ cursor: pointer; }
+.bbcc-hubtab-caret { font-size: 13px; color: inherit; transition: transform .2s; }
+.bbcc-hubtab-toggle[aria-expanded="true"] .bbcc-hubtab-caret { transform: rotate(180deg); }
+.bbcc-hubtab-children { display: flex; flex-direction: column; gap: 2px; }
+.bbcc-hubtab-children[hidden] { display: none; }
+.bbcc-hubtab-child {
+  display: flex; align-items: center; gap: 10px; padding: 10px 14px;
+  color: var(--bbcc-ink-soft); font-size: 14px;
+}
+.bbcc-hubtab-child:hover, .bbcc-hubtab-child.active { color: var(--bbcc-ink); background: var(--bbcc-bg-alt); text-decoration: none; }
+.bbcc-hubtab-child-icon { width: 16px; height: 16px; }
 
 /* left rail: plain headings + unboxed detail lists, per mockup */
 .bbcc-hub-heading {
@@ -1429,6 +1456,30 @@ button.bbcc-teeslot-remaining-1:hover, button.bbcc-teeslot-remaining-1:focus { b
 /* =====================================================================
    RESPONSIVE
    ===================================================================== */
+/* Racquet Sports hub tab flyout — desktop: pure CSS hover/focus, no JS.
+   [hidden] stays on the element; this just overrides its display when the
+   pointer or keyboard focus is anywhere inside the group. !important is
+   required here: vendor/assets/stylesheets/bootstrap.min.css and
+   theme-vendors.min.css both ship a bare `[hidden]{display:none!important}`
+   reboot rule, which otherwise wins over this regardless of specificity. */
+@media (min-width: 992px) {
+  .bbcc-hubtab-children {
+    /* flush against the toggle (no gap) — a gap here is a dead zone the
+       mouse crosses on the way down, which drops :hover on the group and
+       closes the flyout before it reaches the links. The breathing room
+       above the links comes from padding-top instead, which is still
+       inside the hoverable box. */
+    position: absolute; top: 100%; left: 0; right: 0; z-index: 20;
+    background: #fff; border: 1px solid var(--bbcc-line); box-shadow: 0 12px 30px rgba(0,0,0,.12);
+    padding: 12px 8px 8px; margin: 0;
+  }
+  .bbcc-hubtab-group:hover .bbcc-hubtab-children[hidden],
+  .bbcc-hubtab-group:focus-within .bbcc-hubtab-children[hidden] {
+    display: flex !important;
+  }
+  .bbcc-hubtab-caret { display: none; } /* mobile tap affordance only */
+}
+
 /* between lg and xl the grid keeps 7 columns in a narrow column, so it tightens up */
 @media (min-width: 992px) and (max-width: 1199px) {
   .bbcc-schedule .fc .fc-col-header-cell-cushion { font-size: 12px; }
@@ -1443,7 +1494,12 @@ button.bbcc-teeslot-remaining-1:hover, button.bbcc-teeslot-remaining-1:focus { b
   .bbcc-steps { flex-direction: column; align-items: stretch; }
   .bbcc-step { max-width: none; }
   .bbcc-step-arrow { transform: rotate(90deg); justify-content: center; }
-  .bbcc-hero { min-height: 60vh; }
+  /* Racquet Sports hub tab flyout — mobile: tap to expand (JS-driven, see
+     offcanvas-menu.js). The toggle and its children become independent grid
+     items of .bbcc-hubtabs so the expanded panel spans the full row instead
+     of being trapped inside one grid cell. */
+  .bbcc-hubtab-group { display: contents; }
+  .bbcc-hubtab-children { grid-column: 1 / -1; padding: 4px 2px 0; }
   .bbcc-events-image, .bbcc-location-map iframe { height: 320px; }
   .bbcc-location-overlay { position: static; padding-top: 0; }
   .bbcc-location-card { max-width: none; margin-top: -60px; position: relative; z-index: 2; }
@@ -1498,13 +1554,14 @@ button.bbcc-teeslot-remaining-1:hover, button.bbcc-teeslot-remaining-1:focus { b
   .bbcc-mits-split-body, .bbcc-mits-contact { padding: 32px; }
   .bbcc-tile-wide { height: 240px; }
   .bbcc-clublife-nav-children { padding-left: 16px; }
+  .bbcc-clublife-nav-col { display: none; }
   .bbcc-account-tabs { gap: 12px 22px; }
   .bbcc-account-photo img, .bbcc-account-photo-ph { height: 220px; }
   .bbcc-logout-actions .bbcc-btn { min-width: 100%; }
   .bbcc-receipt { padding: 26px; }
   .bbcc-hubtabs { grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 32px; }
   .bbcc-hubtab { gap: 10px; padding: 13px 14px; font-size: 14px; }
-  .bbcc-hubtab i { font-size: 17px; }
+  .bbcc-hubtab-icon { width: 17px; height: 17px; }
   .bbcc-hub-heading { font-size: 1.15rem; }
   .bbcc-teetime-card { padding: 24px 18px 30px; }
   .bbcc-teetime-title { font-size: 1.15rem; }

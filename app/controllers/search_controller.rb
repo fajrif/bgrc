@@ -136,8 +136,16 @@ class SearchController < ApplicationController
   def set_parameter
     # /book/racquet-sports is a sitemap URL in its own right, so arriving with no
     # sport picked opens the first racquet sport that actually has courts rather
-    # than bouncing back to the homepage.
-    @sport = params[:sport_id].present? ? Sport.find(params[:sport_id]) : default_racquet_sport
+    # than bouncing back to the homepage. sport_slug comes from the clean
+    # /book/tennis, /book/padel, /book/pickleball routes; sport_id is the
+    # older query-param path still used by ~40 other call sites.
+    @sport = if params[:sport_slug].present?
+      Sport.friendly.find(params[:sport_slug])
+    elsif params[:sport_id].present?
+      Sport.find(params[:sport_id])
+    else
+      default_racquet_sport
+    end
     if @sport.nil?
       redirect_to root_path, flash: { warning: "Please select a sport to search." } and return
     end

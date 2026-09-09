@@ -1,15 +1,16 @@
-<%# sub-navigation for the "My Bookings" tab: courts/classes list, calendar, golf and history %>
+<%# sub-navigation for the "My Bookings" tab: the merged list (optionally
+    filtered to one sport) and the calendar %>
 <div class="bbcc-viewswitch">
-    <%= link_to users_bookings_path, class: ["bbcc-viewswitch-btn", ("active" if is_users_bookings_list_page?)] do %>
-        <i class="fa-solid fa-list-ul"></i> List View
+    <%= link_to users_bookings_path, class: ["bbcc-viewswitch-btn", ("active" if is_users_bookings_list_page? && params[:sport].blank?)] do %>
+        <i class="fa-solid fa-list-ul"></i> All
+    <% end %>
+    <%= link_to users_bookings_path(sport: "golf"), class: ["bbcc-viewswitch-btn", ("active" if is_users_bookings_list_page? && params[:sport] == "golf")] do %>
+        <i class="fa-solid fa-golf-ball-tee"></i> Golf
+    <% end %>
+    <%= link_to users_bookings_path(sport: "racquet"), class: ["bbcc-viewswitch-btn", ("active" if is_users_bookings_list_page? && params[:sport] == "racquet")] do %>
+        <i class="fa-solid fa-table-tennis-paddle-ball"></i> Racquet Sports
     <% end %>
     <%= link_to calendar_users_bookings_path, class: ["bbcc-viewswitch-btn", ("active" if is_users_schedule_page?)] do %>
         <i class="fa-solid fa-table-cells-large"></i> Calendar View
-    <% end %>
-    <%= link_to users_golf_reservations_path, class: ["bbcc-viewswitch-btn", ("active" if is_users_golf_page?)] do %>
-        <i class="fa-solid fa-golf-ball-tee"></i> Golf
-    <% end %>
-    <%= link_to history_users_bookings_path, class: ["bbcc-viewswitch-btn", ("active" if is_users_bookings_history_page?)] do %>
-        <i class="fa-solid fa-clock-rotate-left"></i> History
     <% end %>
 </div>

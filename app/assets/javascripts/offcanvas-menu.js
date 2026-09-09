@@ -81,6 +81,14 @@ jQuery(function ($) {
   initAccordion('.bbcc-clublife-nav-toggle', 'bbcc-clublife-nav-group', 'bbcc-clublife-nav-group-open');
   initAccordion('.bbcc-offcanvas-toggle', 'bbcc-offcanvas-group', 'bbcc-offcanvas-group-open');
 
+  // Racquet Sports hub tab: desktop (>=992px) is pure CSS hover/focus, no JS.
+  // Only wire the tap-to-expand accordion below that breakpoint, otherwise a
+  // click would remove the panel's `hidden` attribute and leave it stuck open
+  // after the mouse moves away, since the CSS hover rule targets [hidden].
+  if (!window.matchMedia('(min-width: 992px)').matches) {
+    initAccordion('.bbcc-hubtab-toggle', 'bbcc-hubtab-group', 'bbcc-hubtab-group-open');
+  }
+
   // Generic "view more" reveal button: shows the hidden siblings matching
   // the button's data-target selector, then hides itself. The selector is
   // always the hiding class itself, so derive the class to strip from it.
