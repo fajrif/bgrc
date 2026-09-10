@@ -1,0 +1,16 @@
+<%# Sends the browser off to pay. Xendit returns a hosted invoice URL; Midtrans
+    renders Snap in-page from a token. Either way the *result* of the payment
+    comes back over a verified webhook, so these handlers only navigate — they
+    never report a status. %>
+<% if purchase.checkout_url.present? %>
+window.location.href = '<%= j purchase.checkout_url %>';
+<% elsif purchase.token.present? %>
+snap.pay('<%= j purchase.token %>', {
+	onSuccess: function(){ window.location.reload(); },
+	onPending: function(){ window.location.reload(); },
+	onError:   function(){ window.location.reload(); },
+	onClose:   function(){ window.location.reload(); }
+});
+<% else %>
+$("#forFlashMessage").html("<%= escape_javascript(flash_message2) %>");
+<% end %>

@@ -85,7 +85,7 @@ class Admins::GolfReservationsController < Admins::BaseController
   end
 
   def update
-    permitted = if @golf_reservation.midtrans_paid?
+    permitted = if @golf_reservation.gateway_paid?
       params_golf_reservation_safe
     else
       params_golf_reservation_full

@@ -43,14 +43,14 @@
                     </tr>
                     <tr>
                         <th>Transaction ID</th>
-                        <td><%= @purchase.transaction_id.presence || "—" %></td>
+                        <td><%= @purchase.transaction_id.presence || @purchase.gateway_reference.presence || "—" %></td>
                     </tr>
                     <tr>
                         <th>Status</th>
                         <td>
-                            <% if @purchase.status_code.in?(["200", "201"]) %>
+                            <% if @purchase.paid? %>
                                 <span class="bbcc-badge bbcc-badge-paid">Paid</span>
-                            <% elsif @purchase.status_code == "000" %>
+                            <% elsif @purchase.awaiting_payment? %>
                                 <span class="bbcc-badge bbcc-badge-warn">Pending</span>
                             <% else %>
                                 <span class="bbcc-badge bbcc-badge-danger"><%= @purchase.status_message.presence || "Failed" %></span>

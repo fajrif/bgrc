@@ -53,7 +53,7 @@ puts "Creating Snippets..."
       <h3>2. How We Use Your Information</h3>
       <p>We use your information to process bookings and purchases, send booking confirmations and payment reminders, respond to enquiries submitted through our contact form, and keep you informed about your account and reservations.</p>
       <h3>3. Payment Processing</h3>
-      <p>Payments made on this website are processed securely by Midtrans, our third-party payment gateway. We do not store your full card details on our servers &mdash; all payment information is handled directly by Midtrans in accordance with their own security standards and privacy policy.</p>
+      <p>Payments made on this website are processed securely by Xendit, our third-party payment gateway. We do not store your full card details on our servers &mdash; all payment information is handled directly by Xendit in accordance with their own security standards and privacy policy.</p>
       <h3>4. Cookies and Site Security</h3>
       <p>We use cookies to keep you signed in and to remember your preferences while browsing the Site. Our contact form is protected by Google reCAPTCHA to help prevent spam and abuse; use of reCAPTCHA is subject to Google's own Privacy Policy and Terms of Service.</p>
       <h3>5. Sharing of Information</h3>

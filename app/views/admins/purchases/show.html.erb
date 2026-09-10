@@ -24,11 +24,19 @@
 							</div>
 						</div>
 						<div class="form-group row">
+							<label class="control-label col-md-3">Gateway</label>
+							<div class="col-md-5">
+								<span class="badge bg-primary-subtle text-primary badge-border"><%= @purchase.payment_gateway.titleize %></span>
+							</div>
+						</div>
+						<% if @purchase.token.present? %>
+						<div class="form-group row">
 							<label class="control-label col-md-3">Token</label>
 							<div class="col-md-5">
 								<%= @purchase.token %>
 							</div>
 						</div>
+						<% end %>
 						<div class="form-group row">
 							<label class="control-label col-md-3">User</label>
 							<div class="col-md-5">
@@ -46,6 +54,8 @@
 							<div class="col-md-5">
 								<% if @purchase.productable.is_a? Booking %>
 									<%= link_to "Booked - #{@purchase.productable.name}", admins_booking_path(@purchase.productable) %>
+								<% else %>
+									<%= @purchase.productable&.name %>
 								<% end %>
 							</div>
 						</div>
@@ -67,6 +77,28 @@
 								<strong><%= @purchase.transaction_id %></strong>
 							</div>
 						</div>
+						<div class="form-group row">
+							<label class="control-label col-md-3">Gateway Reference</label>
+							<div class="col-md-5">
+								<%= @purchase.gateway_reference %>
+							</div>
+						</div>
+						<div class="form-group row">
+							<label class="control-label col-md-3">Paid At</label>
+							<div class="col-md-5">
+								<%= @purchase.paid_at %>
+							</div>
+						</div>
+						<% if @purchase.checkout_url.present? %>
+						<div class="form-group row">
+							<label class="control-label col-md-3">Checkout URL</label>
+							<div class="col-md-5">
+								<%= link_to truncate(@purchase.checkout_url, length: 60), @purchase.checkout_url, target: "_blank", rel: "noopener" %>
+							</div>
+						</div>
+						<% end %>
+						<%# These columns are only ever populated by Midtrans Snap. %>
+						<% if @purchase.payment_gateway == "midtrans" %>
 						<div class="form-group row">
 							<label class="control-label col-md-3">Masked Card</label>
 							<div class="col-md-5">
@@ -139,6 +171,7 @@
 								<%= @purchase.channel_response_message %>
 							</div>
 						</div>
+						<% end %>
 						<div class="form-group row">
 							<label class="control-label col-md-3">Created At</label>
 							<div class="col-md-5">
@@ -151,7 +184,7 @@
           <div class="row">
             <div class="col-md-9">
               <%= link_to 'Destroy', admins_purchase_path(@purchase), :data => { :confirm => 'Are you sure?' }, :method => :delete, :class => 'btn btn-danger' %>
-              <%= link_to 'Settlement', settlement_admins_purchase_path(@purchase), :data => { :confirm => 'Are you sure want to settle this transaction?' }, :method => :put, :class => 'btn btn-warning' unless @purchase.status_code == "200" %>
+              <%= link_to 'Settlement', settlement_admins_purchase_path(@purchase), :data => { :confirm => 'Are you sure want to settle this transaction?' }, :method => :put, :class => 'btn btn-warning' unless @purchase.paid? %>
               <%= link_to 'View All', admins_purchases_path, :class => 'btn btn-light' %>
             </div>
           </div>

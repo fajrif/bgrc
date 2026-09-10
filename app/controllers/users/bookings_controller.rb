@@ -21,7 +21,8 @@ class Users::BookingsController < Users::BaseController
 			                         .where(status: [GolfReservation::UNPAID, GolfReservation::PAID])
 			                         .includes(:golf_course).to_a)
 		end
-		items.sort_by! { |item| item.is_a?(GolfReservation) ? item.tee_time : item.date }
+		items.sort_by!(&:created_at)
+		items.reverse!
 
 		@bookings = Kaminari.paginate_array(items).page(params[:page]).per(10)
 	end

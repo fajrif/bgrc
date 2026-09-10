@@ -150,4 +150,16 @@ module ApplicationHelper
 		end
 	end
 
+	# Snap has to be loaded into the page because Midtrans renders its checkout
+	# in-page. Xendit hosts its own checkout, so under Xendit this emits nothing.
+	def gateway_checkout_script_tag
+		return unless PaymentGateways.current_name == "midtrans"
+
+		tag.script(
+			"",
+			type: "text/javascript",
+			src: configatron.midtrans_js_file,
+			data: { client_key: configatron.midtrans_client_key },
+		)
+	end
 end

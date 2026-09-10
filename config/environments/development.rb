@@ -75,4 +75,12 @@ Rails.application.configure do
 
   # Raise error when a before_action's only/except options reference missing actions
   config.action_controller.raise_on_missing_callback_actions = true
+
+  # Payment gateways can only deliver webhooks to a publicly reachable host, so
+  # local testing goes through a tunnel. Rails' host authorization blocks those
+  # hostnames by default. See docs/xendit-setup.md.
+  config.hosts << /.*\.ngrok-free\.app/
+  config.hosts << /.*\.ngrok\.io/
+  config.hosts << /.*\.trycloudflare\.com/
+  config.hosts << ENV["DEV_TUNNEL_HOST"] if ENV["DEV_TUNNEL_HOST"].present?
 end

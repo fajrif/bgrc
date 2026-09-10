@@ -22,6 +22,11 @@ Rails.application.routes.draw do
   end
   devise_for :admins, :controllers => { :sessions => "admins/sessions" }
 
+  # Server-to-server payment notifications. Deliberately outside the "(:locale)"
+  # scope below: gateways post to a fixed URL and must not be locale-rewritten.
+  post "webhooks/xendit"   => "webhooks/xendit#create",   :as => :xendit_webhook
+  post "webhooks/midtrans" => "webhooks/midtrans#create", :as => :midtrans_webhook
+
   # Friendly aliases for the two Devise pages the public site links to.
   devise_scope :user do
     get 'login',    to: 'users/sessions#new',      as: :login
@@ -204,7 +209,7 @@ Rails.application.routes.draw do
       resource :password, :only => [:edit, :update]
       get "logout" => "accounts#logout", :as => :logout
 
-      post "purchase/:type/:id" => "purchases#create", :as => :purchase
+      # Opens a checkout. Results arrive at /webhooks/*, never from the browser.
       get "purchase/:type/:id" => "purchases#new", :as => :new_purchase
 
       # Bookings (index, destroy stay authenticated; create/show/add_on moved to public)
@@ -307,7 +312,6 @@ Rails.application.routes.draw do
     resources :class_credit_purchases, :only => [:create, :show] do
       member do
         get  :initiate_payment
-        post :payment_callback
         get  :book_session
         post :claim_session
       end

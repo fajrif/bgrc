@@ -1,6 +1,6 @@
 <%= content_for :head do %>
     <% if user_signed_in? && @food_order.is_unpaid? %>
-        <script type="text/javascript" src="<%= configatron.midtrans_js_file %>" data-client-key="<%= configatron.midtrans_client_key %>"></script>
+        <%= gateway_checkout_script_tag %>
     <% end %>
 <% end %>
 

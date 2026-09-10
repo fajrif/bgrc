@@ -1,4 +1,5 @@
 class BookingsController < ApplicationController
+  include PaymentReconciliation
   before_action :set_booking, only: [:show, :add_on, :add_quantity, :remove_quantity, :destroy, :expire, :invoice, :pay_with_credit]
   before_action :verify_booking_access!, only: [:show, :add_on, :add_quantity, :remove_quantity, :destroy, :expire, :invoice, :pay_with_credit]
 
@@ -58,6 +59,9 @@ class BookingsController < ApplicationController
     # Store location for Devise redirect after login
     store_location_for(:user, request.fullpath)
     session[:booking_return_url] = request.fullpath
+
+    # A gateway redirect can beat its own webhook back here.
+    settle_pending_payment!(@booking)
 
     @available_credit = find_valid_credit_for_booking(@booking) if @booking.group_class_id.present? && user_signed_in?
   end

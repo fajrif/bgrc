@@ -63,7 +63,7 @@ class GolfReservation < ApplicationRecord
     user_id.nil?
   end
 
-  def midtrans_paid?
+  def gateway_paid?
     paid? && purchase.present? && purchase.payment_type != "CASHIER"
   end
 
@@ -101,7 +101,10 @@ class GolfReservation < ApplicationRecord
       transaction_id: "CASHIER-#{Time.now.to_i}",
       gross_amount: self.total_price,
       payment_type: "CASHIER",
-      transaction_status: "settlement"
+      transaction_status: "settlement",
+      # Counter payment: no gateway was involved, so reconciliation must skip it.
+      payment_gateway: PaymentGateways::CASHIER,
+      paid_at: Time.current
     )
   end
 

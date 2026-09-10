@@ -1,4 +1,5 @@
 class FoodOrdersController < ApplicationController
+  include PaymentReconciliation
   before_action :set_food_order, only: [:show, :destroy, :expire, :invoice]
   before_action :verify_access!, only: [:show, :destroy, :expire, :invoice]
 
@@ -39,6 +40,9 @@ class FoodOrdersController < ApplicationController
 
     store_location_for(:user, request.fullpath)
     session[:food_order_return_url] = request.fullpath
+
+    # A gateway redirect can beat its own webhook back here.
+    settle_pending_payment!(@food_order)
   end
 
   def invoice

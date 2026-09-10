@@ -1,6 +1,7 @@
 class ClassCreditPurchasesController < ApplicationController
-  before_action :authenticate_user!, only: [:show, :initiate_payment, :payment_callback, :book_session, :claim_session]
-  before_action :set_credit_purchase, only: [:show, :initiate_payment, :payment_callback, :book_session, :claim_session]
+  include PaymentReconciliation
+  before_action :authenticate_user!, only: [:show, :initiate_payment, :book_session, :claim_session]
+  before_action :set_credit_purchase, only: [:show, :initiate_payment, :book_session, :claim_session]
 
   def create
     @group_class = GroupClass.find(params.dig(:class_credit_purchase, :group_class_id))
@@ -54,37 +55,42 @@ class ClassCreditPurchasesController < ApplicationController
                                 .where(status: Booking::PAID)
                                 .where("created_at > ?", 24.hours.ago)
     @registration = @credit_purchase.group_class_registrations.active.first if @credit_purchase.group_class.is_prescheduled?
+
+    # A gateway redirect can beat its own webhook back here.
+    settle_pending_payment!(@credit_purchase)
   end
 
+  # Opens a checkout for a credit pack. As with every other product, the payment
+  # result arrives over a verified webhook, not from the browser.
   def initiate_payment
-    begin
-      existing = Purchase.find_by(productable: @credit_purchase, user: current_user, status_code: "000")
-      existing.destroy if existing
-      @purchase = Purchase.new(productable: @credit_purchase, user: current_user, status_code: "000")
-      @purchase.save!
-      respond_to { |f| f.js }
-    rescue => e
-      flash.now[:alert] = e.message
-      respond_to { |f| f.js { render "initiate_payment_error" } }
+    if @credit_purchase.paid?
+      flash.now[:alert] = "This credit pack has already been paid for."
+      return respond_to { |f| f.js { render "initiate_payment_error" } }
     end
-  end
 
-  def payment_callback
-    @purchase = Purchase.find_or_initialize_by(
-      order_id: params[:order_id],
-      token: params[:token],
+    existing = Purchase.find_by(productable: @credit_purchase, user: current_user, status_code: Purchase::INITIALIZED_CODE)
+    existing&.destroy
+
+    @purchase = Purchase.create!(
       productable: @credit_purchase,
-      user: current_user
+      user: current_user,
+      status_code: Purchase::INITIALIZED_CODE,
     )
-    unless @purchase.status_code.in?(["200", "201"])
-      if @purchase.save_with_result(params)
-        @purchase.process_after_success! if @purchase.status_code == "200"
-        flash[:notice] = "Payment successful. Your session credits are now active."
-      else
-        flash[:alert] = "Payment processing error. Please contact support."
-      end
-    end
+    @purchase.start_checkout!
+
     respond_to { |f| f.js }
+  rescue StandardError => e
+    Rails.logger.error("[checkout] ClassCreditPurchase##{@credit_purchase.id} failed: #{e.class} #{e.message}")
+    flash.now[:alert] =
+      case e
+      when PaymentGateways::ConfigurationError
+        "Online payment is unavailable right now. Please contact us."
+      when PaymentGateways::RequestError
+        "We could not reach the payment provider. Please try again in a moment."
+      else
+        "We could not start your payment. Please try again."
+      end
+    respond_to { |f| f.js { render "initiate_payment_error" } }
   end
 
   def book_session

@@ -1,6 +1,6 @@
 <%= content_for :head do %>
 	<%= stylesheet_link_tag 'quantity_input.css' %>
-	<script type="text/javascript" src="<%= configatron.midtrans_js_file %>" data-client-key="<%= configatron.midtrans_client_key %>"></script>
+	<%= gateway_checkout_script_tag %>
 <% end %>
 
 <!-- start post content section -->

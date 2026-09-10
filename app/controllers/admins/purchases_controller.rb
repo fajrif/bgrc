@@ -4,9 +4,9 @@ class Admins::PurchasesController < Admins::BaseController
 		criteria = Purchase.joins(:user).where("full_name ILIKE ?", "%#{params[:search]}%")
 		case params[:status_code]
 		when "Success"
-			criteria = criteria.where("status_code = '200'")
+			criteria = criteria.where(status_code: Purchase::SUCCESS_CODE)
 		when "Pending"
-			criteria = criteria.where("status_code = '201'")
+			criteria = criteria.where(status_code: Purchase::PENDING_CODE)
 		end
     @purchases = criteria.page(params[:page]).per(500)
 

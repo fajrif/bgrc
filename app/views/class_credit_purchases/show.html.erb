@@ -110,7 +110,7 @@
 
 <% unless @credit_purchase.paid? %>
   <%= content_for :tail do %>
-    <script type="text/javascript" src="<%= configatron.midtrans_js_file %>" data-client-key="<%= configatron.midtrans_client_key %>"></script>
+    <%= gateway_checkout_script_tag %>
   <% end %>
   <%= render "disclaimer_modal" %>
 <% end %>

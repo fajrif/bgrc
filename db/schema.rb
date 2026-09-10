@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_09_09_000002) do
+ActiveRecord::Schema[7.1].define(version: 2026_09_10_000001) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -630,6 +630,15 @@ ActiveRecord::Schema[7.1].define(version: 2026_09_09_000002) do
     t.string "saved_token_id_expired_at"
     t.string "channel_response_code"
     t.string "channel_response_message"
+    t.string "payment_gateway", null: false
+    t.string "gateway_reference"
+    t.string "checkout_url"
+    t.datetime "expires_at"
+    t.datetime "paid_at"
+    t.jsonb "callback_payload", default: {}
+    t.index ["gateway_reference"], name: "index_purchases_on_gateway_reference"
+    t.index ["order_id"], name: "index_purchases_on_order_id", unique: true
+    t.index ["payment_gateway"], name: "index_purchases_on_payment_gateway"
     t.index ["productable_type", "productable_id"], name: "index_purchases_on_productable"
     t.index ["user_id"], name: "index_purchases_on_user_id"
   end

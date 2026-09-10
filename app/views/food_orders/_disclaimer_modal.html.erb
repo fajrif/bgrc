@@ -40,7 +40,7 @@
         if (modal) modal.hide();
       }
 
-      // Fetches a fresh Midtrans snap token, then opens the dialog — the response
+      // Opens a fresh checkout at the active gateway — the response
       // is the script in users/purchases/new.js.erb.
       $.ajax({
         url: '<%= users_new_purchase_path("food_order", @food_order.id.to_s) %>',

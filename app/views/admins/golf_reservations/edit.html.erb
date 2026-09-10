@@ -12,11 +12,11 @@
         </span>
       </div>
       <div class="card-body">
-        <% if @golf_reservation.midtrans_paid? %>
+        <% if @golf_reservation.gateway_paid? %>
           <div class="alert alert-info d-flex align-items-center gap-2 mb-4">
             <i class="ri-lock-line fs-5"></i>
             <div>
-              This reservation was paid via <strong>Midtrans</strong>. Course, tee time, holes, and player count cannot be changed to avoid discrepancy with the settled payment amount.
+              This reservation was paid online via <strong><%= @golf_reservation.purchase&.payment_gateway&.titleize || "the payment gateway" %></strong>. Course, tee time, holes, and player count cannot be changed to avoid discrepancy with the settled payment amount.
             </div>
           </div>
         <% end %>
@@ -24,7 +24,7 @@
         <%= form_for @golf_reservation, url: admins_golf_reservation_path(@golf_reservation), method: :patch do |f| %>
           <div class="mb-3">
             <label class="form-label">Golf Course</label>
-            <% if @golf_reservation.midtrans_paid? %>
+            <% if @golf_reservation.gateway_paid? %>
               <input type="text" class="form-control" value="<%= @golf_reservation.golf_course.name %>" disabled>
             <% else %>
               <%= f.collection_select :golf_course_id, @golf_courses, :id, :name,
@@ -38,7 +38,7 @@
                 { include_blank: "Guest (no user)" }, class: "form-select" %>
           </div>
 
-          <% unless @golf_reservation.midtrans_paid? %>
+          <% unless @golf_reservation.gateway_paid? %>
             <div class="row mb-3">
               <div class="col-md-6">
                 <label class="form-label">Date</label>
@@ -66,7 +66,7 @@
 
           <div class="mb-3">
             <label class="form-label">Number of Players</label>
-            <% if @golf_reservation.midtrans_paid? %>
+            <% if @golf_reservation.gateway_paid? %>
               <input type="text" class="form-control" value="<%= @golf_reservation.players_count %>" disabled>
             <% else %>
               <%= f.select :players_count, options_for_select([[1,1],[2,2],[3,3],[4,4]], @golf_reservation.players_count), {}, class: "form-select" %>
@@ -75,7 +75,7 @@
 
           <div class="mb-3">
             <label class="form-label">Holes</label>
-            <% if @golf_reservation.midtrans_paid? %>
+            <% if @golf_reservation.gateway_paid? %>
               <input type="text" class="form-control" value="<%= @golf_reservation.holes_label %>" disabled>
             <% else %>
               <div id="edit_holes_radios">
@@ -106,7 +106,7 @@
   </div>
 </div>
 
-<% unless @golf_reservation.midtrans_paid? %>
+<% unless @golf_reservation.gateway_paid? %>
 <%= content_for :tail do %>
 <script>
 jQuery(document).ready(function($) {

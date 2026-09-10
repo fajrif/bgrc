@@ -1,4 +1,5 @@
 class GolfReservationsController < ApplicationController
+  include PaymentReconciliation
   before_action :set_golf_reservation, only: [:show, :add_on, :destroy, :expire]
   before_action :verify_access!, only: [:show, :add_on, :destroy, :expire]
 
@@ -81,6 +82,9 @@ class GolfReservationsController < ApplicationController
 
     store_location_for(:user, request.fullpath)
     session[:golf_return_url] = request.fullpath
+
+    # A gateway redirect can beat its own webhook back here.
+    settle_pending_payment!(@golf_reservation)
   end
 
   def add_on

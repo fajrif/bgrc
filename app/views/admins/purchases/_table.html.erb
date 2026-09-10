@@ -16,6 +16,7 @@
     <tr>
       <th>User</th>
       <th>Type #</th>
+      <th>Gateway</th>
       <th>Gross Amount</th>
       <th>Payment Type</th>
       <th>Status Code</th>
@@ -29,6 +30,7 @@
       <tr>
 				<td><strong><%= link_to purchase.user.full_name, admins_purchase_path(purchase) %></strong></td>
 				<td><%= purchase.productable_type %></td>
+				<td><span class="badge bg-secondary-subtle text-secondary badge-border"><%= purchase.payment_gateway %></span></td>
 				<td><strong><%= purchase.price_label %></strong></td>
 				<td><%= purchase.payment_type %></td>
 				<td><%= purchase.status_code %></td>

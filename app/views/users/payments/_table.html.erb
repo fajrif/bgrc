@@ -22,9 +22,9 @@
           <td><%= number_to_currency(purchase.gross_amount, unit: "Rp. ", separator: ",", delimiter: ".", precision: 0) %></td>
           <td><%= purchase.payment_type&.humanize || "—" %></td>
           <td>
-            <% if purchase.status_code.in?(["200", "201"]) %>
+            <% if purchase.paid? %>
               <span class="bbcc-badge bbcc-badge-paid">Paid</span>
-            <% elsif purchase.status_code == "000" %>
+            <% elsif purchase.awaiting_payment? %>
               <span class="bbcc-badge bbcc-badge-warn">Pending</span>
             <% else %>
               <span class="bbcc-badge bbcc-badge-danger"><%= purchase.status_message&.truncate(20) || "Failed" %></span>
@@ -32,7 +32,7 @@
           </td>
           <td><%= purchase.created_at.strftime('%d %b %Y %H:%M') %></td>
           <td>
-            <% if purchase.status_code.in?(["200", "201"]) %>
+            <% if purchase.paid? %>
               <%= link_to "Download", users_payment_path(purchase), class: "bbcc-btn bbcc-btn-sm" %>
             <% end %>
           </td>

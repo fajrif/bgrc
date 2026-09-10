@@ -215,7 +215,7 @@
                       <td class="small text-muted text-nowrap"><%= p.created_at.strftime('%d %b %Y %H:%M') %></td>
                       <td class="text-nowrap"><%= p.price_label %></td>
                       <td>
-                        <% if p.transaction_status == "settlement" || p.status_code.in?(["200","201"]) %>
+                        <% if p.paid? || p.transaction_status == "settlement" %>
                           <span class="badge bg-success">Paid</span>
                         <% elsif p.transaction_status.blank? %>
                           <span class="badge bg-warning text-dark">Pending</span>

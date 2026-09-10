@@ -11,7 +11,7 @@
                         <h5 class="mb-0">INVOICE</h5>
                         <div>
                             <button class="btn btn-primary" onclick="window.print()">Print</button>
-                            <%= link_to "Back to Booking", booking_path(@booking), class: "btn btn-light" %>
+                            <%= link_to "Back to Booking", booking_path(@booking.order_id), class: "btn btn-light" %>
                         </div>
                     </div>
                     <div class="card-body" id="invoice-content">
@@ -112,7 +112,7 @@
 
                         <div class="row mt-4">
                             <div class="col-md-12">
-                                <% if @booking.paid? %>
+                                <% if @booking.status == Booking::PAID %>
                                 <div class="alert alert-success mb-0">
                                     <strong>Payment Status: PAID</strong>
                                 </div>
@@ -138,7 +138,7 @@
                                 <p class="text-small text-muted">
                                     Transaction ID: <%= @booking.purchase.transaction_id %><br>
                                     Payment Method: <%= @booking.purchase.payment_type || 'N/A' %><br>
-                                    <% if @booking.paid? %>
+                                    <% if @booking.status == Booking::PAID %>
                                     Paid At: <%= @booking.purchase.created_at.strftime('%d/%m/%Y %H:%M') %>
                                     <% end %>
                                 </p>

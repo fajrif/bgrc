@@ -1,10 +1,5 @@
 class PurchaseMailer < ApplicationMailer
 
-	def new_purchase_email
-		@purchase = params[:purchase]
-		mail(to: @purchase.user.email, from: configatron.company_email, subject: "Purchase - #{@purchase.productable.name}")
-	end
-
 	def booking_purchase_email
 		begin
       @booking = params[:booking]

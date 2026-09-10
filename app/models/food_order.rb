@@ -76,7 +76,7 @@ class FoodOrder < ApplicationRecord
     user_id.nil?
   end
 
-  def midtrans_paid?
+  def gateway_paid?
     paid? && purchase.present? && purchase.payment_type != "CASHIER"
   end
 
@@ -115,7 +115,10 @@ class FoodOrder < ApplicationRecord
       transaction_id: "CASHIER-#{Time.now.to_i}",
       gross_amount: self.total_price,
       payment_type: "CASHIER",
-      transaction_status: "settlement"
+      transaction_status: "settlement",
+      # Counter payment: no gateway was involved, so reconciliation must skip it.
+      payment_gateway: PaymentGateways::CASHIER,
+      paid_at: Time.current
     )
   end
 
@@ -123,7 +126,7 @@ class FoodOrder < ApplicationRecord
     purchase&.payment_type == "CASHIER"
   end
 
-  # Purchase#init_record and ApiMidtrans both read this.
+  # Purchase#init_record and the gateway adapters both read this.
   def name
     "Grab & Go Order #{order_id}"
   end
@@ -158,9 +161,9 @@ class FoodOrder < ApplicationRecord
     ActionController::Base.helpers.number_to_currency(self.total_price, unit: "Rp. ", separator: ",", delimiter: ".", precision: 0)
   end
 
-  # A real per-dish breakdown in the Midtrans dialog and on the gateway receipt,
-  # instead of the single collapsed line ApiMidtrans falls back to.
-  def midtrans_item_details
+  # A real per-dish breakdown on the gateway's checkout page and receipt, instead
+  # of the single collapsed line PaymentGateways::Base falls back to.
+  def gateway_item_details
     food_order_items.map do |item|
       {
         "id"       => item.menu_id.to_s,

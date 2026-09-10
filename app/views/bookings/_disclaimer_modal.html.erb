@@ -46,7 +46,8 @@
           if (modal) modal.hide();
         }
 
-        // Trigger Midtrans payment via AJAX using jQuery (to match Rails UJS pattern)
+        // Open a checkout via AJAX using jQuery (to match Rails UJS pattern). The
+        // response navigates to the gateway; the result comes back by webhook.
         $.ajax({
           url: '<%= users_new_purchase_path(@booking.class.to_s.downcase, @booking.id.to_s) %>',
           type: 'GET',
