@@ -10,16 +10,26 @@
         <th>Payment Type</th>
         <th>Status</th>
         <th>Date</th>
-        <th></th>
       </tr>
     </thead>
     <tbody>
       <% purchases.each do |purchase| %>
         <tr>
-          <td class="bbcc-table-id"><%= purchase.order_id %></td>
+          <td class="bbcc-table-id">
+            <% if purchase.productable_type.in?(%w[Booking GolfReservation]) %>
+              <a href="#" class="booking-detail-trigger"
+                 data-order-id="<%= purchase.order_id %>"
+                 data-kind="<%= purchase.productable_type == "GolfReservation" ? "golf" : "booking" %>"><%= purchase.order_id %></a>
+            <% else %>
+              <%= purchase.order_id %>
+            <% end %>
+            <% if purchase.paid? %>
+              <a href="<%= users_payment_path(id: purchase.id) %>" class="bbcc-table-note receipt-trigger">View Receipt</a>
+            <% end %>
+          </td>
           <td><span class="bbcc-badge bbcc-badge-muted"><%= productable_type_label(purchase.productable_type) %></span></td>
           <td><%= purchase.productable.try(:name) || "—" %></td>
-          <td><%= number_to_currency(purchase.gross_amount, unit: "Rp. ", separator: ",", delimiter: ".", precision: 0) %></td>
+          <td><%= purchase.price_label %></td>
           <td><%= purchase.payment_type&.humanize || "—" %></td>
           <td>
             <% if purchase.paid? %>
@@ -30,12 +40,7 @@
               <span class="bbcc-badge bbcc-badge-danger"><%= purchase.status_message&.truncate(20) || "Failed" %></span>
             <% end %>
           </td>
-          <td><%= purchase.created_at.strftime('%d %b %Y %H:%M') %></td>
-          <td>
-            <% if purchase.paid? %>
-              <%= link_to "Download", users_payment_path(purchase), class: "bbcc-btn bbcc-btn-sm" %>
-            <% end %>
-          </td>
+          <td><%= (purchase.paid_at || purchase.created_at).strftime('%d %b %Y %H:%M') %></td>
         </tr>
       <% end %>
     </tbody>

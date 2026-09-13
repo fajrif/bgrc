@@ -1,0 +1,41 @@
+<table class="bbcc-receipt-lines">
+    <thead>
+        <tr><th>Description</th><th class="bbcc-receipt-lines-amount">Amount</th></tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+                <strong><%= item.group_class ? "Group Class" : "Court Booking" %></strong>
+                <span class="bbcc-receipt-lines-note"><%= item.try(:court).try(:name_label) %></span>
+                <span class="bbcc-receipt-lines-note">
+                    <%= item.date.strftime('%d/%m/%Y %H:%M') %> &ndash; <%= item.end_date.strftime('%H:%M') %>
+                    &middot; <%= item.duration %> hour(s)
+                </span>
+                <span class="bbcc-receipt-lines-note">
+                    <%= item.get_court_type %><% if item.pax %> &middot; <%= item.pax %> pax<% end %>
+                </span>
+                <% if item.group_class %>
+                    <span class="bbcc-receipt-lines-note"><%= item.group_class.name %></span>
+                <% end %>
+            </td>
+            <%# One price row only. The old invoice printed price_label again for
+                group classes, so the lines never summed to the total. %>
+            <td class="bbcc-receipt-lines-amount"><%= item.price_label %></td>
+        </tr>
+        <% if item.price_coach && item.price_coach > 0 %>
+            <tr>
+                <td>
+                    <strong>Coach</strong>
+                    <span class="bbcc-receipt-lines-note"><%= item.try(:coach).try(:name) %></span>
+                </td>
+                <td class="bbcc-receipt-lines-amount"><%= item.price_coach_label %></td>
+            </tr>
+        <% end %>
+        <% item.add_ons.each do |add_on| %>
+            <tr>
+                <td><strong><%= add_on.item_with_quantity %></strong></td>
+                <td class="bbcc-receipt-lines-amount"><%= add_on.total_price_label %></td>
+            </tr>
+        <% end %>
+    </tbody>
+</table>

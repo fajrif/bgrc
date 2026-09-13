@@ -30,7 +30,8 @@
         <% if item.is_a?(GolfReservation) %>
           <tr>
             <td>
-              <%= link_to item.order_id, golf_reservation_path(item.order_id), class: "bbcc-table-id" %>
+              <a href="#" class="bbcc-table-id booking-detail-trigger"
+                 data-order-id="<%= item.order_id %>" data-kind="golf"><%= item.order_id %></a>
               <% if item.is_unpaid? %>
                 <%= link_to "Cancel", users_golf_reservation_path(item), method: :delete,
                             data: { confirm: "Cancel this reservation?" },
@@ -55,7 +56,8 @@
           <% booking = item %>
           <tr>
             <td>
-              <%= link_to booking.order_id, booking_path(booking.order_id), class: "bbcc-table-id" %>
+              <a href="#" class="bbcc-table-id booking-detail-trigger"
+                 data-order-id="<%= booking.order_id %>" data-kind="booking"><%= booking.order_id %></a>
               <% if booking.class_credit_purchase_id.present? && booking.status == Booking::PAID %>
                 <% if booking.created_at > 24.hours.ago %>
                   <button type="button"

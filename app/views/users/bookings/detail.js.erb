@@ -1,0 +1,12 @@
+$("#bookingDetailBody").html("<%= escape_javascript(render("users/bookings/detail", item: @item)) %>");
+
+<%# The Order ID no longer navigates anywhere, so an unpaid record still needs a
+    way back to its public page, which is where the Pay button lives.
+    Paths take :id by name — the optional "(:locale)" scope wrapping every route
+    otherwise swallows a positional argument. %>
+<% if @item.purchase&.paid? %>
+  $("#bookingDetailReceipt").attr("href", "<%= j users_payment_path(id: @item.purchase.id) %>").show();
+<% elsif @item.is_unpaid? %>
+  <% pay_url = @item.is_a?(GolfReservation) ? golf_reservation_path(id: @item.order_id) : booking_path(id: @item.order_id) %>
+  $("#bookingDetailPay").attr("href", "<%= j pay_url %>").show();
+<% end %>

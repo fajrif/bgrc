@@ -1,0 +1,54 @@
+<%# Shared by My Bookings and Payments — the body is fetched per row.
+    Rendering one modal per row would duplicate a QR SVG many times over. %>
+<div class="modal fade bbcc-modal" id="bookingDetailModal" tabindex="-1" aria-labelledby="bookingDetailModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="bbcc-modal-title" id="bookingDetailModalLabel">Booking Details</h2>
+        <button type="button" class="bbcc-modal-close" data-bs-dismiss="modal" aria-label="Close">
+          <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+        </button>
+      </div>
+      <div class="modal-body" id="bookingDetailBody">
+        <p class="bbcc-account-since mb-0">Loading&hellip;</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="bbcc-btn bbcc-btn-light bbcc-btn-sm" data-bs-dismiss="modal">Close</button>
+        <a href="#" id="bookingDetailPay" class="bbcc-btn bbcc-btn-sm" style="display:none;">Complete Payment</a>
+        <a href="#" id="bookingDetailReceipt" class="bbcc-btn bbcc-btn-sm" style="display:none;">View Receipt</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%= content_for :tail do %>
+<script>
+  jQuery(document).ready(function($) {
+    var modalEl = document.getElementById('bookingDetailModal');
+    if (!modalEl || typeof bootstrap === 'undefined') return;
+    var modal = new bootstrap.Modal(modalEl);
+    var detailUrl = '<%= j detail_users_bookings_path %>';
+
+    function openDetail(orderId, kind) {
+      $('#bookingDetailBody').html('<p class="bbcc-account-since mb-0">Loading&hellip;</p>');
+      $('#bookingDetailReceipt').hide();
+      $('#bookingDetailPay').hide();
+      modal.show();
+      $.get(detailUrl, { order_id: orderId, kind: kind }, null, 'script');
+    }
+
+    // Delegated, so it survives a table being re-rendered (sport filter, pagination).
+    $(document).on('click', '.booking-detail-trigger', function(e) {
+      e.preventDefault();
+      openDetail(this.dataset.orderId, this.dataset.kind);
+    });
+
+    // Arriving straight from a completed payment: open the e-ticket immediately.
+    var landing = <%= raw params[:booking].present? ? params[:booking].to_json : "null" %>;
+    if (landing) {
+      var trigger = document.querySelector('.booking-detail-trigger[data-order-id="' + landing + '"]');
+      openDetail(landing, trigger ? trigger.dataset.kind : 'booking');
+    }
+  });
+</script>
+<% end %>

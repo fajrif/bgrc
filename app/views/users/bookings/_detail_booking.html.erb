@@ -1,0 +1,49 @@
+<div class="bbcc-modal-callout">
+  <span class="bbcc-modal-label">Booking ID</span>
+  <span class="bbcc-modal-value"><%= item.order_id %></span>
+</div>
+
+<div class="bbcc-modal-group">
+  <div class="bbcc-modal-summary-row">
+    <span>Date &amp; Time</span>
+    <span><%= item.date.strftime('%a %b %d, %Y %I:%M %p') %> &ndash; <%= item.end_date.strftime('%I:%M %p') %></span>
+  </div>
+  <div class="bbcc-modal-summary-row">
+    <span>Court</span>
+    <span><%= item.try(:court).try(:name_label) %></span>
+  </div>
+  <div class="bbcc-modal-summary-row">
+    <span>Booking Type</span>
+    <span><%= item.get_court_type %></span>
+  </div>
+  <% if item.group_class %>
+    <div class="bbcc-modal-summary-row">
+      <span>Class</span>
+      <span><%= item.group_class.name_with_pax(item.pax) %></span>
+    </div>
+  <% end %>
+  <% if item.coach %>
+    <div class="bbcc-modal-summary-row">
+      <span>Coach</span>
+      <span><%= item.try(:coach).try(:name) %></span>
+    </div>
+  <% end %>
+  <% item.add_ons.each do |add_on| %>
+    <div class="bbcc-modal-summary-row">
+      <span><%= add_on.item_with_quantity %></span>
+      <span><%= add_on.total_price_label %></span>
+    </div>
+  <% end %>
+  <div class="bbcc-modal-summary-row">
+    <span>Status</span>
+    <span><span class="bbcc-badge <%= item.status == Booking::PAID ? "bbcc-badge-paid" : "bbcc-badge-warn" %>"><%= item.status_label %></span></span>
+  </div>
+  <div class="bbcc-modal-summary-row bbcc-modal-summary-total">
+    <span>Total</span>
+    <span><%= item.total_price_label %></span>
+  </div>
+</div>
+
+<% if item.status == Booking::PAID %>
+  <%= render "users/bookings/detail_qr", item: item %>
+<% end %>

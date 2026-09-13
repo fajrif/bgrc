@@ -69,8 +69,14 @@
       <%= link_to "Search Again", search_path(sport_id: @booking.court.sport_id), class: "btn btn-light-gray btn-small text-medium" %>
     </div>
   <% else %>
-    <%= link_to "View Details", "#modal-popup", class: "btn btn-light-gray btn-small text-medium modal-popup" %>
-    <%= render "bookings/modal_details" %>
-    <%= link_to "Invoice", invoice_booking_path(@booking.order_id), class: "btn btn-info btn-small text-medium" %>
+    <%# A paid booking is redirected to My Bookings by BookingsController#show,
+        where the e-ticket and QR live. This branch is only reachable by someone
+        who is not the owner (a guest session holding the order id), so it just
+        points at the account page rather than duplicating the modal here. %>
+    <div class="text-center w-100">
+      <p class="text-medium mb-2"><strong>This booking is confirmed.</strong></p>
+      <%= link_to "View in My Bookings", users_bookings_path(booking: @booking.order_id),
+                  class: "btn btn-dark-gray btn-small text-medium" %>
+    </div>
   <% end %>
 </div>

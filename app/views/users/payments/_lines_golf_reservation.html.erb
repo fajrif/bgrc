@@ -1,0 +1,24 @@
+<table class="bbcc-receipt-lines">
+    <thead>
+        <tr><th>Description</th><th class="bbcc-receipt-lines-amount">Amount</th></tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+                <strong>Golf Reservation</strong>
+                <span class="bbcc-receipt-lines-note"><%= item.golf_course.try(:name) %></span>
+                <span class="bbcc-receipt-lines-note"><%= item.tee_time_label %></span>
+                <span class="bbcc-receipt-lines-note">
+                    <%= item.holes_label %> &middot; <%= item.players_count %> player(s)
+                </span>
+            </td>
+            <td class="bbcc-receipt-lines-amount"><%= item.green_fee_label %></td>
+        </tr>
+        <% item.golf_add_ons.each do |add_on| %>
+            <tr>
+                <td><strong><%= add_on.item_with_quantity %></strong></td>
+                <td class="bbcc-receipt-lines-amount"><%= add_on.total_price_label %></td>
+            </tr>
+        <% end %>
+    </tbody>
+</table>

@@ -1,12 +1,18 @@
 class Users::PaymentsController < Users::BaseController
-
   def index
-    @purchases = current_user.purchases.order(created_at: :desc).page(params[:page]).per(10)
+    @purchases = current_user.purchases
+                             .includes(:productable)
+                             .page(params[:page]).per(10)
   end
 
-  # printable receipt behind the "Download" button on the payments table
+  # The receipt. Renders standalone for printing, or as a fragment for the modal
+  # on the payments table — both go through users/payments/_document.
   def show
     @purchase = current_user.purchases.find(params[:id])
-  end
 
+    respond_to do |format|
+      format.html
+      format.js
+    end
+  end
 end

@@ -53,9 +53,14 @@ class Booking < ApplicationRecord
     else
       self.price = self.court.calculate_price(self.date, self.duration, false) unless self.price_changed?
       self.price_coach = self.coach.calculate_price(self.duration, false) if self.coach
+      # AddOn#total_price is already price x quantity x duration (add-on prices
+      # are per-hour — see AddOn#price_label). Multiplying by duration again
+      # here billed add-ons at duration squared: a 2-hour booking with a
+      # Rp 20.000/hour racket charged Rp 80.000 instead of Rp 40.000, while
+      # every screen and email showed the correct Rp 40.000.
       total_add_ons = 0
       self.add_ons.each do |add_on|
-        total_add_ons += (add_on.total_price * self.duration)
+        total_add_ons += add_on.total_price
       end
       self.total_price = self.price + self.price_coach + total_add_ons
     end

@@ -10,3 +10,54 @@
     </div>
 </section>
 <!-- end my payments -->
+
+<%# Booking ID cells open this — same e-ticket modal as My Bookings. %>
+<%= render "users/shared/booking_detail_modal" %>
+
+<%# One modal for the table; the receipt body is fetched per row. %>
+<div class="modal fade bbcc-modal" id="receiptModal" tabindex="-1" aria-labelledby="receiptModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header bbcc-print-hide">
+        <h2 class="bbcc-modal-title" id="receiptModalLabel">Receipt</h2>
+        <button type="button" class="bbcc-modal-close" data-bs-dismiss="modal" aria-label="Close">
+          <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+        </button>
+      </div>
+      <div class="modal-body" id="receiptModalBody">
+        <p class="bbcc-account-since mb-0">Loading&hellip;</p>
+      </div>
+      <div class="modal-footer bbcc-print-hide">
+        <button type="button" class="bbcc-btn bbcc-btn-light bbcc-btn-sm" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="bbcc-btn bbcc-btn-sm" id="receiptPrint">Print / Save as PDF</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%= content_for :tail do %>
+<script>
+  jQuery(document).ready(function($) {
+    var modalEl = document.getElementById('receiptModal');
+    if (!modalEl || typeof bootstrap === 'undefined') return;
+    var modal = new bootstrap.Modal(modalEl);
+
+    $(document).on('click', '.receipt-trigger', function(e) {
+      e.preventDefault();
+      $('#receiptModalBody').html('<p class="bbcc-account-since mb-0">Loading&hellip;</p>');
+      modal.show();
+      $.get(this.getAttribute('href'), null, null, 'script');
+    });
+
+    // Printing a Bootstrap modal prints the page behind it unless the rest of
+    // the document is hidden first — see the .is-printing-receipt rules.
+    $('#receiptPrint').on('click', function() {
+      document.body.classList.add('is-printing-receipt');
+      window.print();
+    });
+    window.addEventListener('afterprint', function() {
+      document.body.classList.remove('is-printing-receipt');
+    });
+  });
+</script>
+<% end %>

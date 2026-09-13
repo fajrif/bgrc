@@ -63,6 +63,15 @@ class BookingsController < ApplicationController
     # A gateway redirect can beat its own webhook back here.
     settle_pending_payment!(@booking)
 
+    # This page is the *pre-payment* page: countdown, add-ons, Pay button. Once
+    # the booking is paid none of that applies, so send the owner to their
+    # account list with the e-ticket modal open. Guests never reach this branch
+    # because paying requires signing in, which claims the booking above.
+    if user_signed_in? && @booking.user_id == current_user.id && @booking.status == Booking::PAID
+      flash.keep # settle_pending_payment! uses flash.now, which a redirect would drop
+      return redirect_to users_bookings_path(booking: @booking.order_id)
+    end
+
     @available_credit = find_valid_credit_for_booking(@booking) if @booking.group_class_id.present? && user_signed_in?
   end
 
@@ -151,7 +160,16 @@ class BookingsController < ApplicationController
     redirect_to search_path, alert: "Booking cancelled."
   end
 
+  # The per-booking invoice was retired in favour of one Receipt per Purchase,
+  # which covers golf, food orders and class credits too. The route stays so any
+  # bookmarked link still resolves.
   def invoice
+    purchase = @booking.purchase
+    if user_signed_in? && purchase&.paid? && purchase.user_id == current_user.id
+      redirect_to users_payment_path(id: purchase.id)
+    else
+      redirect_to booking_path(@booking.order_id)
+    end
   end
 
   private

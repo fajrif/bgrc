@@ -85,6 +85,14 @@ class GolfReservationsController < ApplicationController
 
     # A gateway redirect can beat its own webhook back here.
     settle_pending_payment!(@golf_reservation)
+
+    # Same as BookingsController#show: this is the pre-payment page, so once it
+    # is paid the owner belongs in My Bookings with the e-ticket modal open.
+    if user_signed_in? && @golf_reservation.user_id == current_user.id &&
+       @golf_reservation.status == GolfReservation::PAID
+      flash.keep # settle_pending_payment! uses flash.now, which a redirect would drop
+      return redirect_to users_bookings_path(booking: @golf_reservation.order_id)
+    end
   end
 
   def add_on

@@ -1,0 +1,15 @@
+<%# Dispatches to a per-product line-item table. Unknown types fall back to the
+    productable's own name rather than raising. %>
+<% partial = "users/payments/lines_#{purchase.productable_type.to_s.underscore}" %>
+<% if purchase.productable.present? && lookup_context.exists?(partial, [], true) %>
+  <%= render partial, item: purchase.productable %>
+<% else %>
+  <table class="bbcc-receipt-lines">
+    <tbody>
+      <tr>
+        <td><%= purchase.productable.try(:name) || "—" %></td>
+        <td class="bbcc-receipt-lines-amount"><%= purchase.price_label %></td>
+      </tr>
+    </tbody>
+  </table>
+<% end %>

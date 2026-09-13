@@ -130,6 +130,19 @@ class Users::BookingsController < Users::BaseController
 		end
 	end
 
+	# Backs the e-ticket modal on the My Bookings list. Scoped through
+	# current_user, so an order_id belonging to someone else 404s rather than
+	# leaking a QR code.
+	def detail
+		@item = if params[:kind] == "golf"
+			current_user.golf_reservations.find_by!(order_id: params[:order_id])
+		else
+			current_user.bookings.find_by!(order_id: params[:order_id])
+		end
+
+		respond_to { |format| format.js }
+	end
+
 	def destroy
 		@booking = current_user.bookings.find(params[:id])
 		@booking.cancel!

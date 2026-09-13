@@ -945,6 +945,25 @@ html, body { height: auto; min-height: 100%; }
 .bbcc-receipt-total { border-top: 1px solid var(--bbcc-line); }
 .bbcc-receipt-total th, .bbcc-receipt-total td { padding-top: 18px; font-size: 1.05rem; color: var(--bbcc-ink); font-weight: 700; }
 
+/* itemised lines on the receipt — one row per charge, amount right-aligned */
+.bbcc-receipt-lines { width: 100%; margin: 6px 0 18px; border-collapse: collapse; }
+.bbcc-receipt-lines thead th {
+  padding: 10px 0; text-align: left; border-bottom: 1px solid var(--bbcc-line);
+  font-size: 13px; font-weight: 600; color: var(--bbcc-ink);
+}
+.bbcc-receipt-lines tbody td {
+  padding: 12px 0; border-bottom: 1px solid var(--bbcc-line);
+  font-size: 14px; color: var(--bbcc-ink-soft); vertical-align: top;
+}
+.bbcc-receipt-lines tbody td strong { color: var(--bbcc-ink); font-weight: 600; }
+.bbcc-receipt-lines-amount { text-align: right; white-space: nowrap; }
+.bbcc-receipt-lines-note { display: block; font-size: 12px; margin-top: 3px; }
+
+/* the QR SVG is emitted at module_size 8 with no intrinsic cap */
+.bbcc-ticket-qr { border-top: 1px solid var(--bbcc-line); margin-top: 22px; padding-top: 22px; text-align: center; }
+.bbcc-qr { margin: 16px auto 0; }
+.bbcc-qr svg { width: 100%; max-width: 200px; height: auto; display: block; margin: 0 auto; }
+
 /* =====================================================================
    BOOKING HUB (golf tee times, racquet courts)
    ===================================================================== */
@@ -1060,17 +1079,17 @@ button.bbcc-teeslot-remaining-1:hover, button.bbcc-teeslot-remaining-1:focus { b
 
 /* --- booking modal skin (Bootstrap modal, bbcc styling) --- */
 .bbcc-modal .modal-content { border: 1px solid var(--bbcc-line); border-radius: 0; }
-.bbcc-modal .modal-header { border-bottom: 1px solid var(--bbcc-line); padding: 24px 28px; }
+.bbcc-modal .modal-header { border-bottom: 1px solid var(--bbcc-line); padding: 20px 28px; }
 .bbcc-modal .modal-body { padding: 28px; }
-.bbcc-modal .modal-footer { border-top: 1px solid var(--bbcc-line); padding: 20px 28px; gap: 12px; }
+.bbcc-modal .modal-footer { border-top: 1px solid var(--bbcc-line); padding: 20px 28px; gap: 12px; justify-content: center; }
 .bbcc-modal .modal-footer .bbcc-btn { margin-top: 0; }
 .bbcc-modal-title {
-  font-family: "Mona Sans", sans-serif; text-transform: uppercase; letter-spacing: 1px;
+  font-family: "Mona Sans", sans-serif; text-transform: uppercase; letter-spacing: 1px; line-height: normal;
   font-size: 1.05rem; font-weight: 700; color: var(--bbcc-ink); margin: 0;
 }
-.bbcc-modal-label { display: block; font-size: 11px; color: var(--bbcc-ink-soft); margin-bottom: 4px; }
-.bbcc-modal-value { display: block; font-size: 1.05rem; color: var(--bbcc-ink); font-weight: 600; }
-.bbcc-modal-callout { background: var(--bbcc-bg-alt); padding: 14px 18px; margin-bottom: 20px; }
+.bbcc-modal-label { display: block; font-size: 11px; color: var(--bbcc-ink-soft); }
+.bbcc-modal-value { display: block; font-size: 1.05rem; color: var(--bbcc-ink); font-weight: 600; line-height: normal; }
+.bbcc-modal-callout { background: var(--bbcc-bg-alt); padding: 4px 18px; margin-bottom: 20px; }
 .bbcc-modal-group { margin-bottom: 20px; }
 .bbcc-radio-row { display: flex; flex-wrap: wrap; gap: 12px; }
 .bbcc-radio {
@@ -1439,6 +1458,23 @@ button.bbcc-teeslot-remaining-1:hover, button.bbcc-teeslot-remaining-1:focus { b
 
 @media print {
   .bbcc-print-hide, .bbcc-header, .bbcc-footer, .bbcc-breadcrumb { display: none !important; }
+
+  /* Printing while a Bootstrap modal is open otherwise yields the page behind
+     it plus a clipped, viewport-positioned modal. When #receiptPrint sets
+     .is-printing-receipt on <body>, hide everything else and let the modal flow
+     as ordinary content. */
+  body.is-printing-receipt > *:not(.modal) { display: none !important; }
+  body.is-printing-receipt .modal-backdrop { display: none !important; }
+  body.is-printing-receipt .modal {
+    position: static !important; overflow: visible !important;
+    display: block !important; opacity: 1 !important;
+  }
+  body.is-printing-receipt .modal-dialog {
+    max-width: none; width: auto; margin: 0; transform: none !important;
+  }
+  body.is-printing-receipt .modal-content { border: 0 !important; }
+  body.is-printing-receipt .modal-body { padding: 0 !important; overflow: visible !important; }
+  body.is-printing-receipt .bbcc-receipt { border: 0; padding: 0; max-width: none; }
 }
 
 /* how it works — a left-to-right process strip */

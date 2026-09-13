@@ -217,9 +217,11 @@ Rails.application.routes.draw do
         collection do
           get "history" => "bookings#history", :as => :history
           get "calendar" => "bookings#calendar", :as => :calendar
+          # Feeds the e-ticket modal on the My Bookings list. Handles court
+          # bookings and golf reservations alike, keyed by order_id.
+          get "detail" => "bookings#detail", :as => :detail
         end
         member do
-          get :invoice
           post :reschedule_to_credit
           post :return_credit
         end

@@ -1,0 +1,6 @@
+<%# Body of the e-ticket modal on My Bookings. One shell, two row shapes. %>
+<% if item.is_a?(GolfReservation) %>
+  <%= render "users/bookings/detail_golf", item: item %>
+<% else %>
+  <%= render "users/bookings/detail_booking", item: item %>
+<% end %>

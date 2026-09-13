@@ -1,0 +1,41 @@
+<div class="bbcc-modal-callout">
+  <span class="bbcc-modal-label">Booking ID</span>
+  <span class="bbcc-modal-value"><%= item.order_id %></span>
+</div>
+
+<div class="bbcc-modal-group">
+  <div class="bbcc-modal-summary-row">
+    <span>Tee Time</span>
+    <span><%= item.tee_time_label %></span>
+  </div>
+  <div class="bbcc-modal-summary-row">
+    <span>Course</span>
+    <span><%= item.golf_course.try(:name) %></span>
+  </div>
+  <div class="bbcc-modal-summary-row">
+    <span>Holes</span>
+    <span><%= item.holes_label %></span>
+  </div>
+  <div class="bbcc-modal-summary-row">
+    <span>Players</span>
+    <span><%= item.players_count %></span>
+  </div>
+  <% item.golf_add_ons.each do |add_on| %>
+    <div class="bbcc-modal-summary-row">
+      <span><%= add_on.item_with_quantity %></span>
+      <span><%= add_on.total_price_label %></span>
+    </div>
+  <% end %>
+  <div class="bbcc-modal-summary-row">
+    <span>Status</span>
+    <span><span class="bbcc-badge <%= item.status == GolfReservation::PAID ? "bbcc-badge-paid" : "bbcc-badge-warn" %>"><%= item.status_label %></span></span>
+  </div>
+  <div class="bbcc-modal-summary-row bbcc-modal-summary-total">
+    <span>Total</span>
+    <span><%= item.total_price_label %></span>
+  </div>
+</div>
+
+<% if item.status == GolfReservation::PAID %>
+  <%= render "users/bookings/detail_qr", item: item %>
+<% end %>
