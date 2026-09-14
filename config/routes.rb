@@ -40,6 +40,9 @@ Rails.application.routes.draw do
     get  "courts/:id/availability"  => "courts#availability",   :as => :court_availability
     post "courts/:id/quote"         => "court_bookings#quote",  :as => :court_quote
     post "courts/:id/bookings"      => "court_bookings#create", :as => :court_bookings
+
+    post "golf/quote"               => "golf_reservations#quote",  :as => :golf_quote
+    post "golf/reservations"        => "golf_reservations#create", :as => :golf_reservations
   end
 
   # Friendly aliases for the two Devise pages the public site links to.
@@ -296,11 +299,8 @@ Rails.application.routes.draw do
     get 'book/tennis',     to: 'search#index', as: :search_tennis,     defaults: { sport_slug: 'tennis' }
     get 'book/padel',      to: 'search#index', as: :search_padel,      defaults: { sport_slug: 'padel' }
     get 'book/pickleball', to: 'search#index', as: :search_pickleball, defaults: { sport_slug: 'pickleball' }
-    resources :golf_reservations, only: [:new, :create, :show, :destroy] do
-      member do
-        patch "add_on/:golf_item_id" => "golf_reservations#add_on", as: :add_on
-      end
-    end
+    # Tee times are reserved through /api/golf/reservations by the Vue golf booking page.
+    resources :golf_reservations, only: [:show, :destroy]
 
 		resources :group_classes, :only => [:index, :show]
 		resources :recurring_events, :only => [:show] do

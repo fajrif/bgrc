@@ -1,12 +1,11 @@
 class GolfController < ApplicationController
+  # The tee-time booking page. The tee sheet and reservation form are the Vue component
+  # GolfBookingApp (app/frontend/components/golf); the course details and green fees beside it are ERB.
   def index
     @golf_course = GolfCourse.first
-    if @golf_course
-      @selected_date = params[:date].present? ? Date.parse(params[:date]) : Date.today
-      @tee_times = @golf_course.available_tee_times(@selected_date) if request.xhr? == false
-    end
   end
 
+  # Feeds the tee sheet: every tee time on a date, with how many places are left.
   def tee_times
     @golf_course = GolfCourse.first
     if @golf_course.nil?

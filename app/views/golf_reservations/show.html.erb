@@ -32,9 +32,6 @@
                 <p class="text-medium"><strong>Please note:</strong> Reservations cannot be canceled or refunded once payment is completed.</p>
               <% end %>
             </div>
-            <div id="itemLists" class="row row-cols-1 m-0 border-top border-color-extra-light-gray">
-              <%= render "item_lists" %>
-            </div>
           </div>
         </div>
       </article>
@@ -50,7 +47,7 @@
               </div>
             </div>
           <% end %>
-          <%# update.js.erb replaces this block when add-ons change, so the Vue panel sits outside it. %>
+          <%# Add-ons are chosen with the tee time, before the reservation exists; this summary is read-only. %>
           <div id="itemListsPayment">
             <%= render "item_lists_payment" %>
           </div>

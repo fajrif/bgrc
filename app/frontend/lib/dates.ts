@@ -43,6 +43,16 @@ export function weekRangeLabel(value: string): string {
   return `${format(parseDateString(value))} - ${format(parseDateString(addDays(value, 6)))}`
 }
 
+/** "Wednesday, September 16, 2026" for "2026-09-16". */
+export function longDateLabel(value: string): string {
+  return parseDateString(value).toLocaleDateString('en-US', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  })
+}
+
 /** "08.00" slot labels, as the page has always shown. */
 export function hourLabel(date: Date): string {
   return `${pad(date.getHours())}.${pad(date.getMinutes())}`

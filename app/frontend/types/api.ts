@@ -121,6 +121,55 @@ export interface CourtBookingCreated {
   redirect_url: string
 }
 
+// --- Golf -----------------------------------------------------------------------
+
+export interface GolfItemOption {
+  id: number
+  name: string
+  price: number
+  /** Charged per player; otherwise once per booking. */
+  perPerson: boolean
+}
+
+/** Props from GolfBookingHelper#golf_booking_props. */
+export interface GolfBookingProps {
+  course: { id: number; name: string; holesList: number[]; maxPlayers: number }
+  today: string
+  maxDate: string
+  items: GolfItemOption[]
+  urls: { teeTimes: string; quote: string; reservations: string }
+}
+
+/** GET /book/golf/tee_times?date= (GolfController#tee_times) */
+export interface TeeTimeSlot {
+  /** "HH:MM" */
+  time: string
+  available: boolean
+  past: boolean
+  remaining: number
+}
+
+/** POST /api/golf/quote (GolfReservationRequest#as_json). Price fields are absent until a tee time is chosen. */
+export interface GolfQuote {
+  bookable: boolean
+  message: string | null
+  tee_time_label?: string
+  holes_label?: string
+  players_label?: string
+  remaining?: number
+  rate_label?: string
+  green_fee_label?: string
+  lines?: QuoteLine[]
+  total?: number
+  total_label?: string
+}
+
+/** POST /api/golf/reservations */
+export interface GolfReservationCreated {
+  order_id: string
+  redirect_url: string
+}
+
 // --- Sign-in, registration and email verification ----------------------------
 
 export interface AuthUrls {
