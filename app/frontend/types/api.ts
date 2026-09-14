@@ -204,6 +204,66 @@ export interface FoodOrderCreated {
   redirect_url: string
 }
 
+// --- Group classes & class credits -------------------------------------------------
+
+export interface ClassPackOption {
+  sessions: number
+  label: string
+  /** How long the credits last once paid, e.g. "2 months". */
+  validity: string
+}
+
+/** One upcoming session of a prescheduled class (ClassCreditPurchaseRequest.sessions_for). */
+export interface ClassSessionOption {
+  /** Wall-clock "YYYY-MM-DD HH:MM", sent back when buying. */
+  start: string
+  dateLabel: string
+  startTime: string
+  endTime: string
+  placesLeft: number
+}
+
+/** Props from GroupClassBookingHelper#class_purchase_props. */
+export interface ClassPurchaseProps {
+  groupClass: { id: number; name: string; prescheduled: boolean; minPax: number; maxPax: number }
+  packs: ClassPackOption[]
+  /** Rupiah keyed "sessions-pax". */
+  prices: Record<string, number>
+  sessions: ClassSessionOption[]
+  paymentWindowMinutes: number
+  urls: { purchases: string; sessions: string }
+}
+
+/** GET /api/group_classes/:id/sessions */
+export interface ClassSessionsResponse {
+  sessions: ClassSessionOption[]
+}
+
+/** POST /api/class_credit_purchases */
+export interface ClassCreditPurchaseCreated {
+  order_id: string
+  redirect_url: string
+}
+
+/** Props from GroupClassBookingHelper#class_session_claim_props. URLs hold a __COURT__ placeholder. */
+export interface ClassSessionClaimProps {
+  groupClass: { name: string; durationHours: number; durationLabel: string }
+  pax: number
+  courtTypes: NamedOption[]
+  courts: CourtOption[]
+  coaches: NamedOption[]
+  initialCourtTypeId: number | null
+  initialCourtId: number | null
+  today: string
+  maxDate: string
+  urls: { availability: string; claim: string }
+}
+
+/** POST /api/class_credits/:id/claims */
+export interface ClassSessionClaimed {
+  redirect_url: string
+}
+
 // --- Sign-in, registration and email verification ----------------------------
 
 export interface AuthUrls {

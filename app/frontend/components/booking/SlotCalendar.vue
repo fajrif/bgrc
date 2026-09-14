@@ -7,7 +7,7 @@ import interactionPlugin from '@fullcalendar/interaction'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import type { CalendarOptions, EventInput } from '@fullcalendar/core'
 import { computed } from 'vue'
-import { addDays, hourLabel, weekday } from '~/lib/dates'
+import { addDays, hourLabel, hoursBetween, weekday } from '~/lib/dates'
 import type { CourtAvailability } from '~/types/api'
 
 const props = defineProps<{
@@ -16,6 +16,8 @@ const props = defineProps<{
   availability: CourtAvailability | null
   selection: { start: Date; end: Date } | null
   selectionTitle: string
+  /** A fixed length in hours (a class session): only that length can be chosen, and it can't be resized. */
+  hours?: number
 }>()
 
 const emit = defineEmits<{
@@ -25,10 +27,11 @@ const emit = defineEmits<{
 
 const SELECTION_ID = 'selection'
 
-// A slot must end on the day it starts, and cannot start in the past.
+// A slot must end on the day it starts, cannot start in the past, and must be the fixed length if any.
 function allowed(start: Date, end: Date): boolean {
   const lastMoment = new Date(end.getTime() - 1)
-  return start.toDateString() === lastMoment.toDateString() && start.getTime() >= Date.now()
+  const rightLength = props.hours === undefined || hoursBetween(start, end) === props.hours
+  return rightLength && start.toDateString() === lastMoment.toDateString() && start.getTime() >= Date.now()
 }
 
 const events = computed<EventInput[]>(() => {
@@ -40,6 +43,7 @@ const events = computed<EventInput[]>(() => {
       start: props.selection.start,
       end: props.selection.end,
       editable: true,
+      durationEditable: props.hours === undefined,
       backgroundColor: '#3a3a3a',
       borderColor: '#3a3a3a',
       textColor: '#ffffff',

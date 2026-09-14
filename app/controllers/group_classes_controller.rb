@@ -8,6 +8,5 @@ class GroupClassesController < ApplicationController
   def show
     @group_class = GroupClass.available.find(params[:id])
     @sport = @group_class.sport
-    @upcoming_sessions = @group_class.upcoming_sessions if @group_class.is_prescheduled?
   end
 end

@@ -45,6 +45,10 @@ Rails.application.routes.draw do
     post "golf/reservations"        => "golf_reservations#create", :as => :golf_reservations
 
     post "grab_and_go/orders"       => "food_orders#create",       :as => :food_orders
+
+    get  "group_classes/:id/sessions" => "group_classes#sessions",        :as => :group_class_sessions
+    post "class_credit_purchases"     => "class_credit_purchases#create", :as => :class_credit_purchases
+    post "class_credits/:id/claims"   => "class_session_claims#create",   :as => :class_session_claims
   end
 
   # Friendly aliases for the two Devise pages the public site links to.
@@ -314,10 +318,11 @@ Rails.application.routes.draw do
       resources :event_rsvps, :only => [:create], :controller => "event_rsvps"
     end
     get 'events/:id', to: 'events#show', as: :event_type
-    resources :class_credit_purchases, :only => [:create, :show] do
+    # Purchases are created through /api/class_credit_purchases (group class page) and sessions are
+    # claimed through /api/class_credits/:id/claims (book_session page).
+    resources :class_credit_purchases, :only => [:show] do
       member do
-        get  :book_session
-        post :claim_session
+        get :book_session
       end
     end
 		resources :promos, :only => [:index, :show]

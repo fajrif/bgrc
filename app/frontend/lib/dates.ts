@@ -35,6 +35,12 @@ export function hoursBetween(start: Date, end: Date): number {
 }
 
 const SHORT_DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+const SHORT_MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+
+/** "Mon, 21 Sep 2026 · 09:00" for a slot chosen on the calendar. */
+export function slotLabel(date: Date): string {
+  return `${SHORT_DAYS[date.getDay()]}, ${pad(date.getDate())} ${SHORT_MONTHS[date.getMonth()]} ${date.getFullYear()} · ${pad(date.getHours())}:${pad(date.getMinutes())}`
+}
 
 /** "Mon 9/14/26 - Sun 9/20/26" for the seven days starting at `value`, as the page has always shown. */
 export function weekRangeLabel(value: string): string {
