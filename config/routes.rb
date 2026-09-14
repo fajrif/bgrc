@@ -36,6 +36,10 @@ Rails.application.routes.draw do
     post "registration"             => "registrations#create",  :as => :registration
     post "verification"             => "verifications#create",  :as => :verification
     post "verification/resend"      => "verifications#resend",  :as => :resend_verification
+
+    get  "courts/:id/availability"  => "courts#availability",   :as => :court_availability
+    post "courts/:id/quote"         => "court_bookings#quote",  :as => :court_quote
+    post "courts/:id/bookings"      => "court_bookings#create", :as => :court_bookings
   end
 
   # Friendly aliases for the two Devise pages the public site links to.
@@ -261,11 +265,9 @@ Rails.application.routes.draw do
 		# i18n Scope for id
 
 		# Public booking routes (no auth required)
-		resources :bookings, only: [:create, :show, :destroy] do
+		# Court bookings are created through /api/courts/:id/bookings by the Vue booking calendar.
+		resources :bookings, only: [:show, :destroy] do
 			member do
-				patch "add_on/:item_id" => "bookings#add_on", :as => :add_on
-				patch "add_quantity/:add_on_id" => "bookings#add_quantity", :as => :add_quantity
-				patch "remove_quantity/:add_on_id" => "bookings#remove_quantity", :as => :remove_quantity
 				get :invoice
 				post :pay_with_credit
 			end
@@ -348,7 +350,6 @@ Rails.application.routes.draw do
     get 'dining',     to: 'restaurants#index', as: :dining
     get 'dining/:id', to: 'restaurants#show',  as: :dining_restaurant
     match 'book/racquet-sports', to: 'search#index', via: :get, as: :search
-    match 'search_selection', to: 'search#search_selection', via: :get, as: :search_selection
 
     # Retired addresses. `moved_to` keeps the locale prefix and the query string —
     # /search is always reached with ?sport_id=&date=, and /blogs, /gallery and
@@ -365,7 +366,6 @@ Rails.application.routes.draw do
     get 'gallery',      to: moved_to.call('/about/gallery')
     get 'our-team',     to: moved_to.call('/about/team')
     get 'mits-academy', to: moved_to.call('/about/mits-academy')
-    match 'courts/:id/calculate_price', to: 'courts#calculate_price', via: :get, as: :calculate_price
 		root :to => "home#index"
   end
 end

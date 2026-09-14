@@ -1,5 +1,4 @@
 <%= content_for :head do %>
-	<%= stylesheet_link_tag 'quantity_input.css' %>
 	<% if @booking.is_unpaid? %>
 		<%= gateway_checkout_script_tag %>
 	<% end %>
@@ -27,11 +26,6 @@
                               <p class="text-medium"><strong>Please note:</strong> Bookings cannot be canceled or refunded within 24 hours of your reserved court time.</p>
                             <% end %>
                         </div>
-                        <% unless @booking.group_class %>
-                        <div id="itemLists" class="row row-cols-1 m-0 border-top border-color-extra-light-gray">
-                          <%= render "item_lists" %>
-                        </div>
-                        <% end %>
                     </div>
                 </div>
                 <!-- end post item -->
@@ -47,7 +41,7 @@
                         </div>
                       </div>
                     <% end %>
-                    <%# update.js.erb replaces this block when add-ons change, so the Vue panel sits outside it. %>
+                    <%# Add-ons are chosen on the booking calendar before the booking exists; this summary is read-only. %>
                     <div id="itemListsPayment">
                       <%= render "item_lists_payment" %>
                     </div>

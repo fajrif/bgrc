@@ -66,6 +66,12 @@ async function request<T>(method: Method, url: string, body?: unknown): Promise<
   return data as T
 }
 
+/** A message fit to show the visitor, whatever was thrown. */
+export function errorMessage(error: unknown, fallback = 'Something went wrong. Please try again.'): string {
+  if (error instanceof ApiError) return error.message
+  return fallback
+}
+
 export const api = {
   get: <T>(url: string, query?: Query) => request<T>('GET', withQuery(url, query)),
   post: <T>(url: string, body?: unknown) => request<T>('POST', url, body),

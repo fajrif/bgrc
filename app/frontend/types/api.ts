@@ -41,6 +41,86 @@ export interface Disclaimer {
   sections: DisclaimerSection[]
 }
 
+// --- Court booking ------------------------------------------------------------
+
+export interface CourtOption {
+  id: number
+  name: string
+  courtTypeId: number | null
+}
+
+export interface NamedOption {
+  id: number
+  name: string
+}
+
+export interface AddOnItem {
+  id: number
+  name: string
+  /** Rupiah per hour of the booking. */
+  price: number
+}
+
+/** Props from CourtBookingHelper#court_booking_props. URLs hold a __COURT__ placeholder. */
+export interface CourtBookingProps {
+  sport: NamedOption
+  courtTypes: NamedOption[]
+  courts: CourtOption[]
+  initialCourtTypeId: number | null
+  initialCourtId: number | null
+  initialDate: string
+  today: string
+  maxDate: string
+  items: AddOnItem[]
+  urls: { availability: string; quote: string; bookings: string }
+  whatsappUrl: string
+}
+
+export interface CalendarEvent {
+  title: string
+  start: string
+  end: string
+  className: string
+  editable: boolean
+  extendedProps?: { signUpUrl?: string; classUrl?: string }
+}
+
+/** GET /api/courts/:id/availability (CourtAvailability#as_json) */
+export interface CourtAvailability {
+  court_id: number
+  min_duration: number
+  slot_min_time: string
+  slot_max_time: string
+  business_hours: { daysOfWeek: number[]; startTime: string; endTime: string }[]
+  events: CalendarEvent[]
+}
+
+export interface QuoteLine {
+  label: string
+  amount: number
+  amount_label: string
+}
+
+/** POST /api/courts/:id/quote (CourtBookingRequest#as_json). Price fields are absent until a slot is valid. */
+export interface CourtQuote {
+  bookable: boolean
+  message: string | null
+  court?: string
+  date_label?: string
+  duration_label?: string
+  court_fee_label?: string
+  lines?: QuoteLine[]
+  total?: number
+  total_label?: string
+  event_title?: string
+}
+
+/** POST /api/courts/:id/bookings */
+export interface CourtBookingCreated {
+  order_id: string
+  redirect_url: string
+}
+
 // --- Sign-in, registration and email verification ----------------------------
 
 export interface AuthUrls {

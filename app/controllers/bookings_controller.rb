@@ -1,62 +1,12 @@
 class BookingsController < ApplicationController
   include PaymentReconciliation
-  before_action :set_booking, only: [:show, :add_on, :add_quantity, :remove_quantity, :destroy, :invoice, :pay_with_credit]
-  before_action :verify_booking_access!, only: [:show, :add_on, :add_quantity, :remove_quantity, :destroy, :invoice, :pay_with_credit]
+  before_action :set_booking, only: [:show, :destroy, :invoice, :pay_with_credit]
+  before_action :verify_booking_access!, only: [:show, :destroy, :invoice, :pay_with_credit]
 
-  def create
-    @court = Court.find(params[:court_id])
-    dates = params[:dates]
-    duration = params[:duration]
-
-    if dates.blank? or duration.blank?
-      redirect_to search_path, alert: "Please select the timetable below and press the submit button."
-    else
-      parsed_date = DateTime.strptime(dates, "%d/%m/%Y %H:%M") rescue nil
-      if parsed_date && parsed_date < Time.current
-        redirect_to search_path, alert: "Cannot book a time slot in the past." and return
-      end
-      if parsed_date && parsed_date > 14.days.from_now
-        redirect_to search_path, alert: "Bookings can only be made up to 14 days in advance. Please contact us via WhatsApp for special requests." and return
-      end
-
-      @booking = Booking.new(
-        court: @court,
-        user: current_user,
-        date: DateTime::strptime(dates, "%d/%m/%Y %H:%M"),
-        duration: duration,
-        court_type: params[:court_type]
-      )
-      @booking.group_class_id = params[:group_class_id] if params[:group_class_id].present?
-      @booking.pax = params[:pax] if params[:pax].present?
-      @booking.coach_id = params[:coach_id] if params[:coach_id].present?
-
-      # The availability check and the save share a lock on the court, so two people
-      # submitting the same slot at the same moment cannot both get it.
-      outcome = Booking.transaction do
-        @court.lock!
-        if !Booking.check_available_dates?(@court.id, dates, duration)
-          :unavailable
-        elsif @booking.save
-          :saved
-        else
-          :invalid
-        end
-      end
-
-      case outcome
-      when :saved
-        track_guest_order!(@booking)
-        redirect_to booking_path(@booking.order_id), notice: "Court booking added to your booking schedules!"
-      when :unavailable
-        redirect_to search_path, alert: "Oops sorry booking dates not available"
-      else
-        redirect_to search_path, alert: "Oops cannot booking this court! please search again."
-      end
-    end
-  end
+  # Court bookings are created by Api::CourtBookingsController from the Vue booking calendar
+  # (search#index), add-ons included; this controller serves the booking's own page.
 
   def show
-    # Associate guest booking with signed-in user (session check relaxed — URL is the security token)
     if user_signed_in? && @booking.guest?
       # update_columns: claiming a booking must not reprice it.
       @booking.update_columns(user_id: current_user.id, updated_at: Time.current)
@@ -69,10 +19,10 @@ class BookingsController < ApplicationController
     # A gateway redirect can beat its own webhook back here.
     settle_pending_payment!(@booking)
 
-    # This page is the *pre-payment* page: countdown, add-ons, Pay button. Once
-    # the booking is paid none of that applies, so send the owner to their
-    # account list with the e-ticket modal open. Guests never reach this branch
-    # because paying requires signing in, which claims the booking above.
+    # This page is the *pre-payment* page: countdown and Pay button. Once the
+    # booking is paid none of that applies, so send the owner to their account
+    # list with the e-ticket modal open. Guests never reach this branch because
+    # paying requires signing in, which claims the booking above.
     if user_signed_in? && @booking.user_id == current_user.id && @booking.status == Booking::PAID
       flash.keep # settle_pending_payment! uses flash.now, which a redirect would drop
       return redirect_to users_bookings_path(booking: @booking.order_id)
@@ -93,64 +43,6 @@ class BookingsController < ApplicationController
     @booking.update!(status: Booking::PAID, class_credit_purchase: credit)
     @booking.send_email_notification!
     redirect_to booking_path(@booking.order_id), notice: "Booking confirmed using 1 session credit."
-  end
-
-  def add_on
-    if @booking.expired? || @booking.cancelled?
-      head :unprocessable_entity
-      return
-    end
-
-    if @item = Item.find(params[:item_id])
-      if params["selected"] == "true"
-        @add_on = AddOn.create(booking: @booking, item: @item)
-      else
-        if @add_on = @booking.add_ons.where(item_id: @item.id).first
-          @add_on.destroy
-        end
-      end
-      @booking.save
-    end
-
-    respond_to do |format|
-      format.js { render :update }
-    end
-  end
-
-  def add_quantity
-    if @booking.expired? || @booking.cancelled?
-      head :unprocessable_entity
-      return
-    end
-
-    if @add_on = @booking.add_ons.find(params[:add_on_id])
-      @add_on.quantity += 1
-      @add_on.save
-      @booking.save
-    end
-
-    respond_to do |format|
-      format.js { render :update }
-    end
-  end
-
-  def remove_quantity
-    if @booking.expired? || @booking.cancelled?
-      head :unprocessable_entity
-      return
-    end
-
-    if @add_on = @booking.add_ons.find(params[:add_on_id])
-      if @add_on.quantity > 1
-        @add_on.quantity -= 1
-        @add_on.save
-        @booking.save
-      end
-    end
-
-    respond_to do |format|
-      format.js { render :update }
-    end
   end
 
   def destroy
