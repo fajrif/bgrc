@@ -44,5 +44,8 @@ module BGRC
 
     # Don't generate system test files.
     config.generators.system_tests = nil
+
+    # Background jobs (payment expiry, see PaymentWindow) run on Solid Queue, stored in the app database.
+    config.active_job.queue_adapter = :solid_queue
   end
 end

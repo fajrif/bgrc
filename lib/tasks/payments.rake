@@ -9,6 +9,12 @@ namespace :payments do
 		puts "reconciled #{total} pending purchase(s): #{counts.sort.map { |k, v| "#{k}=#{v}" }.join(' ')}"
 	end
 
+	desc "Expire unpaid orders whose payment window has passed. Solid Queue normally does this (ExpirePaymentJob, ExpireStalePaymentsJob)."
+	task expire_stale: :environment do
+		ExpireStalePaymentsJob.perform_now
+		puts "expired stale unpaid orders"
+	end
+
 	desc "Show pending gateway purchases without contacting the gateway."
 	task pending: :environment do
 		PaymentGateways::Reconciler.new.scope.find_each do |purchase|

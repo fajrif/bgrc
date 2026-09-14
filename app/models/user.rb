@@ -5,6 +5,7 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :validatable, :omniauthable, :omniauth_providers => [:google_oauth2]
 
   include OmniauthableExtension
+  include EmailVerificationCode
 
 	attr_accessor :use_v2
 
@@ -18,10 +19,13 @@ class User < ApplicationRecord
 	has_many :food_orders
 
 	validates_presence_of :full_name, :email, :phone, :gender
-	# admin_created is a persisted column, so walk-in accounts created at the
-	# counter stay saveable later on (password reset, profile edits) even while
-	# their profile is still incomplete. Public self-registration never sets it.
-	validates_presence_of :dob, :nationality, unless: :admin_created?
+	# Both flags are persisted, so these accounts stay saveable later on (password
+	# reset, profile edits) while their profile is still incomplete: admin_created
+	# for walk-ins made at the counter, profile_incomplete for the short sign-up in
+	# the payment modal. The full /register page sets neither.
+	validates_presence_of :dob, :nationality, unless: :profile_optional?
+
+	before_save :clear_profile_incomplete, if: :profile_incomplete?
 	validates :password, presence: true, on: :create
 	validates_uniqueness_of :email
 
@@ -54,12 +58,8 @@ class User < ApplicationRecord
     super
   end
 
-	def remove_all_unpaid_bookings
-		Booking.expire_stale_bookings!
-	end
-
 	def current_bookings
-		self.bookings.where(status: [Booking::UNPAID, Booking::PAID]).order(date: :asc)
+		self.bookings.holding_or_rescheduling.order(date: :asc)
 	end
 
 	def paid_bookings
@@ -71,7 +71,7 @@ class User < ApplicationRecord
 	end
 
 	def current_food_orders
-		self.food_orders.where(status: [FoodOrder::UNPAID, FoodOrder::PAID])
+		self.food_orders.holding
 	end
 
 	def food_order_history
@@ -83,5 +83,16 @@ class User < ApplicationRecord
 	end
 
 	def self.to_csv(data, options = {})
+	end
+
+	def profile_optional?
+		admin_created? || profile_incomplete?
+	end
+
+	private
+
+	# The short payment-modal sign-up counts as finished once the fields it skipped are filled in.
+	def clear_profile_incomplete
+		self.profile_incomplete = false if dob.present? && nationality.present?
 	end
 end

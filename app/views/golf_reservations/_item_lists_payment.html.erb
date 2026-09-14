@@ -1,6 +1,6 @@
 <!-- Payment Status Badge -->
 <% if @golf_reservation.is_unpaid? %>
-  <div id="payment-status-badge" class="mb-3 p-2 text-center" style="background-color:#fff3cd;border-radius:6px;border:1px solid #ffc107;">
+  <div class="mb-3 p-2 text-center" style="background-color:#fff3cd;border-radius:6px;border:1px solid #ffc107;">
     <small style="color:#856404;font-weight:600;">STATUS: AWAITING PAYMENT</small>
   </div>
 <% elsif @golf_reservation.status == GolfReservation::PAID %>
@@ -25,23 +25,10 @@
   <li class="margin-20px-top font-weight-700"><strong>Total</strong><span><%= @golf_reservation.total_price_label %></span></li>
 </ul>
 
+<%# Paying an unpaid reservation lives in the Vue payment panel below (PaymentPanelHelper). %>
+<% unless @golf_reservation.is_unpaid? %>
 <div class="d-flex flex-wrap justify-content-center gap-4">
-  <% if @golf_reservation.is_unpaid? %>
-    <div id="payment-actions">
-      <%= link_to "Cancel", golf_reservation_path(@golf_reservation.order_id), class: "btn btn-light-gray btn-small text-medium", method: :delete, data: { confirm: "Cancel this reservation?" } %>
-      <% if user_signed_in? %>
-        <a href="#" class="btn btn-dark-gray btn-medium text-medium" data-bs-toggle="modal" data-bs-target="#disclaimerModal">Pay</a>
-      <% else %>
-        <a href="#" class="btn btn-dark-gray btn-medium text-medium" data-bs-toggle="modal" data-bs-target="#loginModal">Pay</a>
-      <% end %>
-    </div>
-    <div id="expired-actions" style="display:none;">
-      <div class="text-center w-100">
-        <p class="text-medium mb-2" style="color:#dc3545;"><strong>The time limit for payment has expired.</strong></p>
-        <%= link_to "Search Again", golf_path, class: "btn btn-light-gray btn-small text-medium" %>
-      </div>
-    </div>
-  <% elsif @golf_reservation.expired? %>
+  <% if @golf_reservation.expired? %>
     <div class="text-center w-100">
       <p class="text-medium mb-2" style="color:#dc3545;"><strong>The time limit for payment has expired.</strong></p>
       <%= link_to "Book Again", golf_path, class: "btn btn-light-gray btn-small text-medium" %>
@@ -50,6 +37,11 @@
     <div class="text-center w-100">
       <p class="text-medium mb-2" style="color:#6c757d;"><strong>This reservation has been cancelled.</strong></p>
       <%= link_to "Book Again", golf_path, class: "btn btn-light-gray btn-small text-medium" %>
+    </div>
+  <% elsif @golf_reservation.needs_reschedule? %>
+    <div class="text-center w-100">
+      <p class="text-medium mb-2"><strong>We received your payment after the payment window closed, and this tee time had filled up.</strong></p>
+      <p class="text-medium mb-0">Our team will contact you to arrange a new tee time at the same price.</p>
     </div>
   <% else %>
     <div class="text-center w-100">
@@ -60,3 +52,4 @@
     </div>
   <% end %>
 </div>
+<% end %>

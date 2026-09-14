@@ -42,6 +42,7 @@
 	<%= csp_meta_tag %>
 	<%= stylesheet_link_tag 'application', media: 'all' %>
 	<%= yield :head %>
+	<%= vite_client_tag %>
 </head>
 <body class="w-100">
 	<%= render "shared/header" %>
@@ -55,6 +56,8 @@
 	<%= yield %>
 	<%= render "shared/footer" %>
 	<%= javascript_include_tag 'application' %>
+	<%# Vue components (app/frontend) load after the Sprockets bundle so jQuery and Bootstrap globals already exist. %>
+	<%= vite_typescript_tag 'application' %>
 	<%= yield :tail %>
 </body>
 </html>

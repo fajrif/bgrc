@@ -1,7 +1,7 @@
 class GolfReservationsController < ApplicationController
   include PaymentReconciliation
-  before_action :set_golf_reservation, only: [:show, :add_on, :destroy, :expire]
-  before_action :verify_access!, only: [:show, :add_on, :destroy, :expire]
+  before_action :set_golf_reservation, only: [:show, :add_on, :destroy]
+  before_action :verify_access!, only: [:show, :add_on, :destroy]
 
   def new
     @golf_course = GolfCourse.first
@@ -22,8 +22,6 @@ class GolfReservationsController < ApplicationController
   end
 
   def create
-    GolfReservation.expire_stale_reservations!
-
     @golf_course = GolfCourse.first
     unless @golf_course
       redirect_to golf_path, alert: "Golf course not available." and return
@@ -50,12 +48,6 @@ class GolfReservationsController < ApplicationController
       redirect_to golf_path, alert: "Bookings can only be made up to 30 days in advance." and return
     end
 
-    unless GolfReservation.check_available?(@golf_course, tee_time, players_count)
-      remaining = GolfReservation.remaining_capacity_for(@golf_course, tee_time)
-      message = remaining.zero? ? "Sorry, that tee time is fully booked." : "Only #{remaining} spot#{'s' unless remaining == 1} remaining for that tee time — please choose a smaller party size or another slot."
-      redirect_to golf_path, alert: message and return
-    end
-
     @golf_reservation = GolfReservation.new(
       golf_course: @golf_course,
       user: current_user,
@@ -66,10 +58,25 @@ class GolfReservationsController < ApplicationController
       player_names: params[:player_names]&.reject(&:blank?)
     )
 
-    if @golf_reservation.save
-      session[:guest_golf_order_ids] ||= []
-      session[:guest_golf_order_ids] << @golf_reservation.order_id
-      redirect_to golf_reservation_path(@golf_reservation.order_id), notice: "Tee time reserved! Please complete payment within 10 minutes."
+    # Capacity is checked and taken under a lock on the course, so two parties cannot both
+    # fill the last places of one tee time.
+    capacity_message = nil
+    saved = GolfReservation.transaction do
+      @golf_course.lock!
+      if GolfReservation.check_available?(@golf_course, tee_time, players_count)
+        @golf_reservation.save
+      else
+        remaining = GolfReservation.remaining_capacity_for(@golf_course, tee_time)
+        capacity_message = remaining.zero? ? "Sorry, that tee time is fully booked." : "Only #{remaining} spot#{'s' unless remaining == 1} remaining for that tee time — please choose a smaller party size or another slot."
+        false
+      end
+    end
+
+    if capacity_message
+      redirect_to golf_path, alert: capacity_message
+    elsif saved
+      track_guest_order!(@golf_reservation)
+      redirect_to golf_reservation_path(@golf_reservation.order_id), notice: "Tee time reserved! Please complete payment within #{configatron.payment_window_minutes} minutes."
     else
       redirect_to golf_path, alert: "Unable to create reservation: #{@golf_reservation.errors.full_messages.join(', ')}"
     end
@@ -77,11 +84,12 @@ class GolfReservationsController < ApplicationController
 
   def show
     if user_signed_in? && @golf_reservation.guest?
-      @golf_reservation.update(user: current_user)
+      # update_columns: claiming a reservation must not reprice it.
+      @golf_reservation.update_columns(user_id: current_user.id, updated_at: Time.current)
+      forget_guest_order!(@golf_reservation)
     end
 
     store_location_for(:user, request.fullpath)
-    session[:golf_return_url] = request.fullpath
 
     # A gateway redirect can beat its own webhook back here.
     settle_pending_payment!(@golf_reservation)
@@ -114,16 +122,9 @@ class GolfReservationsController < ApplicationController
     end
   end
 
-  def expire
-    if @golf_reservation.is_unpaid?
-      @golf_reservation.expire!
-    end
-    head :ok
-  end
-
   def destroy
     @golf_reservation.cancel!
-    session[:guest_golf_order_ids]&.delete(@golf_reservation.order_id)
+    forget_guest_order!(@golf_reservation)
     redirect_to golf_path, alert: "Reservation cancelled."
   end
 
@@ -133,15 +134,11 @@ class GolfReservationsController < ApplicationController
     @golf_reservation = GolfReservation.find_by_order_id(params[:id])
   end
 
-  def session_owns_reservation?
-    session[:guest_golf_order_ids].is_a?(Array) && session[:guest_golf_order_ids].include?(@golf_reservation&.order_id)
-  end
-
   def verify_access!
     return redirect_to(golf_path, alert: "Reservation not found.") if @golf_reservation.nil?
     return if user_signed_in? && @golf_reservation.user == current_user
     return if user_signed_in? && @golf_reservation.guest?
-    return if session_owns_reservation?
+    return if session_owns?(@golf_reservation)
     redirect_to golf_path, alert: "You don't have access to this reservation."
   end
 end

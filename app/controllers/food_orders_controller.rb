@@ -1,11 +1,9 @@
 class FoodOrdersController < ApplicationController
   include PaymentReconciliation
-  before_action :set_food_order, only: [:show, :destroy, :expire, :invoice]
-  before_action :verify_access!, only: [:show, :destroy, :expire, :invoice]
+  before_action :set_food_order, only: [:show, :destroy, :invoice]
+  before_action :verify_access!, only: [:show, :destroy, :invoice]
 
   def create
-    FoodOrder.expire_stale_orders!
-
     lines = parse_items(params[:items])
     if lines.empty?
       redirect_to back_to_menu_path, alert: "Your order is empty." and return
@@ -22,10 +20,9 @@ class FoodOrdersController < ApplicationController
     redirect_to back_to_menu_path, alert: error and return if error
 
     if @food_order.save
-      session[:guest_food_order_ids] ||= []
-      session[:guest_food_order_ids] << @food_order.order_id
+      track_guest_order!(@food_order)
       redirect_to food_order_path(@food_order.order_id),
-                  notice: "Order placed. Please complete payment within 10 minutes."
+                  notice: "Order placed. Please complete payment within #{configatron.payment_window_minutes} minutes."
     else
       redirect_to back_to_menu_path, alert: @food_order.errors.full_messages.to_sentence
     end
@@ -34,12 +31,11 @@ class FoodOrdersController < ApplicationController
   def show
     # A guest who signs in on the payment step keeps the order they just placed.
     if user_signed_in? && @food_order.guest?
-      @food_order.update(user: current_user)
-      session[:guest_food_order_ids]&.delete(@food_order.order_id)
+      @food_order.update_columns(user_id: current_user.id, updated_at: Time.current)
+      forget_guest_order!(@food_order)
     end
 
     store_location_for(:user, request.fullpath)
-    session[:food_order_return_url] = request.fullpath
 
     # A gateway redirect can beat its own webhook back here.
     settle_pending_payment!(@food_order)
@@ -48,14 +44,9 @@ class FoodOrdersController < ApplicationController
   def invoice
   end
 
-  def expire
-    @food_order.expire! if @food_order.is_unpaid?
-    head :ok
-  end
-
   def destroy
     @food_order.cancel!
-    session[:guest_food_order_ids]&.delete(@food_order.order_id)
+    forget_guest_order!(@food_order)
     redirect_to back_to_menu_path, alert: "Order cancelled."
   end
 
@@ -65,15 +56,11 @@ class FoodOrdersController < ApplicationController
     @food_order = FoodOrder.find_by_order_id(params[:id])
   end
 
-  def session_owns_order?
-    session[:guest_food_order_ids].is_a?(Array) && session[:guest_food_order_ids].include?(@food_order&.order_id)
-  end
-
   def verify_access!
     return redirect_to(back_to_menu_path, alert: "Order not found.") if @food_order.nil?
     return if user_signed_in? && @food_order.user == current_user
     return if user_signed_in? && @food_order.guest?
-    return if session_owns_order?
+    return if session_owns?(@food_order)
     redirect_to back_to_menu_path, alert: "You don't have access to this order."
   end
 

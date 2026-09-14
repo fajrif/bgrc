@@ -1,5 +1,5 @@
 <%= content_for :head do %>
-    <% if user_signed_in? && @food_order.is_unpaid? %>
+    <% if @food_order.is_unpaid? %>
         <%= gateway_checkout_script_tag %>
     <% end %>
 <% end %>
@@ -46,124 +46,19 @@
                 <div class="bbcc-order-aside">
                     <h2 class="bbcc-order-aside-title">Order Summary</h2>
 
-                    <% if @food_order.is_unpaid? %>
-                        <div id="countdown-timer"
-                             class="bbcc-countdown"
-                             data-time-remaining="<%= @food_order.time_remaining %>"
-                             data-expire-url="<%= expire_food_order_path(@food_order.order_id) %>">
-                            <span class="bbcc-countdown-label">Time remaining to pay</span>
-                            <span class="bbcc-countdown-value" id="timer-display">--:--</span>
-                            <span class="bbcc-countdown-note">Unpaid orders are released automatically.</span>
-                        </div>
-                    <% end %>
-
                     <div id="itemListsPayment">
                         <%= render "food_orders/payment_panel", food_order: @food_order %>
                     </div>
+
+                    <% if @food_order.is_unpaid? %>
+                        <%= payment_panel(@food_order,
+                                          cancel_path: food_order_path(id: @food_order.order_id),
+                                          back_path: dining_restaurant_path(RestaurantsController::GRAB_AND_GO_SLUG),
+                                          back_label: "Back to Menu",
+                                          intro: "Your order goes to the kitchen as soon as payment clears, and is prepared for collection at the #{FoodOrder::PICKUP_LOCATION.downcase}.") %>
+                    <% end %>
                 </div>
             </aside>
         </div>
     </div>
 </section>
-
-<% if @food_order.is_unpaid? %>
-    <% if user_signed_in? %>
-        <%= render "food_orders/disclaimer_modal" %>
-    <% else %>
-        <%= render "bookings/login_modal" %>
-    <% end %>
-
-    <script>
-      // Server-authoritative countdown: the seconds come from the database clock,
-      // and hitting zero tells the server to release the order rather than just
-      // greying out the button locally.
-      (function () {
-        var timerEl = document.getElementById('countdown-timer');
-        if (!timerEl) return;
-
-        var secondsLeft = parseInt(timerEl.getAttribute('data-time-remaining'), 10);
-        var expireUrl   = timerEl.getAttribute('data-expire-url');
-        var displayEl   = document.getElementById('timer-display');
-        var expired     = false;
-        var interval;
-
-        function showExpiredState() {
-          timerEl.classList.add('bbcc-countdown-over');
-          displayEl.textContent = '00:00';
-          var actions = document.getElementById('payment-actions');
-          if (actions) actions.style.display = 'none';
-          var expiredActions = document.getElementById('expired-actions');
-          if (expiredActions) expiredActions.style.display = 'block';
-        }
-
-        function expireOnServer() {
-          var token = document.querySelector('meta[name="csrf-token"]');
-          fetch(expireUrl, {
-            method: 'POST',
-            headers: { 'X-CSRF-Token': token ? token.content : '', 'Content-Type': 'application/json' }
-          }).catch(function () {});
-        }
-
-        function tick() {
-          var minutes = Math.floor(secondsLeft / 60);
-          var seconds = secondsLeft % 60;
-          displayEl.textContent = String(minutes).padStart(2, '0') + ':' + String(seconds).padStart(2, '0');
-          timerEl.classList.toggle('bbcc-countdown-urgent', secondsLeft <= 60);
-
-          if (secondsLeft <= 0 && !expired) {
-            expired = true;
-            clearInterval(interval);
-            expireOnServer();
-            showExpiredState();
-          }
-          secondsLeft--;
-        }
-
-        tick();
-        interval = setInterval(tick, 1000);
-      })();
-    </script>
-
-    <% unless user_signed_in? %>
-      <script>
-        // Signing in from the modal reloads the page, at which point the order is
-        // adopted into the account by FoodOrdersController#show.
-        (function () {
-          var form = document.getElementById('ajax-login-form');
-          if (!form) return;
-
-          form.addEventListener('submit', function (event) {
-            event.preventDefault();
-            var errorEl = document.getElementById('login-error');
-            if (errorEl) { errorEl.style.display = 'none'; errorEl.textContent = ''; }
-
-            fetch('<%= ajax_login_path %>', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-                'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
-              },
-              body: new URLSearchParams(new FormData(form)).toString()
-            })
-            .then(function (response) {
-              return response.json().then(function (data) { return { ok: response.ok, data: data }; });
-            })
-            .then(function (result) {
-              if (result.ok && result.data.success) {
-                location.reload();
-              } else if (errorEl) {
-                errorEl.textContent = result.data.message || 'Invalid email or password.';
-                errorEl.style.display = 'block';
-              }
-            })
-            .catch(function () {
-              if (errorEl) {
-                errorEl.textContent = 'An error occurred. Please try again.';
-                errorEl.style.display = 'block';
-              }
-            });
-          });
-        })();
-      </script>
-    <% end %>
-<% end %>

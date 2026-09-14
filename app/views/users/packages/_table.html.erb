@@ -36,7 +36,8 @@
 							<% if booking.is_unpaid? %>
 								<ul>
 									<li class="w-btn">
-										<%= link_to "Pay", users_new_purchase_path(booking.class.to_s.downcase, booking.id.to_s), :remote => true %>
+										<%# Payment lives on the booking's own page (countdown, policies, checkout). %>
+										<%= link_to "Pay", booking_path(id: booking.order_id) %>
 									</li>
 									<li class="w-btn">
 										<%= link_to "Cancel", users_booking_path(booking), method: :delete %>

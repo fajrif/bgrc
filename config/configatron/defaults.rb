@@ -57,11 +57,13 @@ configatron.midtrans_merchant_id = ENV["MIDTRANS_MERCHANT_ID"]
 configatron.midtrans_client_key  = ENV["MIDTRANS_CLIENT_KEY"]
 configatron.midtrans_server_key  = ENV["MIDTRANS_SERVER_KEY"]
 
-# How long a checkout stays payable. The three timed products carry their own
-# expires_at (set from the DB clock at creation); this is the fallback for
-# products that don't, and the cap handed to the gateway.
-configatron.payment_window_minutes = 10
-configatron.class_credit_payment_window_hours = 24
+# Payment waiting period for every purchase — court bookings, golf, food orders and
+# class credits: how long an unpaid order holds its slot before it expires. See
+# PaymentWindow.
+configatron.payment_window_minutes = Integer(ENV.fetch("PAYMENT_WINDOW_MINUTES", 10))
+# Extra hold granted once when checkout starts, so an order never expires while its
+# gateway invoice can still be paid; the invoice is given that same deadline.
+configatron.payment_checkout_minutes = Integer(ENV.fetch("PAYMENT_CHECKOUT_MINUTES", 5))
 
 # Outbound HTTP timeouts for gateway calls, in seconds.
 configatron.payment_gateway_open_timeout = 5

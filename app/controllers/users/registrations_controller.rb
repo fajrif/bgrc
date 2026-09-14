@@ -72,14 +72,10 @@ protected
     new_user_session_url
   end
 
+  # Back to the page that sent the visitor here (every payment page stores itself), else the account.
   def after_sign_up_path_for(resource)
-    if session[:booking_return_url].present?
-      url = session[:booking_return_url]
-      session.delete(:booking_return_url)
-      url
-    else
-      users_account_url
-    end
+    adopt_guest_orders!(resource)
+    stored_location_for(resource) || users_account_url
   end
 
   def after_update_path_for(resource)

@@ -33,6 +33,13 @@ module PaymentGateways
 				raise NotImplementedError
 			end
 
+			# Stop an unpaid checkout from accepting payment. Best-effort and a no-op
+			# unless the gateway supports it; a payment that still arrives is handled
+			# by Purchase#process_after_success!.
+			def expire_checkout(purchase)
+				nil
+			end
+
 			# Most products are a single line — one booking, one tee time, one credit
 			# pack. A product made of several priced things (a Grab & Go order) hands
 			# over its own breakdown instead.

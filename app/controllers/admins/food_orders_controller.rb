@@ -2,8 +2,6 @@ class Admins::FoodOrdersController < Admins::BaseController
 	before_action :set_food_order, except: [:index]
 
   def index
-		FoodOrder.expire_stale_orders!
-
 		criteria = FoodOrder.includes(:user, :purchase, food_order_items: :menu)
 		criteria = criteria.where(status: params[:status]) if params[:status].present?
 		criteria = criteria.where(fulfillment_status: params[:fulfillment_status]) if params[:fulfillment_status].present?

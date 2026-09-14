@@ -36,14 +36,10 @@ private
   def sign_in_with_omniauth(user, provider)
     flash[:notice] = I18n.t "devise.omniauth_callbacks.success", :kind => provider.to_s.titleize
     sign_in(user, :bypass => true)
-    booking_return = session[:booking_return_url]
     session["devise.omniauth_data"] = nil
-    if booking_return.present?
-      session.delete(:booking_return_url)
-      redirect_to booking_return
-    else
-      redirect_to users_root_url(:protocol => 'http')
-    end
+    adopt_guest_orders!(user)
+    # Back to the page that started sign-in (every payment page stores itself), else the account.
+    redirect_to stored_location_for(:user) || users_account_url
   end
 
   # it will assign the provider data with the current_user

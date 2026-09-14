@@ -27,6 +27,17 @@ Rails.application.routes.draw do
   post "webhooks/xendit"   => "webhooks/xendit#create",   :as => :xendit_webhook
   post "webhooks/midtrans" => "webhooks/midtrans#create", :as => :midtrans_webhook
 
+  # JSON endpoints for the Vue components (app/frontend). Outside the "(:locale)" scope so their
+  # URLs never change with the page's language.
+  namespace :api, defaults: { format: :json } do
+    get  "payment_status/:type/:id" => "payment_statuses#show", :as => :payment_status
+    post "checkout/:type/:id"       => "checkouts#create",      :as => :checkout
+    post "session"                  => "sessions#create",       :as => :session
+    post "registration"             => "registrations#create",  :as => :registration
+    post "verification"             => "verifications#create",  :as => :verification
+    post "verification/resend"      => "verifications#resend",  :as => :resend_verification
+  end
+
   # Friendly aliases for the two Devise pages the public site links to.
   devise_scope :user do
     get 'login',    to: 'users/sessions#new',      as: :login
@@ -209,9 +220,6 @@ Rails.application.routes.draw do
       resource :password, :only => [:edit, :update]
       get "logout" => "accounts#logout", :as => :logout
 
-      # Opens a checkout. Results arrive at /webhooks/*, never from the browser.
-      get "purchase/:type/:id" => "purchases#new", :as => :new_purchase
-
       # Bookings (index, destroy stay authenticated; create/show/add_on moved to public)
       resources :bookings, :only => [:index, :destroy] do
         collection do
@@ -258,7 +266,6 @@ Rails.application.routes.draw do
 				patch "add_on/:item_id" => "bookings#add_on", :as => :add_on
 				patch "add_quantity/:add_on_id" => "bookings#add_quantity", :as => :add_quantity
 				patch "remove_quantity/:add_on_id" => "bookings#remove_quantity", :as => :remove_quantity
-				post "expire" => "bookings#expire", :as => :expire
 				get :invoice
 				post :pay_with_credit
 			end
@@ -268,13 +275,9 @@ Rails.application.routes.draw do
 		# so these sit outside the users namespace like bookings and golf.
 		resources :food_orders, path: "orders", only: [:create, :show, :destroy] do
 			member do
-				post :expire
 				get  :invoice
 			end
 		end
-
-		# AJAX login for booking modal
-		post "ajax_login" => "ajax_sessions#create", :as => :ajax_login
 
     # Booking hub. Golf and Racquet Sports keep their existing controllers and
     # helper names — only the address moved — so the ~40 `golf_path`/`search_path`
@@ -294,7 +297,6 @@ Rails.application.routes.draw do
     resources :golf_reservations, only: [:new, :create, :show, :destroy] do
       member do
         patch "add_on/:golf_item_id" => "golf_reservations#add_on", as: :add_on
-        post  :expire
       end
     end
 
@@ -313,7 +315,6 @@ Rails.application.routes.draw do
     get 'events/:id', to: 'events#show', as: :event_type
     resources :class_credit_purchases, :only => [:create, :show] do
       member do
-        get  :initiate_payment
         get  :book_session
         post :claim_session
       end

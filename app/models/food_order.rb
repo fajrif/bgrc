@@ -1,7 +1,7 @@
 require "rqrcode"
 
 # A Grab & Go counter order. Mirrors GolfReservation: it is a Purchase productable,
-# it holds an unpaid slot for ten minutes, and it carries its own line items.
+# it waits unpaid for the payment window (PaymentWindow), and it carries its own line items.
 class FoodOrder < ApplicationRecord
   default_scope { order(created_at: :desc) }
 
@@ -9,6 +9,8 @@ class FoodOrder < ApplicationRecord
   PAID      = 1
   EXPIRED   = 2
   CANCELLED = 3
+
+  include PaymentWindow
 
   PENDING   = 0
   PREPARING = 1
@@ -37,11 +39,6 @@ class FoodOrder < ApplicationRecord
 
   def init_record
     self.order_id = "GNG#{SecureRandom.base58(8)}#{Time.now.to_i}".upcase if self.order_id.blank?
-    if self.expires_at.nil?
-      # DB clock, so the countdown and the sweep can never disagree about "now".
-      db_now = self.class.connection.select_value("SELECT NOW()")
-      self.expires_at = db_now.to_time + 10.minutes
-    end
   end
 
   def calculate_prices
@@ -50,14 +47,6 @@ class FoodOrder < ApplicationRecord
 
   def is_unpaid?
     self.status == UNPAID
-  end
-
-  def payment_window_expired?
-    expired?
-  end
-
-  def within_payment_window?
-    is_unpaid?
   end
 
   def expired?
@@ -78,20 +67,6 @@ class FoodOrder < ApplicationRecord
 
   def gateway_paid?
     paid? && purchase.present? && purchase.payment_type != "CASHIER"
-  end
-
-  def time_remaining
-    return 0 unless expires_at.present? && persisted?
-    result = self.class.connection.select_value(
-      "SELECT GREATEST(0, EXTRACT(EPOCH FROM (expires_at - NOW()))::integer) FROM food_orders WHERE id = #{id}"
-    )
-    result.to_i
-  end
-
-  def expire!
-    self.status = EXPIRED
-    self.save!
-    send_expiry_email if self.user.present?
   end
 
   def cancel!
@@ -198,8 +173,12 @@ class FoodOrder < ApplicationRecord
     )
   end
 
-  def self.expire_stale_orders!
-    FoodOrder.unscoped.where(status: UNPAID).where("expires_at < NOW()").find_each(&:expire!)
+  # Stock is only taken once an order is paid, so by then another order may have used it up.
+  def stock_short?
+    food_order_items.includes(:menu).any? do |item|
+      menu = item.menu
+      menu.nil? || !menu.in_stock? || (menu.stock_count.present? && menu.stock_count < item.quantity)
+    end
   end
 
   private

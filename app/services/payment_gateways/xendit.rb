@@ -73,6 +73,29 @@ module PaymentGateways
 				nil
 			end
 
+			# An expired invoice refuses payment. Xendit's legacy REST path is
+			# `expire!`; the current SDKs document `expire`, so that is tried when the
+			# first is not found. Anything else (already paid, already expired) is
+			# logged rather than raised — the caller is best-effort by design.
+			def expire_checkout(purchase)
+				return if purchase.gateway_reference.blank?
+
+				status, body = nil
+				["expire!", "expire"].each do |action|
+					status, body = post_json(
+						"#{base_url}/invoices/#{purchase.gateway_reference}/#{action}",
+						{},
+						basic_auth_user: secret_key,
+					)
+					return if status.between?(200, 299)
+					break unless status == 404
+				end
+
+				Rails.logger.warn(
+					"[xendit] could not expire invoice #{purchase.gateway_reference} (HTTP #{status}): #{body['message'] || body}"
+				)
+			end
+
 			private
 
 			def invoice_payload(purchase)

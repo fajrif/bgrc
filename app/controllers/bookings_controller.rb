@@ -1,11 +1,9 @@
 class BookingsController < ApplicationController
   include PaymentReconciliation
-  before_action :set_booking, only: [:show, :add_on, :add_quantity, :remove_quantity, :destroy, :expire, :invoice, :pay_with_credit]
-  before_action :verify_booking_access!, only: [:show, :add_on, :add_quantity, :remove_quantity, :destroy, :expire, :invoice, :pay_with_credit]
+  before_action :set_booking, only: [:show, :add_on, :add_quantity, :remove_quantity, :destroy, :invoice, :pay_with_credit]
+  before_action :verify_booking_access!, only: [:show, :add_on, :add_quantity, :remove_quantity, :destroy, :invoice, :pay_with_credit]
 
   def create
-    Booking.expire_stale_bookings!
-
     @court = Court.find(params[:court_id])
     dates = params[:dates]
     duration = params[:duration]
@@ -21,31 +19,38 @@ class BookingsController < ApplicationController
         redirect_to search_path, alert: "Bookings can only be made up to 14 days in advance. Please contact us via WhatsApp for special requests." and return
       end
 
-      if Booking.check_available_dates?(@court.id, dates, duration)
-        @booking = Booking.new(
-          court: @court,
-          user: current_user,
-          date: DateTime::strptime(dates, "%d/%m/%Y %H:%M"),
-          duration: duration,
-          court_type: params[:court_type]
-        )
-        unless params[:group_class_id].blank?
-          @booking.group_class_id = params[:group_class_id]
-        end
-        unless params[:pax].blank?
-          @booking.pax = params[:pax]
-        end
-        @booking.coach_id = params[:coach_id] if params[:coach_id].present?
-        if @booking.save
-          # Track guest bookings in session
-          session[:guest_booking_order_ids] ||= []
-          session[:guest_booking_order_ids] << @booking.order_id
-          redirect_to booking_path(@booking.order_id), notice: "Court booking added to your booking schedules!"
+      @booking = Booking.new(
+        court: @court,
+        user: current_user,
+        date: DateTime::strptime(dates, "%d/%m/%Y %H:%M"),
+        duration: duration,
+        court_type: params[:court_type]
+      )
+      @booking.group_class_id = params[:group_class_id] if params[:group_class_id].present?
+      @booking.pax = params[:pax] if params[:pax].present?
+      @booking.coach_id = params[:coach_id] if params[:coach_id].present?
+
+      # The availability check and the save share a lock on the court, so two people
+      # submitting the same slot at the same moment cannot both get it.
+      outcome = Booking.transaction do
+        @court.lock!
+        if !Booking.check_available_dates?(@court.id, dates, duration)
+          :unavailable
+        elsif @booking.save
+          :saved
         else
-          redirect_to search_path, alert: "Oops cannot booking this court! please search again."
+          :invalid
         end
-      else
+      end
+
+      case outcome
+      when :saved
+        track_guest_order!(@booking)
+        redirect_to booking_path(@booking.order_id), notice: "Court booking added to your booking schedules!"
+      when :unavailable
         redirect_to search_path, alert: "Oops sorry booking dates not available"
+      else
+        redirect_to search_path, alert: "Oops cannot booking this court! please search again."
       end
     end
   end
@@ -53,12 +58,13 @@ class BookingsController < ApplicationController
   def show
     # Associate guest booking with signed-in user (session check relaxed — URL is the security token)
     if user_signed_in? && @booking.guest?
-      @booking.update(user: current_user)
+      # update_columns: claiming a booking must not reprice it.
+      @booking.update_columns(user_id: current_user.id, updated_at: Time.current)
+      forget_guest_order!(@booking)
     end
 
     # Store location for Devise redirect after login
     store_location_for(:user, request.fullpath)
-    session[:booking_return_url] = request.fullpath
 
     # A gateway redirect can beat its own webhook back here.
     settle_pending_payment!(@booking)
@@ -87,13 +93,6 @@ class BookingsController < ApplicationController
     @booking.update!(status: Booking::PAID, class_credit_purchase: credit)
     @booking.send_email_notification!
     redirect_to booking_path(@booking.order_id), notice: "Booking confirmed using 1 session credit."
-  end
-
-  def expire
-    if @booking.is_unpaid?
-      @booking.expire!
-    end
-    head :ok
   end
 
   def add_on
@@ -156,7 +155,7 @@ class BookingsController < ApplicationController
 
   def destroy
     @booking.cancel!
-    session[:guest_booking_order_ids]&.delete(@booking.order_id)
+    forget_guest_order!(@booking)
     redirect_to search_path, alert: "Booking cancelled."
   end
 
@@ -186,15 +185,11 @@ class BookingsController < ApplicationController
     @booking = Booking.find_by_order_id(params[:id])
   end
 
-  def session_owns_booking?
-    session[:guest_booking_order_ids].is_a?(Array) && session[:guest_booking_order_ids].include?(@booking.order_id)
-  end
-
   def verify_booking_access!
     return redirect_to(search_path, alert: "Booking not found.") if @booking.nil?
     return if user_signed_in? && @booking.user == current_user
     return if user_signed_in? && @booking.guest?
-    return if session_owns_booking?
+    return if session_owns?(@booking)
     redirect_to search_path, alert: "You don't have access to this booking."
   end
 end

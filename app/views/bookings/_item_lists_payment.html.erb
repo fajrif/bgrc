@@ -1,6 +1,6 @@
 <!-- Payment Status Badge -->
 <% if @booking.is_unpaid? %>
-  <div id="payment-status-badge" class="mb-3 p-2 text-center" style="background-color: #fff3cd; border-radius: 6px; border: 1px solid #ffc107;">
+  <div class="mb-3 p-2 text-center" style="background-color: #fff3cd; border-radius: 6px; border: 1px solid #ffc107;">
     <small style="color: #856404; font-weight: 600;">
       STATUS: AWAITING PAYMENT
     </small>
@@ -31,6 +31,7 @@
   <% end %>
   <li class="margin-30px-top font-weight-700"><strong>Total</strong><span><%= @booking.total_price_label %></strong></li>
 </ul>
+<%# Paying an unpaid booking lives in the Vue payment panel below (PaymentPanelHelper). %>
 <div class="d-flex flex-wrap justify-content-center gap-4">
   <% if @booking.is_unpaid? %>
     <% if @available_credit %>
@@ -42,22 +43,8 @@
       <%= button_to "Use 1 Session Credit", pay_with_credit_booking_path(@booking.order_id),
             method: :post, class: "btn btn-success w-100 mb-2",
             data: { confirm: "Use 1 session credit for this booking?" } %>
-      <p class="text-center text-muted small mb-3">— or pay with gateway below —</p>
+      <p class="text-center text-muted small mb-3">— or pay online below —</p>
     <% end %>
-    <div id="payment-actions">
-      <%= link_to "Cancel", booking_path(@booking.order_id), class: "btn btn-light-gray btn-small text-medium", method: :delete %>
-      <% if user_signed_in? %>
-        <a href="#" class="btn btn-dark-gray btn-medium text-medium" data-bs-toggle="modal" data-bs-target="#disclaimerModal">Pay</a>
-      <% else %>
-        <a href="#" class="btn btn-dark-gray btn-medium text-medium" data-bs-toggle="modal" data-bs-target="#loginModal">Pay</a>
-      <% end %>
-    </div>
-    <div id="expired-actions" style="display: none;">
-      <div class="text-center w-100">
-        <p class="text-medium mb-2" style="color: #dc3545;"><strong>The time limit for payment has expired.</strong></p>
-        <%= link_to "Search Again", search_path(sport_id: @booking.court.sport_id), class: "btn btn-light-gray btn-small text-medium" %>
-      </div>
-    </div>
   <% elsif @booking.expired? %>
     <div class="text-center w-100">
       <p class="text-medium mb-2" style="color: #dc3545;"><strong>The time limit for payment has expired.</strong></p>
@@ -67,6 +54,11 @@
     <div class="text-center w-100">
       <p class="text-medium mb-2" style="color: #6c757d;"><strong>This booking has been cancelled.</strong></p>
       <%= link_to "Search Again", search_path(sport_id: @booking.court.sport_id), class: "btn btn-light-gray btn-small text-medium" %>
+    </div>
+  <% elsif @booking.needs_reschedule? %>
+    <div class="text-center w-100">
+      <p class="text-medium mb-2"><strong>We received your payment after the payment window closed, and this slot had been taken.</strong></p>
+      <p class="text-medium mb-0">Our team will contact you to arrange a new date and time at the same price.</p>
     </div>
   <% else %>
     <%# A paid booking is redirected to My Bookings by BookingsController#show,

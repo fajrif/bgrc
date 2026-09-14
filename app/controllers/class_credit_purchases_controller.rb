@@ -1,7 +1,9 @@
 class ClassCreditPurchasesController < ApplicationController
   include PaymentReconciliation
-  before_action :authenticate_user!, only: [:show, :initiate_payment, :book_session, :claim_session]
-  before_action :set_credit_purchase, only: [:show, :initiate_payment, :book_session, :claim_session]
+  # A guest may create a purchase and open its page; paying goes through Api::CheckoutsController,
+  # which requires an account.
+  before_action :authenticate_user!, only: [:book_session, :claim_session]
+  before_action :set_credit_purchase, only: [:show, :book_session, :claim_session]
 
   def create
     @group_class = GroupClass.find(params.dig(:class_credit_purchase, :group_class_id))
@@ -13,14 +15,7 @@ class ClassCreditPurchasesController < ApplicationController
 
     parsed_initial_date = DateTime.strptime(@initial_session_date, "%d/%m/%Y %H:%M") rescue nil
 
-    if @group_class.is_prescheduled? && parsed_initial_date
-      remaining = @group_class.slots_remaining_for(parsed_initial_date.to_date)
-      if remaining < submitted_pax
-        redirect_to group_class_path(@group_class), alert: "Only #{remaining} slot(s) remaining for #{submitted_pax} pax on that date." and return
-      end
-    end
-
-    pack = @group_class.group_class_packs.find_by(sessions_count: sessions_count)
+    pack =@group_class.group_class_packs.find_by(sessions_count: sessions_count)
     total_price = pack ? pack.price : (@group_class.check_price(submitted_pax, false) * sessions_count)
 
     @credit_purchase = ClassCreditPurchase.new(
@@ -34,23 +29,44 @@ class ClassCreditPurchasesController < ApplicationController
       pax: submitted_pax
     )
 
-    if @credit_purchase.save
-      session[:credit_purchase_initial_date] = @initial_session_date
-      if user_signed_in?
-        redirect_to class_credit_purchase_path(@credit_purchase), notice: "Credit purchase created. Please complete your payment."
-      else
-        store_location_for(:user, class_credit_purchase_path(@credit_purchase))
-        redirect_to new_user_session_path, alert: "Please sign in to complete your purchase."
+    # Checked and saved under a lock on the class, so two buyers cannot both take its last place;
+    # an unpaid purchase keeps its place until its payment deadline (GroupClass#slots_remaining_for).
+    capacity_error = nil
+    saved = ClassCreditPurchase.transaction do
+      if @group_class.is_prescheduled? && parsed_initial_date
+        @group_class.lock!
+        remaining = @group_class.slots_remaining_for(parsed_initial_date.to_date)
+        if remaining < submitted_pax
+          capacity_error = "Only #{remaining} slot(s) remaining for #{submitted_pax} pax on that date."
+          next false
+        end
       end
+      @credit_purchase.save
+    end
+
+    if capacity_error
+      redirect_to group_class_path(@group_class), alert: capacity_error
+    elsif saved
+      session[:credit_purchase_initial_date] = @initial_session_date
+      track_guest_order!(@credit_purchase) unless user_signed_in?
+      redirect_to class_credit_purchase_path(@credit_purchase),
+                  notice: "Please complete your payment within #{configatron.payment_window_minutes} minutes."
     else
       redirect_to search_path, alert: @credit_purchase.errors.full_messages.to_sentence
     end
   end
 
   def show
-    unless @credit_purchase.user == current_user
-      redirect_to root_path, alert: "Access denied."
+    # Purchases are addressed by a sequential id, so a guest only reaches one their own session made.
+    if user_signed_in? && @credit_purchase.user_id.nil? && session_owns?(@credit_purchase)
+      @credit_purchase.update_columns(user_id: current_user.id, updated_at: Time.current)
+      forget_guest_order!(@credit_purchase)
     end
+    owner = user_signed_in? && @credit_purchase.user_id == current_user.id
+    guest = @credit_purchase.user_id.nil? && session_owns?(@credit_purchase)
+    return redirect_to(root_path, alert: "Access denied.") unless owner || guest
+
+    store_location_for(:user, request.fullpath)
     @reschedulable_bookings = @credit_purchase.bookings
                                 .where(status: Booking::PAID)
                                 .where("created_at > ?", 24.hours.ago)
@@ -58,39 +74,6 @@ class ClassCreditPurchasesController < ApplicationController
 
     # A gateway redirect can beat its own webhook back here.
     settle_pending_payment!(@credit_purchase)
-  end
-
-  # Opens a checkout for a credit pack. As with every other product, the payment
-  # result arrives over a verified webhook, not from the browser.
-  def initiate_payment
-    if @credit_purchase.paid?
-      flash.now[:alert] = "This credit pack has already been paid for."
-      return respond_to { |f| f.js { render "initiate_payment_error" } }
-    end
-
-    existing = Purchase.find_by(productable: @credit_purchase, user: current_user, status_code: Purchase::INITIALIZED_CODE)
-    existing&.destroy
-
-    @purchase = Purchase.create!(
-      productable: @credit_purchase,
-      user: current_user,
-      status_code: Purchase::INITIALIZED_CODE,
-    )
-    @purchase.start_checkout!
-
-    respond_to { |f| f.js }
-  rescue StandardError => e
-    Rails.logger.error("[checkout] ClassCreditPurchase##{@credit_purchase.id} failed: #{e.class} #{e.message}")
-    flash.now[:alert] =
-      case e
-      when PaymentGateways::ConfigurationError
-        "Online payment is unavailable right now. Please contact us."
-      when PaymentGateways::RequestError
-        "We could not reach the payment provider. Please try again in a moment."
-      else
-        "We could not start your payment. Please try again."
-      end
-    respond_to { |f| f.js { render "initiate_payment_error" } }
   end
 
   def book_session
@@ -103,8 +86,6 @@ class ClassCreditPurchasesController < ApplicationController
       redirect_to group_class_path(@credit_purchase.group_class),
                   alert: "Prescheduled classes are booked from the class page." and return
     end
-
-    Booking.expire_stale_bookings!
 
     @group_class = @credit_purchase.group_class
     @sport       = @group_class.sport
@@ -195,7 +176,7 @@ class ClassCreditPurchasesController < ApplicationController
   def build_claim_calendar_events(court, date)
     events = []
 
-    court.bookings.where("date >= ? AND status NOT IN (?, ?)", date, Booking::EXPIRED, Booking::CANCELLED).each do |b|
+    court.bookings.holding.where("bookings.date >= ?", date).each do |b|
       events << { title: 'Booked', editable: false,
                   start: b.date.strftime('%Y-%m-%d %H:%M'),
                   end:   b.end_date.strftime('%Y-%m-%d %H:%M') }

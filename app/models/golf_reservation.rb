@@ -7,6 +7,15 @@ class GolfReservation < ApplicationRecord
   PAID      = 1
   EXPIRED   = 2
   CANCELLED = 3
+  # Paid after its hold lapsed and the tee time filled up meanwhile; see Booking::NEEDS_RESCHEDULE.
+  NEEDS_RESCHEDULE = 4
+
+  include PaymentWindow
+
+  # Set when a paid reservation is moved or confirmed, so calculate_prices leaves the paid amount alone.
+  attr_accessor :keep_paid_price
+
+  scope :holding_or_rescheduling, -> { holding.or(where(status: NEEDS_RESCHEDULE)) }
 
   belongs_to :user, optional: true
   belongs_to :golf_course
@@ -22,13 +31,11 @@ class GolfReservation < ApplicationRecord
 
   def init_record
     self.order_id = "GOLF#{SecureRandom.base58(8)}#{Time.now.to_i}".upcase if self.order_id.blank?
-    if self.expires_at.nil?
-      db_now = self.class.connection.select_value("SELECT NOW()")
-      self.expires_at = db_now.to_time + 10.minutes
-    end
   end
 
   def calculate_prices
+    return if keep_paid_price
+
     rate = GolfRate.find_rate(self.golf_course, self.holes, self.tee_time)
     self.green_fee = rate * self.players_count unless self.green_fee_changed?
     total_add_ons = self.persisted? ? self.golf_add_ons.reload.sum(&:total_price) : 0
@@ -37,14 +44,6 @@ class GolfReservation < ApplicationRecord
 
   def is_unpaid?
     self.status == UNPAID
-  end
-
-  def payment_window_expired?
-    expired?
-  end
-
-  def within_payment_window?
-    is_unpaid?
   end
 
   def expired?
@@ -59,26 +58,16 @@ class GolfReservation < ApplicationRecord
     self.status == CANCELLED
   end
 
+  def needs_reschedule?
+    self.status == NEEDS_RESCHEDULE
+  end
+
   def guest?
     user_id.nil?
   end
 
   def gateway_paid?
     paid? && purchase.present? && purchase.payment_type != "CASHIER"
-  end
-
-  def time_remaining
-    return 0 unless expires_at.present? && persisted?
-    result = self.class.connection.select_value(
-      "SELECT GREATEST(0, EXTRACT(EPOCH FROM (expires_at - NOW()))::integer) FROM golf_reservations WHERE id = #{id}"
-    )
-    result.to_i
-  end
-
-  def expire!
-    self.status = EXPIRED
-    self.save!
-    send_expiry_email if self.user.present?
   end
 
   def cancel!
@@ -122,6 +111,7 @@ class GolfReservation < ApplicationRecord
     when PAID      then "Paid"
     when EXPIRED   then "Expired"
     when CANCELLED then "Cancelled"
+    when NEEDS_RESCHEDULE then "Needs reschedule"
     else "Unpaid"
     end
   end
@@ -162,7 +152,7 @@ class GolfReservation < ApplicationRecord
 
   def self.players_booked_for(golf_course, tee_time_datetime, excluding: nil)
     scope = golf_course.golf_reservations
-                       .where(status: [UNPAID, PAID])
+                       .holding
                        .where(tee_time: tee_time_datetime)
     scope = scope.where.not(id: excluding.id) if excluding&.persisted?
     scope.sum(:players_count)
@@ -176,8 +166,9 @@ class GolfReservation < ApplicationRecord
     remaining_capacity_for(golf_course, tee_time_datetime, excluding: excluding) >= players_count
   end
 
-  def self.expire_stale_reservations!
-    GolfReservation.unscoped.where(status: UNPAID).where("expires_at < NOW()").find_each(&:expire!)
+  # For a payment that landed after the hold lapsed: is there still room at this tee time?
+  def slot_still_available?
+    self.class.check_available?(golf_course, tee_time, players_count, excluding: self)
   end
 
   private

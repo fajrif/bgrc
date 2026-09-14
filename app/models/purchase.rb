@@ -70,6 +70,26 @@ class Purchase < ApplicationRecord
 		self
 	end
 
+	# Closes a checkout that can no longer be completed on time: its product's hold lapsed, or the
+	# customer started a fresh attempt. Voiding it at the gateway is best-effort; a payment that still
+	# gets through is handled by #process_after_success! like any other.
+	def expire_checkout!
+		return unless awaiting_payment?
+
+		begin
+			gateway.expire_checkout(self)
+		rescue StandardError => e
+			Rails.logger.warn("[checkout] could not expire #{payment_gateway} checkout #{order_id}: #{e.class} #{e.message}")
+		end
+
+		update_columns(
+			status_code: EXPIRED_CODE,
+			status_message: "Payment window expired",
+			transaction_status: "expire",
+			updated_at: Time.current,
+		)
+	end
+
 	# The one place a purchase is allowed to change payment state, whether the news
 	# arrives by webhook, by an on-return status fetch, or by the reconciliation
 	# sweep. Idempotent under lock, because gateways retry callbacks.
@@ -100,16 +120,12 @@ class Purchase < ApplicationRecord
 		outcome
 	end
 
-	# How long the gateway should keep this payment open. The window belongs to the
-	# product, not to the purchase, so a user who clicks Pay three minutes into a
-	# ten-minute booking window gets the remaining seven — not a fresh ten.
+	# How long the gateway should keep this payment open: exactly what is left of the
+	# product's hold. Api::CheckoutsController extends that hold once when checkout
+	# starts, so the invoice and the hold end at the same moment.
 	def checkout_window_seconds
-		# ClassCreditPurchase#expires_at is credit *validity* (months out), not a
-		# payment window, so it must never be read as one.
-		return configatron.class_credit_payment_window_hours.hours.to_i if productable.is_a?(ClassCreditPurchase)
-
-		deadline = productable.try(:expires_at)
-		return configatron.payment_window_minutes.minutes.to_i if deadline.blank?
+		deadline = productable.try(:payment_deadline)
+		return configatron.payment_window_minutes.to_i.minutes.to_i if deadline.blank?
 
 		[(deadline - Time.current).to_i, 0].max
 	end
@@ -162,18 +178,10 @@ class Purchase < ApplicationRecord
 	end
 
 	def process_after_success!
-    if self.productable.is_a?(Booking)
-			self.productable.paid!
-			self.productable.send_email_notification!
-    elsif self.productable.is_a?(GolfReservation)
-      self.productable.paid!
-      self.productable.send_email_notification!
-    elsif self.productable.is_a?(ClassCreditPurchase)
-      self.productable.mark_paid!
-      self.productable.book_initial_session!
-    elsif self.productable.is_a?(FoodOrder)
-      self.productable.paid!
-      self.productable.send_email_notification!
+		case productable
+		when Booking, GolfReservation then settle_held_slot!(productable)
+		when ClassCreditPurchase     then settle_class_credit!(productable)
+		when FoodOrder               then settle_food_order!(productable)
 		end
 	end
 
@@ -182,6 +190,57 @@ class Purchase < ApplicationRecord
 	end
 
 	private
+
+	# A payment can arrive after the hold lapsed (gateway latency, a retried webhook) or after the
+	# customer cancelled. If the slot is still free the booking is simply confirmed. If someone else
+	# has taken it, it waits for a new time at the price already paid: BBCC does not refund.
+	def settle_held_slot!(record)
+		needs_reschedule = false
+
+		record.with_lock do
+			if (record.payment_window_expired? || record.cancelled?) && !record.slot_still_available?
+				record.update_columns(status: record.class::NEEDS_RESCHEDULE, updated_at: Time.current)
+				needs_reschedule = true
+			else
+				# What was charged is the total at checkout; confirming must not reprice it.
+				record.keep_paid_price = true
+				record.paid!
+			end
+		end
+
+		if needs_reschedule
+			LatePaymentMailer.notify_needs_reschedule(record)
+		else
+			record.send_email_notification!
+		end
+	end
+
+	def settle_class_credit!(credit)
+		registration = nil
+
+		credit.with_lock do
+			lapsed = credit.payment_window_expired? || credit.cancelled?
+			credit.mark_paid!
+			registration = credit.book_initial_session!(lapsed: lapsed)
+		end
+
+		LatePaymentMailer.notify_needs_reschedule(registration) if registration&.needs_reschedule?
+	end
+
+	# Grab & Go has no slot to lose, so a paid order always goes to the kitchen. If stock ran out
+	# meanwhile, staff are told so they can offer a substitute at pickup.
+	def settle_food_order!(order)
+		short = false
+
+		order.with_lock do
+			short = order.stock_short?
+			order.update_columns(needs_attention: true) if short
+			order.paid!
+		end
+
+		order.send_email_notification!
+		LatePaymentMailer.notify_food_needs_attention(order) if short
+	end
 
 	def expire_productable!
 		return unless productable.respond_to?(:expire!)

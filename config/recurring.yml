@@ -1,0 +1,16 @@
+# Recurring Solid Queue tasks. Format: https://github.com/rails/solid_queue#recurring-tasks
+
+default: &default
+  # Backstop for ExpirePaymentJob: expires unpaid orders whose deadline passed without their own job.
+  expire_stale_payments:
+    class: ExpireStalePaymentsJob
+    schedule: every minute
+
+development:
+  <<: *default
+
+production:
+  <<: *default
+  clear_solid_queue_finished_jobs:
+    command: "SolidQueue::Job.clear_finished_in_batches(sleep_between_batches: 0.3)"
+    schedule: every hour at minute 12

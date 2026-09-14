@@ -41,16 +41,14 @@ class GroupClass < ApplicationRecord
     (min_pack_sessions..max_pack_sessions)
   end
 
+  # Places left on a session day. A prescheduled place is held from purchase until the payment
+  # deadline, so unpaid purchases inside their window count as taken.
   def slots_remaining_for(session_date)
-    booked = bookings.where("date BETWEEN ? AND ?",
-                            session_date.beginning_of_day,
-                            session_date.end_of_day)
-                     .where.not(status: [Booking::EXPIRED, Booking::CANCELLED])
-                     .sum(:pax)
-    registered = group_class_registrations.where(session_date: session_date.beginning_of_day..session_date.end_of_day)
-                                          .active
-                                          .sum(:pax)
-    [max_pax - booked - registered, 0].max
+    day = session_date.beginning_of_day..session_date.end_of_day
+    booked = bookings.holding.where(date: day).sum(:pax)
+    registered = group_class_registrations.where(session_date: day).active.sum(:pax)
+    pending = class_credit_purchases.awaiting_payment.where(initial_session_date: day).sum(:pax)
+    [max_pax - booked - registered - pending, 0].max
   end
 
 	def name_label

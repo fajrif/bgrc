@@ -40,6 +40,7 @@ class Admins::BookingsController < Admins::BaseController
                     when Booking::PAID      then "bg-success"
                     when Booking::CANCELLED then "bg-secondary"
                     when Booking::EXPIRED   then "bg-secondary"
+                    when Booking::NEEDS_RESCHEDULE then "bg-info"
                     else "bg-warning"
                     end
       { id: b.id, title: b.order_name_label, url: admins_booking_path(b),
@@ -86,8 +87,8 @@ class Admins::BookingsController < Admins::BaseController
       parsed = DateTime.strptime(date_str, "%d/%m/%Y %H:%M") rescue nil
       if parsed
         slots = duration.times.map { |i| (parsed + i.hours).strftime("%d/%m/%Y %H:%M") }
-        existing = Booking.where("court_id = ? AND status NOT IN (?, ?) AND date BETWEEN ? AND ?",
-                                 court_id, Booking::EXPIRED, Booking::CANCELLED,
+        existing = Booking.holding.where("bookings.court_id = ? AND bookings.date BETWEEN ? AND ?",
+                                 court_id,
                                  parsed.beginning_of_day, parsed.end_of_day)
         existing.each do |b|
           occupied = b.duration.times.map { |i| (b.date + i.hours).strftime("%d/%m/%Y %H:%M") }
@@ -188,7 +189,13 @@ class Admins::BookingsController < Admins::BaseController
       render json: { error: "That time slot is already booked." }, status: :unprocessable_entity and return
     end
 
-    if @booking.update(date: new_start, end_date: new_end, duration: duration)
+    # Moving a booking that has been paid for never reprices it. A late payment waiting for a
+    # new time (NEEDS_RESCHEDULE) is confirmed by being placed on one.
+    @booking.keep_paid_price = true unless @booking.is_unpaid?
+    attributes = { date: new_start, end_date: new_end, duration: duration }
+    attributes[:status] = Booking::PAID if @booking.needs_reschedule?
+
+    if @booking.update(attributes)
       render json: { success: true }
     else
       render json: { error: @booking.errors.full_messages.join(", ") }, status: :unprocessable_entity

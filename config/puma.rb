@@ -33,3 +33,12 @@ pidfile ENV.fetch("PIDFILE") { "tmp/pids/server.pid" }
 
 # Allow puma to be restarted by `bin/rails restart` command.
 plugin :tmp_restart
+
+# In development, run Solid Queue (payment expiry jobs) inside the web server. Production serves the
+# app with Unicorn, so there `bin/jobs` runs as its own process.
+if ENV.fetch("RAILS_ENV", "development") == "development"
+  plugin :solid_queue
+  # The default mode forks a worker process, which macOS aborts ("objc ... fork() was called")
+  # and takes Puma down with it. Async runs the workers as threads inside Puma instead.
+  solid_queue_mode :async
+end

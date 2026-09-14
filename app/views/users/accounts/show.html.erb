@@ -27,6 +27,12 @@
                     <% if @user.errors.any? %>
                         <p class="bbcc-field-error-text mb-3"><%= @user.errors.full_messages.to_sentence %>.</p>
                     <% end %>
+                    <% if @user.profile_incomplete? %>
+                        <%# Accounts created from the payment modal skip these fields; saving them clears the flag. %>
+                        <p class="text-medium mb-3" style="padding:12px 16px;border:1px solid var(--bbcc-line, #ddd);">
+                            Please add your date of birth and nationality to complete your profile.
+                        </p>
+                    <% end %>
 
                     <div class="bbcc-field">
                         <%= f.label :full_name, "Name" %>

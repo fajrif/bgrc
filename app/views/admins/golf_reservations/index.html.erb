@@ -51,7 +51,7 @@
                 <td><%= res.players_count %></td>
                 <td><%= res.total_price_label %></td>
                 <td>
-                  <% color = { GolfReservation::PAID => "success", GolfReservation::EXPIRED => "secondary", GolfReservation::CANCELLED => "secondary" }.fetch(res.status, "warning") %>
+                  <% color = { GolfReservation::PAID => "success", GolfReservation::EXPIRED => "secondary", GolfReservation::CANCELLED => "secondary", GolfReservation::NEEDS_RESCHEDULE => "info" }.fetch(res.status, "warning") %>
                   <span class="badge bg-<%= color %>"><%= res.status_label %></span>
                 </td>
                 <td class="d-flex gap-1">

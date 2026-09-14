@@ -82,3 +82,7 @@ group :development do
   # gem "error_highlight", ">= 0.4.0", platforms: [:ruby]
 end
 
+
+gem "vite_rails", "~> 3.11"
+
+gem "solid_queue", "~> 1.7"

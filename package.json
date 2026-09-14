@@ -1,0 +1,19 @@
+{
+  "private": true,
+  "type": "module",
+  "devDependencies": {
+    "@types/node": "^26.5.1",
+    "@vitejs/plugin-vue": "^6.0.9",
+    "typescript": "^5.9.3",
+    "vite": "^8.3.0",
+    "vite-plugin-ruby": "^5.2.3",
+    "vue-tsc": "^3.3.11"
+  },
+  "dependencies": {
+    "pinia": "^4.0.3",
+    "vue": "^3.5.42"
+  },
+  "scripts": {
+    "typecheck": "vue-tsc --noEmit"
+  }
+}

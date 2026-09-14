@@ -1,0 +1,48 @@
+<div marginwidth="0" marginheight="0" style="background-color:rgb(245,245,245)">
+  <div style="margin:0px;padding:70px 0px;width:100%;background-color:rgb(245,245,245)">
+    <table border="0" cellpadding="0" cellspacing="0" height="100%" width="100%">
+      <tbody>
+        <tr>
+          <td align="center" valign="top">
+            <table border="0" cellpadding="0" cellspacing="0" width="600" style="width:700px;font-family:Helvetica,Arial,sans-serif;border-radius:21px;background-color:rgb(255,255,255)">
+              <tbody>
+                <tr>
+                  <td style="display:block;padding:36px 48px 0 48px">
+                    <h1 style="font-size:26px;font-weight:500;text-align:center;color:rgb(80,80,80)">Hi <%= @user.full_name %></h1>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" style="background-color:rgb(255,255,255)">
+                    <table border="0" cellpadding="20" cellspacing="0" width="100%">
+                      <tbody>
+                        <tr>
+                          <td valign="top" style="padding:10px 28px 48px 28px;font-size:18px;font-family:Helvetica,Arial,sans-serif;color:rgb(80,80,80)">
+                            <p style="margin:0 0 20px;font-size:18px;text-align:center;color:rgb(80,80,80);">We received your payment — let's find you a new time</p>
+                            <p style="font-size:16px;text-align:center;color:rgb(80,80,80)">
+                              Your payment for <strong><%= @order_id %></strong> reached us after the payment window had closed,
+                              and by then your <%= @kind.downcase %> had been taken by someone else.
+                            </p>
+                            <table border="0" cellpadding="6" cellspacing="0" width="100%" style="font-size:15px;color:rgb(80,80,80);margin:12px 0 20px">
+                              <tbody>
+                                <tr><td style="width:40%"><strong><%= @kind %></strong></td><td><%= @description %></td></tr>
+                                <tr><td><strong>Original time</strong></td><td><%= @original_time&.strftime("%A, %d %b %Y — %I:%M %p") %></td></tr>
+                                <tr><td><strong>Amount paid</strong></td><td><%= @amount %></td></tr>
+                              </tbody>
+                            </table>
+                            <p style="font-size:16px;text-align:center;color:rgb(80,80,80)">
+                              Your payment is safe. Our team will contact you to arrange a new date and time at the same price.
+                            </p>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

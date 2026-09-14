@@ -2,23 +2,21 @@ class Users::BookingsController < Users::BaseController
 
 	SPORT_FILTERS = %w[golf racquet].freeze
 
-	before_action :associate_guest_golf_reservations!, only: [:index]
+	# Orders placed as a guest in this browser join the account as soon as it is viewed.
+	before_action -> { adopt_guest_orders!(current_user) }, only: [:index]
 
 	# "My Bookings" merges court/class bookings and golf reservations into one
 	# list. params[:sport] narrows it to just one side; any other/blank value
 	# shows both. Two AR relations can't share one SQL pagination, so the
 	# combined list is paginated in Ruby via Kaminari.paginate_array.
 	def index
-		Booking.expire_stale_bookings!
-		GolfReservation.expire_stale_reservations!
-
 		sport_filter = params[:sport].to_s if SPORT_FILTERS.include?(params[:sport])
 
 		items = []
 		items.concat(current_user.current_bookings.includes(:court, :group_class).to_a) unless sport_filter == "golf"
 		unless sport_filter == "racquet"
 			items.concat(current_user.golf_reservations
-			                         .where(status: [GolfReservation::UNPAID, GolfReservation::PAID])
+			                         .holding_or_rescheduling
 			                         .includes(:golf_course).to_a)
 		end
 		items.sort_by!(&:created_at)
@@ -28,14 +26,12 @@ class Users::BookingsController < Users::BaseController
 	end
 
 	def calendar
-		Booking.expire_stale_bookings!
-
 		start_date = params[:start].present? ? Date.parse(params[:start]) : Date.today
 		end_date   = params[:end].present?   ? Date.parse(params[:end])   : Date.today + 7.days
 		events = []
 
 		current_user.bookings
-		            .where(status: [Booking::UNPAID, Booking::PAID])
+		            .holding
 		            .where("date >= ? AND date < ?", start_date, end_date)
 		            .includes(:court)
 		            .each do |b|
@@ -93,7 +89,7 @@ class Users::BookingsController < Users::BaseController
 		end
 
 		current_user.golf_reservations
-		            .where(status: [GolfReservation::UNPAID, GolfReservation::PAID])
+		            .holding
 		            .where("tee_time >= ? AND tee_time < ?", start_date, end_date)
 		            .includes(:golf_course)
 		            .each do |g|
@@ -151,7 +147,6 @@ class Users::BookingsController < Users::BaseController
 	end
 
 	def history
-		Booking.expire_stale_bookings!
 		@bookings = current_user.booking_history.page(params[:page]).per(10)
 	end
 
@@ -215,21 +210,6 @@ class Users::BookingsController < Users::BaseController
 
     redirect_to users_class_credits_path,
       notice: "Session converted to 1 credit. Book a new session from the search page."
-  end
-
-  private
-
-  # A guest golf reservation only gets linked to an account once that guest is
-  # signed in and lands on a page that claims it. Now that "My Bookings" is
-  # the page they land on after login, it needs the same claim logic that
-  # Users::GolfReservationsController#index/#history already run.
-  def associate_guest_golf_reservations!
-    return unless session[:guest_golf_order_ids].is_a?(Array)
-    session[:guest_golf_order_ids].each do |order_id|
-      reservation = GolfReservation.find_by(order_id: order_id, user_id: nil)
-      reservation&.update(user: current_user)
-    end
-    session.delete(:guest_golf_order_ids)
   end
 
 end

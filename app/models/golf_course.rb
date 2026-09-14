@@ -41,7 +41,7 @@ class GolfCourse < ApplicationRecord
     end
 
     booked_counts = self.golf_reservations
-                        .where(status: [GolfReservation::UNPAID, GolfReservation::PAID])
+                        .holding
                         .where("tee_time::date = ?", date)
                         .group(:tee_time)
                         .sum(:players_count)

@@ -1,3 +1,9 @@
+<% if @credit_purchase.is_unpaid? %>
+  <%= content_for :head do %>
+    <%= gateway_checkout_script_tag %>
+  <% end %>
+<% end %>
+
 <section class="half-section top-space">
     <div class="container">
         <div class="row justify-content-center">
@@ -10,6 +16,12 @@
                             <div class="alert alert-success">
                                 You are registered for <strong><%= @registration.session_date.strftime('%A, %d %b %Y %H:%M') %></strong>
                                 at <strong><%= @registration.court.name %></strong> (<%= @registration.pax %> pax).
+                            </div>
+                        <% elsif @credit_purchase.group_class.is_prescheduled? && (late = @credit_purchase.group_class_registrations.find_by(status: GroupClassRegistration::NEEDS_RESCHEDULE)) %>
+                            <div class="alert alert-warning">
+                                We received your payment after the payment window closed, and the session on
+                                <strong><%= late.session_date.strftime('%A, %d %b %Y') %></strong> had filled up.
+                                Our team will contact you to arrange another session at the same price.
                             </div>
                         <% elsif @credit_purchase.sessions_remaining > 0 %>
                             <div class="alert alert-success">
@@ -61,9 +73,8 @@
                         <tr>
                             <td class="text-muted">Status</td>
                             <td>
-                                <span class="badge <%= @credit_purchase.paid? ? 'bg-success' : 'bg-warning' %>">
-                                    <%= @credit_purchase.status_label %>
-                                </span>
+                                <% badge = if @credit_purchase.paid? then "bg-success" elsif @credit_purchase.is_unpaid? then "bg-warning" else "bg-secondary" end %>
+                                <span class="badge <%= badge %>"><%= @credit_purchase.status_label %></span>
                             </td>
                         </tr>
                         <% if @credit_purchase.expires_at && !@credit_purchase.group_class.is_prescheduled? %>
@@ -74,10 +85,14 @@
                         <% end %>
                     </table>
 
-                    <% if !@credit_purchase.paid? %>
-                        <p class="text-muted small mb-3">Complete your payment to activate your session credits.</p>
-                        <button class="btn btn-dark text-white w-100 mb-2"
-                                data-bs-toggle="modal" data-bs-target="#creditDisclaimerModal">Pay Now</button>
+                    <% if @credit_purchase.is_unpaid? %>
+                        <%= payment_panel(@credit_purchase,
+                                          cancel_path: (users_class_credit_path(id: @credit_purchase.id) if user_signed_in?),
+                                          back_path: group_class_path(id: @credit_purchase.group_class_id),
+                                          back_label: "Back to the Class") %>
+                    <% elsif !@credit_purchase.paid? %>
+                        <p class="text-medium mb-3"><strong>The time limit for payment has expired.</strong></p>
+                        <%= link_to "Back to the Class", group_class_path(id: @credit_purchase.group_class_id), class: "btn btn-dark text-white w-100 mb-2" %>
                     <% elsif @credit_purchase.sessions_remaining > 0 && !@credit_purchase.group_class.is_prescheduled? %>
                         <%= link_to "Book a Session", book_session_class_credit_purchase_path(@credit_purchase),
                               class: "btn btn-dark text-white w-100 mb-2" %>
@@ -96,21 +111,9 @@
 
                     <% if @credit_purchase.paid? %>
                         <%= link_to "Back", users_class_credits_path, class: "btn btn-light mt-2 w-100" %>
-                    <% else %>
-                        <%= link_to "Cancel Order", users_class_credit_path(@credit_purchase),
-                              method: :delete,
-                              data: { confirm: "Are you sure you want to cancel order #{@credit_purchase.order_id}?" },
-                              class: "btn btn-light mt-2 w-100" %>
                     <% end %>
                 </div>
             </div>
         </div>
     </div>
 </section>
-
-<% unless @credit_purchase.paid? %>
-  <%= content_for :tail do %>
-    <%= gateway_checkout_script_tag %>
-  <% end %>
-  <%= render "disclaimer_modal" %>
-<% end %>

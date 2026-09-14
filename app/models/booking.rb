@@ -7,6 +7,17 @@ class Booking < ApplicationRecord
 	PAID = 1
 	EXPIRED = 2
 	CANCELLED = 3
+	# Paid after its hold lapsed, by which time someone else had taken the slot. BBCC does not
+	# refund, so the customer chooses a new time at the price already paid.
+	NEEDS_RESCHEDULE = 4
+
+	include PaymentWindow
+
+	# Set when a paid booking is moved or confirmed, so calculate_prices leaves the paid amount alone.
+	attr_accessor :keep_paid_price
+
+	# What "My Bookings" lists as current: live holds, paid bookings, and late payments awaiting a new time.
+	scope :holding_or_rescheduling, -> { holding.or(where(status: NEEDS_RESCHEDULE)) }
 
 	belongs_to :user, optional: true
 	belongs_to :court
@@ -26,10 +37,6 @@ class Booking < ApplicationRecord
 	def init_record
     self.order_id = "BOK#{SecureRandom.base58(8)}#{Time.now.to_i}".upcase if self.order_id.blank?
     self.coach_id = nil if self.coach_id.try(:zero?)
-    if self.expires_at.nil?
-      db_now = self.class.connection.select_value("SELECT NOW()")
-      self.expires_at = db_now.to_time + 10.minutes
-    end
 	end
 
 	def ensure_end_date_has_value
@@ -44,6 +51,8 @@ class Booking < ApplicationRecord
 	end
 
 	def calculate_prices
+    return if keep_paid_price
+
     if self.group_class
       unless self.price_changed?
         _price = self.group_class.check_price(self.pax, false)
@@ -70,14 +79,6 @@ class Booking < ApplicationRecord
 		self.status == UNPAID
 	end
 
-	def payment_window_expired?
-		expired?
-	end
-
-	def within_payment_window?
-		is_unpaid?
-	end
-
 	def expired?
 		self.status == EXPIRED
 	end
@@ -86,22 +87,12 @@ class Booking < ApplicationRecord
 		self.status == CANCELLED
 	end
 
+	def needs_reschedule?
+		self.status == NEEDS_RESCHEDULE
+	end
+
 	def guest?
 		user_id.nil?
-	end
-
-	def time_remaining
-		return 0 unless expires_at.present? && persisted?
-		result = self.class.connection.select_value(
-			"SELECT GREATEST(0, EXTRACT(EPOCH FROM (expires_at - NOW()))::integer) FROM bookings WHERE id = #{id}"
-		)
-		result.to_i
-	end
-
-	def expire!
-		self.status = EXPIRED
-		self.save!
-		send_expiry_email if self.user.present?
 	end
 
 	def cancel!
@@ -140,6 +131,7 @@ class Booking < ApplicationRecord
 		when PAID then "Paid"
 		when EXPIRED then "Expired"
 		when CANCELLED then "Cancelled"
+		when NEEDS_RESCHEDULE then "Needs reschedule"
 		else "Unpaid"
 		end
 	end
@@ -195,8 +187,10 @@ class Booking < ApplicationRecord
 		parsed = DateTime::strptime(dates, "%d/%m/%Y %H:%M")
 		arr_dates = duration.to_i.times.map { |i| (parsed + i.hour).strftime("%d/%m/%Y %H:%M") }
 
-		books = Booking.where("id <> ? AND court_id = ? AND status NOT IN (?, ?) AND date BETWEEN ? AND ?",
-		                      not_in_id, court_id, EXPIRED, CANCELLED,
+		# `holding`, not "anything but expired/cancelled": an unpaid hold stops blocking at its
+		# deadline even before ExpirePaymentJob has marked it expired.
+		books = Booking.holding.where("bookings.id <> ? AND bookings.court_id = ? AND bookings.date BETWEEN ? AND ?",
+		                      not_in_id, court_id,
 		                      parsed.beginning_of_day, parsed.end_of_day)
 		unless books.empty?
 			arr = []
@@ -234,10 +228,9 @@ class Booking < ApplicationRecord
 		return status
 	end
 
-	def self.expire_stale_bookings!
-		Booking.unscoped.where(status: UNPAID).where("expires_at < NOW()").find_each do |booking|
-			booking.expire!
-		end
+	# For a payment that landed after the hold lapsed: is this booking's slot still free?
+	def slot_still_available?
+		self.class.check_available_dates?(court_id, date.strftime("%d/%m/%Y %H:%M"), duration, id)
 	end
 
   def get_court_type

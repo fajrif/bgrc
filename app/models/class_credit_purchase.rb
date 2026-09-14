@@ -1,6 +1,14 @@
 class ClassCreditPurchase < ApplicationRecord
-  PENDING = 0
-  PAID    = 1
+  PENDING   = 0
+  PAID      = 1
+  EXPIRED   = 2
+  CANCELLED = 3
+  # PaymentWindow's name for "created, not yet paid".
+  UNPAID    = PENDING
+
+  include PaymentWindow
+  # expires_at already means how long a paid pack's credits stay valid.
+  self.payment_deadline_column = :payment_expires_at
 
   belongs_to :user, optional: true
   belongs_to :group_class
@@ -16,6 +24,18 @@ class ClassCreditPurchase < ApplicationRecord
 
   def paid?
     status == PAID
+  end
+
+  def is_unpaid?
+    status == UNPAID
+  end
+
+  def expired?
+    status == EXPIRED
+  end
+
+  def cancelled?
+    status == CANCELLED
   end
 
   def sessions_used
@@ -41,7 +61,12 @@ class ClassCreditPurchase < ApplicationRecord
   end
 
   def status_label
-    paid? ? "Paid" : "Pending"
+    case status
+    when PAID      then "Paid"
+    when EXPIRED   then "Expired"
+    when CANCELLED then "Cancelled"
+    else "Pending"
+    end
   end
 
   def total_price
@@ -56,10 +81,6 @@ class ClassCreditPurchase < ApplicationRecord
     "#{sessions_count} Session Credit – #{group_class.try(:name)}"
   end
 
-  def payment_window_expired?
-    false
-  end
-
   def mark_paid!
     attrs = { status: PAID }
     unless group_class.is_prescheduled?
@@ -70,12 +91,22 @@ class ClassCreditPurchase < ApplicationRecord
     update!(attrs)
   end
 
-  def book_initial_session!
+  # `lapsed:` is true when the payment arrived after this purchase's hold on the place had gone.
+  # The place is then only kept if the session still has room; otherwise the registration waits
+  # for the customer to choose another session (BBCC does not refund).
+  def book_initial_session!(lapsed: false)
     return unless initial_session_date && group_class
     return unless group_class.is_prescheduled?
 
     schedule = group_class.group_class_schedules.first
     return unless schedule
+
+    seats = pax || group_class.min_pax
+    status = if lapsed && group_class.slots_remaining_for(initial_session_date) < seats
+      GroupClassRegistration::NEEDS_RESCHEDULE
+    else
+      GroupClassRegistration::REGISTERED
+    end
 
     GroupClassRegistration.create!(
       user: user,
@@ -83,8 +114,8 @@ class ClassCreditPurchase < ApplicationRecord
       class_credit_purchase: self,
       court: schedule.court,
       session_date: initial_session_date,
-      pax: pax || group_class.min_pax,
-      status: GroupClassRegistration::REGISTERED
+      pax: seats,
+      status: status
     )
   end
 
