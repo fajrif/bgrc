@@ -43,6 +43,8 @@ Rails.application.routes.draw do
 
     post "golf/quote"               => "golf_reservations#quote",  :as => :golf_quote
     post "golf/reservations"        => "golf_reservations#create", :as => :golf_reservations
+
+    post "grab_and_go/orders"       => "food_orders#create",       :as => :food_orders
   end
 
   # Friendly aliases for the two Devise pages the public site links to.
@@ -278,11 +280,8 @@ Rails.application.routes.draw do
 
 		# Grab & Go orders. Guests can place one; payment is what needs an account,
 		# so these sit outside the users namespace like bookings and golf.
-		resources :food_orders, path: "orders", only: [:create, :show, :destroy] do
-			member do
-				get  :invoice
-			end
-		end
+		# Orders are placed through /api/grab_and_go/orders by the Vue menu page.
+		resources :food_orders, path: "orders", only: [:show, :destroy]
 
     # Booking hub. Golf and Racquet Sports keep their existing controllers and
     # helper names — only the address moved — so the ~40 `golf_path`/`search_path`

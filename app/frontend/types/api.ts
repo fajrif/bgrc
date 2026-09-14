@@ -170,6 +170,40 @@ export interface GolfReservationCreated {
   redirect_url: string
 }
 
+// --- Grab & Go -------------------------------------------------------------------
+
+export interface MenuOption {
+  id: number
+  name: string
+  categoryName: string | null
+  categorySlug: string | null
+  /** What the dish costs today (the discounted price when there is one). */
+  price: number
+  /** The undiscounted price, only when a discount applies. */
+  originalPrice: number | null
+  available: boolean
+  /** Portions left, or null when the dish isn't stock-counted. */
+  stock: number | null
+  imageUrl: string | null
+}
+
+/** Props from GrabAndGoHelper#grab_and_go_props. */
+export interface GrabAndGoProps {
+  menus: MenuOption[]
+  categories: { slug: string; name: string }[]
+  customer: { name: string; phone: string }
+  pickupLocation: string
+  paymentWindowMinutes: number
+  maxQuantity: number
+  ordersUrl: string
+}
+
+/** POST /api/grab_and_go/orders */
+export interface FoodOrderCreated {
+  order_id: string
+  redirect_url: string
+}
+
 // --- Sign-in, registration and email verification ----------------------------
 
 export interface AuthUrls {

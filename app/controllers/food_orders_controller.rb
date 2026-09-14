@@ -1,32 +1,10 @@
 class FoodOrdersController < ApplicationController
   include PaymentReconciliation
-  before_action :set_food_order, only: [:show, :destroy, :invoice]
-  before_action :verify_access!, only: [:show, :destroy, :invoice]
+  before_action :set_food_order, only: [:show, :destroy]
+  before_action :verify_access!, only: [:show, :destroy]
 
-  def create
-    lines = parse_items(params[:items])
-    if lines.empty?
-      redirect_to back_to_menu_path, alert: "Your order is empty." and return
-    end
-
-    @food_order = FoodOrder.new(
-      user:           current_user,
-      customer_name:  params[:customer_name],
-      customer_phone: params[:customer_phone],
-      notes:          params[:notes]
-    )
-
-    error = build_items!(@food_order, lines)
-    redirect_to back_to_menu_path, alert: error and return if error
-
-    if @food_order.save
-      track_guest_order!(@food_order)
-      redirect_to food_order_path(@food_order.order_id),
-                  notice: "Order placed. Please complete payment within #{configatron.payment_window_minutes} minutes."
-    else
-      redirect_to back_to_menu_path, alert: @food_order.errors.full_messages.to_sentence
-    end
-  end
+  # Orders are placed by Api::FoodOrdersController from the Vue Grab & Go menu
+  # (restaurants#show); this controller serves the order's own page.
 
   def show
     # A guest who signs in on the payment step keeps the order they just placed.
@@ -39,9 +17,6 @@ class FoodOrdersController < ApplicationController
 
     # A gateway redirect can beat its own webhook back here.
     settle_pending_payment!(@food_order)
-  end
-
-  def invoice
   end
 
   def destroy
@@ -62,37 +37,6 @@ class FoodOrdersController < ApplicationController
     return if user_signed_in? && @food_order.guest?
     return if session_owns?(@food_order)
     redirect_to back_to_menu_path, alert: "You don't have access to this order."
-  end
-
-  # The basket arrives as {"menu_id" => quantity} JSON from the checkout modal.
-  def parse_items(raw)
-    parsed = JSON.parse(raw.to_s) rescue {}
-    return {} unless parsed.is_a?(Hash)
-
-    parsed.each_with_object({}) do |(menu_id, quantity), acc|
-      qty = quantity.to_i
-      acc[menu_id.to_i] = qty if menu_id.to_i.positive? && qty.positive?
-    end
-  end
-
-  # Prices and availability are re-read from the database — the request only ever
-  # says which menu and how many, never what it costs.
-  def build_items!(food_order, lines)
-    menus = Menu.orderable.where(id: lines.keys).index_by(&:id)
-
-    lines.each do |menu_id, quantity|
-      menu = menus[menu_id]
-      return "One of the items is no longer on the menu." if menu.nil?
-      return "#{menu.name} has just sold out." unless menu.available?
-
-      if menu.stock_count.present? && quantity > menu.stock_count
-        return "Only #{menu.stock_count} left of #{menu.name}."
-      end
-
-      food_order.food_order_items.build(menu: menu, quantity: quantity)
-    end
-
-    nil
   end
 
   def back_to_menu_path

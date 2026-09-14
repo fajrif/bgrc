@@ -1385,9 +1385,7 @@ button.bbcc-teeslot-remaining-1:hover, button.bbcc-teeslot-remaining-1:focus { b
 .bbcc-qty-btn:hover { background: var(--bbcc-dark-hover); }
 .bbcc-qty-value { min-width: 34px; text-align: center; font-size: 15px; color: var(--bbcc-ink); }
 
-.bbcc-menu-col-hidden { display: none; }
-
-/* sticky cart bar — revealed by the page's JS once something is in the basket */
+/* sticky cart bar — revealed by GrabAndGoApp once something is in the basket */
 .bbcc-cart-bar {
   position: fixed; left: 0; right: 0; bottom: 0; z-index: 1030;
   background: var(--bbcc-bg); border-top: 1px solid var(--bbcc-line);

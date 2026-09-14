@@ -5,5 +5,6 @@ import type { Component } from 'vue'
 export const registry: Record<string, () => Promise<{ default: Component }>> = {
   CourtBookingApp: () => import('./booking/CourtBookingApp.vue'),
   GolfBookingApp: () => import('./golf/GolfBookingApp.vue'),
+  GrabAndGoApp: () => import('./grab_and_go/GrabAndGoApp.vue'),
   PaymentPanel: () => import('./payment/PaymentPanel.vue'),
 }
