@@ -40,26 +40,9 @@ class LatePaymentMailer < ApplicationMailer
   def load_record
     record = params[:record]
     @user = record.user
-
-    case record
-    when Booking
-      @kind = "Court booking"
-      @order_id = record.order_id
-      @description = record.court.try(:name_label) || record.court.try(:name)
-      @original_time = record.date
-      @amount = record.total_price_label
-    when GolfReservation
-      @kind = "Tee time"
-      @order_id = record.order_id
-      @description = "#{record.golf_course.try(:name)} — #{record.players_count} players, #{record.holes_label}"
-      @original_time = record.tee_time
-      @amount = record.total_price_label
-    when GroupClassRegistration
-      @kind = "Class session"
-      @order_id = record.class_credit_purchase.try(:order_id)
-      @description = record.group_class.try(:name)
-      @original_time = record.session_date
-      @amount = record.class_credit_purchase.try(:price_label)
-    end
+    @kind, @order_id, @description, @original_time, @amount =
+      LateReschedule.summary(record).values_at(:kind, :order_id, :description, :original_time, :amount)
+    type, order_id = LateReschedule.address(record)
+    @reschedule_url = users_late_reschedule_url(type: type, id: order_id)
   end
 end

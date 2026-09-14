@@ -58,7 +58,8 @@
   <% elsif @booking.needs_reschedule? %>
     <div class="text-center w-100">
       <p class="text-medium mb-2"><strong>We received your payment after the payment window closed, and this slot had been taken.</strong></p>
-      <p class="text-medium mb-0">Our team will contact you to arrange a new date and time at the same price.</p>
+      <p class="text-medium mb-3">Choose a new date and time at the same price. There is nothing more to pay.</p>
+      <%= link_to "Choose a New Time", late_reschedule_path_for(@booking), class: "btn btn-dark-gray btn-small text-medium" %>
     </div>
   <% else %>
     <%# A paid booking is redirected to My Bookings by BookingsController#show,

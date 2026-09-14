@@ -264,6 +264,42 @@ export interface ClassSessionClaimed {
   redirect_url: string
 }
 
+// --- Late-payment reschedule ----------------------------------------------------
+
+/** Props for CourtRescheduleApp (LateRescheduleHelper#late_reschedule_app). URLs hold a __COURT__ placeholder. */
+export interface CourtRescheduleProps {
+  courts: NamedOption[]
+  initialCourtId: number | null
+  durationHours: number
+  durationLabel: string
+  today: string
+  maxDate: string
+  urls: { availability: string; reschedule: string }
+}
+
+/** Props for TeeTimeRescheduleApp. */
+export interface TeeTimeRescheduleProps {
+  courseName: string
+  players: number
+  holesLabel: string
+  today: string
+  maxDate: string
+  urls: { teeTimes: string; reschedule: string }
+}
+
+/** Props for ClassRescheduleApp. */
+export interface ClassRescheduleProps {
+  className: string
+  pax: number
+  sessions: ClassSessionOption[]
+  urls: { sessions: string; reschedule: string }
+}
+
+/** PATCH /api/late_reschedules/:type/:id */
+export interface RescheduleResponse {
+  redirect_url: string
+}
+
 // --- Sign-in, registration and email verification ----------------------------
 
 export interface AuthUrls {

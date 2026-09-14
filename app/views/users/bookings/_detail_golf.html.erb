@@ -36,6 +36,11 @@
   </div>
 </div>
 
+<% if item.needs_reschedule? %>
+  <p class="bbcc-modal-note">Your payment arrived after the payment window closed, and this tee time had filled up. Choose a new tee time at no extra cost.</p>
+  <%= link_to "Choose New Tee Time", late_reschedule_path_for(item), class: "bbcc-btn bbcc-btn-block" %>
+<% end %>
+
 <% if item.status == GolfReservation::PAID %>
   <%= render "users/bookings/detail_qr", item: item %>
 <% end %>

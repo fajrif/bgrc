@@ -49,6 +49,9 @@ Rails.application.routes.draw do
     get  "group_classes/:id/sessions" => "group_classes#sessions",        :as => :group_class_sessions
     post "class_credit_purchases"     => "class_credit_purchases#create", :as => :class_credit_purchases
     post "class_credits/:id/claims"   => "class_session_claims#create",   :as => :class_session_claims
+
+    patch "late_reschedules/:type/:id" => "late_reschedules#update", :as => :late_reschedule,
+          :constraints => { type: /booking|golf_reservation|class_credit_purchase/ }
   end
 
   # Friendly aliases for the two Devise pages the public site links to.
@@ -256,6 +259,9 @@ Rails.application.routes.draw do
       resources :food_orders, :only => [:index], :path => "orders" do
         collection { get :history }
       end
+      # A late payment whose slot was taken: the customer chooses a new time (moved via /api/late_reschedules).
+      get "reschedule/:type/:id" => "late_reschedules#show", :as => :late_reschedule,
+          :constraints => { type: /booking|golf_reservation|class_credit_purchase/ }
     end
 
     # The member area used to live under /users/*. Three of its segments were

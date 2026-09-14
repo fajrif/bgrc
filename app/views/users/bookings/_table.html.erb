@@ -36,6 +36,8 @@
                 <%= link_to "Cancel", users_golf_reservation_path(item), method: :delete,
                             data: { confirm: "Cancel this reservation?" },
                             class: "btn-link border-0 bg-transparent p-0 bbcc-table-note" %>
+              <% elsif item.needs_reschedule? %>
+                <%= link_to "Choose new time", late_reschedule_path_for(item), class: "bbcc-table-note" %>
               <% end %>
             </td>
             <td><i class="fa-solid fa-golf-ball-tee" aria-hidden="true"></i> Golf</td>
@@ -43,7 +45,7 @@
             <td><%= item.golf_course.try(:name) %> &middot; <%= item.holes_label %></td>
             <td class="bbcc-table-num"><%= item.players_count %></td>
             <td>
-              <% badge = if item.is_unpaid?    then "bbcc-badge-warn"
+              <% badge = if item.is_unpaid? || item.needs_reschedule? then "bbcc-badge-warn"
                          elsif item.expired?   then "bbcc-badge-danger"
                          elsif item.cancelled? then "bbcc-badge-danger"
                          else "bbcc-badge-paid"
@@ -58,7 +60,9 @@
             <td>
               <a href="#" class="bbcc-table-id booking-detail-trigger"
                  data-order-id="<%= booking.order_id %>" data-kind="booking"><%= booking.order_id %></a>
-              <% if booking.class_credit_purchase_id.present? && booking.status == Booking::PAID %>
+              <% if booking.needs_reschedule? %>
+                <%= link_to "Choose new time", late_reschedule_path_for(booking), class: "bbcc-table-note" %>
+              <% elsif booking.class_credit_purchase_id.present? && booking.status == Booking::PAID %>
                 <% if booking.created_at > 24.hours.ago %>
                   <button type="button"
                     class="btn-link border-0 bg-transparent p-0 bbcc-table-note reschedule-trigger"

@@ -21,7 +21,10 @@
                             <div class="alert alert-warning">
                                 We received your payment after the payment window closed, and the session on
                                 <strong><%= late.session_date.strftime('%A, %d %b %Y') %></strong> had filled up.
-                                Our team will contact you to arrange another session at the same price.
+                                Choose another session at the same price. There is nothing more to pay.
+                                <div class="mt-3">
+                                    <%= link_to "Choose Another Session", late_reschedule_path_for(@credit_purchase), class: "btn btn-dark text-white btn-small" %>
+                                </div>
                             </div>
                         <% elsif @credit_purchase.sessions_remaining > 0 %>
                             <div class="alert alert-success">

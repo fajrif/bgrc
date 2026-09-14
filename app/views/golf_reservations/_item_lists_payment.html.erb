@@ -41,7 +41,8 @@
   <% elsif @golf_reservation.needs_reschedule? %>
     <div class="text-center w-100">
       <p class="text-medium mb-2"><strong>We received your payment after the payment window closed, and this tee time had filled up.</strong></p>
-      <p class="text-medium mb-0">Our team will contact you to arrange a new tee time at the same price.</p>
+      <p class="text-medium mb-3">Choose a new tee time at the same price. There is nothing more to pay.</p>
+      <%= link_to "Choose a New Tee Time", late_reschedule_path_for(@golf_reservation), class: "btn btn-dark-gray btn-small text-medium" %>
     </div>
   <% else %>
     <div class="text-center w-100">

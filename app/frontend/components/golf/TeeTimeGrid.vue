@@ -5,11 +5,16 @@ import { onBeforeUnmount, ref, watch } from 'vue'
 import { api, errorMessage } from '~/lib/api'
 import type { TeeTimeSlot } from '~/types/api'
 
-const props = defineProps<{
-  date: string
-  today: string
-  url: string
-}>()
+const props = withDefaults(
+  defineProps<{
+    date: string
+    today: string
+    url: string
+    /** A known party size (moving a paid reservation): tee times without room for all of them can't be chosen. */
+    players?: number
+  }>(),
+  { players: 1 },
+)
 
 const emit = defineEmits<{
   choose: [slot: TeeTimeSlot]
@@ -64,7 +69,11 @@ function tier(slot: TeeTimeSlot): number {
     <div v-else class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-3">
       <div v-for="slot in slots" :key="slot.time" class="col">
         <span v-if="slot.past" class="bbcc-teeslot bbcc-teeslot-past" title="This tee time has already passed">{{ slot.time }}</span>
-        <span v-else-if="!slot.available" class="bbcc-teeslot bbcc-teeslot-booked" title="Fully booked">{{ slot.time }}</span>
+        <span
+          v-else-if="!slot.available || slot.remaining < players"
+          class="bbcc-teeslot bbcc-teeslot-booked"
+          :title="slot.available ? `Not enough spots for ${players} players` : 'Fully booked'"
+        >{{ slot.time }}</span>
         <button
           v-else
           type="button"

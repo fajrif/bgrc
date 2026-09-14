@@ -1,0 +1,30 @@
+<% summary = LateReschedule.summary(@record) %>
+<% component, props = late_reschedule_app(@record) %>
+<%= render "shared/breadcrumb", crumbs: [{ label: "My Bookings", path: users_bookings_path }, { label: "Choose a New Time" }] %>
+
+<!-- start late payment reschedule -->
+<section class="bbcc-section bbcc-hub">
+  <div class="container-lg">
+    <div class="bbcc-schedule-head">
+      <div>
+        <h1 class="bbcc-hub-heading bbcc-schedule-title">Choose a New Time</h1>
+        <p class="bbcc-schedule-range">
+          <%= summary[:kind] %> <%= summary[:order_id] %> &middot; <%= summary[:description] %>
+        </p>
+      </div>
+      <%= link_to "&larr; Back to My Bookings".html_safe, users_bookings_path, class: "bbcc-link" %>
+    </div>
+
+    <p class="bbcc-booking-hint" data-testid="reschedule-intro">
+      Your payment of <strong><%= summary[:amount] %></strong> reached us after the payment window closed, and by then
+      <strong><%= summary[:original_time]&.strftime("%A, %d %b %Y, %H:%M") %></strong> had been taken. Choose any open
+      time below at the same price &mdash; there is nothing more to pay.
+    </p>
+
+    <%# The picker for this kind of booking (app/frontend/components/reschedule). %>
+    <%= vue_component component, props do %>
+      <p class="bbcc-booking-hint">Loading available times&hellip;</p>
+    <% end %>
+  </div>
+</section>
+<!-- end late payment reschedule -->

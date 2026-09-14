@@ -19,7 +19,7 @@
           <td><%= res.holes_label %></td>
           <td class="bbcc-table-num"><%= res.players_count %></td>
           <td>
-            <% badge = if res.is_unpaid?  then "bbcc-badge-warn"
+            <% badge = if res.is_unpaid? || res.needs_reschedule? then "bbcc-badge-warn"
                        elsif res.expired? then "bbcc-badge-danger"
                        elsif res.cancelled? then "bbcc-badge-danger"
                        else "bbcc-badge-paid"
@@ -33,6 +33,8 @@
                 <%= link_to "Cancel", users_golf_reservation_path(res), method: :delete,
                             data: { confirm: "Cancel this reservation?" },
                             class: "bbcc-btn bbcc-btn-sm bbcc-btn-ghost" %>
+              <% elsif res.needs_reschedule? %>
+                <%= link_to "Choose new time", late_reschedule_path_for(res), class: "bbcc-btn bbcc-btn-sm" %>
               <% end %>
             </td>
           <% end %>
