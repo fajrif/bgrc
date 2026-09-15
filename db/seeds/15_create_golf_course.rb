@@ -6,7 +6,8 @@ golf_course.assign_attributes(
   holes_available: "9,18",
   interval_minutes: 10,
   max_players: 4,
-  status: GolfCourse::AVAILABLE
+  status: GolfCourse::AVAILABLE,
+  position: 1
 )
 golf_course.save!
 

@@ -9,7 +9,7 @@
                 <span class="bbcc-receipt-lines-note"><%= item.group_class.try(:name) %></span>
                 <span class="bbcc-receipt-lines-note"><%= item.sessions_count %> session(s)</span>
                 <% if item.expires_at.present? %>
-                    <span class="bbcc-receipt-lines-note">Valid until <%= item.expires_at.strftime('%d %b %Y') %></span>
+                    <span class="bbcc-receipt-lines-note">Valid until <%= club_time(item.expires_at).strftime('%d %b %Y') %></span>
                 <% end %>
             </td>
             <td class="bbcc-receipt-lines-amount"><%= item.try(:price_label) %></td>

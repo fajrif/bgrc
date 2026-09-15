@@ -151,12 +151,9 @@ class Purchase < ApplicationRecord
 		end
 	end
 
+	# From SITE_URL (config/initializers/site_url.rb), the same host email links use.
 	def self.site_url_options
-		raw = configatron.site_url.to_s
-		uri = URI.parse(raw.start_with?("http") ? raw : "http://#{raw}")
-		options = { protocol: uri.scheme, host: uri.host }
-		options[:port] = uri.port unless [80, 443].include?(uri.port)
-		options
+		SiteUrl.url_options
 	end
 
 	# Staff recording a counter payment. Never touches a gateway, so it is stamped

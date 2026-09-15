@@ -1,8 +1,9 @@
 class Admins::GolfCoursesController < Admins::BaseController
-  before_action :set_golf_course, except: [:index, :new, :create]
+  before_action :set_golf_course, except: [:index, :new, :create, :sort]
 
   def index
-    @golf_courses = GolfCourse.all
+    @golf_courses = GolfCourse.ordered
+    @current_course = GolfCourse.current
   end
 
   def new
@@ -38,6 +39,18 @@ class Admins::GolfCoursesController < Admins::BaseController
   def destroy
     @golf_course.destroy
     redirect_to admins_golf_courses_url, notice: "Golf course deleted."
+  end
+
+  # The drag-and-drop order from the index (jQuery UI sortable). The first active course in this order is
+  # the one customers book (GolfCourse.current).
+  def sort
+    ids = Array(params[:golf_course]).map(&:to_i)
+    GolfCourse.transaction do
+      ids.each_with_index do |id, index|
+        GolfCourse.where(id: id).update_all(position: index + 1, updated_at: Time.current)
+      end
+    end
+    head :ok
   end
 
   private

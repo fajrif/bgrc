@@ -26,7 +26,7 @@
 					</tr>
 					<tr>
 						<td><b>Created At</b></td>
-						<td><%= @inquiry.created_at.strftime('%d/%m/%Y %H:%M') %></td>
+						<td><%= club_time(@inquiry.created_at).strftime('%d/%m/%Y %H:%M') %></td>
 					</tr>
 				</table>
 				<div class="form-actions">

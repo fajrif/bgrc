@@ -108,12 +108,12 @@
                       <td><small><%= cp.order_id %></small></td>
                       <td><%= cp.group_class.try(:name) %></td>
                       <td class="text-center"><%= cp.pax %></td>
-                      <td class="small text-muted text-nowrap"><%= cp.purchase_date.try(:strftime, '%d %b %Y') %></td>
+                      <td class="small text-muted text-nowrap"><%= club_time(cp.purchase_date).try(:strftime, '%d %b %Y') %></td>
                       <td class="text-center"><%= cp.sessions_used %> / <%= cp.sessions_count %></td>
                       <td class="text-center fw-semibold <%= cp.sessions_remaining > 0 ? 'text-success' : 'text-danger' %>">
                         <%= cp.sessions_remaining %>
                       </td>
-                      <td class="small text-muted text-nowrap"><%= cp.expires_at.try(:strftime, '%d %b %Y') || '—' %></td>
+                      <td class="small text-muted text-nowrap"><%= club_time(cp.expires_at).try(:strftime, '%d %b %Y') || '—' %></td>
                       <td>
                         <% if cp.paid? %>
                           <span class="badge bg-success">Paid</span>
@@ -160,8 +160,8 @@
                         </p>
                         <div class="mb-3">
                           <%= label_tag :date, "Date", class: "form-label fw-semibold" %>
-                          <%= date_field_tag :date, Date.tomorrow.strftime("%Y-%m-%d"),
-                                class: "form-control", min: Date.today.strftime("%Y-%m-%d"), required: true %>
+                          <%= date_field_tag :date, (ClubTime.today + 1).strftime("%Y-%m-%d"),
+                                class: "form-control", min: ClubTime.today.strftime("%Y-%m-%d"), required: true %>
                         </div>
                         <div class="mb-3">
                           <%= label_tag :time, "Start Time", class: "form-label fw-semibold" %>
@@ -212,7 +212,7 @@
                     <tr>
                       <td><small><%= p.order_id %></small></td>
                       <td><%= p.productable_type.to_s.humanize %></td>
-                      <td class="small text-muted text-nowrap"><%= p.created_at.strftime('%d %b %Y %H:%M') %></td>
+                      <td class="small text-muted text-nowrap"><%= club_time(p.created_at).strftime('%d %b %Y %H:%M') %></td>
                       <td class="text-nowrap"><%= p.price_label %></td>
                       <td>
                         <% if p.paid? || p.transaction_status == "settlement" %>

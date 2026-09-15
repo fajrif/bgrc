@@ -83,7 +83,7 @@
                         <% if @credit_purchase.expires_at && !@credit_purchase.group_class.is_prescheduled? %>
                         <tr>
                             <td class="text-muted">Credits Valid Until</td>
-                            <td class="text-muted small"><strong><%= @credit_purchase.expires_at.strftime('%d %b %Y') %></strong></td>
+                            <td class="text-muted small"><strong><%= club_time(@credit_purchase.expires_at).strftime('%d %b %Y') %></strong></td>
                         </tr>
                         <% end %>
                     </table>
@@ -107,7 +107,7 @@
                                   class: "btn btn-outline-warning w-100 mb-2",
                                   data: { confirm: "Cancel this session and return the credit? You can book a different date." } %>
                             <p class="text-extra-small text-muted mb-2">
-                              Reschedule window until <%= (booking.created_at + 24.hours).strftime('%d %b %H:%M') %>
+                              Reschedule window until <%= club_time(booking.created_at + 24.hours).strftime('%d %b %H:%M') %>
                             </p>
                         <% end %>
                     <% end %>

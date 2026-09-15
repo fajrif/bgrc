@@ -1,28 +1,3 @@
-<%= content_for :head do %>
-  <%= stylesheet_link_tag "main.css" %>
-  <style>
-    #user-schedule-calendar .fc-button-primary {
-      background-color: #6c757d;
-      border-color: #6c757d;
-      color: #fff;
-    }
-    #user-schedule-calendar .fc-button-primary:hover {
-      background-color: #5a6268;
-      border-color: #545b62;
-      color: #fff;
-    }
-    #user-schedule-calendar .fc-button-primary:not(:disabled):active,
-    #user-schedule-calendar .fc-button-primary:not(:disabled).fc-button-active {
-      background-color: #495057;
-      border-color: #42484e;
-      color: #fff;
-    }
-    #user-schedule-calendar .fc-button-primary:focus {
-      box-shadow: 0 0 0 0.2rem rgba(108,117,125,0.5);
-    }
-  </style>
-<% end %>
-
 <section class="bbcc-section bbcc-account">
     <div class="container-lg">
         <%= render "users/shared/account_nav" %>
@@ -44,97 +19,12 @@
                     </div>
                 </div>
 
-                <div id="user-schedule-calendar"></div>
+                <%# The month calendar and its detail popup (app/frontend/components/account). FullCalendar v6 injects its own CSS. %>
+                <%= vue_component "ScheduleCalendarApp",
+                                  { eventsUrl: calendar_users_bookings_path(format: :json), today: ClubTime.today.iso8601 } do %>
+                    <p class="text-muted">Loading your calendar&hellip;</p>
+                <% end %>
             </div>
         </div>
     </div>
 </section>
-
-<div class="modal fade bbcc-modal" id="scheduleDetailModal" tabindex="-1" aria-labelledby="scheduleDetailModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h2 class="bbcc-modal-title" id="scheduleDetailModalLabel">Booking Details</h2>
-        <button type="button" class="bbcc-modal-close" data-bs-dismiss="modal" aria-label="Close">
-          <i class="fa-solid fa-xmark" aria-hidden="true"></i>
-        </button>
-      </div>
-      <div class="modal-body">
-        <div class="bbcc-modal-callout">
-          <span class="bbcc-modal-label">Booking ID</span>
-          <span class="bbcc-modal-value" id="sd-order-id">—</span>
-        </div>
-        <div class="bbcc-modal-group">
-          <div class="bbcc-modal-summary-row"><span>Type</span><span id="sd-type">—</span></div>
-          <div class="bbcc-modal-summary-row"><span>Date &amp; Time</span><span id="sd-date">—</span></div>
-          <div class="bbcc-modal-summary-row"><span id="sd-subtitle-label">Court</span><span id="sd-subtitle">—</span></div>
-          <div class="bbcc-modal-summary-row"><span>Status</span><span id="sd-status">—</span></div>
-          <div class="bbcc-modal-summary-row"><span id="sd-pax-label">Pax</span><span id="sd-pax">—</span></div>
-          <div class="bbcc-modal-summary-row bbcc-modal-summary-total" id="sd-price-row"><span>Price</span><span id="sd-price">—</span></div>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="bbcc-btn bbcc-btn-light" data-bs-dismiss="modal">Close</button>
-        <a href="#" id="sd-detail-link" class="bbcc-btn">View Full Details</a>
-      </div>
-    </div>
-  </div>
-</div>
-
-<%= content_for :tail do %>
-  <%= javascript_include_tag "fullcalendar.js" %>
-  <%= javascript_include_tag "moment-with-locales.min.js" %>
-  <%= stylesheet_link_tag "fullcalendar-custom.css" %>
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      var calendarEl = document.getElementById('user-schedule-calendar');
-      var detailModalEl = document.getElementById('scheduleDetailModal');
-      var detailModal = detailModalEl ? new bootstrap.Modal(detailModalEl) : null;
-
-      var calendar = new FullCalendar.Calendar(calendarEl, {
-        initialView: 'dayGridMonth',
-        initialDate: '<%= Date.today.strftime('%Y-%m-%d') %>',
-        headerToolbar: {
-          left: 'prev,next today',
-          center: 'title',
-          right: ''
-        },
-        navLinks: false,
-        events: '<%= calendar_users_bookings_path(format: :json) %>',
-        eventClick: function(info) {
-          info.jsEvent.preventDefault();
-          var props = info.event.extendedProps || {};
-
-          document.getElementById('sd-order-id').textContent = props.orderId || info.event.id;
-          document.getElementById('sd-type').textContent = props.type || '—';
-          document.getElementById('sd-date').textContent = props.dateLabel || '—';
-          document.getElementById('sd-subtitle-label').textContent = props.subtitleLabel || 'Court';
-          document.getElementById('sd-subtitle').textContent = props.subtitle || '—';
-          document.getElementById('sd-status').textContent = props.statusLabel || '—';
-          document.getElementById('sd-pax-label').textContent = props.paxLabel || 'Pax';
-          document.getElementById('sd-pax').textContent = (props.pax !== undefined && props.pax !== null) ? props.pax : '—';
-
-          var priceRow = document.getElementById('sd-price-row');
-          if (props.priceLabel) {
-            priceRow.style.display = '';
-            document.getElementById('sd-price').textContent = props.priceLabel;
-          } else {
-            priceRow.style.display = 'none';
-          }
-
-          var link = document.getElementById('sd-detail-link');
-          if (props.detailUrl) {
-            link.href = props.detailUrl;
-            link.style.display = '';
-          } else {
-            link.style.display = 'none';
-          }
-
-          if (detailModal) detailModal.show();
-        }
-      });
-      calendar.setOption('height', 'auto');
-      calendar.render();
-    });
-  </script>
-<% end %>

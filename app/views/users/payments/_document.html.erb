@@ -12,7 +12,7 @@
             <p class="bbcc-account-since mb-0">Receipt</p>
             <p class="bbcc-table-id mb-0">#<%= purchase.order_id %></p>
             <%# paid_at is settlement; created_at is only when checkout started. %>
-            <p class="bbcc-account-since mb-0"><%= (purchase.paid_at || purchase.created_at).strftime('%d %b %Y %H:%M') %></p>
+            <p class="bbcc-account-since mb-0"><%= club_time(purchase.paid_at || purchase.created_at).strftime('%d %b %Y %H:%M') %></p>
         </div>
     </div>
 

@@ -11,5 +11,6 @@ export const registry: Record<string, () => Promise<{ default: Component }>> = {
   GolfBookingApp: () => import('./golf/GolfBookingApp.vue'),
   GrabAndGoApp: () => import('./grab_and_go/GrabAndGoApp.vue'),
   PaymentPanel: () => import('./payment/PaymentPanel.vue'),
+  ScheduleCalendarApp: () => import('./account/ScheduleCalendarApp.vue'),
   TeeTimeRescheduleApp: () => import('./reschedule/TeeTimeRescheduleApp.vue'),
 }

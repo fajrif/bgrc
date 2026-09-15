@@ -7,6 +7,7 @@ import interactionPlugin from '@fullcalendar/interaction'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import type { CalendarOptions, EventInput } from '@fullcalendar/core'
 import { computed } from 'vue'
+import { clubNow } from '~/lib/clubClock'
 import { addDays, hourLabel, hoursBetween, weekday } from '~/lib/dates'
 import type { CourtAvailability } from '~/types/api'
 
@@ -27,11 +28,12 @@ const emit = defineEmits<{
 
 const SELECTION_ID = 'selection'
 
-// A slot must end on the day it starts, cannot start in the past, and must be the fixed length if any.
+// A slot must end on the day it starts, cannot start before the club's current time (not the device's),
+// and must be the fixed length if any.
 function allowed(start: Date, end: Date): boolean {
   const lastMoment = new Date(end.getTime() - 1)
   const rightLength = props.hours === undefined || hoursBetween(start, end) === props.hours
-  return rightLength && start.toDateString() === lastMoment.toDateString() && start.getTime() >= Date.now()
+  return rightLength && start.toDateString() === lastMoment.toDateString() && start.getTime() >= clubNow().getTime()
 }
 
 const events = computed<EventInput[]>(() => {
@@ -56,6 +58,8 @@ const options = computed<CalendarOptions>(() => ({
   plugins: [timeGridPlugin, interactionPlugin],
   initialView: 'timeGridWeek',
   initialDate: props.date,
+  // "Today" and the now-indicator follow the club's clock.
+  now: () => clubNow(),
   firstDay: weekday(props.date),
   validRange: { start: props.date, end: addDays(props.date, 7) },
   headerToolbar: false,

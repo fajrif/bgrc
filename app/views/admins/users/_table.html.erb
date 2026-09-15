@@ -25,7 +25,7 @@
 							<span class="badge bg-warning-subtle text-warning">Unverified</span>
 						<% end %>
 					</td>
-					<td><%= user.created_at.strftime('%d-%m-%Y %H:%M %p') %></td>
+					<td><%= club_time(user.created_at).strftime('%d-%m-%Y %H:%M %p') %></td>
 					<td>
 						<div class="dropdown">
 							<button class="btn btn-soft-secondary btn-sm dropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false">

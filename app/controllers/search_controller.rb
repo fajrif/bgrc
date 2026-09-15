@@ -5,7 +5,7 @@ class SearchController < ApplicationController
   # CourtBookingApp (app/frontend/components/booking), which fetches availability and quotes from
   # /api/courts; this action only picks the starting court type, court and week.
   def index
-    @date = (Date.parse(params[:date]) rescue nil) || Date.current
+    @date = (Date.parse(params[:date]) rescue nil) || ClubTime.today
     @court_types = CourtType.all
     @court_type = params[:court_type_id].present? ? CourtType.find(params[:court_type_id]) : @court_types.first
     @courts = @court_type ? @sport.courts.where(court_type: @court_type.id) : @sport.courts

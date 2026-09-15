@@ -41,7 +41,7 @@
 	</tr>
 	<tr>
 		<td><b>Recorded</b></td>
-		<td><%= purchase.created_at.strftime("%d/%m/%Y %H:%M") %></td>
+		<td><%= club_time(purchase.created_at).strftime("%d/%m/%Y %H:%M") %></td>
 	</tr>
 </table>
 

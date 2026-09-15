@@ -21,7 +21,7 @@
 					</td>
 					<td class="text-center"><%= sport.images.size %></td>
 					<td class="text-center"><%= sport.courts.size %></td>
-					<td><%= sport.created_at.strftime('%d/%m/%Y %H:%M') %></td>
+					<td><%= club_time(sport.created_at).strftime('%d/%m/%Y %H:%M') %></td>
 					<td>
 						<div class="dropdown">
 							<button class="btn btn-soft-secondary btn-sm dropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false">

@@ -71,12 +71,12 @@
                     data-bs-toggle="modal" data-bs-target="#rescheduleConfirmModal">
                     Reschedule
                   </button>
-                  <span class="bbcc-table-note">Until <%= (booking.created_at + 24.hours).strftime('%d %b %H:%M') %></span>
+                  <span class="bbcc-table-note">Until <%= club_time(booking.created_at + 24.hours).strftime('%d %b %H:%M') %></span>
                 <% else %>
                   <span class="bbcc-table-note">Locked</span>
                 <% end %>
               <% else %>
-                <% hours_remaining = (booking.date - Time.current) / 1.hour %>
+                <% hours_remaining = (booking.date - ClubTime.now) / 1.hour %>
                 <% can_reschedule = booking.status == Booking::PAID &&
                       booking.group_class_id.present? &&
                       hours_remaining.between?(12, 24) &&

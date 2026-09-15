@@ -71,7 +71,7 @@ class Admins::ClassCreditPurchasesController < Admins::BaseController
       end_date:              parsed + duration.hours,
       duration:              duration,
       pax:                   cp.pax,
-      court_type:            1,
+      court_type:            Booking::WITH_COACH,
       status:                Booking::PAID,
       price:                 0,
       price_coach:           0,

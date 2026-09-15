@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_09_15_000001) do
+ActiveRecord::Schema[7.1].define(version: 2026_09_16_000002) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -149,14 +149,14 @@ ActiveRecord::Schema[7.1].define(version: 2026_09_15_000001) do
     t.decimal "price", default: "0.0", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "court_type"
+    t.integer "court_type", default: 0, null: false
     t.integer "class_type", default: 0, null: false
     t.integer "coach_id"
     t.decimal "price_coach", default: "0.0", null: false
     t.decimal "total_price", default: "0.0", null: false
     t.string "order_id", default: "", null: false
     t.integer "group_class_id"
-    t.integer "pax", default: 0, null: false
+    t.integer "pax", default: 4, null: false
     t.datetime "expires_at"
     t.integer "class_credit_purchase_id"
     t.integer "reschedule_count", default: 0, null: false
@@ -408,7 +408,9 @@ ActiveRecord::Schema[7.1].define(version: 2026_09_15_000001) do
     t.integer "status", default: 0
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "position", default: 0, null: false
     t.index ["slug"], name: "index_golf_courses_on_slug", unique: true
+    t.index ["status", "position"], name: "index_golf_courses_on_status_and_position"
   end
 
   create_table "golf_items", force: :cascade do |t|

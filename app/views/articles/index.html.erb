@@ -33,7 +33,7 @@
                     <div class="col-12 col-lg-6 order-lg-1">
                         <div class="bbcc-featured-post-body">
                             <span class="bbcc-post-meta">
-                                <%= featured.published_date&.strftime('%d %b %Y') %>
+                                <%= club_time(featured.published_date)&.strftime('%d %b %Y') %>
                                 &nbsp;|&nbsp; <%= featured.category.name %>
                             </span>
                             <h2 class="bbcc-featured-post-title"><%= featured.title %></h2>
@@ -54,7 +54,7 @@
                                 <% end %>
                                 <div class="bbcc-post-body">
                                     <span class="bbcc-post-meta">
-                                        <%= article.published_date&.strftime('%d %b %Y') %>
+                                        <%= club_time(article.published_date)&.strftime('%d %b %Y') %>
                                         &nbsp;|&nbsp; <%= article.category.name %>
                                     </span>
                                     <%= link_to article.title, get_blog_path(article), class: "bbcc-post-title" %>

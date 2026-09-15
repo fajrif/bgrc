@@ -31,12 +31,12 @@
 	<% end %>
 	<tr>
 		<td><b>Placed</b></td>
-		<td><%= @food_order.created_at.strftime("%d/%m/%Y %H:%M") %></td>
+		<td><%= club_time(@food_order.created_at).strftime("%d/%m/%Y %H:%M") %></td>
 	</tr>
 	<% if @food_order.is_unpaid? %>
 	<tr>
 		<td><b>Payment Expires</b></td>
-		<td><%= @food_order.expires_at&.strftime("%d/%m/%Y %H:%M") %> (<%= @food_order.time_remaining %>s remaining)</td>
+		<td><%= club_time(@food_order.expires_at)&.strftime("%d/%m/%Y %H:%M") %> (<%= @food_order.time_remaining %>s remaining)</td>
 	</tr>
 	<% end %>
 </table>

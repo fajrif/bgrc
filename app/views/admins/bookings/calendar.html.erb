@@ -14,7 +14,7 @@
                                 <%= hidden_field_tag :sport_slug, params[:sport_slug] if params[:sport_slug].present? %>
                                 <%= select_tag :court_id, options_from_collection_for_select(@courts, 'id', 'name_label', @court.id), class: "form-select mb-2" %>
                                 <%= select_tag :month, options_for_select((1..12).map {|m| [Date::MONTHNAMES[m], m]}, @month), class: "form-select mb-2" %>
-                                <%= select_tag :year, options_for_select((Date.today.year-5..Date.today.year+1).to_a.reverse, @year), class: "form-select mb-2" %>
+                                <%= select_tag :year, options_for_select((ClubTime.today.year-5..ClubTime.today.year+1).to_a.reverse, @year), class: "form-select mb-2" %>
                                 <div class="text-center">
                                   <%= submit_tag "Search", class: "btn btn-soft-primary" %>
                                 </div>
@@ -77,7 +77,6 @@
 </div> <!-- end row-->
 <%= content_for :tail do %>
 	<%= javascript_include_tag 'admin/fullcalendar/index.global.min.js' %>
-	<%= javascript_include_tag 'admin/calendar.init.js' %>
   <script>
     document.addEventListener("DOMContentLoaded", function () {
         var defaultEvents = <%= @events.html_safe %>;
@@ -98,6 +97,10 @@
 
         var calendar = new FullCalendar.Calendar(calendarEl, {
             timeZone: 'local',
+            // Booking times are club wall-clock times; "today" and the now-indicator follow the club's clock.
+            now: window.clubNow,
+            // Open on the month picked above (its bookings are the ones loaded).
+            initialDate: '<%= "#{@year}-#{@month.to_s.rjust(2, '0')}-01" %>',
             editable: true,
             droppable: true,
             selectable: true,

@@ -44,7 +44,7 @@ class User < ApplicationRecord
 
 	def age
 		if self.dob
-			now = Time.now.utc.to_date
+			now = ClubTime.today
 			now.year - self.dob.year - ((now.month > self.dob.month || (now.month == self.dob.month && now.day >= self.dob.day)) ? 0 : 1)
 		end
 	end

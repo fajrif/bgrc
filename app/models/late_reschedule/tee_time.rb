@@ -50,9 +50,9 @@ module LateReschedule
 		def new_tee_time_must_be_bookable
 			if tee_time.nil?
 				errors.add(:base, "Please select a tee time.")
-			elsif tee_time < Time.current
+			elsif tee_time < ClubTime.now
 				errors.add(:base, "This tee time has already passed. Please select another slot.")
-			elsif tee_time > HORIZON.from_now
+			elsif tee_time > ClubTime.now + HORIZON
 				errors.add(:base, "Tee times can only be booked up to 30 days in advance.")
 			elsif !on_tee_sheet?
 				errors.add(:base, "That is not one of the course's tee times. Please select a slot from the list.")

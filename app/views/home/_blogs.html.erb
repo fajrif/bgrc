@@ -17,7 +17,7 @@
                         <% end %>
                         <div class="bbcc-post-body">
                             <span class="bbcc-post-meta">
-                                <%= article.published_date&.strftime('%d %b %Y') %>
+                                <%= club_time(article.published_date)&.strftime('%d %b %Y') %>
                                 <% if article.category.present? %>
                                     &nbsp;|&nbsp; <%= article.category.name %>
                                 <% end %>

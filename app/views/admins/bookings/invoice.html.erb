@@ -19,7 +19,7 @@
           </div>
           <div class="col-md-6 text-md-end">
             <h6 class="text-muted mb-2">INVOICE #<%= @booking.order_id %></h6>
-            <p class="mb-0 text-small">Date: <%= DateTime.now.strftime('%d/%m/%Y %H:%M') %></p>
+            <p class="mb-0 text-small">Date: <%= club_time(Time.current).strftime('%d/%m/%Y %H:%M') %></p>
           </div>
         </div>
 
@@ -113,7 +113,7 @@
             <p class="text-small text-muted">
               Transaction ID: <%= @booking.purchase.transaction_id %><br>
               Payment Method: CASHIER<br>
-              Paid At: <%= @booking.purchase.created_at.strftime('%d/%m/%Y %H:%M') %>
+              Paid At: <%= club_time(@booking.purchase.created_at).strftime('%d/%m/%Y %H:%M') %>
             </p>
           </div>
         </div>

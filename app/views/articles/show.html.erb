@@ -21,7 +21,7 @@
                     <div class="bbcc-article-meta">
                         <span>Bali Beach Country Club</span>
                         <span class="bbcc-article-meta-sep">|</span>
-                        <span><%= @article.published_date&.strftime('%d %b %Y') %></span>
+                        <span><%= club_time(@article.published_date)&.strftime('%d %b %Y') %></span>
                         <% if @category %>
                             <span class="bbcc-article-meta-sep">|</span>
                             <span><%= @category.name %></span>
@@ -95,7 +95,7 @@
                         <% end %>
                         <div class="bbcc-post-body">
                             <span class="bbcc-post-meta">
-                                <%= article.published_date&.strftime('%d %b %Y') %>
+                                <%= club_time(article.published_date)&.strftime('%d %b %Y') %>
                                 &nbsp;|&nbsp; <%= article.category.name %>
                             </span>
                             <%= link_to article.title, get_blog_path(article), class: "bbcc-post-title" %>

@@ -40,7 +40,7 @@
               <span class="bbcc-badge bbcc-badge-danger"><%= purchase.status_message&.truncate(20) || "Failed" %></span>
             <% end %>
           </td>
-          <td><%= (purchase.paid_at || purchase.created_at).strftime('%d %b %Y %H:%M') %></td>
+          <td><%= club_time(purchase.paid_at || purchase.created_at).strftime('%d %b %Y %H:%M') %></td>
         </tr>
       <% end %>
     </tbody>

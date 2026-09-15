@@ -30,8 +30,8 @@ class Admins::BookingsController < Admins::BaseController
 			@court = @courts.first
 		end
 
-		@month = params[:month] || Date.today.month
-		@year = params[:year] || Date.today.year
+		@month = params[:month] || ClubTime.today.month
+		@year = params[:year] || ClubTime.today.year
 
 		@bookings = @court.bookings.where("to_char(date, 'YYYYMM') = ?", "#{@year}#{@month.to_s.rjust(2, '0')}")
 

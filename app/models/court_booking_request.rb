@@ -7,9 +7,6 @@ class CourtBookingRequest
 	BOOKING_HORIZON = 14.days
 	MAX_ADD_ON_QUANTITY = 6
 	UNAVAILABLE_MESSAGE = "Sorry, that time has just been booked. Please choose another slot.".freeze
-	# The public page has never asked for these; kept as they were.
-	COURT_ONLY = 0
-	DEFAULT_PAX = 4
 
 	attr_reader :court, :start, :duration, :add_ons
 
@@ -37,14 +34,14 @@ class CourtBookingRequest
 	end
 
 	# Books the slot, or returns nil if someone took it first. The availability check and the save
-	# share a lock on the court, so two people submitting the same slot cannot both get it.
+	# share a lock on the court, so two people submitting the same slot cannot both get it. Pax and
+	# court type come from the bookings table's column defaults.
 	def book!(user:)
 		Booking.transaction do
 			court.lock!
 			raise ActiveRecord::Rollback unless available?
 
-			booking = Booking.create!(court: court, user: user, date: start, duration: duration,
-			                          court_type: COURT_ONLY, pax: DEFAULT_PAX)
+			booking = Booking.create!(court: court, user: user, date: start, duration: duration)
 			add_ons.each { |item, quantity| booking.add_ons.create!(item: item, quantity: quantity) }
 			# calculate_prices sums the add-ons, which only exist after the first save.
 			booking.save! if add_ons.any?
@@ -77,9 +74,9 @@ class CourtBookingRequest
 			errors.add(:base, "Please select the times you want on the calendar.")
 		elsif start.minute != 0
 			errors.add(:base, "Bookings start on the hour.")
-		elsif start < Time.current
+		elsif start < ClubTime.now
 			errors.add(:base, "Cannot book a time slot in the past.")
-		elsif start > BOOKING_HORIZON.from_now
+		elsif start > ClubTime.now + BOOKING_HORIZON
 			errors.add(:base, "Bookings can only be made up to 14 days in advance. Please contact us via WhatsApp for special requests.")
 		elsif start + duration.hours > (start.to_date + 1).to_datetime
 			errors.add(:base, "A booking must end on the day it starts.")

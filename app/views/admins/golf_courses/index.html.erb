@@ -3,19 +3,28 @@
   <div class="col-lg-12">
     <div class="card">
       <div class="card-header border-0 d-flex justify-content-between align-items-center">
-        <h5 class="mb-0">Golf Courses</h5>
+        <div>
+          <h5 class="mb-0">Golf Courses</h5>
+          <small class="text-muted">Drag the rows to reorder. Customers book the first active course.</small>
+        </div>
         <%= link_to "Add Golf Course", new_admins_golf_course_path, class: "btn btn-primary btn-sm" %>
       </div>
       <div class="card-body">
         <% if @golf_courses.empty? %>
           <p class="text-muted">No golf course configured yet. <%= link_to "Create one", new_admins_golf_course_path %>.</p>
         <% else %>
-          <table class="table table-bordered">
-            <thead><tr><th>Name</th><th>Location</th><th>Holes</th><th>Status</th><th></th></tr></thead>
-            <tbody>
+          <table class="table table-bordered align-middle">
+            <thead><tr><th class="text-center" style="width:48px;">Order</th><th>Name</th><th>Location</th><th>Holes</th><th>Status</th><th></th></tr></thead>
+            <tbody id="contents" data-url="<%= sort_admins_golf_courses_path %>">
               <% @golf_courses.each do |gc| %>
-                <tr>
-                  <td><%= gc.name %></td>
+                <tr id="golf_course_<%= gc.id %>">
+                  <td class="handle text-center text-muted" title="Drag to reorder"><i class="ri-drag-move-2-line" aria-hidden="true"></i></td>
+                  <td>
+                    <%= gc.name %>
+                    <% if gc == @current_course %>
+                      <span class="badge bg-primary ms-1" data-testid="bookable-course">Bookable now</span>
+                    <% end %>
+                  </td>
                   <td><%= gc.location %></td>
                   <td><%= gc.holes_available %></td>
                   <td><span class="badge <%= gc.is_available? ? 'bg-success' : 'bg-secondary' %>"><%= gc.status_label %></span></td>
@@ -33,3 +42,34 @@
     </div>
   </div>
 </div>
+
+<%= content_for :tail do %>
+  <%= javascript_include_tag "jquery-ui/widget" %>
+  <%= javascript_include_tag "jquery-ui/widgets/sortable" %>
+  <script>
+    $(function () {
+      $("#contents").sortable({
+        handle: ".handle",
+        axis: "y",
+        update: function () {
+          var list = $(this);
+          $.ajax({
+            url: list.data("url"),
+            type: "PATCH",
+            data: list.sortable("serialize"),
+            headers: { "X-CSRF-Token": $('meta[name="csrf-token"]').attr("content") },
+            // Reload so the "Bookable now" badge follows the new order.
+            success: function () { window.location.reload(); },
+            error: function () {
+              list.sortable("cancel");
+              console.error("Could not save the golf course order.");
+            }
+          });
+        }
+      });
+    });
+  </script>
+  <style>
+    #contents .handle { cursor: move; }
+  </style>
+<% end %>

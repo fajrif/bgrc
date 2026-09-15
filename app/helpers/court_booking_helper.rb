@@ -9,8 +9,8 @@ module CourtBookingHelper
 			initialCourtTypeId: court_type&.id,
 			initialCourtId: court&.id,
 			initialDate: date.iso8601,
-			today: Date.current.iso8601,
-			maxDate: (Date.current + CourtBookingRequest::BOOKING_HORIZON).iso8601,
+			today: ClubTime.today.iso8601,
+			maxDate: (ClubTime.today + CourtBookingRequest::BOOKING_HORIZON).iso8601,
 			items: Item.all.map { |item| { id: item.id, name: item.name, price: item.price.to_i } },
 			urls: {
 				availability: api_court_availability_path(id: "__COURT__"),

@@ -11,6 +11,11 @@ class Booking < ApplicationRecord
 	# refund, so the customer chooses a new time at the price already paid.
 	NEEDS_RESCHEDULE = 4
 
+	# `court_type`: what the booking includes. The column defaults to COURT_ONLY, and `pax` defaults to 4.
+	COURT_ONLY = 0
+	WITH_COACH = 1
+	COURT_TYPE_LABELS = { COURT_ONLY => "Court Only", WITH_COACH => "Court + Coach" }.freeze
+
 	include PaymentWindow
 
 	# Set when a paid booking is moved or confirmed, so calculate_prices leaves the paid amount alone.
@@ -234,12 +239,7 @@ class Booking < ApplicationRecord
 	end
 
   def get_court_type
-    case self.court_type
-    when 0
-      "Court Only"
-    when 1
-      "Court + Coach"
-    end
+    COURT_TYPE_LABELS[self.court_type]
   end
 
   def get_class_type

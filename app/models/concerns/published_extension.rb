@@ -7,7 +7,7 @@ module PublishedExtension
   end
 
 	def check_published_date
-		self.published_date = DateTime.now if self.published_date.blank?
+		self.published_date = Time.current if self.published_date.blank?
 	end
 
 	def get_type
@@ -24,7 +24,7 @@ module PublishedExtension
 
 	def published_date_label(use_time=true)
 		_format = use_time ? '%d/%m/%Y %H:%M' : '%d/%m/%Y'
-		self.try(:published_date).try(:strftime, _format)
+		ClubTime.local(self.try(:published_date)).try(:strftime, _format)
 	end
 
 end

@@ -24,8 +24,8 @@ module LateRescheduleHelper
 				initialCourtId: courts.find { |court| court.id == record.court_id }&.id || courts.first&.id,
 				durationHours: record.duration,
 				durationLabel: record.duration_label,
-				today: Date.current.iso8601,
-				maxDate: (Date.current + LateReschedule::CourtBooking::HORIZON).iso8601,
+				today: ClubTime.today.iso8601,
+				maxDate: (ClubTime.today + LateReschedule::CourtBooking::HORIZON).iso8601,
 				urls: { availability: api_court_availability_path(id: "__COURT__"), reschedule: reschedule_url },
 			}]
 		when GolfReservation
@@ -33,9 +33,10 @@ module LateRescheduleHelper
 				courseName: record.golf_course.name,
 				players: record.players_count,
 				holesLabel: record.holes_label,
-				today: Date.current.iso8601,
-				maxDate: (Date.current + LateReschedule::TeeTime::HORIZON).iso8601,
-				urls: { teeTimes: golf_tee_times_path, reschedule: reschedule_url },
+				today: ClubTime.today.iso8601,
+				maxDate: (ClubTime.today + LateReschedule::TeeTime::HORIZON).iso8601,
+				# Its own course, even if another course is the bookable one now.
+				urls: { teeTimes: golf_tee_times_path(course_id: record.golf_course_id), reschedule: reschedule_url },
 			}]
 		when GroupClassRegistration
 			["ClassRescheduleApp", {

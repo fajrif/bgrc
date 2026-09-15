@@ -12,7 +12,7 @@
                             <%= form_tag calendar_admins_golf_reservations_url, { :method => :get } do %>
                               <div class="form-search">
                                 <%= select_tag :month, options_for_select((1..12).map {|m| [Date::MONTHNAMES[m], m]}, @month), class: "form-select mb-2" %>
-                                <%= select_tag :year, options_for_select((Date.today.year-5..Date.today.year+1).to_a.reverse, @year), class: "form-select mb-2" %>
+                                <%= select_tag :year, options_for_select((ClubTime.today.year-5..ClubTime.today.year+1).to_a.reverse, @year), class: "form-select mb-2" %>
                                 <div class="text-center">
                                   <%= submit_tag "Search", class: "btn btn-soft-primary" %>
                                 </div>
@@ -87,6 +87,8 @@
 
         var calendar = new FullCalendar.Calendar(calendarEl, {
             timeZone: 'local',
+            // Tee times are club wall-clock times; "today" and the now-indicator follow the club's clock.
+            now: window.clubNow,
             navLinks: true,
             initialDate: '<%= "#{@year}-#{@month.to_s.rjust(2, '0')}-01" %>',
             initialView: getInitialView(),

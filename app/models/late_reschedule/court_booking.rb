@@ -60,9 +60,9 @@ module LateReschedule
 				errors.add(:base, "Please select a new time on the calendar.")
 			elsif start.minute != 0
 				errors.add(:base, "Bookings start on the hour.")
-			elsif start < Time.current
+			elsif start < ClubTime.now
 				errors.add(:base, "Cannot book a time slot in the past.")
-			elsif start > HORIZON.from_now
+			elsif start > ClubTime.now + HORIZON
 				errors.add(:base, "Bookings can only be made up to 14 days in advance.")
 			elsif start + duration.hours > (start.to_date + 1).to_datetime
 				errors.add(:base, "A booking must end on the day it starts.")

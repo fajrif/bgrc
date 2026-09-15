@@ -2,4 +2,6 @@
 #
 # Example:
 #   configatron.file.storage = :s3
-configatron.site_url = "https://www.balibeachcountryclub.com"
+
+# Set SITE_URL in the server's .env; this is only the fallback.
+configatron.site_url = ENV["SITE_URL"].presence || "https://www.balibeachcountryclub.com"

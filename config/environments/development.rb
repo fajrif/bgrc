@@ -37,7 +37,7 @@ Rails.application.configure do
   config.active_storage.service = :local
 
 	# Action Mailer
-	config.action_mailer.default_url_options = { host: 'localhost', port: 3000 }
+	# Email link host comes from SITE_URL (config/initializers/site_url.rb).
 	config.action_mailer.delivery_method = :letter_opener
 
   # Don't care if the mailer can't send.

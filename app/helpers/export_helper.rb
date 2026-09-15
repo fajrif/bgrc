@@ -17,7 +17,7 @@ module ExportHelper
 		CSV.generate(**options) do |csv|
 			csv << cols
 			data.each do |user|
-				csv << [user.id, user.full_name, user.email, user.phone.to_s,user.created_at.strftime('%d-%m-%Y %H:%M')]
+				csv << [user.id, user.full_name, user.email, user.phone.to_s,ClubTime.local(user.created_at).strftime('%d-%m-%Y %H:%M')]
 			end
 		end
 	end
@@ -31,7 +31,7 @@ module ExportHelper
 						purchase.price_label, purchase.payment_gateway, purchase.payment_type,
 						"( #{purchase.status_code} ) #{purchase.status_message}",
 						purchase.productable_type,
-						purchase.created_at.strftime('%d-%m-%Y %H:%M')]
+						ClubTime.local(purchase.created_at).strftime('%d-%m-%Y %H:%M')]
 			end
 		end
 	end

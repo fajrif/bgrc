@@ -74,7 +74,7 @@ Rails.application.configure do
   # Production serves the app with Unicorn, so `bin/jobs` must run as its own process.
   # config.active_job.queue_name_prefix = "bgrc_production"
 
-	config.action_mailer.default_url_options = { host: 'https://balibeachcountryclub.com/' }
+	# Email link host comes from SITE_URL (config/initializers/site_url.rb).
 	config.action_mailer.perform_deliveries = true
   config.action_mailer.perform_caching = false
   # Don't care if the mailer can't send.

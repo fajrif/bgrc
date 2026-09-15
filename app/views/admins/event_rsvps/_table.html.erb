@@ -27,7 +27,7 @@
           <td><%= rsvp.email %></td>
           <td><%= rsvp.phone.presence || "—" %></td>
           <td><%= rsvp.gender.presence || "—" %></td>
-          <td class="text-muted text-small"><%= rsvp.created_at.strftime("%d %b %Y") %></td>
+          <td class="text-muted text-small"><%= club_time(rsvp.created_at).strftime("%d %b %Y") %></td>
           <td>
             <div class="hstack gap-2">
               <%= link_to "View", admins_event_rsvp_path(rsvp), class: "btn btn-sm btn-outline-secondary" %>

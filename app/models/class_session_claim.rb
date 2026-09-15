@@ -7,8 +7,6 @@ class ClassSessionClaim
 	HORIZON = CourtBookingRequest::BOOKING_HORIZON
 	UNAVAILABLE_MESSAGE = CourtBookingRequest::UNAVAILABLE_MESSAGE
 	NO_CREDIT_MESSAGE = "No sessions remaining or credit is invalid.".freeze
-	# What claimed sessions have always been saved with.
-	CLASS_COURT_TYPE = 1
 
 	attr_reader :credit_purchase, :court, :coach, :start, :failure_message
 
@@ -59,7 +57,7 @@ class ClassSessionClaim
 				end_date: start + duration.hours,
 				duration: duration,
 				pax: credit_purchase.pax,
-				court_type: CLASS_COURT_TYPE,
+				court_type: Booking::WITH_COACH,
 				status: Booking::PAID,
 				price: 0,
 				price_coach: 0,
@@ -86,9 +84,9 @@ class ClassSessionClaim
 			errors.add(:base, "Please select a time slot on the calendar.")
 		elsif start.minute != 0
 			errors.add(:base, "Sessions start on the hour.")
-		elsif start < Time.current
+		elsif start < ClubTime.now
 			errors.add(:base, "Cannot book a time slot in the past.")
-		elsif start > HORIZON.from_now
+		elsif start > ClubTime.now + HORIZON
 			errors.add(:base, "Sessions can only be booked up to 14 days in advance.")
 		elsif start + duration.hours > (start.to_date + 1).to_datetime
 			errors.add(:base, "A session must end on the day it starts.")

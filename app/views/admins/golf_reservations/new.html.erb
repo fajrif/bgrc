@@ -100,7 +100,7 @@ jQuery(document).ready(function($) {
 
   var datePicker = $("#tee_date_picker").flatpickr({
     dateFormat: "Y-m-d",
-    minDate: "today",
+    minDate: "<%= ClubTime.today.iso8601 %>", // the club's today, not the admin device's
     disableMobile: true,
     onChange: function() { loadTeeTimes(); }
   });

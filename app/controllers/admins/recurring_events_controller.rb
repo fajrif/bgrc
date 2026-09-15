@@ -58,8 +58,8 @@ class Admins::RecurringEventsController < Admins::BaseController
       check_end   = params[:end_date].present? ? Date.parse(params[:end_date]) : check_start
     else
       dow         = params[:day_of_week].to_i
-      check_start = Date.today
-      check_end   = Date.today + 28.days
+      check_start = ClubTime.today
+      check_end   = ClubTime.today + 28.days
     end
 
     overlaps = []

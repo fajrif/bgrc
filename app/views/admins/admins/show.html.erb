@@ -26,11 +26,11 @@
 					</tr>
 					<tr>
 						<td><b>Last Sign In At</b></td>
-						<td><%= @admin.try(:last_sign_in_at).try(:strftime, '%d/%m/%Y %H:%M') %></td>
+						<td><%= club_time(@admin.try(:last_sign_in_at)).try(:strftime, '%d/%m/%Y %H:%M') %></td>
 					</tr>
 					<tr>
 						<td><b>Create At</b></td>
-						<td><%= @admin.created_at.strftime('%d/%m/%Y %H:%M') %></td>
+						<td><%= club_time(@admin.created_at).strftime('%d/%m/%Y %H:%M') %></td>
 					</tr>
 				</table>
 				<div class="form-actions">

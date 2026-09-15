@@ -40,7 +40,7 @@
           </tr>
           <tr>
             <td><b>Registered At</b></td>
-            <td><%= @event_rsvp.created_at.strftime("%d %b %Y %H:%M") %></td>
+            <td><%= club_time(@event_rsvp.created_at).strftime("%d %b %Y %H:%M") %></td>
           </tr>
         </table>
         <div class="form-actions">

@@ -33,6 +33,6 @@
 	</tr>
 	<tr>
 		<td><b>Register At</b></td>
-    <td><%= @user.created_at.strftime('%d-%m-%Y %H:%M %p') %></td>
+    <td><%= club_time(@user.created_at).strftime('%d-%m-%Y %H:%M %p') %></td>
 	</tr>
 </table>

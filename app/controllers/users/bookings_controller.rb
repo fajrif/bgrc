@@ -26,8 +26,8 @@ class Users::BookingsController < Users::BaseController
 	end
 
 	def calendar
-		start_date = params[:start].present? ? Date.parse(params[:start]) : Date.today
-		end_date   = params[:end].present?   ? Date.parse(params[:end])   : Date.today + 7.days
+		start_date = params[:start].present? ? Date.parse(params[:start]) : ClubTime.today
+		end_date   = params[:end].present?   ? Date.parse(params[:end])   : ClubTime.today + 7.days
 		events = []
 
 		current_user.bookings
@@ -178,7 +178,8 @@ class Users::BookingsController < Users::BaseController
       redirect_to users_bookings_path, alert: "This booking cannot be rescheduled." and return
     end
 
-    hours_remaining = (@booking.date - Time.current) / 1.hour
+    # Booking#date is a club wall-clock time, so it is measured against the club's clock.
+    hours_remaining = (@booking.date - ClubTime.now) / 1.hour
     unless hours_remaining.between?(12, 24)
       redirect_to users_bookings_path,
         alert: "Reschedule is only available between 12 and 24 hours before the session." and return

@@ -66,13 +66,13 @@
             <div class="form-group row">
               <label class="control-label col-md-4">Expires At</label>
               <div class="col-md-8">
-                <%= @class_credit_purchase.expires_at&.strftime('%d %b %Y') || "—" %>
+                <%= club_time(@class_credit_purchase.expires_at)&.strftime('%d %b %Y') || "—" %>
               </div>
             </div>
             <div class="form-group row">
               <label class="control-label col-md-4">Purchase Date</label>
               <div class="col-md-8">
-                <%= @class_credit_purchase.purchase_date&.strftime('%d %b %Y %H:%M') || "—" %>
+                <%= club_time(@class_credit_purchase.purchase_date)&.strftime('%d %b %Y %H:%M') || "—" %>
               </div>
             </div>
             <div class="form-group row">
@@ -90,7 +90,7 @@
             <div class="form-group row">
               <label class="control-label col-md-4">Created At</label>
               <div class="col-md-8">
-                <%= @class_credit_purchase.created_at.strftime('%d %b %Y %H:%M') %>
+                <%= club_time(@class_credit_purchase.created_at).strftime('%d %b %Y %H:%M') %>
               </div>
             </div>
           </div>

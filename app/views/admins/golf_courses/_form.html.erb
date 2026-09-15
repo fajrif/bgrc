@@ -28,7 +28,8 @@
         </div>
         <div class="mb-3">
           <%= f.label :status, class: "form-label" %>
-          <%= f.select :status, [["Available", 0], ["Unavailable", 1]], {}, class: "form-select" %>
+          <%= f.select :status, [["Active", GolfCourse::AVAILABLE], ["Inactive", GolfCourse::UNAVAILABLE]], {}, class: "form-select" %>
+          <small class="text-muted">Customers book the first active course in the order on the Golf Courses list.</small>
         </div>
         <div class="mb-3">
           <%= f.label :image, class: "form-label" %>

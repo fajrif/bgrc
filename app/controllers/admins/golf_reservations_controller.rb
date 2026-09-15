@@ -10,9 +10,9 @@ class Admins::GolfReservationsController < Admins::BaseController
   end
 
   def calendar
-    @golf_course = GolfCourse.first
-    @month = params[:month] || Date.today.month
-    @year  = params[:year]  || Date.today.year
+    @golf_course = GolfCourse.current
+    @month = params[:month] || ClubTime.today.month
+    @year  = params[:year]  || ClubTime.today.year
 
     reservations = GolfReservation.unscoped
                                   .where("to_char(tee_time, 'YYYYMM') = ?", "#{@year}#{@month.to_s.rjust(2, '0')}")
@@ -36,13 +36,13 @@ class Admins::GolfReservationsController < Admins::BaseController
 
   def new
     @golf_reservation = GolfReservation.new
-    @golf_courses = GolfCourse.all
+    @golf_courses = GolfCourse.ordered
   end
 
   def create
     @golf_reservation = GolfReservation.new(params_golf_reservation_create)
     @golf_reservation.status = GolfReservation::PAID
-    @golf_courses = GolfCourse.all
+    @golf_courses = GolfCourse.ordered
 
     if @golf_reservation.valid?
       golf_course = @golf_reservation.golf_course
@@ -80,7 +80,7 @@ class Admins::GolfReservationsController < Admins::BaseController
   end
 
   def edit
-    @golf_courses = GolfCourse.all
+    @golf_courses = GolfCourse.ordered
     @users = User.all.order(name: :asc)
   end
 
@@ -99,7 +99,7 @@ class Admins::GolfReservationsController < Admins::BaseController
       unless GolfReservation.check_available?(golf_course, tee_time, players_count, excluding: @golf_reservation)
         remaining = GolfReservation.remaining_capacity_for(golf_course, tee_time, excluding: @golf_reservation)
         flash.now[:alert] = remaining.zero? ? "That tee time is fully booked." : "Only #{remaining} spot#{'s' unless remaining == 1} remaining for that tee time."
-        @golf_courses = GolfCourse.all
+        @golf_courses = GolfCourse.ordered
         @users = User.all.order(name: :asc)
         render :edit and return
       end
@@ -108,7 +108,7 @@ class Admins::GolfReservationsController < Admins::BaseController
     if @golf_reservation.update(permitted)
       redirect_to admins_golf_reservation_path(@golf_reservation), notice: "Reservation updated."
     else
-      @golf_courses = GolfCourse.all
+      @golf_courses = GolfCourse.ordered
       @users = User.all.order(name: :asc)
       render :edit
     end

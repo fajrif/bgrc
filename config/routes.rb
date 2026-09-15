@@ -208,6 +208,7 @@ Rails.application.routes.draw do
 			resources :items
 
       resources :golf_courses do
+        collection { patch :sort }
         resources :golf_business_hours, shallow: true
         resources :golf_rates, shallow: true
         resources :golf_items, shallow: true

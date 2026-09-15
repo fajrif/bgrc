@@ -13,6 +13,18 @@
 	<%= favicon_link_tag 'favicon.png' %>
 	<%= stylesheet_link_tag 'admin', :media => "all" %>
 	<%= csrf_meta_tag %>
+	<meta name="club-now" content="<%= ClubTime.now_iso %>">
+	<%# window.clubNow(): the club's wall-clock time (CLUB_TIME_ZONE) as a local Date, whatever the admin's device
+	    zone — for the admin calendars' "today" (same idea as app/frontend/lib/clubClock.ts on the public site). %>
+	<script>
+		window.clubNow = (function () {
+			var meta = document.querySelector('meta[name="club-now"]');
+			var parts = meta ? meta.content.split(/[-T:]/).map(Number) : null;
+			var offset = parts ? new Date(parts[0], parts[1] - 1, parts[2], parts[3], parts[4], parts[5]).getTime() - Date.now() : 0;
+			if (isNaN(offset)) offset = 0;
+			return function () { return new Date(Date.now() + offset); };
+		})();
+	</script>
 	<%= yield :head %>
 </head>
 <body>

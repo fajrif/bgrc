@@ -23,7 +23,7 @@
                 %>
                 <tr>
                     <td><%= link_to food_order.order_id, food_order_path(food_order.order_id), class: "bbcc-table-id" %></td>
-                    <td><%= food_order.created_at.strftime("%d %b %Y, %H:%M") %></td>
+                    <td><%= club_time(food_order.created_at).strftime("%d %b %Y, %H:%M") %></td>
                     <td class="bbcc-table-num"><%= food_order.items_count %></td>
                     <td><%= food_order.pickup_label %></td>
                     <td><%= food_order.paid? ? food_order.fulfillment_label : "—" %></td>

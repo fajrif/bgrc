@@ -101,12 +101,13 @@ class GroupClass < ApplicationRecord
     sessions = []
     recurring = group_class_schedules.first
     return sessions unless recurring
-    today = Date.today
+    # Club dates and wall-clock times, so the list is the same whatever zone the server runs in.
+    today = ClubTime.today
     (0..days_ahead - 1).each do |offset|
       day = today + offset
       next unless day.wday == recurring.day_of_week
-      session_start = DateTime.parse("#{day} #{recurring.start_time}")
-      next if session_start < Time.current
+      session_start = ClubTime.wall_clock(day, recurring.start_time)
+      next if session_start < ClubTime.now
       sessions << {
         date: day,
         start_time: recurring.start_time,

@@ -13,6 +13,10 @@ default: &default
   password: deployer1234!
   schema_search_path: myapp,sharedapp,public
   min_messages: warning
+  # Payment deadlines are compared with NOW(), so the session must stay on UTC like the stored timestamps.
+  # Rails already does this; pinned so a database server's own default can't change it.
+  variables:
+    timezone: UTC
 
 development:
   <<: *default

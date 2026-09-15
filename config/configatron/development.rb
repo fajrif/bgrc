@@ -2,4 +2,5 @@
 #
 # Example:
 #   configatron.file.storage = :local
-configatron.site_url = "localhost:3000"
+
+# site_url comes from SITE_URL (defaults.rb falls back to http://localhost:3000).

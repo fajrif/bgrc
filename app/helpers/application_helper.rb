@@ -13,12 +13,18 @@ module ApplicationHelper
 	end
 
 	def get_latest_year_options(num=5)
-		current_year = Date.today.year
+		current_year = ClubTime.today.year
 		years = []
 		num.times do |n|
 			years << current_year - n
 		end
 		years
+	end
+
+	# An absolute moment (created_at, paid_at, expires_at…) in club time, ready for strftime. Booking
+	# wall-clock times (Booking#date, tee_time, session_date) are already club time and don't need it.
+	def club_time(instant)
+		ClubTime.local(instant)
 	end
 
 	def truncate_text(title, length=30)
@@ -31,46 +37,6 @@ module ApplicationHelper
 		else
 			Nokogiri::HTML.parse(desc).css('div')[0].text
 		end
-  end
-
-  def options_select_court
-    base = [["Court Only", "court_only"]]
-    categories_in_use = GroupClass.available.where.not(category: [nil, ""]).reorder(nil).distinct.pluck(:category)
-    category_options = GroupClass::CATEGORIES.select { |_label, slug| categories_in_use.include?(slug) }
-                                             .map { |label, slug| [label, slug] }
-    base + category_options
-  end
-
-  def court_type_is_class?(type)
-    type.present? && type != "court_only" && type != "0"
-  end
-
-  def options_select_pax(min_pax, max_pax, use_label_min_max=true)
-    arr = (min_pax..max_pax)
-    arr.map.with_index do |p,i|
-      _text = "#{p} pax "
-      if use_label_min_max
-        if arr.first == arr.last
-          _text += "(Maximum)"
-        else
-          _text += "(Minimum)" if p == arr.first
-          _text += "(Maximum)" if p == arr.last
-        end
-      end
-      [_text, p]
-    end
-  end
-
-  def options_select_class
-    [["2 People, Semi Private", 0], ["4 People, Semi Private", 1]]
-  end
-
-  def options_select_pax_simple
-    (1..4).map { |p| ["#{p} Pax", p] }
-  end
-
-  def get_visible_fields(court_type)
-    court_type_is_class?(court_type) ? 'display:block;' : 'display:none;'
   end
 
   def options_for_nationalities
@@ -136,7 +102,7 @@ module ApplicationHelper
 	end
 
 	def member_since_label(user)
-		date = user.created_at.to_date
+		date = club_time(user.created_at).to_date
 		"Member since #{date.strftime('%B')} #{date.day.ordinalize}, #{date.year}"
 	end
 

@@ -35,7 +35,7 @@
 				<td><%= purchase.payment_type %></td>
 				<td><%= purchase.status_code %></td>
 				<td><%= purchase.status_message %></td>
-				<td><%= purchase.created_at.strftime('%Y-%m-%d %H:%M') %></td>
+				<td><%= club_time(purchase.created_at).strftime('%Y-%m-%d %H:%M') %></td>
         <td class="actions">
 					<%= link_to admins_purchase_path(purchase), "data-toggle" => "tooltip", :title => "Edit" do %>
 						<i class="fa fa-pencil"></i>

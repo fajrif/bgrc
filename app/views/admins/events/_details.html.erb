@@ -61,7 +61,7 @@
         <td><%= rsvp.name %></td>
         <td><%= rsvp.email %></td>
         <td><%= rsvp.phone.presence || "-" %></td>
-        <td><%= rsvp.created_at.strftime('%d/%m/%Y %H:%M') %></td>
+        <td><%= club_time(rsvp.created_at).strftime('%d/%m/%Y %H:%M') %></td>
       </tr>
     <% end %>
   </tbody>

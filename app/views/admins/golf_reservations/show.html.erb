@@ -26,7 +26,7 @@
             <% end %>
             <tr><th>Total</th><td><strong><%= @golf_reservation.total_price_label %></strong></td></tr>
             <tr><th>Notes</th><td><%= @golf_reservation.notes.presence || "—" %></td></tr>
-            <tr><th>Created</th><td><%= @golf_reservation.created_at.strftime("%d %b %Y %H:%M") %></td></tr>
+            <tr><th>Created</th><td><%= club_time(@golf_reservation.created_at).strftime("%d %b %Y %H:%M") %></td></tr>
           </tbody>
         </table>
       </div>

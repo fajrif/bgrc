@@ -1113,10 +1113,11 @@ button.bbcc-teeslot-remaining-1:hover, button.bbcc-teeslot-remaining-1:focus { b
 .bbcc-modal-summary-total { margin-top: 8px; color: var(--bbcc-ink); font-size: 1.05rem; font-weight: 700; }
 
 /* =====================================================================
-   COURT SCHEDULE (racquet sports week grid)
-   FullCalendar's own CSS (vendor main.css) and fullcalendar-custom.css both
-   load *after* application.css, so every override here is scoped under
-   .bbcc-schedule to win on specificity rather than with !important.
+   COURT SCHEDULE (the week grid for court booking, class claims and
+   late-payment reschedules — SlotCalendar.vue)
+   FullCalendar v6 injects its own CSS at runtime, after application.css, so
+   every override here is scoped under .bbcc-schedule to win on specificity
+   rather than with !important.
    ===================================================================== */
 .bbcc-schedule-head {
   display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between;
@@ -1172,8 +1173,7 @@ button.bbcc-teeslot-remaining-1:hover, button.bbcc-teeslot-remaining-1:focus { b
   --fc-event-border-color: #e0e0e0;
   --fc-event-text-color: var(--bbcc-ink);
 }
-.bbcc-schedule #calendar,
-.bbcc-schedule #claim-calendar { max-width: none; margin: 0; }
+.bbcc-schedule #calendar { max-width: none; margin: 0; }
 .bbcc-schedule .fc-theme-standard td,
 .bbcc-schedule .fc-theme-standard th { border-color: var(--bbcc-line); }
 .bbcc-schedule .fc .fc-col-header-cell { padding: 15px 4px; background: #fff; }
@@ -1237,7 +1237,7 @@ button.bbcc-teeslot-remaining-1:hover, button.bbcc-teeslot-remaining-1:focus { b
   white-space: normal; max-height: none;
   display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
 }
-/* fullcalendar-custom.css hides these times with !important, but the mockup shows them */
+/* the mockup shows these blocks' hours; the compact rule below hides them again on one-hour blocks */
 .bbcc-schedule .recurring-event-visible .fc-event-time,
 .bbcc-schedule .class-schedule-block .fc-event-time {
   display: block !important; order: 2; margin-top: 3px;

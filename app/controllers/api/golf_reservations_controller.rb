@@ -1,7 +1,10 @@
 module Api
-	# Quotes and creates tee-time reservations for the Vue golf booking page (GolfBookingApp). Both go
-	# through GolfReservationRequest, so the total in the form is exactly what the reservation is saved at.
+	# Quotes and creates tee-time reservations for the Vue golf booking page (GolfBookingApp), always on the
+	# bookable course (GolfCourse.current). Both go through GolfReservationRequest, so the total in the form
+	# is exactly what the reservation is saved at.
 	class GolfReservationsController < BaseController
+		before_action :require_open_course
+
 		def quote
 			reservation_request.valid?
 			render json: reservation_request
@@ -19,9 +22,14 @@ module Api
 
 		private
 
+		def require_open_course
+			@course = GolfCourse.current
+			render_error("Golf bookings are not open right now. Please contact us.", status: :not_found) if @course.nil?
+		end
+
 		def reservation_request
 			@reservation_request ||= GolfReservationRequest.new(
-				course: GolfCourse.first!,
+				course: @course,
 				tee_time: params[:tee_time],
 				players_count: params[:players_count],
 				holes: params[:holes],

@@ -38,7 +38,7 @@
       <div class="alert alert-info mb-3">
         <strong><%= @available_credit.sessions_remaining %> session credit(s) available</strong>
         for <%= @booking.group_class.name %>
-        <small class="text-muted d-block">Expires <%= @available_credit.expires_at.strftime('%d %b %Y') %></small>
+        <small class="text-muted d-block">Expires <%= club_time(@available_credit.expires_at).strftime('%d %b %Y') %></small>
       </div>
       <%= button_to "Use 1 Session Credit", pay_with_credit_booking_path(@booking.order_id),
             method: :post, class: "btn btn-success w-100 mb-2",

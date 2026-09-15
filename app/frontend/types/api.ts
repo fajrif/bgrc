@@ -300,6 +300,30 @@ export interface RescheduleResponse {
   redirect_url: string
 }
 
+// --- My Bookings calendar -----------------------------------------------------------
+
+/** Props for ScheduleCalendarApp (users/bookings/calendar). */
+export interface ScheduleCalendarProps {
+  eventsUrl: string
+  today: string
+}
+
+/** extendedProps of each event in GET /account/bookings/calendar.json (Users::BookingsController#calendar). */
+export interface ScheduleEventDetails {
+  type: string
+  /** Absent for class sessions, which are addressed through their credit purchase. */
+  orderId: string | null
+  dateLabel: string
+  subtitleLabel: string
+  subtitle: string | null
+  statusLabel: string
+  paxLabel: string
+  pax: number | null
+  holesLabel?: string
+  priceLabel: string | null
+  detailUrl: string | null
+}
+
 // --- Sign-in, registration and email verification ----------------------------
 
 export interface AuthUrls {

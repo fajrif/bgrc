@@ -24,6 +24,14 @@ configatron.max_reschedule_count = 2
 configatron.admin_email = "info@balibeachcountryclub.com"
 configatron.no_reply_email = "no-reply@balibeachcountryclub.com"
 configatron.info_email = "info@balibeachcountryclub.com"
+
+# The site's public address, e.g. https://www.balibeachcountryclub.com. Email links and payment gateway
+# return URLs are built from it (config/initializers/site_url.rb). The production file sets its fallback.
+configatron.site_url = ENV["SITE_URL"].presence || "http://localhost:3000"
+
+# The club's time zone. Court slots, tee times and class sessions are club wall-clock times, so "today" and
+# "has this slot started" always come from ClubTime, never from the server's clock or zone.
+configatron.club_time_zone = ENV["CLUB_TIME_ZONE"].presence || "Asia/Makassar"
 configatron.recaptcha_v3_site_key = ENV['RECAPTCHA_V3_SITE_KEY']
 configatron.recaptcha_v3_secret_key = ENV['RECAPTCHA_V3_SECRET_KEY']
 configatron.recaptcha_v2_site_key = ENV['RECAPTCHA_V2_SITE_KEY']

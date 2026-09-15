@@ -40,8 +40,8 @@ module GroupClassBookingHelper
 			coaches: ClassSessionClaim.coaches_for(group_class).map { |coach| { id: coach.id, name: coach.name } },
 			initialCourtTypeId: courts.first&.court_type_id,
 			initialCourtId: courts.first&.id,
-			today: Date.current.iso8601,
-			maxDate: (Date.current + ClassSessionClaim::HORIZON).iso8601,
+			today: ClubTime.today.iso8601,
+			maxDate: (ClubTime.today + ClassSessionClaim::HORIZON).iso8601,
 			urls: {
 				availability: api_court_availability_path(id: "__COURT__"),
 				claim: api_class_session_claims_path(id: credit_purchase.id),

@@ -13,25 +13,35 @@ class GolfCourse < ApplicationRecord
 
   validates_presence_of :name
 
-  after_create :generate_business_hours
-
   AVAILABLE   = 0
   UNAVAILABLE = 1
+
+  # Admins can run several courses (seasonal ones with their own rates) and drag them into order on the
+  # admin index. The first active course is the one customers book.
+  scope :active, -> { where(status: AVAILABLE) }
+  scope :ordered, -> { order(:position, :id) }
+
+  before_create :append_to_order
+  after_create :generate_business_hours
+
+  def self.current
+    active.ordered.first
+  end
 
   def generate_business_hours
     7.times { |num| self.golf_business_hours.create(day_code: num) } if self.golf_business_hours.empty?
   end
 
+  # Every tee time on `date` with the places left. Times are club wall-clock values, like tee_time
+  # itself, so the sheet is the same whatever zone the server runs in.
   def available_tee_times(date)
     date = date.is_a?(Date) ? date : Date.parse(date.to_s)
-    day_code = date.wday
-    bh = self.golf_business_hours.find_by(day_code: day_code)
+    bh = self.golf_business_hours.find_by(day_code: date.wday)
     return [] if bh.nil? || bh.closed?
 
-    open_time  = Time.parse("#{date} #{bh.open}")
-    close_time = Time.parse("#{date} #{bh.close}")
-
-    now = Time.current
+    open_time  = ClubTime.wall_clock(date, bh.open)
+    close_time = ClubTime.wall_clock(date, bh.close)
+    now = ClubTime.now
 
     slots = []
     t = open_time
@@ -45,10 +55,10 @@ class GolfCourse < ApplicationRecord
                         .where("tee_time::date = ?", date)
                         .group(:tee_time)
                         .sum(:players_count)
-                        .transform_keys { |tt| tt.in_time_zone.strftime("%H:%M") }
+                        .transform_keys { |tt| tt.utc.strftime("%H:%M") }
 
     slots.map do |slot|
-      if date == Date.current && slot <= now
+      if slot <= now
         { time: slot, available: false, past: true, remaining: 0 }
       else
         booked = booked_counts[slot.strftime("%H:%M")] || 0
@@ -67,6 +77,12 @@ class GolfCourse < ApplicationRecord
   end
 
   def status_label
-    is_available? ? "Available" : "Unavailable"
+    is_available? ? "Active" : "Inactive"
+  end
+
+  private
+
+  def append_to_order
+    self.position = (GolfCourse.maximum(:position) || 0) + 1 if position.to_i.zero?
   end
 end

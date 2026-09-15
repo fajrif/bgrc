@@ -34,7 +34,7 @@
             <span class="badge bg-warning text-dark">Pending</span>
           <% end %>
         </td>
-        <td class="small"><%= ccp.created_at.strftime('%Y-%m-%d %H:%M') %></td>
+        <td class="small"><%= club_time(ccp.created_at).strftime('%Y-%m-%d %H:%M') %></td>
         <td class="actions">
           <%= link_to admins_class_credit_purchase_path(ccp), "data-toggle" => "tooltip", title: "View" do %>
             <i class="fa fa-eye"></i>

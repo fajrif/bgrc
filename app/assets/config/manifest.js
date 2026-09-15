@@ -10,10 +10,6 @@
 //= link jquery-ui/widgets/sortable.js
 //= link pdfjs_viewer/application.css
 //= link pdfjs_viewer/application.js
-//= link main.css
-//= link fullcalendar.js
-//= link moment-with-locales.min.js
-//= link fullcalendar-custom.css
 //= link quantity_input.css
 //= link admin/fullcalendar/index.global.min.js
 //= link admin/calendar.init.js
