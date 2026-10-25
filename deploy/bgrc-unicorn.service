@@ -1,0 +1,26 @@
+# /etc/systemd/system/bgrc-unicorn.service
+#
+# Check the Ruby wrapper path first:  ls /home/deployer/.rvm/wrappers/   (expect ruby-3.3.0@bgrc)
+# After editing .env.production run:   sudo systemctl restart bgrc-unicorn
+# (reload/USR2 re-execs with the OLD environment, so it does not pick up new env values)
+[Unit]
+Description=BGRC Rails app (Unicorn)
+After=network.target postgresql.service
+Wants=postgresql.service
+
+[Service]
+Type=forking
+User=deployer
+Group=deployer
+WorkingDirectory=/home/deployer/bgrc
+EnvironmentFile=/home/deployer/bgrc/.env.production
+PIDFile=/home/deployer/bgrc/tmp/pids/unicorn.pid
+ExecStart=/home/deployer/.rvm/wrappers/ruby-3.3.0@bgrc/bundle exec unicorn -c config/unicorn.rb -E production -D
+ExecReload=/bin/kill -USR2 $MAINPID
+ExecStop=/bin/kill -QUIT $MAINPID
+Restart=on-failure
+RestartSec=5
+TimeoutStopSec=60
+
+[Install]
+WantedBy=multi-user.target
