@@ -10,7 +10,7 @@ default: &default
   host: localhost
   port: 5432
   username: deployer
-  password: deployer1234!
+  password: <%= ENV.fetch("DATABASE_PASSWORD", "deployer1234!") %>
   schema_search_path: myapp,sharedapp,public
   min_messages: warning
 

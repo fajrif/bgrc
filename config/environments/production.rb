@@ -52,7 +52,11 @@ Rails.application.configure do
   # config.assume_ssl = true
 
   # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
-  config.force_ssl = true
+  # FORCE_SSL=false is only for a host that has no certificate at all. Gateway
+  # webhooks are exempt from the redirect: a POST that gets a 301 is never retried
+  # by the gateway as a POST, so the payment would go unrecorded.
+  config.force_ssl = ENV.fetch("FORCE_SSL", "true") == "true"
+  config.ssl_options = { redirect: { exclude: ->(request) { request.path.start_with?("/webhooks/") } } }
 
   # Log to STDOUT by default
   config.logger = ActiveSupport::Logger.new(STDOUT)
@@ -74,7 +78,9 @@ Rails.application.configure do
   # config.active_job.queue_adapter = :resque
   # config.active_job.queue_name_prefix = "bgrc_production"
 
-	config.action_mailer.default_url_options = { host: 'https://balibeachcountryclub.com/' }
+	site_uri = URI.parse(ENV.fetch("SITE_URL", "https://www.balibeachcountryclub.com"))
+	config.action_mailer.default_url_options = { host: site_uri.host, protocol: site_uri.scheme }
+	config.action_mailer.default_url_options[:port] = site_uri.port unless [80, 443].include?(site_uri.port)
 	config.action_mailer.perform_deliveries = true
   config.action_mailer.perform_caching = false
   # Don't care if the mailer can't send.
