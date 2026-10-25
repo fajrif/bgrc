@@ -349,6 +349,8 @@ Rails.application.routes.draw do
     match 'book/racquet-sports', to: 'search#index', via: :get, as: :search
     match 'search_selection', to: 'search#search_selection', via: :get, as: :search_selection
 
+    match 'courts/:id/schedule', to: 'courts#schedule', via: :get, as: :court_schedule
+
     # Retired addresses. `moved_to` keeps the locale prefix and the query string —
     # /search is always reached with ?sport_id=&date=, and /blogs, /gallery and
     # /our-team all carry filter params of their own.

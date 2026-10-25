@@ -44,8 +44,30 @@ class CourtsController < ApplicationController
 		@duration = duration_label(duration)
 		@eventTitle = duration > 1 ? "Book #{@duration} #{priceHuman}" : "#{priceHuman}"
 		@message = "This court minimum booking for #{@court.min_duration} hours" if duration < @court.min_duration
-    respond_to :js
+
+    respond_to do |format|
+      format.js
+      format.json do
+        render json: {
+          bookable: duration >= @court.min_duration,
+          event_title: @eventTitle,
+          court: @court.name_label,
+          date_label: @dates,
+          duration_label: @duration,
+          price_label: @priceLabel,
+          message: @message,
+        }
+      end
+    end
 	end
+
+  def schedule
+    court = Court.find(params[:id])
+    from = Date.iso8601(params[:start].to_s)
+    render json: CourtWeekSchedule.new(court, from: from)
+  rescue Date::Error
+    render json: { error: "Please choose a valid date." }, status: :unprocessable_entity
+  end
 
 	private
 

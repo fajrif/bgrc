@@ -116,6 +116,7 @@ GEM
       dotenv (= 3.1.2)
       railties (>= 6.1)
     drb (2.2.1)
+    dry-cli (1.4.1)
     email_validator (2.2.4)
       activemodel
     erubi (1.12.0)
@@ -275,6 +276,8 @@ GEM
       base64 (>= 0.1.0)
       logger (>= 1.6.0)
       rack (>= 3.0.0, < 4)
+    rack-proxy (2.0.1)
+      rack (>= 2.0, < 4)
     rack-session (2.0.0)
       rack (>= 3.0.0)
     rack-test (2.1.0)
@@ -361,6 +364,15 @@ GEM
       raindrops (~> 0.7)
     uri (1.0.3)
     version_gem (1.1.8)
+    vite_rails (3.11.1)
+      railties (>= 5.1, < 9)
+      vite_ruby (~> 3.0, >= 3.2.2)
+    vite_ruby (3.11.0)
+      dry-cli (>= 0.7, < 2)
+      logger (~> 1.6)
+      mutex_m
+      rack-proxy (>= 0.6.1)
+      zeitwerk (~> 2.2)
     warden (1.2.9)
       rack (>= 2.0.9)
     web-console (4.2.1)
@@ -424,6 +436,7 @@ DEPENDENCIES
   sprockets-rails
   tzinfo-data
   unicorn
+  vite_rails
   web-console
 
 RUBY VERSION

@@ -14,21 +14,12 @@
 		<div class="bbcc-schedule-head">
 			<div>
 				<h1 class="bbcc-hub-heading bbcc-schedule-title"><%= @sport.name %></h1>
-				<p class="bbcc-schedule-range"><%= @displayDate %></p>
+        <p class="bbcc-schedule-range" id="schedule-range"></p>
 			</div>
 
-			<form class="bbcc-schedule-filters" action="<%= sport_form_path %>" method="get" id="court-search-form">
-				<input type="hidden" name="court_type_id" id="court-search-type" value="<%= @court_type&.id %>">
-				<input type="hidden" name="court_id" id="court-search-court" value="<%= @court&.id %>">
-				<%# defensive fallback: sport_form_path already carries the sport via its
-				    own route default, but this keeps a date change on the right sport even
-				    if @sport somehow doesn't map to one of the three clean routes above %>
-				<input type="hidden" name="sport_id" value="<%= @sport.id %>">
-				<div class="bbcc-schedule-control bbcc-schedule-control-date">
-					<input type="text" name="date" id="court-date-input" aria-label="Date"
-					       value="<%= Date.parse(@date).strftime('%d/%m/%Y') %>" placeholder="Select a date" readonly>
-				</div>
-			</form>
+      <div class="bbcc-schedule-filters">
+        <div class="bbcc-schedule-control bbcc-schedule-control-date" id="schedule-date-control"></div>
+      </div>
 		</div>
 
 		<% if @court %>
@@ -39,16 +30,8 @@
 					<span><i class="bbcc-legend-swatch bbcc-legend-blocked"></i>Blocked Event</span>
 				</div>
 				<div class="bbcc-schedule-filters">
-					<div class="bbcc-schedule-control">
-						<%= select_tag :court_type_id, options_from_collection_for_select(@court_types, "id", "name", @court_type.id),
-						               include_blank: false, aria: { label: "Court type" },
-						               data: { remote: true, url: search_path(date: @date, sport_id: @sport.id, pax: @pax), method: :get } %>
-					</div>
-					<div class="bbcc-schedule-control">
-						<%= select_tag :court_id, options_from_collection_for_select(@courts, "id", "name", @court.id),
-						               prompt: "Select Court", aria: { label: "Court" },
-						               data: { remote: true, url: search_path(date: @date, sport_id: @sport.id, pax: @pax, court_type_id: @court_type.id), method: :get } %>
-					</div>
+          <div class="bbcc-schedule-control" id="schedule-court-type-control"></div>
+          <div class="bbcc-schedule-control" id="schedule-court-control"></div>
 				</div>
 			</div>
 		<% end %>
@@ -61,6 +44,17 @@
 			<div class="bbcc-schedule" id="schedule">
 				<div id="calendar"></div>
 			</div>
+      <div id="vue-app"
+        data-court-id="<%= @court.id %>"
+        data-court-type-id="<%= @court_type&.id %>"
+        data-court-types="<%= @court_types.map { |t| { id: t.id, name: t.name } }.to_json %>"
+        data-courts="<%= @sport.courts.map { |c| { id: c.id, name: c.name, courtTypeId: c.court_type_id } }.to_json %>"
+        data-date="<%= @date %>"
+        data-business-hours="<%= @schedule.business_hours.to_json %>"
+        data-events="<%= @schedule.events.to_json %>"
+        data-min-open-time="<%= @schedule.min_open_time %>"
+        data-max-open-time="<%= @schedule.max_open_time %>">
+      </div>
 		<% else %>
 			<div class="bbcc-table-empty">
 				<p>Sorry, there are no courts available for this category yet.</p>
@@ -83,9 +77,7 @@
 					<input id="input-court-type" type="hidden" value="court_only" name="court_type">
 					<input id="input-pax" type="hidden" value="<%= @pax %>" name="pax">
 
-					<div id="calculate_table">
-						<%= render "calculate_info" %>
-					</div>
+					<div id="calculate_table"></div>
 
 					<button id="btnSubmit" type="submit" class="bbcc-btn disabled" disabled>Submit</button>
 				<% end %>
@@ -103,41 +95,3 @@
 	</div>
 </div>
 <!-- end court schedule -->
-
-<script>
-(function() {
-	// runs again on every AJAX re-render of this panel, since the controls are replaced
-	function init() {
-		var form  = document.getElementById('court-search-form');
-		var sport = document.getElementById('court-search-sport');
-		var date  = document.getElementById('court-date-input');
-		if (!form) return;
-
-		if (sport) {
-			sport.addEventListener('change', function() {
-				// courts belong to a sport, so a sport change can't keep the current court
-				document.getElementById('court-search-type').value  = '';
-				document.getElementById('court-search-court').value = '';
-				form.submit();
-			});
-		}
-
-		if (date && window.flatpickr) {
-			flatpickr(date, {
-				dateFormat: 'd/m/Y',
-				minDate: 'today',
-				maxDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000),
-				disableMobile: true,
-				onChange: function() { form.submit(); }
-			});
-		}
-	}
-
-	// on a full page load this runs before application.js defines flatpickr
-	if (document.readyState === 'loading') {
-		document.addEventListener('DOMContentLoaded', init);
-	} else {
-		init();
-	}
-})();
-</script>
