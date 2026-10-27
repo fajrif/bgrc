@@ -10,10 +10,23 @@ DIR="/home/deployer/.ssl"
 mkdir -p "$DIR"
 chmod 700 "$DIR"
 
+# A config file instead of `-addext`, which needs OpenSSL 1.1.1+ (CentOS 7 has 1.0.2).
+CONF="$(mktemp)"
+trap 'rm -f "$CONF"' EXIT
+cat > "$CONF" <<EOF
+[req]
+distinguished_name = dn
+x509_extensions = v3
+prompt = no
+[dn]
+CN = $IP
+[v3]
+subjectAltName = IP:$IP
+EOF
+
 openssl req -x509 -nodes -newkey rsa:2048 -days 365 \
   -keyout "$DIR/bgrc-ip.key" -out "$DIR/bgrc-ip.crt" \
-  -subj "/CN=$IP" \
-  -addext "subjectAltName=IP:$IP"
+  -config "$CONF"
 
 chmod 600 "$DIR/bgrc-ip.key"
 echo "Wrote $DIR/bgrc-ip.crt and $DIR/bgrc-ip.key (valid 365 days)"
