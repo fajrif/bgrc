@@ -336,3 +336,315 @@ a:hover > .bbcc-text-link-light { color: #fff; opacity: .8; }
   .bbcc-gallery-page .bbcc-masonry { grid-template-columns: 1fr 1fr; }
   .bbcc-clublife-tabs-row { gap: 4px 22px; overflow-x: auto; flex-wrap: nowrap; white-space: nowrap; }
 }
+
+/* =====================================================================
+   PHASE 2 — inner pages
+   ===================================================================== */
+
+/* ---------- light header (pages without a banner) ---------- */
+.bbcc-header-light .bbcc-header { background: var(--bbcc-bg); }
+.bbcc-header-light .bbcc-burger span { background: var(--bbcc-ink); }
+.bbcc-header-light .bbcc-menu-label { color: var(--bbcc-ink); }
+.bbcc-header-light .bbcc-logo img { height: 26px; width: auto; }
+.bbcc-header-light .bbcc-header-stuck .bbcc-logo img { height: 26px; }
+.bbcc-header-light .bbcc-navbar-inner { min-height: 96px; }
+.bbcc-header-light .bbcc-header-stuck .bbcc-navbar-inner { min-height: 72px; }
+.bbcc-header-light .bbcc-header.bbcc-header-stuck { box-shadow: 0 1px 0 var(--bbcc-line); }
+
+/* ---------- page intro (title left, description right, optional tabs) ---------- */
+.bbcc-intro-head { padding: 56px 0 8px; background: var(--bbcc-bg); }
+.bbcc-intro-title { margin: 0; }
+.bbcc-intro-desc { font-size: 14px; line-height: 1.75; color: var(--bbcc-ink); max-width: 760px; }
+.bbcc-intro-desc p { margin: 0 0 1.1em; }
+.bbcc-intro-desc p:last-child { margin-bottom: 0; }
+
+.bbcc-filter-tabs {
+  display: flex; flex-wrap: wrap; gap: 6px 36px;
+  margin-top: 56px; border-bottom: 1px solid var(--bbcc-book);
+}
+.bbcc-filter-tab {
+  font-size: 12px; color: var(--bbcc-ink-soft); padding: 0 0 14px;
+  border-bottom: 2px solid transparent; margin-bottom: -1px; white-space: nowrap;
+}
+.bbcc-filter-tab:hover { color: var(--bbcc-ink); text-decoration: none; }
+.bbcc-filter-tab.active { color: var(--bbcc-ink); font-weight: 700; border-bottom-color: var(--bbcc-ink); }
+
+.bbcc-page-body { padding: 48px 0 88px; }
+
+/* ---------- rich text ---------- */
+.bbcc-prose { font-size: 14px; line-height: 1.75; color: var(--bbcc-ink); }
+.bbcc-prose p { margin: 0 0 1.2em; color: var(--bbcc-ink); }
+.bbcc-prose h2, .bbcc-prose h3, .bbcc-prose h4 { font-family: var(--bbcc-font-title); font-weight: 400; margin: 1.8em 0 .5em; line-height: 1.2; }
+.bbcc-prose h2 { font-size: 2rem; }
+.bbcc-prose h3 { font-size: 1.7rem; }
+.bbcc-prose h4 { font-size: 1.4rem; }
+.bbcc-prose ul, .bbcc-prose ol { padding-left: 1.2em; margin-bottom: 1.2em; }
+.bbcc-prose a { color: var(--bbcc-ink); text-decoration: underline; }
+.bbcc-prose img { max-width: 100%; height: auto; }
+
+/* ---------- pagination ---------- */
+.bbcc-pagination { gap: 14px; margin-top: 64px; }
+.bbcc-pagination-page, .bbcc-pagination-arrow {
+  min-width: 36px; height: 36px; display: inline-flex; align-items: center; justify-content: center;
+  font-size: 14px; color: var(--bbcc-ink); background: transparent; border: 0; border-radius: 0;
+}
+.bbcc-pagination-page.active { background: transparent; color: var(--bbcc-ink); font-weight: 700; }
+.bbcc-pagination-arrow { background: var(--bbcc-book); color: var(--bbcc-footer); }
+.bbcc-pagination-arrow[rel=prev] { background: #e6dfcd; color: var(--bbcc-ink-soft); }
+.bbcc-pagination-arrow[rel=next] { background: var(--bbcc-book); }
+.bbcc-pagination-arrow:hover { filter: brightness(.94); color: var(--bbcc-footer); }
+
+/* ---------- content cards (articles, highlights, event types) ---------- */
+.bbcc-post-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 56px 24px; }
+.bbcc-post-card-image { display: block; overflow: hidden; margin-bottom: 16px; background: var(--bbcc-bg-alt); }
+.bbcc-post-card-image img, .bbcc-post-card-image .bbcc-post-image-ph {
+  display: block; width: 100%; aspect-ratio: 4 / 5; height: auto; object-fit: cover; transition: transform .4s;
+}
+.bbcc-post-card-image:hover img { transform: scale(1.03); }
+.bbcc-post-card-meta { display: block; color: var(--bbcc-book); font-size: 12px; letter-spacing: 1px; margin-bottom: 6px; }
+.bbcc-post-card-meta span { margin: 0 8px; }
+.bbcc-post-card-title { font-size: 1.7rem; line-height: 1.15; margin: 0 0 10px; }
+.bbcc-post-card-title a { color: var(--bbcc-ink); }
+.bbcc-post-card-title a:hover { text-decoration: none; color: var(--bbcc-ink-soft); }
+.bbcc-post-card p { font-size: 13px; line-height: 1.6; margin: 0 0 12px; }
+
+.bbcc-empty { text-align: center; padding: 64px 0; color: var(--bbcc-ink-soft); }
+
+/* ---------- call-to-action band ---------- */
+.bbcc-cta-band { background: #566545; color: var(--bbcc-cream); padding: 64px 0; }
+.bbcc-cta-band .bbcc-title-lg { color: var(--bbcc-cream); }
+.bbcc-cta-band p { color: rgba(245,242,232,.9); font-size: 14px; line-height: 1.75; }
+.bbcc-cta-band img { width: 100%; aspect-ratio: 3 / 2; object-fit: cover; display: block; }
+.bbcc-cta-band-tan { background: #d5cab4; color: var(--bbcc-ink); }
+.bbcc-cta-band-tan .bbcc-title-lg { color: var(--bbcc-ink); }
+.bbcc-cta-band-tan p { color: var(--bbcc-ink); }
+
+/* ---------- full-bleed image strip ---------- */
+.bbcc-strip { display: block; width: 100%; height: clamp(220px, 28vw, 420px); object-fit: cover; }
+
+/* ---------- square image grid (gallery) ---------- */
+.bbcc-square-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.bbcc-square-grid img { width: 100%; aspect-ratio: 1 / 1; object-fit: cover; display: block; }
+.bbcc-view-more-wrap { text-align: center; margin-top: 44px; }
+
+@media (max-width: 991px) {
+  .bbcc-header-light .bbcc-logo img { height: 46px; }
+  .bbcc-header-light .bbcc-navbar-inner { min-height: 76px; }
+  .bbcc-post-grid { grid-template-columns: repeat(2, 1fr); gap: 40px 16px; }
+  .bbcc-filter-tabs { margin-top: 36px; }
+}
+@media (max-width: 575px) {
+  .bbcc-intro-head { padding-top: 32px; }
+  .bbcc-post-grid { grid-template-columns: 1fr; }
+  .bbcc-filter-tabs { flex-wrap: nowrap; overflow-x: auto; gap: 4px 22px; }
+  .bbcc-square-grid { gap: 8px; grid-template-columns: repeat(2, 1fr); }
+}
+
+/* ---------- side nav (Legal, FAQ) ---------- */
+.bbcc-side-nav { display: flex; flex-direction: column; gap: 14px; }
+.bbcc-side-nav-link {
+  display: inline-block; width: fit-content;
+  font-family: var(--bbcc-font-title); font-size: 2rem; line-height: 1.2; color: var(--bbcc-ink);
+  border-bottom: 2px solid transparent; padding-bottom: 2px;
+}
+.bbcc-side-nav-link:hover { color: var(--bbcc-ink-soft); text-decoration: none; }
+.bbcc-side-nav-link.active { border-bottom-color: var(--bbcc-ink); }
+
+.bbcc-legal-content h2 { font-size: 1.9rem; margin-top: 2.2em; }
+.bbcc-legal-content > p:first-child { margin-bottom: 2.2em; }
+.bbcc-legal-section:first-of-type h2 { margin-top: 0; }
+
+/* ---------- FAQ accordion (thin rules, chevron) ---------- */
+.bbcc-faq-list { border-top: 1px solid var(--bbcc-book); }
+.bbcc-faq-item { border-bottom: 1px solid var(--bbcc-book); }
+.bbcc-faq-item summary { padding: 20px 0; font-size: 14px; color: var(--bbcc-ink); }
+.bbcc-faq-item[open] summary { font-weight: 700; }
+.bbcc-faq-item-icon { color: var(--bbcc-ink); }
+.bbcc-faq-item[open] .bbcc-faq-item-icon { transform: rotate(90deg); }
+.bbcc-faq-item-body { padding: 4px 0 28px; max-width: 700px; font-size: 14px; }
+
+@media (max-width: 991px) {
+  .bbcc-side-nav { flex-direction: row; flex-wrap: wrap; gap: 8px 22px; }
+  .bbcc-side-nav-link { font-size: 1.5rem; }
+}
+
+/* ---------- side nav (Legal, FAQ) ---------- */
+.bbcc-side-nav { display: flex; flex-direction: column; gap: 14px; }
+.bbcc-side-nav-link {
+  display: inline-block; width: fit-content;
+  font-family: var(--bbcc-font-title); font-size: 2rem; line-height: 1.2; color: var(--bbcc-ink);
+  border-bottom: 2px solid transparent; padding-bottom: 2px;
+}
+.bbcc-side-nav-link:hover { color: var(--bbcc-ink-soft); text-decoration: none; }
+.bbcc-side-nav-link.active { border-bottom-color: var(--bbcc-ink); }
+
+.bbcc-legal-content h2 { font-size: 1.9rem; margin-top: 2.2em; }
+.bbcc-legal-content > p:first-child { margin-bottom: 2.2em; }
+
+/* ---------- FAQ accordion (thin rules, chevron) ---------- */
+.bbcc-faq-list { border-top: 1px solid var(--bbcc-book); }
+.bbcc-faq-item { border-bottom: 1px solid var(--bbcc-book); }
+.bbcc-faq-item summary { padding: 20px 0; font-size: 14px; color: var(--bbcc-ink); }
+.bbcc-faq-item[open] summary { font-weight: 700; }
+.bbcc-faq-item-icon { color: var(--bbcc-ink); }
+.bbcc-faq-item-body { padding: 4px 0 28px; max-width: 700px; font-size: 14px; }
+
+@media (max-width: 991px) {
+  .bbcc-side-nav { flex-direction: row; flex-wrap: wrap; gap: 8px 22px; }
+  .bbcc-side-nav-link { font-size: 1.5rem; }
+}
+
+/* ---------- About ---------- */
+.bbcc-about-image { width: 100%; aspect-ratio: 3 / 2; object-fit: cover; display: block; }
+.bbcc-about-row { margin-top: 56px; }
+.bbcc-about-intro .bbcc-title-lg { margin-bottom: 20px; }
+.bbcc-history .bbcc-title-md { font-size: 2.1rem; }
+.bbcc-fullbanner { height: clamp(260px, 36vw, 520px); }
+.bbcc-fullbanner-tall { height: clamp(260px, 32vw, 460px); }
+.bbcc-vision-tan { background: #d5cab4; }
+.bbcc-vision-tan .bbcc-title-md { font-size: 2rem; }
+.bbcc-team-head { margin-bottom: 40px; }
+.bbcc-team-head p { margin-bottom: 14px; }
+
+/* ---------- Team page ---------- */
+.bbcc-team-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 48px 24px; }
+.bbcc-team-card { background: transparent; }
+.bbcc-team-card-image { display: block; background: var(--bbcc-bg-alt); margin-bottom: 16px; }
+.bbcc-team-card-image img { width: 100%; height: auto; aspect-ratio: 4 / 5; object-fit: cover; display: block; }
+.bbcc-team-card-meta { display: block; color: var(--bbcc-book); font-size: 12px; margin-bottom: 6px; }
+.bbcc-team-card-name { font-family: var(--bbcc-font-title); text-transform: none; letter-spacing: 0; font-size: 1.8rem; font-weight: 400; line-height: 1.15; margin: 0 0 8px; }
+.bbcc-team-card-bio { font-size: 13px; line-height: 1.6; color: var(--bbcc-ink); margin: 0; }
+.bbcc-team-card-hidden { display: none; }
+
+/* ---------- MITS Academy ---------- */
+.bbcc-mits-coaches { padding-right: 0; overflow: hidden; }
+.bbcc-coach-tile { position: relative; overflow: hidden; aspect-ratio: 4 / 5; background: var(--bbcc-blue); }
+.bbcc-coach-tile img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.bbcc-coach-tile-shade { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,.65), rgba(0,0,0,0) 55%); }
+.bbcc-coach-tile-body { position: absolute; left: 0; right: 0; bottom: 0; padding: 22px; color: #fff; }
+.bbcc-coach-tile-name { display: block; font-family: var(--bbcc-font-title); font-size: 1.7rem; line-height: 1.1; margin-bottom: 4px; }
+.bbcc-coach-tile-role { display: block; font-size: 12px; line-height: 1.5; }
+
+.bbcc-mits-split { background: var(--bbcc-bg); padding: 72px 0; }
+.bbcc-mits-split-body, .bbcc-mits-contact { background: var(--bbcc-blue); color: var(--bbcc-cream); padding: 56px; }
+.bbcc-mits-split-body p, .bbcc-mits-contact p, .bbcc-mits-contact .bbcc-info-body { color: var(--bbcc-cream); font-size: 13px; line-height: 1.7; }
+.bbcc-mits-contact .bbcc-vision-label { color: var(--bbcc-cream); font-family: var(--bbcc-font-title); text-transform: none; letter-spacing: 0; font-size: 1.5rem; font-weight: 400; margin-bottom: 22px; }
+.bbcc-mits-contact .bbcc-info-icon { background: #b9c3cc; color: var(--bbcc-blue); }
+.bbcc-mits-split-body .bbcc-btn, .bbcc-mits-contact-actions .bbcc-btn {
+  background: #8fb7c0; border-color: #8fb7c0; color: var(--bbcc-blue); text-transform: none; letter-spacing: 0; font-size: 13px; padding: 12px 28px; width: auto; align-self: flex-start;
+}
+.bbcc-mits-split-body .bbcc-btn:hover, .bbcc-mits-contact-actions .bbcc-btn:hover { background: #a3c4cc; border-color: #a3c4cc; color: var(--bbcc-blue); }
+
+@media (max-width: 991px) {
+  .bbcc-team-grid { grid-template-columns: repeat(2, 1fr); gap: 36px 16px; }
+  .bbcc-mits-split-body, .bbcc-mits-contact { padding: 32px; }
+  .bbcc-mits-coaches { padding-right: 16px; }
+}
+@media (max-width: 575px) {
+  .bbcc-team-grid { grid-template-columns: 1fr; }
+  .bbcc-about-row { margin-top: 36px; }
+}
+
+/* ---------- Blog / events / highlights ---------- */
+.bbcc-featured-post { display: grid; grid-template-columns: 5fr 7fr; gap: 56px; align-items: center; margin-bottom: 72px; }
+.bbcc-featured-post-copy p { font-size: 14px; line-height: 1.7; margin: 14px 0 18px; }
+.bbcc-featured-post-copy .bbcc-title-md { font-size: 2.2rem; margin-bottom: 0; }
+.bbcc-featured-post-copy .bbcc-title-md a { color: var(--bbcc-ink); }
+.bbcc-featured-post-copy .bbcc-title-md a:hover { text-decoration: none; color: var(--bbcc-ink-soft); }
+.bbcc-featured-post-image { display: block; background: var(--bbcc-bg-alt); }
+.bbcc-featured-post-image img { width: 100%; aspect-ratio: 3 / 2; object-fit: cover; display: block; }
+
+.bbcc-post-grid-2 { grid-template-columns: repeat(2, 1fr); }
+.bbcc-post-grid-2 .bbcc-post-card-image img, .bbcc-post-grid-2 .bbcc-post-card-image .bbcc-post-image-ph { aspect-ratio: 4 / 3; }
+
+.bbcc-article-meta-line { font-size: 12px; color: var(--bbcc-ink-soft); margin: 18px 0 0; white-space: pre-wrap; }
+.bbcc-article-photo { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; display: block; margin-bottom: 32px; }
+.bbcc-article-sidebar-block { margin-bottom: 28px; }
+.bbcc-article-share a {
+  width: 38px; height: 38px; border-radius: 50%; background: var(--bbcc-ink); color: var(--bbcc-cream);
+  display: inline-flex; align-items: center; justify-content: center; font-size: 14px;
+}
+.bbcc-article-share a:hover { background: var(--bbcc-ink-soft); color: var(--bbcc-cream); }
+.bbcc-article-body { max-width: 760px; }
+.bbcc-article-body img { max-width: 100%; height: auto; }
+.bbcc-highlight-media { padding-top: 24px; }
+
+/* CTA band: image sizes */
+.bbcc-cta-band .bbcc-solid-btn { margin-top: 8px; }
+
+@media (max-width: 991px) {
+  .bbcc-featured-post { grid-template-columns: 1fr; gap: 28px; margin-bottom: 48px; }
+  .bbcc-featured-post-image { order: -1; }
+  .bbcc-post-grid-2 { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 575px) {
+  .bbcc-post-grid-2 { grid-template-columns: 1fr; }
+}
+
+/* ---------- Dining & Grab & Go ---------- */
+.bbcc-dining-card-image { position: relative; display: block; }
+.bbcc-dining-card-image img:first-child, .bbcc-dining-grid .bbcc-post-card-image img, .bbcc-dining-grid .bbcc-post-image-ph { aspect-ratio: 1 / 1; }
+.bbcc-dining-card-image .bbcc-dining-card-logo {
+  position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+  width: auto; height: auto; max-width: 58%; max-height: 30%; aspect-ratio: auto; object-fit: contain; pointer-events: none;
+}
+.bbcc-strip-tall { height: clamp(240px, 32vw, 460px); }
+
+.bbcc-resto-tabs { background: var(--bbcc-bg); padding-top: 12px; }
+.bbcc-filter-tabs-top { margin-top: 0; }
+.bbcc-intro-fact { margin: 0 0 4px; }
+.bbcc-intro-desc .bbcc-solid-btn { margin-top: 16px; }
+
+.bbcc-grabgo-menu { background: var(--bbcc-bg); }
+.bbcc-grabgo-menu .bbcc-menu-tabs { margin: 0 0 32px; }
+.bbcc-menu-card { background: transparent; border: 1px solid var(--bbcc-line); border-radius: 0; }
+.bbcc-menu-card-picked { border-color: var(--bbcc-book); }
+.bbcc-menu-card-cat { font-size: 11px; }
+.bbcc-menu-card-name { font-family: var(--bbcc-font-body); font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; }
+.bbcc-menu-card-price { font-size: 13px; margin-bottom: 10px; }
+.bbcc-qty-btn { background: var(--bbcc-book); color: var(--bbcc-footer); border-color: var(--bbcc-book); }
+.bbcc-qty-btn:hover { background: #a8946d; }
+
+.bbcc-howitworks .bbcc-step { background: var(--bbcc-footer); color: var(--bbcc-cream); border: 0; padding: 18px 28px; }
+.bbcc-howitworks .bbcc-step-icon, .bbcc-howitworks .bbcc-step-label { color: var(--bbcc-cream); }
+
+button.bbcc-filter-tab { background: none; border: 0; border-bottom: 2px solid transparent; font-family: inherit; cursor: pointer; padding: 0 0 14px; margin-bottom: -1px; }
+button.bbcc-filter-tab.active { border-bottom-color: var(--bbcc-ink); }
+
+/* ---------- round 2 fixes ---------- */
+/* contact details */
+.bbcc-contact-block { font-size: 15px; line-height: 1.7; color: var(--bbcc-ink); }
+.bbcc-contact-block p { margin: 0 0 14px; color: var(--bbcc-ink); }
+.bbcc-contact-block a { color: var(--bbcc-ink); }
+.bbcc-contact-block a:hover { text-decoration: underline; }
+
+/* every grey / black button takes the Book Now colour */
+.bbcc-btn, .btn-light-gray, .btn-dark-gray, .btn-dark, .btn-black {
+  background: var(--bbcc-book); border-color: var(--bbcc-book); color: var(--bbcc-footer);
+}
+.bbcc-btn:hover, .bbcc-btn:focus, .btn-light-gray:hover, .btn-light-gray:focus,
+.btn-dark-gray:hover, .btn-dark-gray:focus, .btn-dark:hover, .btn-dark:focus, .btn-black:hover, .btn-black:focus {
+  background: #a8946d; border-color: #a8946d; color: var(--bbcc-footer);
+}
+.btn-dark.text-white, .btn-dark-gray.text-white { color: var(--bbcc-footer) !important; }
+.btn-light-gray[disabled], .btn-light-gray.disabled, .bbcc-btn[disabled], .bbcc-btn.disabled { opacity: .55; }
+
+/* footer links: bright white on hover and when active */
+.bbcc-footer a:hover, .bbcc-footer a:focus,
+.bbcc-footer-links a:hover, .bbcc-footer-legal a:hover { color: #fff !important; opacity: 1; text-decoration: none; }
+.bbcc-footer a.active, .bbcc-footer-links a.active, .bbcc-footer-legal a.active { color: #fff !important; font-weight: 600; text-decoration: none; }
+.bbcc-footer-legal a { color: rgba(245,242,232,.75); }
+
+/* socials sit close to the left edge */
+.bbcc-socials-inner { padding-left: clamp(16px, 2.2vw, 40px); }
+
+/* pagination */
+.bbcc-pagination { gap: 12px; }
+.bbcc-pagination-page { min-width: 34px; height: 36px; font-size: 16px; font-weight: 300; }
+.bbcc-pagination-page.active { font-weight: 500; }
+.bbcc-pagination-arrow { width: 40px; height: 40px; font-size: 16px; }
+.bbcc-pagination-arrow[rel=prev] { background: var(--bbcc-book); color: var(--bbcc-footer); }
+.bbcc-pagination-arrow.bbcc-pagination-arrow-disabled { background: #e6dfcd; color: #a7a094; }
+.bbcc-pagination-arrow-disabled { cursor: default; }
+.bbcc-pagination-arrow-disabled.bbcc-pagination-arrow[aria-hidden] { pointer-events: none; }
+.bbcc-location-info.bbcc-page-body { padding-bottom: 48px; }

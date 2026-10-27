@@ -1,58 +1,36 @@
-<% if @highlight.image.attached? %>
-    <!-- start highlight hero -->
-    <section class="bbcc-article-hero" style="background-image:url('<%= url_for(@highlight.image) %>');" aria-label="<%= @highlight.title %>"></section>
-    <!-- end highlight hero -->
-<% end %>
-
-<%= render "shared/breadcrumb", crumbs: [
-  { label: "Highlights", path: highlights_path },
-  { label: @highlight.title }
-] %>
-
-<!-- start highlight content -->
-<section class="bbcc-section bbcc-article">
+<% content_for :header_light, true %>
+<!-- start highlight head -->
+<section class="bbcc-intro-head">
     <div class="container-lg">
-        <div class="row g-4 g-lg-5">
+        <div class="row g-4 g-lg-5 align-items-start">
             <div class="col-12 col-lg-4">
-                <div class="bbcc-article-sidebar-block">
-                    <h1 class="bbcc-article-title"><%= @highlight.title %></h1>
-                    <p class="bbcc-article-bio"><%= @highlight.short_description %></p>
-                    <%= link_to "Contact Us Now", get_contact_path, class: "bbcc-btn" %>
-                </div>
+                <h1 class="bbcc-title-lg bbcc-intro-title"><%= @highlight.title %></h1>
+                <p class="bbcc-intro-desc"><%= @highlight.short_description %></p>
             </div>
             <div class="col-12 col-lg-8">
-                <div class="bbcc-article-body">
-                    <%= raw @highlight.content %>
-                </div>
-
-                <% if @highlight.images.attached? %>
-                    <div class="row g-3 bbcc-article-gallery">
-                        <% @highlight.images.each do |img| %>
-                            <div class="col-12 col-md-6">
-                                <%= image_tag img.variant(resize_to_fill: [750, 500]), alt: @highlight.title %>
-                            </div>
-                        <% end %>
-                    </div>
-                <% end %>
+                <div class="bbcc-prose bbcc-article-body"><%= raw @highlight.content %></div>
             </div>
         </div>
     </div>
 </section>
-<!-- end highlight content -->
+<!-- end highlight head -->
 
-<% if @highlights.any? %>
-<!-- start other highlights -->
-<section class="bbcc-section bbcc-blog">
+<% if @highlight.image.attached? || @highlight.images.attached? %>
+<!-- start highlight images -->
+<section class="bbcc-page-body bbcc-highlight-media">
     <div class="container-lg">
-        <div class="bbcc-section-head bbcc-section-head-center">
-            <h2 class="bbcc-section-title">Other BBCC Highlights</h2>
-        </div>
-        <div class="row g-4">
-            <%= render partial: "card", collection: @highlights, as: :highlight %>
+        <div class="bbcc-square-grid">
+            <% if @highlight.image.attached? %>
+                <%= image_tag @highlight.image.variant(resize_to_fill: [900, 900]), alt: @highlight.title %>
+            <% end %>
+            <% @highlight.images.each do |img| %>
+                <%= image_tag img.variant(resize_to_fill: [900, 900]), alt: @highlight.title, loading: "lazy" %>
+            <% end %>
         </div>
     </div>
 </section>
-<!-- end other highlights -->
+<!-- end highlight images -->
 <% end %>
 
-<%= render "home/blogs" %>
+<%= render "shared/bbcc_highlights", title: "Other Highlights", highlights: @highlights %>
+<%= render "home/social_media" %>

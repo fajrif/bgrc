@@ -1,6 +1,10 @@
 <%= paginator.render do -%>
   <nav class="bbcc-pagination" aria-label="Pagination">
-    <%= prev_page_tag unless current_page.first? %>
+    <% if current_page.first? %>
+      <span class="bbcc-pagination-arrow bbcc-pagination-arrow-disabled" aria-hidden="true"><i class="fa-solid fa-angle-left"></i></span>
+    <% else %>
+      <%= prev_page_tag %>
+    <% end %>
     <% each_page do |page| -%>
       <% if page.display_tag? -%>
         <%= page_tag page %>
@@ -8,6 +12,10 @@
         <%= gap_tag %>
       <% end -%>
     <% end -%>
-    <%= next_page_tag unless current_page.last? %>
+    <% if current_page.last? %>
+      <span class="bbcc-pagination-arrow bbcc-pagination-arrow-disabled" aria-hidden="true"><i class="fa-solid fa-angle-right"></i></span>
+    <% else %>
+      <%= next_page_tag %>
+    <% end %>
   </nav>
 <% end -%>

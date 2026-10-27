@@ -2,7 +2,6 @@ class InquiriesController < ApplicationController
 
   def show
 		@inquiry = Inquiry.new
-    @banner = BannerSection.where(name: "Contact").first.banners.first
     @articles = Article.where(status: 1).first(3)
   end
 

@@ -3,74 +3,48 @@
   items = @articles.to_a
   featured = is_first_page ? items.first : nil
   rest = is_first_page ? items.drop(1) : items
+  tabs = [{ label: "All", path: blogs_path, active: @category.nil? }] +
+         @categories.map { |c| { label: c.name, path: blogs_path(category_id: c.id), active: @category == c } }
 %>
-<%= render "shared/page_hero", banner: @banner, crumbs: [{ label: "Blog" }] %>
+<%= render "shared/page_intro", title: "BBCC Blogs", tabs: tabs,
+    description: simple_format("Stories, tips and updates from Bali Beach Country Club \u2014 golf, racquet sports, wellness and everything happening on property.") %>
 
 <!-- start blog index -->
-<section class="bbcc-section bbcc-blog-index">
+<section class="bbcc-page-body bbcc-blog-index">
     <div class="container-lg">
-        <div class="bbcc-section-head bbcc-section-head-center">
-            <h1 class="bbcc-section-title">Blogs</h1>
-            <p class="bbcc-lead bbcc-section-sub">
-                Stories, tips and updates from Bali Beach Country Club &mdash; golf, racquet sports,
-                wellness and everything happening on property.
-            </p>
-        </div>
-
-        <nav class="bbcc-tabs bbcc-tabs-center" aria-label="Blog categories">
-            <%= link_to "All", blogs_path, class: ["bbcc-tab", ("active" if @category.nil?)] %>
-            <% @categories.each do |category| %>
-                <%= link_to category.name, blogs_path(category_id: category.id), class: ["bbcc-tab", ("active" if @category == category)] %>
-            <% end %>
-        </nav>
-
         <% if items.any? %>
             <% if featured %>
-                <article class="bbcc-featured-post row g-0 align-items-stretch margin-40px-bottom">
-                    <div class="col-12 col-lg-6 order-lg-2">
-                        <div class="bbcc-featured-post-image" style="background-image:url('<%= url_for(featured.image) %>');"></div>
+                <article class="bbcc-featured-post">
+                    <div class="bbcc-featured-post-copy">
+                        <span class="bbcc-post-card-meta"><%= featured.published_date&.strftime('%d %b %Y') %><span>|</span><%= featured.category&.name %></span>
+                        <h2 class="bbcc-title-md"><%= link_to featured.title, get_blog_path(featured) %></h2>
+                        <p><%= featured.short_description.to_s.truncate(320) %></p>
+                        <%= link_to "Discover more", get_blog_path(featured), class: "bbcc-text-link" %>
                     </div>
-                    <div class="col-12 col-lg-6 order-lg-1">
-                        <div class="bbcc-featured-post-body">
-                            <span class="bbcc-post-meta">
-                                <%= featured.published_date&.strftime('%d %b %Y') %>
-                                &nbsp;|&nbsp; <%= featured.category.name %>
-                            </span>
-                            <h2 class="bbcc-featured-post-title"><%= featured.title %></h2>
-                            <p><%= featured.short_description.to_s.truncate(280) %></p>
-                            <%= link_to "Read More", get_blog_path(featured), class: "bbcc-btn" %>
-                        </div>
-                    </div>
+                    <%= link_to get_blog_path(featured), class: "bbcc-featured-post-image" do %>
+                        <% if featured.image.attached? %>
+                            <%= image_tag featured.image.variant(resize_to_fill: [1200, 800]), alt: featured.title %>
+                        <% end %>
+                    <% end %>
                 </article>
             <% end %>
 
             <% if rest.any? %>
-                <div class="row g-4">
+                <div class="bbcc-post-grid">
                     <% rest.each do |article| %>
-                        <div class="col-12 col-md-6 col-lg-4">
-                            <article class="bbcc-post">
-                                <%= link_to get_blog_path(article), class: "bbcc-post-image" do %>
-                                    <%= image_tag article.image.variant(resize_to_fill: [750, 500]), alt: article.title %>
-                                <% end %>
-                                <div class="bbcc-post-body">
-                                    <span class="bbcc-post-meta">
-                                        <%= article.published_date&.strftime('%d %b %Y') %>
-                                        &nbsp;|&nbsp; <%= article.category.name %>
-                                    </span>
-                                    <%= link_to article.title, get_blog_path(article), class: "bbcc-post-title" %>
-                                    <p class="bbcc-post-excerpt"><%= article.short_description.to_s.truncate(120) %></p>
-                                    <%= link_to "Read More", get_blog_path(article), class: "bbcc-btn" %>
-                                </div>
-                            </article>
-                        </div>
+                        <%= render "shared/post_card", path: get_blog_path(article), title: article.title, image: article.image,
+                            meta: safe_join([article.published_date&.strftime('%d %b %Y'), tag.span("|"), article.category&.name]),
+                            excerpt: article.short_description.to_s.truncate(120) %>
                     <% end %>
                 </div>
             <% end %>
 
             <%= paginate @articles, theme: "bbcc" %>
         <% else %>
-            <p class="bbcc-faq-empty">No articles in this category yet.</p>
+            <p class="bbcc-empty">No articles in this category yet.</p>
         <% end %>
     </div>
 </section>
 <!-- end blog index -->
+
+<%= render "home/social_media" %>

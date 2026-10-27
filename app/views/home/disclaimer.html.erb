@@ -1,25 +1,23 @@
-<%= render "shared/page_hero", banner: @banner, crumbs: [{ label: "Disclaimer" }] %>
-
-<!-- start disclaimer -->
-<section class="bbcc-section bbcc-legal-page">
+<% content_for :header_light, true %>
+<!-- start legal -->
+<section class="bbcc-page-body bbcc-legal-page">
     <div class="container-lg">
         <div class="row g-4 g-lg-5">
-            <div class="col-12 col-lg-3">
+            <div class="col-12 col-lg-4">
                 <%= render "shared/legal_nav", active: :disclaimer %>
             </div>
-            <div class="col-12 col-lg-9">
-                <p class="bbcc-lead">
-                    Welcome to the Bali Beach Country Club Disclaimer page. By accessing this website,
-                    you agree to be bound by the terms of this disclaimer. If you do not agree with
-                    these terms, please do not use the Site.
-                </p>
-                <% if @snippet %>
-                    <div class="bbcc-article-body bbcc-legal-content"><%= raw @snippet.content %></div>
-                <% else %>
-                    <p class="bbcc-faq-empty">Content coming soon.</p>
-                <% end %>
+            <div class="col-12 col-lg-8">
+                <div class="bbcc-prose bbcc-legal-content">
+                    <p>Welcome to the Bali Beach Country Club Disclaimer page. By accessing this website, you agree to be bound by the terms of this disclaimer. If you do not agree with these terms, please do not use the Site.</p>
+                    <% if @snippet %>
+                        <%= raw @snippet.content %>
+                    <% else %>
+                        <p class="bbcc-faq-empty">Content coming soon.</p>
+                    <% end %>
+                </div>
             </div>
         </div>
     </div>
 </section>
-<!-- end disclaimer -->
+<!-- end legal -->
+<%= render "home/social_media" %>

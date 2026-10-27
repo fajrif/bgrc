@@ -1,0 +1,25 @@
+<%# locals: title:, description: (optional, plain text or html_safe), tabs: (optional, array of { label:, path:, active: }) %>
+<% content_for :header_light, true %>
+<!-- start page intro -->
+<section class="bbcc-intro-head">
+    <div class="container-lg">
+        <div class="row g-4 g-lg-5 align-items-start">
+            <div class="col-12 col-lg-4">
+                <h1 class="bbcc-title-lg bbcc-intro-title"><%= title %></h1>
+            </div>
+            <% if local_assigns[:description].present? %>
+                <div class="col-12 col-lg-8">
+                    <div class="bbcc-intro-desc"><%= description %></div>
+                </div>
+            <% end %>
+        </div>
+        <% if local_assigns[:tabs].present? %>
+            <nav class="bbcc-filter-tabs" aria-label="<%= title %> filter">
+                <% tabs.each do |tab| %>
+                    <%= link_to tab[:label], tab[:path], class: ["bbcc-filter-tab", ("active" if tab[:active])], "aria-current": (tab[:active] ? "page" : nil) %>
+                <% end %>
+            </nav>
+        <% end %>
+    </div>
+</section>
+<!-- end page intro -->

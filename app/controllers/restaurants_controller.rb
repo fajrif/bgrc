@@ -12,7 +12,6 @@ class RestaurantsController < ApplicationController
   GRAB_AND_GO_SLUG = "grab-and-go".freeze
 
   def index
-    @banner      = BannerSection.where(name: "Dining").first&.banners&.first
     @restaurants = Restaurant.order(:position)
     @articles    = Article.where(status: 1).first(3)
     @meta_title  = "Dining"

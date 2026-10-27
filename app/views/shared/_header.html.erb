@@ -9,7 +9,7 @@
                     <span class="bbcc-menu-label">Menu</span>
                 </button>
                 <%= link_to root_path, class: "bbcc-logo" do %>
-                    <%= image_tag "new-design/logo.png", alt: "Bali Beach Country Club" %>
+                    <%= image_tag(content_for?(:header_light) ? "new-design/logo-dark.png" : "new-design/logo.png", alt: "Bali Beach Country Club") %>
                 <% end %>
                 <a href="<%= golf_path %>" class="bbcc-book-btn">Book Now</a>
                 <a href="<%= golf_path %>" class="bbcc-book-btn bbcc-book-btn-mobile">Book</a>

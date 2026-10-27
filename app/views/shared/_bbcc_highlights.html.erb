@@ -1,10 +1,10 @@
-<%# Rendered from several pages that do not all set an ivar, so it queries its own data. %>
-<% bbcc_highlights = Highlight.published.limit(9) %>
+<%# locals (optional): title:, highlights: — otherwise it queries its own data, since it is rendered from several pages that do not all set an ivar. %>
+<% bbcc_highlights = local_assigns[:highlights] || Highlight.published.limit(9) %>
 <% if bbcc_highlights.any? %>
 <!-- start bbcc highlights -->
 <section class="bbcc-section bbcc-section-alt bbcc-highlights-grid">
     <div class="container-lg">
-        <h2 class="bbcc-title-lg">BBCC Highlights</h2>
+        <h2 class="bbcc-title-lg"><%= local_assigns[:title] || "BBCC Highlights" %></h2>
         <div class="bbcc-swiper bbcc-slider" data-slides="1.15,2,3,3">
             <div class="swiper-wrapper">
                 <% bbcc_highlights.each do |highlight| %>

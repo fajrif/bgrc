@@ -1,0 +1,14 @@
+<%# locals: path:, title:, image: (attachment or nil), meta: (html-safe string, optional), excerpt: (optional), label: (link text, default "Discover more") %>
+<article class="bbcc-post-card">
+    <%= link_to path, class: "bbcc-post-card-image" do %>
+        <% if local_assigns[:image]&.attached? %>
+            <%= image_tag image.variant(resize_to_fill: [750, 940]), alt: title, loading: "lazy" %>
+        <% else %>
+            <span class="bbcc-post-image-ph" style="background-image:url('<%= image_url('images/image-4.png') %>');"></span>
+        <% end %>
+    <% end %>
+    <% if local_assigns[:meta].present? %><span class="bbcc-post-card-meta"><%= meta %></span><% end %>
+    <h3 class="bbcc-post-card-title"><%= link_to title, path %></h3>
+    <% if local_assigns[:excerpt].present? %><p><%= excerpt %></p><% end %>
+    <%= link_to local_assigns[:label] || "Discover more", path, class: "bbcc-text-link" %>
+</article>

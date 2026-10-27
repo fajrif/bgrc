@@ -1,51 +1,40 @@
 <%
   initial_count = 6
+  tabs = [{ label: "ALL", path: our_team_path, active: @section == "all" }] +
+         TeamMember::DEPARTMENTS.map { |key| { label: TeamMember.department_label(key), path: our_team_path(department: key), active: @section == key } }
 %>
-<%= render "shared/page_hero", banner: @banner, crumbs: [{ label: "About Us", path: about_path }, { label: "Our Team" }] %>
+<%= render "shared/page_intro", title: "BBCC Team", tabs: tabs,
+    description: simple_format("From the clubhouse kitchen to the practice courts, the people of Bali Beach Country Club are what turn a visit into a membership.") %>
 
 <!-- start our team -->
-<section class="bbcc-section bbcc-team-page">
+<section class="bbcc-page-body bbcc-team-page">
     <div class="container-lg">
-        <nav class="bbcc-tabs" aria-label="Team departments">
-            <%= link_to "All", our_team_path, class: ["bbcc-tab", ("active" if @section == "all")] %>
-            <% TeamMember::DEPARTMENTS.each do |key| %>
-                <%= link_to TeamMember.department_label(key), our_team_path(department: key), class: ["bbcc-tab", ("active" if @section == key)] %>
-            <% end %>
-        </nav>
-
         <% if @team_members.present? %>
-            <div class="row g-4">
+            <div class="bbcc-team-grid">
                 <% @team_members.each_with_index do |member, index| %>
-                    <div class="col-12 col-sm-6 col-lg-4<%= " bbcc-team-card-hidden" if index >= initial_count %>">
-                        <article class="bbcc-team-card">
-                            <span class="bbcc-team-card-image">
-                                <% if member.photo.attached? %>
-                                    <%= image_tag member.photo.variant(resize_to_fill: [500, 580]), alt: member.name %>
-                                <% end %>
-                            </span>
-                            <div class="bbcc-team-card-body">
-                                <div class="bbcc-team-card-meta">
-                                    <span class="bbcc-team-card-dept"><%= member.department_label %></span>
-                                    <span class="bbcc-team-card-role"><%= member.role %></span>
-                                </div>
-                                <span class="bbcc-team-card-name"><%= member.name %></span>
-                                <p class="bbcc-team-card-bio"><%= member.bio %></p>
-                            </div>
-                        </article>
-                    </div>
+                    <article class="bbcc-team-card<%= " bbcc-team-card-hidden" if index >= initial_count %>">
+                        <span class="bbcc-team-card-image">
+                            <% if member.photo.attached? %>
+                                <%= image_tag member.photo.variant(resize_to_fill: [600, 720]), alt: member.name, loading: "lazy" %>
+                            <% end %>
+                        </span>
+                        <span class="bbcc-team-card-meta"><%= member.department_label %> | <%= member.role %></span>
+                        <h2 class="bbcc-team-card-name"><%= member.name %></h2>
+                        <p class="bbcc-team-card-bio"><%= member.bio %></p>
+                    </article>
                 <% end %>
             </div>
             <% if @team_members.size > initial_count %>
-                <div class="text-center">
-                    <button type="button" class="bbcc-btn bbcc-view-more" data-target=".bbcc-team-card-hidden">View More</button>
+                <div class="bbcc-view-more-wrap">
+                    <button type="button" class="bbcc-solid-btn bbcc-view-more" data-target=".bbcc-team-card-hidden">View More</button>
                 </div>
             <% end %>
         <% else %>
-            <p class="bbcc-faq-empty">No team members in this department yet.</p>
+            <p class="bbcc-empty">No team members in this department yet.</p>
         <% end %>
     </div>
 </section>
 <!-- end our team -->
 
-<%= render "shared/bbcc_highlights" %>
 <%= render "home/blogs" %>
+<%= render "home/social_media" %>

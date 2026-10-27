@@ -1,5 +1,4 @@
 class HighlightsController < ApplicationController
-  before_action :set_banner, only: [:index]
 
   def index
     # get public highlights — the club calendar: socials, clinics and fixtures
@@ -19,9 +18,4 @@ class HighlightsController < ApplicationController
     @articles = Article.where(status: 1).first(3)
   end
 
-  private
-
-  def set_banner
-    @banner = BannerSection.where(name: "Highlights").first&.banners&.first
-  end
 end

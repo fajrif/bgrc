@@ -363,7 +363,7 @@ html, body { height: auto; min-height: 100%; }
 /* =====================================================================
    MITS PARTNER
    ===================================================================== */
-.bbcc-mits-image { width: 100%; height: 260px; background-size: cover; background-position: center; }
+.bbcc-mits-image { width: 100%; /*height: 260px;*/ background-size: cover; background-position: center; }
 
 /* =====================================================================
    EVENTS (accordion + image)

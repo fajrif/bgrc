@@ -1,8 +1,6 @@
 class EventsController < ApplicationController
   include LocalizedLookup
 
-  before_action :set_banner
-
   def index
     @event_types    = EventType.ordered
     @gallery_images = Event.all.filter_map { |e| e.image if e.image.attached? } +
@@ -27,11 +25,4 @@ class EventsController < ApplicationController
     @meta_desc  = @event_type.short_description
   end
 
-  private
-
-  # An event type with its own banner fronts its page with it; the rest fall
-  # back to the shared Events banner.
-  def set_banner
-    @banner = BannerSection.where(name: "Events").first&.banners&.first
-  end
 end

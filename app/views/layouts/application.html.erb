@@ -43,7 +43,7 @@
 	<%= stylesheet_link_tag 'application', media: 'all' %>
 	<%= yield :head %>
 </head>
-<body class="w-100<%= ' bbcc-has-hero' if content_for?(:hero) %>">
+<body class="w-100<%= ' bbcc-has-hero' if content_for?(:hero) %><%= ' bbcc-header-light' if content_for?(:header_light) %>">
 	<%= render "shared/header" %>
   <% if flash.count > 0 %>
   <div class="container">

@@ -5,18 +5,16 @@
   }
   initial_count = 12
 %>
-<%= render "shared/page_hero", banner: @banner, crumbs: [{ label: "About Us", path: about_path }, { label: "Gallery" }] %>
+<%
+  tabs = [{ label: "All", path: gallery_path, active: @section == "all" }] +
+         gallery_labels.map { |key, label| { label: label, path: gallery_path(category: key), active: @section == key } }
+%>
+<%= render "shared/page_intro", title: "BBCC Gallery", tabs: tabs,
+    description: simple_format("Moments from across the club \u2014 the courts, the greens, the studio, the table and the beach.") %>
 
 <!-- start gallery -->
-<section class="bbcc-section bbcc-gallery-page">
+<section class="bbcc-page-body bbcc-gallery-page">
     <div class="container-lg">
-        <nav class="bbcc-tabs" aria-label="Gallery categories">
-            <%= link_to "All", gallery_path, class: ["bbcc-tab", ("active" if @section == "all")] %>
-            <% gallery_labels.each do |key, label| %>
-                <%= link_to label, gallery_path(category: key), class: ["bbcc-tab", ("active" if @section == key)] %>
-            <% end %>
-        </nav>
-
         <% if @items.present? %>
             <div class="bbcc-masonry">
                 <% @items.each_with_index do |image, index| %>
@@ -26,8 +24,8 @@
                 <% end %>
             </div>
             <% if @items.size > initial_count %>
-                <div class="text-center">
-                    <button type="button" class="bbcc-btn bbcc-view-more" data-target=".bbcc-masonry-item-hidden">View More</button>
+                <div class="bbcc-view-more-wrap">
+                    <button type="button" class="bbcc-solid-btn bbcc-view-more" data-target=".bbcc-masonry-item-hidden">View More</button>
                 </div>
             <% end %>
         <% else %>
@@ -37,5 +35,4 @@
 </section>
 <!-- end gallery -->
 
-<%= render "shared/bbcc_highlights" %>
 <%= render "home/blogs" %>

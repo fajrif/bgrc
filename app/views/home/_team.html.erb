@@ -1,48 +1,44 @@
+<%
+  teams = [
+    { label: "F&B Team", image: "facilities/restaurant.png", dept: "fnb",
+      desc: "Keeping the clubhouse, poolside bar and event spaces running \u2014 from casual lunches to full wedding receptions." },
+    { label: "Sports Coaches & Trainers", image: "coaches/danny-sousa.jpg", dept: "sports",
+      desc: "Certified coaches across golf, tennis, padel and pickleball, delivered in partnership with MITS Academy." },
+    { label: "Wellness Specialists", image: "facilities/yoga.png", dept: "specialists",
+      desc: "Yoga, pilates and recovery specialists on hand to help members train smarter and recover well." }
+  ]
+%>
 <!-- start our team -->
 <section class="bbcc-section bbcc-team">
     <div class="container-lg">
-        <div class="row g-4 g-lg-5 align-items-start margin-30px-bottom">
+        <div class="row g-4 g-lg-5 align-items-start bbcc-team-head">
             <div class="col-12 col-lg-4">
-                <h2 class="bbcc-section-title">Our Team</h2>
+                <h2 class="bbcc-title-lg">Our Team</h2>
             </div>
             <div class="col-12 col-lg-8">
-                <p class="bbcc-lead mb-0">
+                <p>
                     From the clubhouse kitchen to the practice courts, the people of Bali Beach Country
                     Club are what turn a visit into a membership. Meet the teams behind your experience.
                 </p>
+                <%= link_to "Discover more", our_team_path, class: "bbcc-text-link" %>
             </div>
         </div>
-        <div class="row g-3 g-lg-4 margin-30px-bottom">
-            <div class="col-12 col-lg-4">
-                <div class="bbcc-tile bbcc-tile-lg" style="background-image:url('<%= image_url('facilities/restaurant.png') %>');">
-                    <span class="bbcc-tile-shade"></span>
-                    <span class="bbcc-tile-body">
-                        <span class="bbcc-tile-label">F&amp;B Team</span>
-                        <span class="bbcc-tile-desc">Keeping the clubhouse, poolside bar and event spaces running &mdash; from casual lunches to full wedding receptions.</span>
-                    </span>
-                </div>
+        <div class="bbcc-swiper bbcc-slider" data-slides="1.15,2,3,3">
+            <div class="swiper-wrapper">
+                <% teams.each do |team| %>
+                    <div class="swiper-slide">
+                        <article class="bbcc-news-card">
+                            <%= link_to our_team_path(department: team[:dept]), class: "bbcc-news-card-image" do %>
+                                <%= image_tag team[:image], alt: team[:label], loading: "lazy" %>
+                            <% end %>
+                            <h3 class="bbcc-news-card-title"><%= link_to team[:label], our_team_path(department: team[:dept]) %></h3>
+                            <p><%= team[:desc] %></p>
+                            <%= link_to "Discover more", our_team_path(department: team[:dept]), class: "bbcc-text-link" %>
+                        </article>
+                    </div>
+                <% end %>
             </div>
-            <div class="col-12 col-lg-4">
-                <div class="bbcc-tile bbcc-tile-lg" style="background-image:url('<%= image_url('coaches/danny-sousa.jpg') %>');">
-                    <span class="bbcc-tile-shade"></span>
-                    <span class="bbcc-tile-body">
-                        <span class="bbcc-tile-label">Sports Coaches &amp; Trainers</span>
-                        <span class="bbcc-tile-desc">Certified coaches across golf, tennis, padel and pickleball, delivered in partnership with MITS Academy.</span>
-                    </span>
-                </div>
-            </div>
-            <div class="col-12 col-lg-4">
-                <div class="bbcc-tile bbcc-tile-lg" style="background-image:url('<%= image_url('facilities/yoga.png') %>');">
-                    <span class="bbcc-tile-shade"></span>
-                    <span class="bbcc-tile-body">
-                        <span class="bbcc-tile-label">Wellness Specialists</span>
-                        <span class="bbcc-tile-desc">Yoga, pilates and recovery specialists on hand to help members train smarter and recover well.</span>
-                    </span>
-                </div>
-            </div>
-        </div>
-        <div class="text-center">
-            <%= link_to "View All Team", our_team_path, class: "bbcc-btn" %>
+            <%= render "shared/slider_controls" %>
         </div>
     </div>
 </section>

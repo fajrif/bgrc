@@ -14,25 +14,21 @@ class HomeController < ApplicationController
 
   def about
 		# get public about
-    @banner = BannerSection.where(name: "About").first.banners.first
     @articles = Article.where(status: 1).first(3)
   end
 
   def disclaimer
 		# get public disclaimer
-    @banner = BannerSection.where(name: "Disclaimer").first.banners.first
     @snippet = Snippet.find_by_key("disclaimer")
   end
 
   def privacy
 		# get public privacy
-    @banner = BannerSection.where(name: "Privacy Policy").first.banners.first
     @snippet = Snippet.find_by_key("privacy_policy")
   end
 
   def terms
 		# get public terms & conditions — same policy snippets shown in the booking payment modal
-    @banner = BannerSection.where(name: "Terms & Conditions").first.banners.first
     @snippets = [Snippet.find_by_key("terms_and_conditions"),
                  Snippet.find_by_key("cancellation_policy"),
                  Snippet.find_by_key("refund_policy")].compact
@@ -40,7 +36,6 @@ class HomeController < ApplicationController
 
   def faq
 		# get public faq
-    @banner = BannerSection.where(name: "FAQ").first.banners.first
     @section = Question::SECTIONS.include?(params[:section]) ? params[:section] : "general"
     @faqs = Question.where(section: @section)
   end
@@ -48,7 +43,6 @@ class HomeController < ApplicationController
   def gallery
 		# get public gallery — every category pulls real, already-uploaded photos
 		# (Sport galleries, Facility photos, Event photos). No stock placeholders.
-    @banner = BannerSection.where(name: "Gallery").first.banners.first
 
     @galleries = {
       "golf"       => sport_images("Golf"),
@@ -70,7 +64,6 @@ class HomeController < ApplicationController
 
   def our_team
 		# get public our team
-    @banner = BannerSection.where(name: "Our Team").first.banners.first
     @section = TeamMember::DEPARTMENTS.include?(params[:department]) ? params[:department] : "all"
     @team_members = @section == "all" ? TeamMember.all : TeamMember.where(department: @section)
     @articles = Article.where(status: 1).first(3)
@@ -78,7 +71,6 @@ class HomeController < ApplicationController
 
   def mits_academy
 		# get public mits academy — real coaches, delivered in partnership with MITS Academy
-    @banner = BannerSection.where(name: "MITS Academy").first.banners.first
     # MITS partners with us on the racquet sports only. Stated positively so
     # coaches with no sport are excluded too, rather than by a NOT IN that
     # would drop them on a NULL comparison by accident.

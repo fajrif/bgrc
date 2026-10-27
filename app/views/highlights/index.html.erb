@@ -1,39 +1,24 @@
-<%= render "shared/page_hero", banner: @banner, crumbs: [{ label: "Highlights" }] %>
+<%
+  tabs = [{ label: "All", path: highlights_path, active: @category.nil? }] +
+         @categories.map { |c| { label: c.name, path: highlights_path(category_id: c.id), active: @category == c } }
+%>
+<%= render "shared/page_intro", title: "BBCC Highlights", tabs: tabs,
+    description: simple_format("Socials, clinics, tournaments and the regular fixtures that make up the club calendar \u2014 on the course, on the courts and around the club.") %>
 
 <!-- start highlights index -->
-<section class="bbcc-section bbcc-blog-index">
+<section class="bbcc-page-body bbcc-blog-index">
     <div class="container-lg">
-        <div class="bbcc-section-head bbcc-section-head-center">
-            <h1 class="bbcc-section-title">BBCC Highlights</h1>
-            <p class="bbcc-lead bbcc-section-sub">
-                Socials, clinics, tournaments and the regular fixtures that make up the club
-                calendar &mdash; on the course, on the courts and around the club.
-            </p>
-        </div>
-
-        <nav class="bbcc-tabs bbcc-tabs-center" aria-label="Highlight categories">
-            <%= link_to "All", highlights_path, class: ["bbcc-tab", ("active" if @category.nil?)] %>
-            <% @categories.each do |category| %>
-                <%= link_to category.name, highlights_path(category_id: category.id), class: ["bbcc-tab", ("active" if @category == category)] %>
-            <% end %>
-        </nav>
-
         <% if @highlights.any? %>
-            <div class="row g-4" id="highlights-grid">
+            <div class="bbcc-post-grid" id="highlights-grid">
                 <%= render partial: "card", collection: @highlights, as: :highlight %>
             </div>
-
-            <% unless @highlights.last_page? %>
-                <div class="text-center mt-4" id="highlights-load-more-wrap">
-                    <%= link_to "Load More", highlights_path(page: @highlights.next_page, category_id: @category&.id),
-                                remote: true, id: "highlights-load-more", class: "bbcc-btn" %>
-                </div>
-            <% end %>
+            <%= paginate @highlights, theme: "bbcc" %>
         <% else %>
-            <p class="bbcc-faq-empty">No highlights in this category yet.</p>
+            <p class="bbcc-empty">No highlights in this category yet.</p>
         <% end %>
     </div>
 </section>
 <!-- end highlights index -->
 
 <%= render "home/blogs" %>
+<%= render "home/social_media" %>

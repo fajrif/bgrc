@@ -1,79 +1,41 @@
-<%= render "shared/page_hero", banner: @banner, crumbs: [{ label: "Events" }] %>
+<%= render "shared/page_intro", title: "BBCC Events",
+    description: simple_format("Weddings, corporate events and private celebrations at Bali Beach Country Club.") %>
 
 <!-- start event types -->
-<section class="bbcc-section bbcc-service-row">
+<section class="bbcc-page-body bbcc-service-row">
     <div class="container-lg">
-        <div class="row g-4">
+        <div class="bbcc-post-grid">
             <% @event_types.each do |type| %>
-                <div class="col-12 col-md-4">
-                    <article class="bbcc-service-card">
-                        <%= link_to event_type_path(type), class: "bbcc-service-card-image" do %>
-                            <% if type.image.attached? %>
-                                <%= image_tag type.image.variant(resize_to_fill: [750, 500]), alt: type.name %>
-                            <% else %>
-                                <span class="bbcc-post-image-ph" style="background-image:url('<%= image_url('images/image-4.png') %>');"></span>
-                            <% end %>
-                        <% end %>
-                        <div class="bbcc-service-card-body">
-                            <%= link_to type.name, event_type_path(type), class: "bbcc-service-card-title" %>
-                            <p class="bbcc-service-card-desc"><%= type.short_description %></p>
-                        </div>
-                    </article>
-                </div>
+                <%= render "shared/post_card", path: event_type_path(type), title: type.name, image: type.image,
+                    excerpt: type.short_description, label: "Discover more" %>
             <% end %>
         </div>
     </div>
 </section>
 <!-- end event types -->
 
-<% if @gallery_images.any? %>
-    <!-- start gallery -->
-    <section class="bbcc-section bbcc-section-alt">
-        <div class="container-lg">
-            <div class="bbcc-section-head bbcc-section-head-center">
-                <h2 class="bbcc-section-title">Gallery</h2>
-            </div>
-            <div class="bbcc-masonry">
-                <% @gallery_images.first(12).each do |image| %>
-                    <span class="bbcc-masonry-item">
-                        <%= image_tag image.variant(resize_to_limit: [700, 700]) %>
-                    </span>
-                <% end %>
-            </div>
-        </div>
-    </section>
-    <!-- end gallery -->
-<% end %>
-
 <!-- start plan your event now -->
-<section class="bbcc-section bbcc-event-cta">
+<section class="bbcc-cta-band">
     <div class="container-lg">
-        <div class="row g-0 align-items-stretch">
-            <div class="col-12 col-lg-6">
-                <div class="bbcc-event-cta-body">
-                    <h2 class="bbcc-section-title">Plan Your Event Now</h2>
-                    <p>
-                        From an intimate wedding on the lawn to a full-scale corporate conference, our
-                        events team handles the details so you don't have to. Tell us your date, your
-                        guest count and the occasion, and we'll put together a proposal covering venue,
-                        catering, decor and entertainment tailored to your event.
-                    </p>
-                    <p>
-                        Every enquiry gets a dedicated coordinator who stays with you from the first
-                        conversation through to the day itself, and every venue on property &mdash; from
-                        the beach club to the golf course lawns &mdash; can be booked exclusively for
-                        private functions.
-                    </p>
-                    <%= link_to "Contact Us", get_contact_path, class: "bbcc-btn" %>
-                </div>
+        <div class="row g-4 g-lg-5 align-items-center">
+            <div class="col-12 col-lg-7 order-lg-1">
+                <%= image_tag "facilities/restaurant.png", alt: "", loading: "lazy" %>
             </div>
-            <div class="col-12 col-lg-6">
-                <div class="bbcc-article-cta-image" style="background-image:url('<%= image_url('facilities/restaurant.png') %>');"></div>
+            <div class="col-12 col-lg-5 order-lg-2">
+                <h2 class="bbcc-title-lg">Plan Your <br>Event Now</h2>
+                <p>
+                    From an intimate wedding on the lawn to a full-scale corporate conference, our
+                    events team handles the details so you don&rsquo;t have to. Tell us your date, your
+                    guest count and the occasion, and we&rsquo;ll put together a proposal covering venue,
+                    catering, decor and entertainment.
+                </p>
+                <%= link_to "Enquire Today", get_contact_path, class: "bbcc-solid-btn" %>
             </div>
         </div>
     </div>
 </section>
 <!-- end plan your event now -->
 
-<%= render "shared/bbcc_highlights" %>
 <%= render "home/blogs" %>
+<%= render "home/tennis_band" %>
+<%= render "home/social_media" %>

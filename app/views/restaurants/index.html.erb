@@ -1,20 +1,30 @@
-<%= render "shared/page_hero", banner: @banner, crumbs: [{ label: "Dining" }] %>
+<%
+  logos = { "tavara" => "logo-tavara.png", "kasumi" => "logo-kasumi.png", "corsa" => "logo-corsa.png", "mezzaluna" => "logo-mezzaluna.png" }
+%>
+<%= render "shared/page_intro", title: "BBCC Dining",
+    description: simple_format("From casual bites to fine dining, every table at Bali Beach Country Club tells its own story.") %>
 
 <!-- start dining venues -->
-<section class="bbcc-section bbcc-features">
+<section class="bbcc-page-body bbcc-dining-index">
     <div class="container-lg">
-        <div class="row g-3 g-lg-4">
+        <div class="bbcc-post-grid bbcc-dining-grid">
             <% @restaurants.each do |restaurant| %>
-                <div class="col-12 col-md-4">
-                    <%= link_to dining_restaurant_path(restaurant), class: "bbcc-tile bbcc-tile-sm",
-                                style: ("background-image:url('#{url_for(restaurant.image)}');" if restaurant.image.attached?) do %>
-                        <span class="bbcc-tile-shade"></span>
-                        <span class="bbcc-tile-body">
-                            <span class="bbcc-tile-label"><%= restaurant.name %></span>
-                            <span class="bbcc-tile-desc"><%= restaurant.short_description.to_s.truncate(90) %></span>
-                        </span>
+                <% logo_key = logos.keys.find { |key| restaurant.name.to_s.downcase.include?(key) } %>
+                <article class="bbcc-post-card">
+                    <%= link_to dining_restaurant_path(restaurant), class: "bbcc-post-card-image bbcc-dining-card-image" do %>
+                        <% if restaurant.image.attached? %>
+                            <%= image_tag restaurant.image.variant(resize_to_fill: [800, 800]), alt: restaurant.name, loading: "lazy" %>
+                        <% else %>
+                            <span class="bbcc-post-image-ph" style="background-image:url('<%= image_url('images/image-4.png') %>');"></span>
+                        <% end %>
+                        <% if logo_key %>
+                            <%= image_tag "new-design/dining/#{logos[logo_key]}", alt: "", class: "bbcc-dining-card-logo" %>
+                        <% end %>
                     <% end %>
-                </div>
+                    <h3 class="bbcc-post-card-title"><%= link_to restaurant.name, dining_restaurant_path(restaurant) %></h3>
+                    <p><%= restaurant.short_description.to_s.truncate(110) %></p>
+                    <%= link_to "Discover more", dining_restaurant_path(restaurant), class: "bbcc-text-link" %>
+                </article>
             <% end %>
         </div>
     </div>
@@ -22,30 +32,29 @@
 <!-- end dining venues -->
 
 <!-- start reserve your table -->
-<section class="bbcc-section bbcc-intro">
+<section class="bbcc-cta-band bbcc-cta-band-tan">
     <div class="container-lg">
-        <div class="row g-4 g-lg-5">
+        <div class="row g-4 g-lg-5 align-items-start">
             <div class="col-12 col-lg-4">
-                <h2 class="bbcc-section-title">Reserve Your Table Now</h2>
+                <h2 class="bbcc-title-lg">Reserve Your <br>Table Now</h2>
             </div>
             <div class="col-12 col-lg-8">
-                <p class="bbcc-lead">
+                <p>
                     <%= pluralize(@restaurants.size, "distinct venue") %>, one destination. From casual
                     bites to fine dining, every table at Bali Beach Country Club tells its own story.
                 </p>
                 <p>
-                    Whichever venue you choose, our team is ready to seat you — for a quiet dinner,
+                    Whichever venue you choose, our team is ready to seat you &mdash; for a quiet dinner,
                     a celebration, or a table for the whole family after a day on the courts.
                 </p>
-                <%= link_to "Read More", get_contact_path, class: "bbcc-btn" %>
+                <%= link_to "Discover more", get_contact_path, class: "bbcc-text-link" %>
             </div>
         </div>
     </div>
 </section>
 <!-- end reserve your table -->
 
-<!-- start dining full banner -->
-<div class="bbcc-fullbanner" style="background-image:url('<%= image_url('middle_banner_resto.png') %>');" role="img" aria-label="Dining at Bali Beach Country Club"></div>
-<!-- end dining full banner -->
+<%= image_tag "middle_banner_resto.png", alt: "Dining at Bali Beach Country Club", class: "bbcc-strip", loading: "lazy" %>
 
 <%= render "home/blogs" %>
+<%= render "home/social_media" %>

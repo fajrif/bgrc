@@ -1,38 +1,21 @@
-<%= content_for :head do %>
-	<script src="https://www.google.com/recaptcha/api.js?render=<%= configatron.recaptcha_v3_site_key %>"></script>
-<% end %>
-
-<%= render "shared/page_hero", banner: @banner, crumbs: [{ label: "Contact" }] %>
+<% content_for :header_light, true %>
 
 <!-- start location -->
-<section class="bbcc-section bbcc-location-info">
+<section class="bbcc-page-body bbcc-location-info">
     <div class="container-lg">
         <div class="row g-4 g-lg-5 align-items-start">
-            <div class="col-12 col-lg-3">
-                <h2 class="bbcc-section-title">Location</h2>
+            <div class="col-12 col-lg-4">
+                <h1 class="bbcc-title-lg bbcc-intro-title">Location</h1>
             </div>
-            <div class="col-12 col-lg-9">
+            <div class="col-12 col-lg-8">
                 <div class="row g-4">
-                    <div class="col-12 col-lg-5">
-                        <div class="bbcc-info-item">
-                            <span class="bbcc-info-icon"><i class="icon-map" aria-hidden="true"></i></span>
-                            <div class="bbcc-info-body"><%= raw(configatron.location_address) %></div>
-                        </div>
+                    <div class="col-12 col-md-6">
+                        <div class="bbcc-contact-block"><%= raw(configatron.location_address) %></div>
                     </div>
-                    <div class="col-12 col-sm-6 col-lg-4">
-                        <div class="bbcc-info-item">
-                            <span class="bbcc-info-icon"><i class="icon-phone" aria-hidden="true"></i></span>
-                            <div class="bbcc-info-body">
-                                <p><%= configatron.company_phone1 %><br><%= configatron.company_phone2 %></p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12 col-sm-6 col-lg-3">
-                        <div class="bbcc-info-item">
-                            <span class="bbcc-info-icon"><i class="icon-envelope" aria-hidden="true"></i></span>
-                            <div class="bbcc-info-body">
-                                <p><%= configatron.admin_email %></p>
-                            </div>
+                    <div class="col-12 col-md-6">
+                        <div class="bbcc-contact-block">
+                            <p><%= configatron.company_phone1 %><br><%= configatron.company_phone2 %></p>
+                            <p><a href="mailto:<%= configatron.admin_email %>"><%= configatron.admin_email %></a></p>
                         </div>
                     </div>
                 </div>
@@ -41,19 +24,6 @@
     </div>
 </section>
 <!-- end location -->
-
-<!-- start enquiry form -->
-<section class="bbcc-section bbcc-contact-form">
-    <div class="container-lg">
-        <div class="row justify-content-center">
-            <div class="col-12 col-lg-7">
-                <h2 class="bbcc-section-title text-center">Send us a message</h2>
-                <%= render "inquiries/form" %>
-            </div>
-        </div>
-    </div>
-</section>
-<!-- end enquiry form -->
 
 <!-- start map -->
 <section class="bbcc-contact-map" aria-label="Our location on the map">
@@ -66,6 +36,7 @@
 </section>
 <!-- end map -->
 
-<%= render "home/social_media" %>
-<%= render "shared/bbcc_highlights" %>
+
+
 <%= render "home/blogs" %>
+<%= render "home/social_media" %>

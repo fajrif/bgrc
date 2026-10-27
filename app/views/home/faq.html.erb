@@ -1,27 +1,26 @@
-<%= render "shared/page_hero", banner: @banner, crumbs: [{ label: "FAQ" }] %>
-
+<% content_for :header_light, true %>
 <!-- start faq -->
-<section class="bbcc-section bbcc-faq-page">
+<section class="bbcc-page-body bbcc-faq-page">
     <div class="container-lg">
         <div class="row g-4 g-lg-5">
-            <div class="col-12 col-lg-3">
-                <nav class="bbcc-faq-nav" aria-label="FAQ categories">
+            <div class="col-12 col-lg-4">
+                <nav class="bbcc-side-nav" aria-label="FAQ categories">
                     <% Question::SECTIONS.each do |key| %>
                         <%= link_to Question.section_label(key), faq_path(section: key),
-                            class: ["bbcc-faq-nav-link", ("active" if key == @section)] %>
+                            class: ["bbcc-side-nav-link", ("active" if key == @section)] %>
                     <% end %>
                 </nav>
             </div>
-            <div class="col-12 col-lg-9">
+            <div class="col-12 col-lg-8">
                 <% if @faqs.any? %>
                     <div class="bbcc-faq-list">
-                        <% @faqs.each do |faq| %>
-                            <details class="bbcc-faq-item">
+                        <% @faqs.each_with_index do |faq, index| %>
+                            <details class="bbcc-faq-item"<%= " open" if index.zero? %>>
                                 <summary>
                                     <span><%= faq.title %></span>
                                     <i class="fa-solid fa-chevron-right bbcc-faq-item-icon" aria-hidden="true"></i>
                                 </summary>
-                                <div class="bbcc-faq-item-body"><%= raw faq.description %></div>
+                                <div class="bbcc-faq-item-body bbcc-prose"><%= raw faq.description %></div>
                             </details>
                         <% end %>
                     </div>
@@ -35,3 +34,4 @@
     </div>
 </section>
 <!-- end faq -->
+<%= render "home/social_media" %>

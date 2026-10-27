@@ -11,64 +11,56 @@
     { icon: "fa-hand",      label: "Pick Up" }
   ]
 %>
-<% if @restaurant.banner.attached? %>
-<!-- start grab and go hero -->
-<section class="bbcc-page-hero" style="background-image:url('<%= url_for(@restaurant.banner) %>');">
-    <div class="bbcc-page-hero-overlay"></div>
+<% content_for :header_light, true %>
+<nav class="bbcc-resto-tabs" aria-label="Dining venues">
     <div class="container-lg">
-        <div class="bbcc-page-hero-body">
-            <h1 class="bbcc-page-hero-title"><%= @restaurant.name %></h1>
-            <p class="bbcc-page-hero-desc"><%= @restaurant.banner_description.to_s.truncate(200) %></p>
+        <div class="bbcc-filter-tabs bbcc-filter-tabs-top">
+            <% @restaurants.each do |restaurant| %>
+                <%= link_to restaurant.name, dining_restaurant_path(restaurant), class: ["bbcc-filter-tab", ("active" if restaurant == @restaurant)] %>
+            <% end %>
         </div>
     </div>
-</section>
-<!-- end grab and go hero -->
-<% end %>
-<%= render "shared/breadcrumb", crumbs: crumbs %>
+</nav>
 
 <!-- start grab and go intro -->
-<section class="bbcc-section bbcc-clublife-section">
+<section class="bbcc-intro-head">
     <div class="container-lg">
-        <div class="row g-4 g-lg-5">
-            <div class="col-12 col-lg-3">
-                <%= render "shared/dining_nav", restaurants: @restaurants, active: @restaurant %>
+        <div class="row g-4 g-lg-5 align-items-start">
+            <div class="col-12 col-lg-4">
+                <h1 class="bbcc-title-lg bbcc-intro-title"><%= @restaurant.name %></h1>
             </div>
-            <div class="col-12 col-lg-9">
-                <h2 class="bbcc-section-title"><%= @restaurant.name %></h2>
-                <p class="bbcc-lead"><%= @restaurant.description %></p>
-                <% if @restaurant.description2.present? %>
-                    <p><%= @restaurant.description2 %></p>
-                <% end %>
-                <% if intro_lines.any? %>
-                    <dl class="bbcc-factlist">
-                        <% intro_lines.each do |label, value| %>
-                            <div class="bbcc-factlist-row">
-                                <dt><%= label %>:</dt>
-                                <dd><%= value %></dd>
-                            </div>
-                        <% end %>
-                    </dl>
-                <% end %>
-                <a href="#grab-go-menu" class="bbcc-btn">Order Now</a>
+            <div class="col-12 col-lg-8">
+                <div class="bbcc-intro-desc">
+                    <p><%= @restaurant.description %></p>
+                    <% if @restaurant.description2.present? %>
+                        <p><%= @restaurant.description2 %></p>
+                    <% end %>
+                    <% intro_lines.each do |label, value| %>
+                        <p class="bbcc-intro-fact"><%= label %>: <%= value %></p>
+                    <% end %>
+                    <a href="#grab-go-menu" class="bbcc-solid-btn">Order Now</a>
+                </div>
             </div>
         </div>
     </div>
 </section>
 <!-- end grab and go intro -->
 
+<% if @restaurant.banner.attached? %>
+    <%= image_tag url_for(@restaurant.banner), alt: @restaurant.name, class: "bbcc-strip bbcc-strip-tall" %>
+<% end %>
+
 <!-- start grab and go menu -->
 <section class="bbcc-section bbcc-grabgo-menu" id="grab-go-menu">
     <div class="container-lg">
-        <div class="bbcc-section-head bbcc-section-head-center">
-            <h2 class="bbcc-section-title">Menu Categories</h2>
-        </div>
+        <h2 class="bbcc-title-lg">Menu Categories</h2>
 
         <% if @menus.any? %>
             <% if @menu_categories.size > 1 %>
-                <nav class="bbcc-tabs bbcc-tabs-center bbcc-menu-tabs" aria-label="Menu categories">
-                    <button type="button" class="bbcc-tab active" data-filter="all">All</button>
+                <nav class="bbcc-filter-tabs bbcc-menu-tabs" aria-label="Menu categories">
+                    <button type="button" class="bbcc-filter-tab active" data-filter="all">All</button>
                     <% @menu_categories.each do |category| %>
-                        <button type="button" class="bbcc-tab" data-filter="<%= category.slug %>"><%= category.name %></button>
+                        <button type="button" class="bbcc-filter-tab" data-filter="<%= category.slug %>"><%= category.name %></button>
                     <% end %>
                 </nav>
             <% end %>
@@ -89,11 +81,9 @@
 <!-- end grab and go menu -->
 
 <!-- start how it works -->
-<section class="bbcc-section bbcc-section-alt bbcc-howitworks">
+<section class="bbcc-section bbcc-vision-tan bbcc-howitworks">
     <div class="container-lg">
-        <div class="bbcc-section-head bbcc-section-head-center">
-            <h2 class="bbcc-section-title">How It Works</h2>
-        </div>
+        <h2 class="bbcc-title-lg">How It Works</h2>
         <div class="bbcc-steps">
             <% steps.each_with_index do |step, index| %>
                 <div class="bbcc-step">
@@ -109,30 +99,25 @@
 </section>
 <!-- end how it works -->
 
+<%= image_tag "middle_banner_resto.png", alt: "", class: "bbcc-strip bbcc-strip-tall", loading: "lazy" %>
+
 <% if @others.any? %>
 <!-- start other dining experiences -->
 <section class="bbcc-section bbcc-service-row">
     <div class="container-lg">
-        <div class="bbcc-section-head bbcc-section-head-center">
-            <h2 class="bbcc-section-title">Other Dining Experiences</h2>
-        </div>
-        <div class="row g-4">
+        <h2 class="bbcc-title-lg">Other Dining Experiences</h2>
+        <div class="bbcc-post-grid">
             <% @others.each do |other| %>
-                <div class="col-12 col-md-4">
-                    <%= link_to dining_restaurant_path(other), class: "bbcc-tile bbcc-tile-sm",
-                                style: ("background-image:url('#{url_for(other.image)}');" if other.image.attached?) do %>
-                        <span class="bbcc-tile-shade"></span>
-                        <span class="bbcc-tile-body">
-                            <span class="bbcc-tile-label"><%= other.name %></span>
-                        </span>
-                    <% end %>
-                </div>
+                <%= render "shared/post_card", path: dining_restaurant_path(other), title: other.name, image: other.image,
+                    excerpt: other.short_description.to_s.truncate(110) %>
             <% end %>
         </div>
     </div>
 </section>
 <!-- end other dining experiences -->
 <% end %>
+
+<%= render "home/social_media" %>
 
 <% if @menus.any? %>
     <%= render "restaurants/grab_go_cart" %>
@@ -226,7 +211,7 @@
 
         // Filters in place so the visitor keeps both their scroll position and
         // their basket — a link_to tab strip would reload the page and drop both.
-        var tabs  = document.querySelectorAll('.bbcc-menu-tabs .bbcc-tab');
+        var tabs  = document.querySelectorAll('.bbcc-menu-tabs .bbcc-filter-tab');
         var cols  = document.querySelectorAll('.bbcc-menu-grid .bbcc-menu-col');
         tabs.forEach(function (tab) {
           tab.addEventListener('click', function () {

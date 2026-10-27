@@ -1,5 +1,4 @@
 class ArticlesController < ApplicationController
-  before_action :set_banner, only: [:index]
 
   def index
 		@categories = Category.all
@@ -21,10 +20,5 @@ class ArticlesController < ApplicationController
 		@articles = Article.most_recent_articles(@article.id, 3)
   end
 
-  private
-
-  def set_banner
-    @banner = BannerSection.where(name: "Articles").first.banners.first
-  end
 
 end
