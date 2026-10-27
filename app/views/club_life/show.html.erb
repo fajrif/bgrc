@@ -1,9 +1,4 @@
-<%
-  crumbs = [{ label: "Club Life", path: club_life_path }]
-  crumbs << { label: @root.name, path: club_life_page_path(@root) } if @root && @root != @section
-  crumbs << { label: @section.name }
-  gallery_initial = 6
-%>
+<% gallery_initial = 6 %>
 <%# each section fronts its own hero banner, falling back to its root's, then to the shared Club Life banner %>
 <%
   hero_image = if @section.banner.attached?
@@ -13,19 +8,39 @@
   elsif @banner&.image&.attached?
     url_for(@banner.image)
   end
+  # Golf ships with its own banner until one is uploaded in the admin
+  hero_image ||= image_url("new-design/banner-golf.png") if (@root || @section).en_name == "Golf"
 %>
 <%= render "shared/hero_search", hero_image: hero_image, selected_sport_id: @section.sport_id %>
-<%= render "shared/breadcrumb", crumbs: crumbs %>
+
+<!-- start club life tabs -->
+<% tab_root = @root || @section %>
+<nav class="bbcc-clublife-tabs" aria-label="Club Life sections">
+    <div class="container-lg">
+        <div class="bbcc-clublife-tabs-row">
+            <% Facility.club_life_roots.each do |section| %>
+                <%= link_to section.name, club_life_page_path(section), class: ("active" if section == tab_root), "aria-current": (section == tab_root ? "page" : nil) %>
+            <% end %>
+        </div>
+        <% if tab_root.children.any? %>
+            <div class="bbcc-clublife-subtabs">
+                <% tab_root.children.each do |child| %>
+                    <%= link_to child.name, club_life_page_path(child), class: ("active" if child == @section) %>
+                <% end %>
+            </div>
+        <% end %>
+    </div>
+</nav>
+<!-- end club life tabs -->
 
 <!-- start club life section -->
 <section class="bbcc-section bbcc-clublife-section">
     <div class="container-lg">
         <div class="row g-4 g-lg-5">
-            <div class="col-12 col-lg-3 bbcc-clublife-nav-col">
-                <%= render "shared/club_life_nav", active: @section %>
+            <div class="col-12 col-lg-4">
+                <h1 class="bbcc-title-lg">BBCC <%= @section.name %></h1>
             </div>
-            <div class="col-12 col-lg-9">
-                <h1 class="bbcc-section-title">BBCC <%= @section.name %></h1>
+            <div class="col-12 col-lg-8">
                 <p class="bbcc-lead"><%= @section.short_description %></p>
                 <div class="bbcc-clublife-body">
                     <% @section.description.to_s.split(/\n+/).each do |para| %>
@@ -44,7 +59,7 @@
                 <% end %>
                 <% if @section.cta_url.present? %>
                     <% cta_external = @section.cta_url.start_with?("http://", "https://") %>
-                    <%= link_to (@section.cta_label.presence || "Book Now"), @section.cta_url, class: "bbcc-btn",
+                    <%= link_to (@section.cta_label.presence || "Enquire Today"), @section.cta_url, class: "bbcc-solid-btn",
                                 target: (cta_external ? "_blank" : nil), rel: (cta_external ? "noopener" : nil) %>
                 <% end %>
             </div>
@@ -52,6 +67,8 @@
     </div>
 </section>
 <!-- end club life section -->
+
+<%= render "shared/bbcc_highlights" %>
 
 <% if @section.middle_banner.attached? %>
     <!-- start club life middle banner -->
@@ -141,7 +158,7 @@
     <section class="bbcc-section bbcc-service-row">
         <div class="container-lg">
             <div class="bbcc-section-head bbcc-section-head-center">
-                <h2 class="bbcc-section-title">BBCC <%= @section.name %></h2>
+                <h2 class="bbcc-title-lg">BBCC <%= @section.name %></h2>
             </div>
             <div class="row g-4">
                 <% @children.each do |child| %>
@@ -336,10 +353,10 @@
 
 <% if @gallery.any? %>
     <!-- start club life gallery -->
-    <section class="bbcc-section bbcc-gallery-page bbcc-section-alt">
+    <section class="bbcc-section bbcc-gallery-page">
         <div class="container-lg">
             <div class="bbcc-section-head bbcc-section-head-center">
-                <h2 class="bbcc-section-title">Gallery</h2>
+                <h2 class="bbcc-title-lg">Gallery</h2>
             </div>
             <div class="bbcc-masonry">
                 <% @gallery.each_with_index do |image, index| %>
@@ -358,5 +375,5 @@
     <!-- end club life gallery -->
 <% end %>
 
-<%= render "shared/bbcc_highlights" %>
 <%= render "home/blogs" %>
+<%= render "home/social_media" %>

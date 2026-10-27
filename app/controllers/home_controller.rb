@@ -3,9 +3,13 @@ class HomeController < ApplicationController
   def index
 		# get public home — data-backed sections only; other sections are static.
     @testimonials = Testimonial.order(created_at: :desc).limit(10)
-    @articles = Article.where(status: 1).first(3)
+    @articles = Article.where(status: 1).first(6)
     @faqs = Question.where(section: "general").limit(6)
     @restaurants = Restaurant.order(:position)
+    roots = Facility.club_life_roots.to_a
+    @golf_facility    = roots.find { |f| f.en_name == "Golf" }
+    @fitness_facility = roots.find { |f| f.en_name == "Fitness" }
+    @spa_facility     = roots.find { |f| f.en_name == "Spa + Wellness" }
   end
 
   def about

@@ -121,6 +121,25 @@ jQuery(function ($) {
           1200: { slidesPerView: 4, spaceBetween: 24 }
         }
       };
+      // data-slides="base,576px,992px,1200px" sets how many slides show at each width
+      var slides = String(el.getAttribute('data-slides') || '').split(',').map(parseFloat);
+      if (slides.length === 4 && slides.every(function (n) { return !isNaN(n); })) {
+        options.slidesPerView = slides[0];
+        options.breakpoints = {
+          576: { slidesPerView: slides[1], spaceBetween: 20 },
+          992: { slidesPerView: slides[2], spaceBetween: 24 },
+          1200: { slidesPerView: slides[3], spaceBetween: 24 }
+        };
+      }
+      var dot = el.querySelector('.bbcc-progress-dot');
+      if (dot) {
+        options.on = {
+          // the dot rides the line from the first slide to the last
+          progress: function (swiper, progress) {
+            dot.style.left = (Math.min(Math.max(progress, 0), 1) * 100) + '%';
+          }
+        };
+      }
       if (el.classList.contains('bbcc-testimonials-swiper')) {
         options.autoplay = { delay: 5000, disableOnInteraction: false, pauseOnMouseEnter: true };
       }

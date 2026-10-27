@@ -1,7 +1,10 @@
 <%# locals: hero_image:, optional selected_sport_id: to pre-choose a sport,
-   #        and optional hero_video: (asset filename) for a full-bleed autoplaying banner %>
+   #        optional hero_video: (asset filename) for a full-bleed autoplaying banner,
+   #        and optional hero_title: to replace the default headline %>
 <% selected_sport_id = local_assigns[:selected_sport_id] %>
 <% hero_video = local_assigns[:hero_video] %>
+<% hero_title = local_assigns[:hero_title] || "Where Sport Meets Lifestyle" %>
+<% content_for :hero, true %>
 <!-- start hero + availability search -->
 <section class="bbcc-hero" style="background-image:url('<%= hero_image %>');">
     <% if hero_video %>
@@ -11,13 +14,17 @@
     <% end %>
     <div class="bbcc-hero-overlay"></div>
     <div class="container-lg">
+        <div class="bbcc-hero-copy">
+            <h1 class="bbcc-hero-title"><%= hero_title %></h1>
+            <p class="bbcc-hero-tagline">Golf <i>&middot;</i> Racquet <i>&middot;</i> Wellness <i>&middot;</i> Fitness <i>&middot;</i> Dining <i>&middot;</i> Beach</p>
+        </div>
         <div class="bbcc-hero-search">
             <form action="<%= search_path %>" method="GET">
                 <div class="bbcc-hero-search-fields">
                     <div class="bbcc-hero-field">
-                        <label>Select Which Club</label>
+                        <label>Activities</label>
                         <select name="sport_id" required>
-                            <option value="" disabled <%= "selected" if selected_sport_id.blank? %>>Choose Club Life</option>
+                            <option value="" disabled <%= "selected" if selected_sport_id.blank? %>>Explore the Club</option>
                             <% Sport.all.order(:name).each do |sport| %>
                                 <option value="<%= sport.id %>" <%= "selected" if selected_sport_id.to_s == sport.id.to_s %>><%= sport.name %></option>
                             <% end %>
@@ -29,7 +36,7 @@
                         <input type="text" name="date" class="datecourtpicker" placeholder="Select date" autocomplete="off">
                         <i class="fa-regular fa-calendar bbcc-hero-field-icon" aria-hidden="true"></i>
                     </div>
-                    <button type="submit" class="bbcc-hero-search-btn">Check Availability</button>
+                    <button type="submit" class="bbcc-hero-search-btn">Book Now</button>
                 </div>
             </form>
         </div>

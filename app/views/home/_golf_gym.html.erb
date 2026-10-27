@@ -1,0 +1,24 @@
+<!-- start golf + gym -->
+<section class="bbcc-golf-gym">
+    <div class="container-lg">
+        <div class="row g-4">
+            <div class="col-12 col-md-6">
+                <%= link_to (@golf_facility ? club_life_page_path(@golf_facility) : club_life_path), class: "bbcc-feature-card" do %>
+                    <%= image_tag "new-design/img-golf.png", alt: "Golf Course", loading: "lazy" %>
+                    <h3 class="bbcc-feature-title">Golf Course</h3>
+                    <p>Play a championship layout shaped by the Nusa Dua coastline, with tee times for every level.</p>
+                    <span class="bbcc-text-link">Discover more</span>
+                <% end %>
+            </div>
+            <div class="col-12 col-md-6">
+                <%= link_to (@fitness_facility ? club_life_page_path(@fitness_facility) : club_life_path), class: "bbcc-feature-card" do %>
+                    <%= image_tag "new-design/img-gym.png", alt: "Gym & Fitness", loading: "lazy" %>
+                    <h3 class="bbcc-feature-title">Gym &amp; Fitness</h3>
+                    <p>A fully equipped gym, studio classes and a lap pool to keep you at your best.</p>
+                    <span class="bbcc-text-link">Discover more</span>
+                <% end %>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- end golf + gym -->

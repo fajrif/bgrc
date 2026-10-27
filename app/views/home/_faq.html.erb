@@ -1,14 +1,14 @@
 <!-- start faq -->
-<section class="bbcc-section bbcc-faq">
+<section class="bbcc-section bbcc-section-alt bbcc-faq">
     <div class="container-lg">
-        <div class="bbcc-section-head bbcc-section-head-center">
-            <h2 class="bbcc-section-title">FAQ</h2>
-        </div>
-        <div class="row justify-content-center">
-            <div class="col-12 col-lg-9">
+        <div class="row g-4 g-lg-5">
+            <div class="col-12 col-lg-5">
+                <h2 class="bbcc-title-lg">Frequently Asked<br>Questions</h2>
+            </div>
+            <div class="col-12 col-lg-7">
                 <div class="bbcc-accordion">
-                    <% @faqs.each do |faq| %>
-                        <details class="bbcc-accordion-item">
+                    <% @faqs.each_with_index do |faq, i| %>
+                        <details class="bbcc-accordion-item"<%= " open" if i.zero? %>>
                             <summary><%= faq.title %><span class="bbcc-accordion-icon"></span></summary>
                             <div class="bbcc-accordion-body"><%= raw faq.description %></div>
                         </details>

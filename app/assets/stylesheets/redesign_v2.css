@@ -1,0 +1,338 @@
+/* =====================================================================
+   BBCC new design (v2) — loaded after redesign.css, so it re-skins the
+   shared chrome (header, footer, buttons, type) sitewide and styles the
+   new Home and Club Life layouts. Fonts live in two variables only: swap
+   them (and add @font-face) when Loretta Display / Trust 1A are supplied.
+   ===================================================================== */
+
+:root {
+  --bbcc-font-title: "Cormorant Garamond", "Loretta Display", Georgia, serif;
+  --bbcc-font-body: "DM Sans", "Trust 1A", Arial, sans-serif;
+
+  --bbcc-bg: #F5F2E8;          /* body */
+  --bbcc-bg-alt: #EAE4D8;      /* secondary sections */
+  --bbcc-book: #B8A47D;        /* header Book button */
+  --bbcc-search-btn: #C2792B;  /* search / primary action */
+  --bbcc-blue: #3A4E62;        /* MITS */
+  --bbcc-join: #344153;        /* Join the club */
+  --bbcc-footer: #26241F;      /* footer */
+  --bbcc-cream: #F5F2E8;
+
+  --bbcc-ink: #26241F;
+  --bbcc-ink-soft: #4a463e;
+  --bbcc-dark: #26241F;
+  --bbcc-dark-hover: #000;
+  --bbcc-line: #d8d1c0;
+}
+
+/* ---------- base type ---------- */
+html, body { background: var(--bbcc-bg); }
+body {
+  font-family: var(--bbcc-font-body);
+  font-size: 15px;
+  color: var(--bbcc-ink);
+}
+h1, h2, h3, h4, h5, h6 { font-family: var(--bbcc-font-title); font-weight: 400; }
+
+.bbcc-title-lg {
+  font-family: var(--bbcc-font-title);
+  font-weight: 400;
+  font-size: clamp(2.1rem, 3.4vw, 3rem);
+  line-height: 1.12;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--bbcc-ink);
+  margin: 0 0 28px;
+}
+.bbcc-title-md { font-family: var(--bbcc-font-title); font-weight: 400; font-size: 1.9rem; line-height: 1.2; margin: 0 0 14px; }
+.bbcc-title-sm { font-family: var(--bbcc-font-title); font-weight: 400; font-size: 1.7rem; line-height: 1.2; margin: 16px 0 8px; }
+
+/* the older section titles pick up the new type too */
+.bbcc-section-title {
+  font-family: var(--bbcc-font-title);
+  text-transform: none; letter-spacing: 0; font-weight: 400;
+  font-size: clamp(2rem, 3.2vw, 2.8rem);
+}
+.bbcc-section p, .bbcc-section-alt p { color: var(--bbcc-ink); }
+.bbcc-section { padding: 80px 0; }
+.bbcc-section-alt { background: var(--bbcc-bg-alt); }
+
+/* ---------- buttons & links ---------- */
+.bbcc-btn {
+  background: var(--bbcc-dark); border-color: var(--bbcc-dark);
+  font-family: var(--bbcc-font-body);
+}
+.bbcc-solid-btn {
+  display: inline-block; margin-top: 22px;
+  background: var(--bbcc-search-btn); color: #fff;
+  text-transform: uppercase; letter-spacing: 2px; font-size: 12px; font-weight: 500;
+  padding: 13px 38px; border: 0; transition: filter .2s;
+}
+.bbcc-solid-btn:hover, .bbcc-solid-btn:focus { color: #fff; text-decoration: none; filter: brightness(.92); }
+
+.bbcc-text-link {
+  display: inline-block; color: var(--bbcc-ink); font-size: 14px;
+  border-bottom: 1px solid currentColor; padding-bottom: 1px; line-height: 1.3;
+}
+a:hover > .bbcc-text-link, .bbcc-text-link:hover { color: var(--bbcc-ink-soft); text-decoration: none; }
+.bbcc-text-link-light { color: #fff; }
+a:hover > .bbcc-text-link-light { color: #fff; opacity: .8; }
+
+/* ---------- header ---------- */
+.bbcc-header { background: var(--bbcc-footer); }
+.bbcc-has-hero .bbcc-header {
+  position: fixed; left: 0; right: 0; top: 0;
+  background: transparent;
+  transition: background .25s ease, box-shadow .25s ease;
+}
+.bbcc-has-hero .bbcc-header.bbcc-header-stuck { background: var(--bbcc-footer); }
+.bbcc-navbar { background: transparent; border-bottom: 0; }
+.bbcc-navbar-inner { min-height: 112px; }
+.bbcc-header-stuck .bbcc-navbar-inner { min-height: 76px; }
+.bbcc-logo img { height: 84px; }
+.bbcc-header-stuck .bbcc-logo img { height: 54px; }
+.bbcc-burger span { background: var(--bbcc-cream); }
+.bbcc-menu-label { color: var(--bbcc-cream); font-size: 12px; letter-spacing: 2.5px; }
+.bbcc-book-btn {
+  background: var(--bbcc-book); border-color: var(--bbcc-book); color: var(--bbcc-footer);
+  font-size: 12px; padding: 12px 34px;
+}
+.bbcc-book-btn:hover, .bbcc-book-btn:focus { background: #a8946d; border-color: #a8946d; color: var(--bbcc-footer); }
+.bbcc-book-btn-mobile:hover, .bbcc-book-btn-mobile:focus { background: #a8946d; color: var(--bbcc-footer); }
+
+.bbcc-offcanvas-auth { flex-wrap: wrap; gap: 14px 24px; }
+
+/* ---------- hero ---------- */
+.bbcc-hero {
+  min-height: 100vh;
+  align-items: stretch;
+  padding: 150px 0 56px;
+}
+@supports (height: 100svh) { .bbcc-hero { min-height: 100svh; } }
+.bbcc-hero-overlay { background: rgba(0, 0, 0, .22); }
+.bbcc-hero .container-lg { display: flex; flex-direction: column; justify-content: space-between; }
+.bbcc-hero-copy { text-shadow: 0 1px 18px rgba(0,0,0,.35); text-align: center; margin: auto 0; padding: 40px 0 70px; }
+.bbcc-hero-title {
+  font-family: var(--bbcc-font-title); font-weight: 400;
+  font-size: clamp(2.6rem, 6vw, 5rem); line-height: 1.1;
+  color: var(--bbcc-cream); margin: 0 0 22px;
+}
+.bbcc-hero-tagline {
+  color: var(--bbcc-cream); text-transform: uppercase; letter-spacing: 3px;
+  font-size: 12px; font-weight: 500; margin: 0;
+}
+.bbcc-hero-tagline i { font-style: normal; margin: 0 6px; }
+.bbcc-hero-search { background: var(--bbcc-bg); box-shadow: none; }
+.bbcc-hero-field label { font-size: 11px; color: var(--bbcc-ink-soft); }
+.bbcc-hero-field select, .bbcc-hero-field input { font-size: 1rem; color: var(--bbcc-ink); }
+.bbcc-hero-search-btn {
+  background: var(--bbcc-search-btn); color: #fff; padding: 0 56px; min-height: 64px;
+}
+.bbcc-hero-search-btn:hover { background: #a9661f; }
+
+/* ---------- homepage ---------- */
+.bbcc-intro { padding-bottom: 56px; }
+.bbcc-intro .bbcc-title-lg { margin: 0; }
+.bbcc-intro p { max-width: 640px; line-height: 1.75; }
+
+.bbcc-golf-gym { padding: 0 0 88px; }
+.bbcc-feature-card { display: block; color: var(--bbcc-ink); }
+.bbcc-feature-card:hover { text-decoration: none; color: var(--bbcc-ink); }
+.bbcc-feature-card img { width: 100%; aspect-ratio: 4 / 3.2; object-fit: cover; display: block; margin-bottom: 20px; }
+.bbcc-feature-title { font-size: 2rem; margin: 0 0 8px; }
+.bbcc-feature-card p { max-width: 520px; line-height: 1.65; margin-bottom: 14px; }
+
+.bbcc-reverie-banner {
+  min-height: 560px; display: flex; align-items: flex-end;
+  background-size: cover; background-position: center; padding: 56px 0;
+  position: relative;
+}
+.bbcc-reverie-banner::before { content: ""; position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,.55), rgba(0,0,0,0) 60%); }
+.bbcc-reverie-banner .container-lg { position: relative; }
+.bbcc-reverie-copy { max-width: 460px; }
+.bbcc-reverie-copy .bbcc-title-lg, .bbcc-reverie-copy p { color: #fff; }
+.bbcc-reverie-copy .bbcc-text-link { color: #fff; }
+.bbcc-reverie-copy .bbcc-title-lg { margin-bottom: 14px; }
+.bbcc-reverie { background: var(--bbcc-bg-alt); padding: 0; }
+.bbcc-reverie-body { padding-top: 64px; padding-bottom: 72px; }
+.bbcc-reverie-body p { line-height: 1.65; }
+.bbcc-bleed-right { overflow: hidden; }
+.bbcc-treatment-tile {
+  position: relative; aspect-ratio: 1 / 1; background-size: cover; background-position: center;
+  display: flex; align-items: flex-end; overflow: hidden;
+}
+.bbcc-treatment-tile::before { content: ""; position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,.65), rgba(0,0,0,0) 65%); }
+.bbcc-treatment-tile-text { position: relative; padding: 20px; color: #fff; }
+.bbcc-treatment-tile-text h4 { color: #fff; font-size: 1.45rem; margin: 0 0 4px; }
+.bbcc-treatment-tile-text p { color: rgba(255,255,255,.85) !important; font-size: 13px; line-height: 1.45; margin: 0; }
+
+.bbcc-dining-hero {
+  position: relative; display: flex; flex-direction: column; justify-content: space-between;
+  min-height: 460px; padding: 40px; background-size: cover; background-position: center;
+  color: #fff; margin-bottom: 24px;
+}
+.bbcc-dining-hero:hover { color: #fff; text-decoration: none; }
+.bbcc-dining-hero::before { content: ""; position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,.55), rgba(0,0,0,.05) 70%); }
+.bbcc-dining-hero > * { position: relative; }
+.bbcc-dining-hero-logo { height: 64px; width: auto; align-self: flex-start; }
+.bbcc-dining-hero-text { display: flex; flex-direction: column; gap: 12px; max-width: 360px; line-height: 1.55; align-items: flex-start; }
+.bbcc-dining-card { display: block; color: var(--bbcc-ink); }
+.bbcc-dining-card:hover { color: var(--bbcc-ink); text-decoration: none; }
+.bbcc-dining-card-image {
+  position: relative; display: flex; align-items: center; justify-content: center;
+  aspect-ratio: 4 / 3.2; background-size: cover; background-position: center;
+}
+.bbcc-dining-card-image::before { content: ""; position: absolute; inset: 0; background: rgba(0,0,0,.28); }
+.bbcc-dining-card-logo { position: relative; max-width: 52%; max-height: 38%; width: auto; height: auto; }
+.bbcc-dining-card p { margin-bottom: 12px; }
+
+.bbcc-image-band { padding: 0; height: 360px; background-size: cover; background-position: center; }
+
+.bbcc-mits { background: var(--bbcc-blue); color: var(--bbcc-cream); padding: 88px 0; }
+.bbcc-mits .bbcc-title-lg, .bbcc-mits p { color: var(--bbcc-cream); }
+.bbcc-mits-logo { height: 72px; width: auto; margin-bottom: 56px; display: block; }
+.bbcc-mits p { line-height: 1.7; max-width: 440px; }
+.bbcc-mits-btn {
+  display: inline-block; margin-top: 18px; padding: 12px 34px;
+  background: #5b7488; color: #fff; text-transform: uppercase; letter-spacing: 2px; font-size: 12px;
+}
+.bbcc-mits-btn:hover { color: #fff; text-decoration: none; background: #6a8397; }
+.bbcc-mits-image { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; display: block; }
+
+.bbcc-faq .bbcc-accordion-item { border-bottom: 1px solid rgba(38,36,31,.18); }
+.bbcc-faq .bbcc-accordion-item summary { font-family: var(--bbcc-font-body); font-size: 15px; }
+.bbcc-faq .bbcc-accordion-body, .bbcc-faq .bbcc-accordion-body p { color: var(--bbcc-ink); line-height: 1.7; }
+
+.bbcc-location .bbcc-title-lg { margin-bottom: 20px; }
+.bbcc-location-address { font-style: normal; line-height: 1.7; margin-bottom: 12px; }
+.bbcc-location-contact { line-height: 1.7; }
+.bbcc-location-map iframe { height: 380px; filter: none; }
+
+.bbcc-socials { padding-right: 0; overflow: hidden; }
+.bbcc-socials-inner { display: flex; gap: 48px; align-items: center; padding-left: max(16px, calc((100vw - 1140px) / 2 + 12px)); }
+.bbcc-socials-text { flex: 0 0 280px; }
+.bbcc-socials-text p { line-height: 1.65; }
+.bbcc-socials-slider { flex: 1 1 0; min-width: 0; }
+.bbcc-social-tile { display: block; }
+.bbcc-social-tile img { width: 100%; aspect-ratio: 3 / 4; object-fit: cover; display: block; }
+.bbcc-socials-icons { margin-top: 20px; }
+.bbcc-socials .bbcc-socials-icons a { background: transparent; border: 1px solid var(--bbcc-ink); color: var(--bbcc-ink); }
+.bbcc-socials .bbcc-socials-icons a:hover { background: var(--bbcc-ink); color: var(--bbcc-cream) !important; }
+
+/* ---------- sliders ---------- */
+.bbcc-slider { overflow: hidden; }
+.bbcc-slider .swiper-slide { height: auto; }
+.bbcc-slider-controls { display: flex; align-items: center; gap: 28px; margin-top: 44px; }
+.bbcc-slider-controls .bbcc-swiper-prev, .bbcc-slider-controls .bbcc-swiper-next { font-size: 15px; padding: 4px; }
+.bbcc-progress { position: relative; flex: 1 1 auto; margin: 0 4px; height: 1px; background: rgba(38,36,31,.45); }
+.bbcc-progress-dot {
+  position: absolute; left: 0; top: 50%; width: 7px; height: 7px; border-radius: 50%;
+  background: var(--bbcc-ink); transform: translate(-50%, -50%);
+}
+
+/* ---------- news & highlights cards ---------- */
+.bbcc-news-card-image { display: block; overflow: hidden; margin-bottom: 18px; }
+.bbcc-news-card-image img, .bbcc-news-card-image .bbcc-post-image-ph { width: 100%; aspect-ratio: 1 / 1; height: auto; object-fit: cover; display: block; transition: transform .4s; }
+.bbcc-news-card-image:hover img { transform: scale(1.03); }
+.bbcc-news-card-date { display: block; color: var(--bbcc-book); letter-spacing: 1.5px; font-size: 12px; font-weight: 500; margin-bottom: 6px; }
+.bbcc-news-card-title { font-size: 1.9rem; line-height: 1.15; margin: 0 0 12px; }
+.bbcc-news-card-title a { color: var(--bbcc-ink); }
+.bbcc-news-card-title a:hover { text-decoration: none; color: var(--bbcc-ink-soft); }
+.bbcc-news-card p { line-height: 1.6; margin-bottom: 12px; }
+
+/* ---------- Club Life ---------- */
+.bbcc-clublife-tabs { background: var(--bbcc-bg); }
+.bbcc-clublife-tabs-row, .bbcc-clublife-subtabs { display: flex; flex-wrap: wrap; gap: 8px 40px; border-bottom: 1px solid var(--bbcc-line); }
+.bbcc-clublife-subtabs { border-bottom: 0; padding: 14px 0 0; gap: 8px 28px; }
+.bbcc-clublife-tabs a { color: var(--bbcc-ink-soft); font-size: 12px; padding: 22px 0 14px; border-bottom: 2px solid transparent; margin-bottom: -1px; }
+.bbcc-clublife-subtabs a { padding: 0 0 4px; font-size: 13px; margin: 0; }
+.bbcc-clublife-tabs a:hover { color: var(--bbcc-ink); text-decoration: none; }
+.bbcc-clublife-tabs a.active { color: var(--bbcc-ink); border-bottom-color: var(--bbcc-book); font-weight: 600; }
+.bbcc-clublife-section { padding-top: 40px; }
+.bbcc-clublife-section .bbcc-title-lg { margin: 0; }
+.bbcc-clublife-section .bbcc-lead { font-size: 1rem; }
+
+.bbcc-has-hero .bbcc-section-head-center { text-align: left; }
+.bbcc-has-hero .bbcc-section-head { margin-bottom: 32px; }
+.bbcc-has-hero .bbcc-section-head .bbcc-title-lg { margin: 0; }
+
+.bbcc-service-card { background: transparent; }
+.bbcc-service-card-image img, .bbcc-service-card-image .bbcc-post-image-ph { height: auto; aspect-ratio: 4 / 3; width: 100%; display: block; }
+.bbcc-service-card-body { padding: 18px 0 0; }
+.bbcc-service-card-title { font-family: var(--bbcc-font-title); text-transform: none; letter-spacing: 0; font-size: 1.8rem; font-weight: 400; }
+.bbcc-service-card-body .bbcc-btn {
+  align-self: flex-start; width: auto; display: inline-block; background: none; color: var(--bbcc-ink); border: 0; padding: 0; margin-top: auto;
+  text-transform: none; letter-spacing: 0; font-size: 14px; font-weight: 400;
+  border-bottom: 1px solid currentColor; line-height: 1.3;
+}
+.bbcc-service-card-body .bbcc-btn:hover { background: none; color: var(--bbcc-ink-soft); border-color: currentColor; }
+
+.bbcc-gallery-page .bbcc-masonry { column-count: auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.bbcc-gallery-page .bbcc-masonry-item { margin: 0; }
+.bbcc-gallery-page .bbcc-masonry-item img { aspect-ratio: 1 / 1; object-fit: cover; height: auto; }
+.bbcc-gallery-page .bbcc-clublife-photo-hidden { display: none; }
+
+/* ---------- Join the club + footer ---------- */
+.bbcc-join { background: var(--bbcc-join); color: var(--bbcc-cream); text-align: center; padding: 72px 0; }
+.bbcc-join-title { font-size: 2.6rem; color: var(--bbcc-cream); margin: 0 0 12px; }
+.bbcc-join-text { color: rgba(245,242,232,.85); font-size: 13px; margin-bottom: 28px; }
+.bbcc-join-form { display: flex; justify-content: center; max-width: 520px; margin: 0 auto; }
+.bbcc-join-form input[type=email] {
+  flex: 1 1 auto; min-width: 0; height: 48px; padding: 0 18px; border: 0; border-radius: 0;
+  background: var(--bbcc-cream); color: var(--bbcc-ink); font-size: 14px; box-shadow: none;
+}
+.bbcc-join-form button {
+  height: 48px; padding: 0 38px; border: 0; background: var(--bbcc-search-btn); color: #fff;
+  text-transform: uppercase; letter-spacing: 2px; font-size: 12px; cursor: pointer;
+}
+.bbcc-join-form button:hover { filter: brightness(.92); }
+.bbcc-join-hp { position: absolute !important; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+
+.bbcc-footer { background: var(--bbcc-footer); color: var(--bbcc-cream); }
+.bbcc-footer-main { padding: 72px 0 56px; row-gap: 36px; }
+.bbcc-footer-logo { margin: 0; }
+.bbcc-footer-logo img { height: 110px; }
+.bbcc-footer-heading { font-size: 1.7rem; color: var(--bbcc-cream); margin: 0 0 18px; }
+.bbcc-footer-book-btn {
+  display: block; text-align: center; max-width: 280px; padding: 14px 20px;
+  background: var(--bbcc-search-btn); color: #fff; text-transform: uppercase; letter-spacing: 2px; font-size: 12px;
+}
+.bbcc-footer-book-btn:hover { color: #fff; text-decoration: none; filter: brightness(.92); }
+.bbcc-footer-links { display: block; gap: 0; margin: 0; }
+.bbcc-footer-links a { color: var(--bbcc-cream); font-size: 14px; }
+.bbcc-footer-links a:hover { color: #fff; opacity: .75; }
+.bbcc-footer-address { color: rgba(245,242,232,.85); font-size: 14px; }
+.bbcc-footer-social a { background: transparent; border: 1px solid rgba(245,242,232,.6); color: var(--bbcc-cream); }
+.bbcc-footer-social a:hover { background: var(--bbcc-cream); color: var(--bbcc-footer) !important; }
+.bbcc-footer-bottom { background: transparent; border-top: 1px solid rgba(245,242,232,.15); }
+.bbcc-footer-copy, .bbcc-footer-legal a { color: rgba(245,242,232,.75); font-size: 12px; }
+.bbcc-footer-legal a:hover { color: #fff; text-decoration: none; }
+
+/* ---------- contact form (moved here from the footer) ---------- */
+.bbcc-contact-form .form-group { margin-bottom: 22px; }
+.bbcc-contact-form input.form-control, .bbcc-contact-form textarea.form-control {
+  background: transparent; border: 0; border-bottom: 1px solid var(--bbcc-ink); border-radius: 0; padding-left: 0;
+}
+
+/* ---------- responsive ---------- */
+@media (max-width: 991px) {
+  .bbcc-navbar-inner { min-height: 88px; }
+  .bbcc-logo img { height: 62px; }
+  .bbcc-header-stuck .bbcc-logo img { height: 46px; }
+  .bbcc-hero { padding-top: 120px; }
+  .bbcc-hero-search-btn { width: 100%; min-height: 54px; }
+  .bbcc-socials-inner { flex-direction: column; align-items: flex-start; padding-right: 16px; gap: 28px; }
+  .bbcc-socials-text { flex: none; }
+  .bbcc-socials-slider { width: 100%; }
+  .bbcc-gallery-page .bbcc-masonry { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .bbcc-mits-logo { margin-bottom: 28px; }
+}
+@media (max-width: 575px) {
+  .bbcc-section { padding: 56px 0; }
+  .bbcc-reverie-banner { min-height: 420px; }
+  .bbcc-dining-hero { min-height: 360px; padding: 24px; }
+  .bbcc-image-band { height: 220px; }
+  .bbcc-join-form { flex-direction: column; gap: 10px; }
+  .bbcc-gallery-page .bbcc-masonry { grid-template-columns: 1fr 1fr; }
+  .bbcc-clublife-tabs-row { gap: 4px 22px; overflow-x: auto; flex-wrap: nowrap; white-space: nowrap; }
+}

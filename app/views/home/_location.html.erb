@@ -1,18 +1,26 @@
 <!-- start location -->
-<section class="bbcc-location" aria-label="Our location">
-    <div class="bbcc-location-map">
-        <iframe
-            src="https://www.google.com/maps?q=Bali%20Beach%20Country%20Club%20Nusa%20Dua%20Bali&output=embed"
-            title="Bali Beach Country Club location map"
-            loading="lazy"
-            referrerpolicy="no-referrer-when-downgrade"
-            allowfullscreen></iframe>
-    </div>
-    <div class="container-lg bbcc-location-overlay">
-        <div class="bbcc-location-card">
-            <h3 class="bbcc-location-title">Our Location</h3>
-            <address class="bbcc-location-address"><%= raw(configatron.location_address) %></address>
-            <a href="https://www.google.com/maps?q=Bali+Beach+Country+Club+Nusa+Dua+Bali" target="_blank" rel="noopener" class="bbcc-btn">Click Here</a>
+<section class="bbcc-section bbcc-location" aria-label="Our location">
+    <div class="container-lg">
+        <div class="row g-4 g-lg-5 align-items-center">
+            <div class="col-12 col-lg-5">
+                <h2 class="bbcc-title-lg">Location</h2>
+                <address class="bbcc-location-address"><%= raw(configatron.location_address) %></address>
+                <p class="bbcc-location-contact">
+                    <%= configatron.company_phone1 %><br>
+                    <%= configatron.admin_email %>
+                </p>
+                <%= link_to "Contact Us", get_contact_path, class: "bbcc-solid-btn" %>
+            </div>
+            <div class="col-12 col-lg-7">
+                <div class="bbcc-location-map">
+                    <iframe
+                        src="https://www.google.com/maps?q=Bali%20Beach%20Country%20Club%20Nusa%20Dua%20Bali&output=embed"
+                        title="Bali Beach Country Club location map"
+                        loading="lazy"
+                        referrerpolicy="no-referrer-when-downgrade"
+                        allowfullscreen></iframe>
+                </div>
+            </div>
         </div>
     </div>
 </section>

@@ -1,0 +1,37 @@
+<%
+  find = ->(name) { @restaurants.find { |r| r.en_name.to_s.casecmp?(name) } }
+  path_for = ->(name) { (r = find.call(name)) ? dining_restaurant_path(r) : dining_path }
+  venues = [
+    { name: "Mezzaluna", logo: "mezzaluna", image: "dining-banner.png", text: "Italian classics and wood-fired favourites." },
+    { name: "Kasumi Izakaya", key: "Kasumi", logo: "kasumi", image: "img-kasumi.png", text: "Japanese small plates and sake in a relaxed izakaya." },
+    { name: "Corsa Bar & Grill", key: "Corsa", logo: "corsa", image: "img-corsa.png", text: "Grill classics and cocktails with a motorsport soul." }
+  ]
+%>
+<!-- start dining & entertainment -->
+<section class="bbcc-section bbcc-dining-showcase">
+    <div class="container-lg">
+        <h2 class="bbcc-title-lg">Dining &amp; Entertainment</h2>
+        <%= link_to path_for.call("Tavara"), class: "bbcc-dining-hero", style: "background-image:url('#{image_url('new-design/dining/tavara-banner.png')}');" do %>
+            <%= image_tag "new-design/dining/logo-tavara.png", alt: "Tavara", class: "bbcc-dining-hero-logo" %>
+            <span class="bbcc-dining-hero-text">
+                <span>Flavours of the Indian subcontinent, plated with a modern hand.</span>
+                <span class="bbcc-text-link bbcc-text-link-light">Discover more</span>
+            </span>
+        <% end %>
+        <div class="row g-4 bbcc-dining-cards">
+            <% venues.each do |v| %>
+                <div class="col-12 col-md-4">
+                    <%= link_to path_for.call(v[:key] || v[:name]), class: "bbcc-dining-card" do %>
+                        <span class="bbcc-dining-card-image" style="background-image:url('<%= image_url("new-design/dining/#{v[:image]}") %>');">
+                            <%= image_tag "new-design/dining/logo-#{v[:logo]}.png", alt: v[:name], class: "bbcc-dining-card-logo" %>
+                        </span>
+                        <h3 class="bbcc-title-sm"><%= v[:name] %></h3>
+                        <p><%= v[:text] %></p>
+                        <span class="bbcc-text-link">Discover more</span>
+                    <% end %>
+                </div>
+            <% end %>
+        </div>
+    </div>
+</section>
+<!-- end dining & entertainment -->

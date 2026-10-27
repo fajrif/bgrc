@@ -1,26 +1,30 @@
-<!-- start social media -->
-<%
-  social_images = %w[
-    sports/tennis.png
-    images/image-3.png
-    sports/padel.png
-    images/image-5.png
-    sports/pickleball.png
-    images/image-6.png
-  ]
-%>
-<section class="bbcc-section bbcc-social pb-0">
-    <div class="container-lg">
-        <div class="bbcc-section-head bbcc-section-head-center">
-            <h2 class="bbcc-section-title">Social Media</h2>
+<% social_images = (1..4).map { |i| "new-design/socials/img-#{i}.png" } %>
+<!-- start socials -->
+<section class="bbcc-section bbcc-section-alt bbcc-socials">
+    <div class="bbcc-socials-inner">
+        <div class="bbcc-socials-text">
+            <h2 class="bbcc-title-lg">Socials</h2>
+            <p>Follow along for life at the club &mdash; matches, classes, meals and moments by the sea.</p>
+            <div class="bbcc-footer-social bbcc-socials-icons">
+                <a href="<%= raw(configatron.social_instagram_url) %>" target="_blank" rel="noopener" aria-label="Instagram"><i class="fa-brands fa-instagram" aria-hidden="true"></i></a>
+                <a href="<%= raw(configatron.social_facebook_url) %>" target="_blank" rel="noopener" aria-label="Facebook"><i class="fa-brands fa-facebook-f" aria-hidden="true"></i></a>
+                <a href="https://wa.me/<%= configatron.whatsapp_number.to_s.gsub(/\D/, '') %>" target="_blank" rel="noopener" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp" aria-hidden="true"></i></a>
+                <a href="<%= raw(configatron.social_twitter_url) %>" target="_blank" rel="noopener" aria-label="X"><i class="fa-brands fa-x-twitter" aria-hidden="true"></i></a>
+            </div>
+        </div>
+        <div class="bbcc-socials-slider">
+            <div class="bbcc-swiper bbcc-slider bbcc-slider-plain" data-slides="1.3,2.2,3.2,3.2">
+                <div class="swiper-wrapper">
+                    <% social_images.each do |img| %>
+                        <div class="swiper-slide">
+                            <a href="<%= raw(configatron.social_instagram_url) %>" target="_blank" rel="noopener" class="bbcc-social-tile" aria-label="View our Instagram">
+                                <%= image_tag img, alt: "", loading: "lazy" %>
+                            </a>
+                        </div>
+                    <% end %>
+                </div>
+            </div>
         </div>
     </div>
-    <div class="bbcc-social-grid">
-        <% social_images.each do |img| %>
-            <a href="<%= raw(configatron.social_instagram_url) %>" target="_blank" rel="noopener" class="bbcc-social-item" style="background-image:url('<%= image_url(img) %>');" aria-label="View our Instagram">
-                <span class="bbcc-social-icon"><i class="fa-brands fa-instagram" aria-hidden="true"></i></span>
-            </a>
-        <% end %>
-    </div>
 </section>
-<!-- end social media -->
+<!-- end socials -->

@@ -1,35 +1,31 @@
 <%# Rendered from several pages that do not all set an ivar, so it queries its own data. %>
-<% bbcc_highlights = Highlight.published.limit(3) %>
+<% bbcc_highlights = Highlight.published.limit(9) %>
 <% if bbcc_highlights.any? %>
 <!-- start bbcc highlights -->
-<section class="bbcc-section bbcc-highlights-grid">
+<section class="bbcc-section bbcc-section-alt bbcc-highlights-grid">
     <div class="container-lg">
-        <div class="bbcc-section-head bbcc-section-head-center">
-            <h2 class="bbcc-section-title">BBCC Highlights</h2>
-        </div>
-        <div class="row g-4 mb-5">
-            <% bbcc_highlights.each do |highlight| %>
-                <div class="col-12 col-md-6 col-lg-4">
-                    <article class="bbcc-post">
-                        <%= link_to highlight_path(highlight), class: "bbcc-post-image" do %>
-                            <% if highlight.image.attached? %>
-                                <%= image_tag highlight.image.variant(resize_to_fill: [750, 500]), alt: highlight.title %>
-                            <% else %>
-                                <span class="bbcc-post-image-ph" style="background-image:url('<%= image_url('images/image-4.png') %>');"></span>
+        <h2 class="bbcc-title-lg">BBCC Highlights</h2>
+        <div class="bbcc-swiper bbcc-slider" data-slides="1.15,2,3,3">
+            <div class="swiper-wrapper">
+                <% bbcc_highlights.each do |highlight| %>
+                    <div class="swiper-slide">
+                        <article class="bbcc-news-card">
+                            <%= link_to highlight_path(highlight), class: "bbcc-news-card-image" do %>
+                                <% if highlight.image.attached? %>
+                                    <%= image_tag highlight.image.variant(resize_to_fill: [750, 750]), alt: highlight.title, loading: "lazy" %>
+                                <% else %>
+                                    <span class="bbcc-post-image-ph" style="background-image:url('<%= image_url('images/image-4.png') %>');"></span>
+                                <% end %>
                             <% end %>
-                        <% end %>
-                        <div class="bbcc-post-body">
-                            <span class="bbcc-post-meta"><%= raw highlight.meta_label %></span>
-                            <%= link_to highlight.title, highlight_path(highlight), class: "bbcc-post-title" %>
-                            <p class="bbcc-post-excerpt"><%= highlight.short_description.to_s.truncate(140) %></p>
-                            <%= link_to "Read More", highlight_path(highlight), class: "bbcc-btn" %>
-                        </div>
-                    </article>
-                </div>
-            <% end %>
-        </div>
-        <div class="text-center">
-            <%= link_to "View All Highlights", highlights_path, class: "bbcc-btn" %>
+                            <time class="bbcc-news-card-date"><%= raw highlight.meta_label %></time>
+                            <h3 class="bbcc-news-card-title"><%= link_to highlight.title, highlight_path(highlight) %></h3>
+                            <p><%= highlight.short_description.to_s.truncate(140) %></p>
+                            <%= link_to "Discover more", highlight_path(highlight), class: "bbcc-text-link" %>
+                        </article>
+                    </div>
+                <% end %>
+            </div>
+            <%= render "shared/slider_controls" %>
         </div>
     </div>
 </section>

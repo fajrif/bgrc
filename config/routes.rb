@@ -333,6 +333,7 @@ Rails.application.routes.draw do
 
     match 'contact', to: 'inquiries#show', via: :get, as: :get_contact
     match 'contact', to: 'inquiries#create', via: :post, as: :contacts
+    post 'subscribe', to: 'subscribers#create', as: :subscribers
     match 'blog', to: 'articles#index', via: :get, as: :blogs
     match 'blog/:id', to: 'articles#show', via: :get, as: :get_blog
     match 'about', to: 'home#about', via: :get, as: :about

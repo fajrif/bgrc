@@ -2,50 +2,57 @@
   <a id="floating-whatsapp-btn" href="https://wa.me/<%= configatron.whatsapp_number.to_s.gsub(/\D/, '') %>?text=<%= url_encode("Hi Bali Beach Country Club, I saw your website and would like to ask about your facilities and services. Could you please assist me?") %>"><img src="<%= image_url('whatsapp.png') %>" alt="Chat on WhatsApp" /></a>
 </div>
 
+<!-- start join the club -->
+<section class="bbcc-join" aria-labelledby="bbcc-join-title">
+    <div class="container-lg">
+        <h2 class="bbcc-join-title" id="bbcc-join-title">Join the club</h2>
+        <p class="bbcc-join-text">Subscribe to receive updates and promotions from Bali Beach Country Club.</p>
+        <%= form_with url: subscribers_path, method: :post, local: true, class: "bbcc-join-form" do %>
+            <label class="visually-hidden" for="subscriber_email">Email</label>
+            <input type="email" name="subscriber[email]" id="subscriber_email" placeholder="Email" required autocomplete="email">
+            <%# honeypot: hidden from people, filled in by bots %>
+            <input type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" class="bbcc-join-hp">
+            <button type="submit">Subscribe</button>
+        <% end %>
+    </div>
+</section>
+<!-- end join the club -->
+
 <!-- start footer -->
 <footer class="bbcc-footer">
     <div class="container-lg">
         <div class="row bbcc-footer-main">
-            <!-- left column -->
-            <div class="col-12 col-lg-5 bbcc-footer-left">
+            <div class="col-12 col-md-6 col-lg-3 bbcc-footer-brand">
                 <%= link_to root_url, class: "bbcc-footer-logo" do %>
-                    <%= image_tag "bbcc-logo.png", alt: "Bali Beach Country Club" %>
+                    <%= image_tag "new-design/logo.png", alt: "Bali Beach Country Club" %>
                 <% end %>
-
-                <div class="bbcc-footer-links">
-                    <ul>
-                        <li><a href="<%= book_path %>">Book</a></li>
-                        <li><a href="<%= about_path %>">About Us</a></li>
-                        <li><a href="<%= club_life_path %>">Club Life</a></li>
-                        <li><a href="<%= dining_path %>">Dining</a></li>
-                        <li><a href="<%= faq_path %>">FAQ</a></li>
-                    </ul>
-                    <ul>
-                        <li><a href="<%= events_path %>">Events</a></li>
-                        <li><a href="<%= highlights_path %>">Highlights</a></li>
-                        <li><a href="<%= blogs_path %>">Blog</a></li>
-                        <li><a href="<%= get_contact_path %>">Contact Us</a></li>
-                    </ul>
-                </div>
-
-                <address class="bbcc-footer-address"><%= raw(configatron.location_address) %></address>
-
-                <div class="bbcc-footer-social">
-                    <a href="<%= raw(configatron.social_facebook_url) %>" target="_blank" rel="noopener" aria-label="Facebook"><i class="fa-brands fa-facebook-f" aria-hidden="true"></i></a>
-                    <a href="<%= raw(configatron.social_instagram_url) %>" target="_blank" rel="noopener" aria-label="Instagram"><i class="fa-brands fa-instagram" aria-hidden="true"></i></a>
-                    <a href="<%= raw(configatron.social_twitter_url) %>" target="_blank" rel="noopener" aria-label="Twitter"><i class="fa-brands fa-x-twitter" aria-hidden="true"></i></a>
-                    <a href="<%= raw(configatron.social_linkedin_url) %>" target="_blank" rel="noopener" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in" aria-hidden="true"></i></a>
-                </div>
             </div>
 
-            <!-- right column -->
-            <div class="col-12 col-lg-7 bbcc-footer-right">
-                <p class="bbcc-footer-intro">
-                    Discover world-class sports, dining, and wellness at Bali Beach Country Club &mdash; your
-                    premier destination in Nusa Dua for golf, racquet sports, group classes, and unforgettable events.
-                </p>
-                <div class="bbcc-footer-form">
-                    <%= render "inquiries/form" %>
+            <div class="col-12 col-md-6 col-lg-3 bbcc-footer-book">
+                <h3 class="bbcc-footer-heading">Make your reservations</h3>
+                <a href="<%= golf_path %>" class="bbcc-footer-book-btn">Book Now</a>
+            </div>
+
+            <div class="col-6 col-lg-3 bbcc-footer-links">
+                <ul>
+                    <li><a href="<%= about_path %>">About Us</a></li>
+                    <li><a href="<%= dining_path %>">Dining</a></li>
+                    <li><a href="<%= club_life_path %>">Facilities</a></li>
+                    <li><a href="<%= events_path %>">Events</a></li>
+                    <li><a href="<%= highlights_path %>">Highlights</a></li>
+                    <li><a href="<%= blogs_path %>">Blog</a></li>
+                    <li><a href="<%= get_contact_path %>">Contact Us</a></li>
+                </ul>
+            </div>
+
+            <div class="col-6 col-lg-3 bbcc-footer-contact">
+                <h3 class="bbcc-footer-heading">Contact us</h3>
+                <address class="bbcc-footer-address"><%= raw(configatron.location_address) %></address>
+                <div class="bbcc-footer-social">
+                    <a href="https://wa.me/<%= configatron.whatsapp_number.to_s.gsub(/\D/, '') %>" target="_blank" rel="noopener" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp" aria-hidden="true"></i></a>
+                    <a href="<%= raw(configatron.social_instagram_url) %>" target="_blank" rel="noopener" aria-label="Instagram"><i class="fa-brands fa-instagram" aria-hidden="true"></i></a>
+                    <a href="<%= raw(configatron.social_facebook_url) %>" target="_blank" rel="noopener" aria-label="Facebook"><i class="fa-brands fa-facebook-f" aria-hidden="true"></i></a>
+                    <a href="<%= raw(configatron.social_twitter_url) %>" target="_blank" rel="noopener" aria-label="X"><i class="fa-brands fa-x-twitter" aria-hidden="true"></i></a>
                 </div>
             </div>
         </div>
@@ -59,6 +66,7 @@
                     <a href="<%= disclaimer_path %>" class="<%= 'active' if request.path == disclaimer_path %>"><%= t('menu.disclaimer') %></a>
                     <a href="<%= privacy_path %>" class="<%= 'active' if request.path == privacy_path %>"><%= t('menu.privacy_policy') %></a>
                     <a href="<%= terms_path %>" class="<%= 'active' if request.path == terms_path %>"><%= t('menu.terms_conditions') %></a>
+                    <a href="<%= faq_path %>">FAQ</a>
                 </div>
             </div>
         </div>
