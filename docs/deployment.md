@@ -9,7 +9,7 @@ Config files live in `deploy/` and `config/`:
 | `config/nginx.conf` | `/etc/nginx/nginx.conf` (replaces it; no sites-available) |
 | `config/unicorn.rb` | used in place |
 | `deploy/bgrc-unicorn.service` | `/etc/systemd/system/` |
-| `deploy/env.production.example` | `/home/deployer/bgrc/.env.production` |
+| `deploy/env.production.example` | `/home/deployer/preproduction/bgrc/.env.production` |
 | `deploy/make-ip-cert.sh` | run once |
 | `deploy/bgrc.cron` | `/etc/cron.d/bgrc` |
 | `deploy/bgrc.logrotate` | `/etc/logrotate.d/bgrc` |
@@ -46,8 +46,8 @@ If the duplicate `order_id` query returns rows, fix them before step 5, because 
 Production runs from a fresh clone. The Puma checkout stays untouched.
 
 ```bash
-cd /home/deployer
-git clone -b preproduction <origin-url> bgrc
+mkdir -p /home/deployer/preproduction && cd /home/deployer/preproduction
+git clone -b new_design git@github.com:fajrif/bgrc.git bgrc   # or the branch you deploy
 cd bgrc
 rvm use ruby-3.3.0@bgrc --create        # .ruby-gemset is "bgrc"
 ls /home/deployer/.rvm/wrappers/        # expect ruby-3.3.0@bgrc, as used in deploy/bgrc-unicorn.service
@@ -105,7 +105,7 @@ bin/rails db:migrate                      # adds the gateway columns and the uni
 Active Storage uses the `storage/` directory (Disk service). Copy it from the dev checkout.
 
 ```bash
-rsync -a <DEV_DIR>/storage/ /home/deployer/bgrc/storage/
+rsync -a <DEV_DIR>/storage/ /home/deployer/preproduction/bgrc/storage/
 [ -d <DEV_DIR>/public/uploads ] && rsync -a <DEV_DIR>/public/uploads/ public/uploads/
 
 bin/rails assets:precompile
@@ -157,9 +157,9 @@ Midtrans and Xendit cannot call webhooks over the self-signed certificate. Payme
 **Switching the gateway:**
 
 ```bash
-nano /home/deployer/bgrc/.env.production        # PAYMENT_GATEWAY=xendit  (or midtrans)
+nano /home/deployer/preproduction/bgrc/.env.production        # PAYMENT_GATEWAY=xendit  (or midtrans)
 sudo systemctl restart bgrc-unicorn             # restart, not reload: reload keeps the old environment
-cd /home/deployer/bgrc && set -a && . ./.env.production && set +a && bin/rails payments:gateway
+cd /home/deployer/preproduction/bgrc && set -a && . ./.env.production && set +a && bin/rails payments:gateway
 ```
 
 Purchases remember their own gateway, so switching never changes payments already under way.
@@ -181,7 +181,7 @@ PGPASSWORD='deployer1234!' pg_restore --no-owner --role=deployer -h localhost -U
 psql -h localhost -U deployer bgrc_production \
   -c "UPDATE ar_internal_metadata SET value='production' WHERE key='environment';"
 
-cd /home/deployer/bgrc && set -a && . ./.env.production && set +a
+cd /home/deployer/preproduction/bgrc && set -a && . ./.env.production && set +a
 bin/rails db:migrate
 rsync -a --delete <DEV_DIR>/storage/ storage/
 sudo systemctl start bgrc-unicorn

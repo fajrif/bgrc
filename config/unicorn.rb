@@ -1,5 +1,5 @@
 # config/unicorn.rb
-root = "/home/deployer/bgrc"
+root = "/home/deployer/preproduction/bgrc"
 working_directory root
 pid "#{root}/tmp/pids/unicorn.pid"
 stderr_path "#{root}/log/unicorn.log"

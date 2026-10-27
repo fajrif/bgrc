@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
-# Run on the server as deployer, from /home/deployer/bgrc.
+# Run on the server as deployer, from /home/deployer/preproduction/bgrc.
 # Usage:  deploy/deploy.sh [branch]      (default: preproduction)
 set -euo pipefail
 
 BRANCH="${1:-preproduction}"
-cd /home/deployer/bgrc
+cd /home/deployer/preproduction/bgrc
 
 # `source` the env file so rake/bundler see the same variables as Unicorn.
 set -a

@@ -1,4 +1,4 @@
 # /etc/cron.d/bgrc  (owner root, mode 644)
 # Settles payments the gateway completed but whose webhook never arrived.
 # Needed while the site has no trusted HTTPS certificate, and a safety net afterwards.
-*/10 * * * * deployer cd /home/deployer/bgrc && set -a && . ./.env.production && set +a && /home/deployer/.rvm/wrappers/ruby-3.3.0@bgrc/bundle exec rake payments:reconcile >> log/reconcile.log 2>&1
+*/10 * * * * deployer cd /home/deployer/preproduction/bgrc && set -a && . ./.env.production && set +a && /home/deployer/.rvm/wrappers/ruby-3.3.0@bgrc/bundle exec rake payments:reconcile >> log/reconcile.log 2>&1

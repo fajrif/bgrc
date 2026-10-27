@@ -1,5 +1,5 @@
 # /etc/logrotate.d/bgrc
-/home/deployer/bgrc/log/*.log {
+/home/deployer/preproduction/bgrc/log/*.log {
   daily
   rotate 14
   compress
