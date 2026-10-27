@@ -1,5 +1,26 @@
 module ApplicationHelper
 
+	# Public flash → toast. :notice is a success, :warning a warning, anything
+	# else (alert, error, ...) an error. Returns [[type, message], ...].
+	def toast_messages
+		list = flash.filter_map do |name, msg|
+			next if msg == true || msg.blank?
+			type = case name.to_sym
+				when :notice then "success"
+				when :warning then "warning"
+				else "error"
+			end
+			[type, msg.to_s]
+		end
+		flash.discard
+		list
+	end
+
+	# Same messages as bbccToast(...) calls, for .js.erb responses.
+	def toast_js
+		toast_messages.map { |type, msg| "bbccToast(#{type.to_json}, #{msg.to_json});" }.join("\n").html_safe
+	end
+
 	# The one place that knows where a Club Life page lives. Sections sit at
 	# /club-life/<slug>, their children one level down under the parent, so
 	# every link goes through here rather than picking a route helper by hand.

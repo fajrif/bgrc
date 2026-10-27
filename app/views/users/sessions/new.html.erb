@@ -1,16 +1,21 @@
-<h5 class="font-weight-600 margin-40px-bottom sm-margin-15px-bottom letter-spacing-8">LOGIN</h5>
-<%= simple_form_for(resource, :as => resource_name, :url => session_path(resource_name), :wrapper => :vertical_form_no_margin) do |f| %>
-  <%= f.input :email, label: false, placeholder: "Email Address" %>
-  <%= f.input :password, label: false, placeholder: "Password" %>
-  <div class="mb-4">
-    <button type="submit" class="btn btn-light-gray btn-medium text-medium margin-30px-top sm-margin-three-top">Login</button>
-  </div>
-  <div class="col-lg-12 mb-45">
-    <%- if devise_mapping.recoverable? && controller_name != 'passwords' && controller_name != 'registrations' %>
-      <%= link_to "Forgot your password?", new_password_path(resource_name) %><br />
+<% content_for :auth_switch_text, "Don't have an account?" %>
+<% content_for :auth_switch_link, link_to("Sign up", new_registration_path(resource_name)) %>
+
+<h1 class="bbcc-auth-title">Log in</h1>
+<%= simple_form_for(resource, as: resource_name, url: session_path(resource_name), wrapper: :vertical_form_plain, html: { class: "bbcc-auth-formbody" }) do |f| %>
+  <%= f.input :email, label: "Email Address", placeholder: "Write your email here", input_html: { autocomplete: "email" } %>
+  <%= f.input :password, label: "Password", placeholder: "Write your password here", input_html: { autocomplete: "current-password" } %>
+  <div class="bbcc-auth-row">
+    <% if devise_mapping.rememberable? %>
+      <label class="bbcc-check">
+        <%= f.check_box :remember_me, class: "bbcc-check-input" %>
+        <span class="bbcc-check-box" aria-hidden="true"></span>
+        <span>Remember me</span>
+      </label>
     <% end %>
-    <%- if devise_mapping.registerable? && controller_name != 'registrations' %>
-      No Account? <%= link_to "Create one", new_registration_path(resource_name) %>
+    <% if devise_mapping.recoverable? %>
+      <%= link_to "Forgot password?", new_password_path(resource_name), class: "bbcc-auth-link" %>
     <% end %>
   </div>
+  <button type="submit" class="bbcc-auth-submit">Log in</button>
 <% end %>

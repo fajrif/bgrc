@@ -1,30 +1,34 @@
 <%= content_for :head do %>
 	<script src="https://www.google.com/recaptcha/api.js?render=<%= configatron.recaptcha_v3_site_key %>"></script>
 <% end %>
+<% content_for :auth_variant, "bbcc-auth-form-register" %>
+<% content_for :auth_image, "new-design/auth/bg-registration.jpg" %>
+<% content_for :auth_switch_text, "Already have an account?" %>
+<% content_for :auth_switch_link, link_to("Log in", new_session_path(resource_name)) %>
 
-<h5 class="font-weight-600 margin-40px-bottom sm-margin-15px-bottom letter-spacing-8">REGISTER</h5>
-<%= simple_form_for(resource, :as => resource_name, :url => registration_path(resource_name), :wrapper => :vertical_form_no_margin) do |f| %>
-  <%= f.input :full_name, label: false, placeholder: "Full name" %>
-  <div class="row">
-    <div class="col-6">
-      <%= f.input :email, label: false, placeholder: "Email address" %>
-    </div>
-    <div class="col-6">
-      <%= f.input :phone, label: false, placeholder: "Phone" %>
-    </div>
+<h1 class="bbcc-auth-title">Register</h1>
+<%= simple_form_for(resource, as: resource_name, url: registration_path(resource_name), wrapper: :vertical_form_plain, html: { class: "bbcc-auth-formbody" }) do |f| %>
+  <%= f.input :full_name, label: "First & Last Name", placeholder: "Write your name here" %>
+  <div class="bbcc-auth-cols">
+    <%= f.input :email, label: "Email Address", placeholder: "Write your email here" %>
+    <%= f.input :phone, label: "Phone Number", placeholder: "Write your phone here" %>
   </div>
-  <%= f.input :dob, as: :string, label: false, placeholder: "Date of Birth", input_html: { class: "datepicker", value: get_input_date_value(f.object.dob,'%d/%m/%Y') } %>
-  <div class="row">
-    <div class="col-6">
-      <%= f.input :gender, as: :select, label: false, wrapper: :vertical_select_big, collection: [[1, "Male"],[0, "Female"]], value_method: :first, label_method: :last, prompt: "Choose your Gender" %>
-    </div>
-    <div class="col-6">
-      <%= f.input :nationality, as: :select, label: false, wrapper: :vertical_select_big, collection: options_for_nationalities, prompt: "Choose your Nationality" %>
-    </div>
+  <div class="bbcc-auth-cols">
+    <%= f.input :dob, as: :string, label: "Date of Birth", placeholder: "Write your birth date", wrapper_html: { class: "bbcc-auth-date" }, input_html: { class: "datepicker", value: get_input_date_value(f.object.dob, '%d/%m/%Y') } %>
+    <%= f.input :gender, as: :select, label: "Gender", wrapper: :vertical_form_plain, collection: [[1, "Male"], [0, "Female"]], value_method: :first, label_method: :last, prompt: "Choose your gender", input_html: { class: "form-select big-input" } %>
   </div>
-  <%= f.input :password, label: false, placeholder: "Password" %>
-  <%= f.input :password_confirmation, label: false, placeholder: "Password confirmation" %>
-  <div class="mb-4 text-center">
+  <%= f.input :nationality, as: :select, label: "Nationality", wrapper: :vertical_form_plain, collection: options_for_nationalities, prompt: "Choose your nationality", input_html: { class: "form-select big-input" } %>
+  <%= f.input :password, label: "Password", placeholder: "Write your password here", input_html: { autocomplete: "new-password" } %>
+  <%= f.input :password_confirmation, label: "Password Confirmation", placeholder: "Write your password here", input_html: { autocomplete: "new-password" } %>
+  <div class="bbcc-auth-terms">
+    <label class="bbcc-check">
+      <%= check_box_tag :terms, "1", params[:terms] == "1", class: "bbcc-check-input", required: true %>
+      <span class="bbcc-check-box" aria-hidden="true"></span>
+      <span>By continuing, I confirm that I have read and accept the <%= link_to "Terms and Conditions", terms_path, target: "_blank", rel: "noopener" %> and the <%= link_to "Privacy Policy", privacy_path, target: "_blank", rel: "noopener" %>.</span>
+    </label>
+    <% if @terms_error %><p class="bbcc-auth-error">Please accept the Terms and Conditions and the Privacy Policy to register.</p><% end %>
+  </div>
+  <div class="bbcc-auth-recaptcha">
     <% if @show_recaptcha_v2 %>
       <input type="hidden" value="true" name="user[use_v2]" id="user_use_v2">
       <%= raw Bgrc::Recaptcha.recaptcha_v2_render %>
@@ -32,12 +36,5 @@
       <%= raw Bgrc::Recaptcha.recaptcha_execute('registration') %>
     <% end %>
   </div>
-  <div class="mb-4">
-    <button type="submit" class="btn btn-light-gray btn-medium text-medium margin-30px-top sm-margin-three-top">submit</button>
-  </div>
-  <div>
-    <%- if controller_name != 'sessions' %>
-      Alrady have an account? <%= link_to "Login", new_session_path(resource_name) %>
-    <% end %>
-  </div>
+  <button type="submit" class="bbcc-auth-submit">Register</button>
 <% end %>

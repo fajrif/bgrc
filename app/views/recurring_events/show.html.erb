@@ -54,10 +54,6 @@
           <% if @recurring_event.rsvp_open? %>
             <h6 class="alt-font text-extra-dark-gray mb-3">Sign Up for this Event</h6>
 
-            <% if flash[:notice] %>
-              <div class="alert alert-success"><%= flash[:notice] %></div>
-            <% end %>
-
             <%= form_tag rsvp_recurring_event_path(@recurring_event), method: :post do %>
               <% if @rsvp.errors.any? %>
                 <div class="alert alert-danger">

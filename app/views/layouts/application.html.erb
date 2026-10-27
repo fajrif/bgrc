@@ -45,13 +45,7 @@
 </head>
 <body class="w-100<%= ' bbcc-has-hero' if content_for?(:hero) %><%= ' bbcc-header-light' if content_for?(:header_light) %>">
 	<%= render "shared/header" %>
-  <% if flash.count > 0 %>
-  <div class="container">
-    <div id="forFlashMessage" class="mb-4">
-      <%= flash_message2 %>
-    </div>
-  </div>
-  <% end %>
+	<%= render "shared/toasts" %>
 	<%= yield %>
 	<%= render "shared/footer" %>
 	<%= javascript_include_tag 'application' %>

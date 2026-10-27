@@ -2,7 +2,7 @@
     filtered to one sport) and the calendar %>
 <div class="bbcc-viewswitch">
     <%= link_to users_bookings_path, class: ["bbcc-viewswitch-btn", ("active" if is_users_bookings_list_page? && params[:sport].blank?)] do %>
-        <i class="fa-solid fa-list-ul"></i> All
+        <i class="fa-solid fa-list-ul"></i> List View
     <% end %>
     <%= link_to users_bookings_path(sport: "golf"), class: ["bbcc-viewswitch-btn", ("active" if is_users_bookings_list_page? && params[:sport] == "golf")] do %>
         <i class="fa-solid fa-golf-ball-tee"></i> Golf

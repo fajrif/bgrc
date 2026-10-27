@@ -12,5 +12,5 @@ snap.pay('<%= j purchase.token %>', {
 	onClose:   function(){ window.location.reload(); }
 });
 <% else %>
-$("#forFlashMessage").html("<%= escape_javascript(flash_message2) %>");
+<%= toast_js %>
 <% end %>

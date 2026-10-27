@@ -15,6 +15,16 @@ class Users::RegistrationsController < Devise::RegistrationsController
 
   def create
     build_resource(sign_up_params)
+
+    # Terms & Privacy must be accepted; nothing is stored, it only gates sign-up.
+    unless params[:terms] == "1"
+      @terms_error = true
+      resource.validate
+      clean_up_passwords resource
+      set_minimum_password_length
+      return render :new
+    end
+
     resource.save
 
     if resource.persisted?

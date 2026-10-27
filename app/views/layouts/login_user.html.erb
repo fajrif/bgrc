@@ -35,37 +35,36 @@
 	<!-- fonts CDN -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Mona+Sans:ital,wght@0,200..900;1,200..900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,400&family=DM+Sans:ital,opsz,wght@0,9..40,300..600;1,9..40,300..500&display=swap" rel="stylesheet">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 	<%= csrf_meta_tags %>
 	<%= csp_meta_tag %>
 	<%= stylesheet_link_tag 'application', media: 'all' %>
 	<%= yield :head %>
 </head>
-<body class="w-100">
-  <!-- start countdown section -->
-  <section class="p-0 bg-extra-light-gray">
-      <div class="container-fluid">
-          <div class="row row-cols-1 row-cols-lg-2">
-              <div class="col minheight-fullscreen d-flex align-items-center p-0">
-                  <div class="padding-eight-all sm-padding-15px-all w-100">
-                    <div id="forFlashMessage" class="mb-4">
-                      <%= flash_message2 %>
-                    </div>
-                    <%= yield %>
-                  </div>
-              </div>
-              <div class="col minheight-fullscreen text-end p-0 contain-background d-none d-lg-block" style="background-image:url('<%= image_url('bg-login.png') %>');">
-                <div class="padding-10px-all">
-                  <%= link_to root_path, class: "logo" do %>
-                    <%= image_tag("logo2.png", class: "logo", alt: "Bali Beach Country Club") %>
-                  <% end %>
-                </div>
-              </div>
-          </div>
+<body class="w-100 bbcc-auth-body">
+  <%= render "shared/toasts" %>
+  <main class="bbcc-auth">
+    <section class="bbcc-auth-form<%= " #{yield(:auth_variant)}" if content_for?(:auth_variant) %>">
+      <div class="bbcc-auth-form-inner">
+        <%= link_to root_path, class: "bbcc-auth-mobile-logo", "aria-label": "Bali Beach Country Club" do %>
+          <%= image_tag "new-design/auth/logo-black.png", alt: "Bali Beach Country Club" %>
+        <% end %>
+        <%= yield %>
       </div>
-  </section>
-  <!-- end countdown section -->
+    </section>
+    <aside class="bbcc-auth-aside" style="background-image:url('<%= image_url(content_for?(:auth_image) ? content_for(:auth_image) : 'new-design/auth/bg-login.jpg') %>');">
+      <%= link_to root_path, class: "bbcc-auth-logo", "aria-label": "Bali Beach Country Club" do %>
+        <%= image_tag "new-design/auth/logo-black.png", alt: "Bali Beach Country Club" %>
+      <% end %>
+      <% if content_for?(:auth_switch_link) %>
+        <div class="bbcc-auth-switch">
+          <span><%= yield :auth_switch_text %></span>
+          <%= yield :auth_switch_link %>
+        </div>
+      <% end %>
+    </aside>
+  </main>
 	<%= javascript_include_tag 'application' %>
 	<%= yield :tail %>
 </body>

@@ -1,0 +1,10 @@
+<%# Public flash messages as auto-dismissing toasts. JS can add more via bbccToast(type, message). %>
+<div id="bbcc-toasts" class="bbcc-toasts" role="region" aria-label="Notifications" aria-live="polite">
+	<% toast_messages.each do |type, message| %>
+		<div class="bbcc-toast bbcc-toast-<%= type %>" role="<%= type == 'error' ? 'alert' : 'status' %>">
+			<span class="bbcc-toast-msg"><%= sanitize(message, tags: %w[a b strong em br], attributes: %w[href]) %></span>
+			<button type="button" class="bbcc-toast-close" aria-label="Close">&times;</button>
+			<span class="bbcc-toast-bar" aria-hidden="true"></span>
+		</div>
+	<% end %>
+</div>

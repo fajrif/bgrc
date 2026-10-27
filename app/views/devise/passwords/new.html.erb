@@ -1,12 +1,9 @@
-<h5 class="font-weight-600 margin-40px-bottom sm-margin-15px-bottom letter-spacing-8">FORGOT PASSWORD</h5>
-<%= simple_form_for(resource, :as => resource_name, :url => password_path(resource_name), :wrapper => :vertical_form_no_margin) do |f| %>
-  <%= f.input :email, label: false, placeholder: "Email Address" %>
-  <div class="mb-4">
-    <button type="submit" class="btn btn-light-gray btn-medium text-medium margin-30px-top sm-margin-three-top">Send Instructions</button>
-  </div>
-  <div class="col-lg-12 mb-45">
-    <%- if controller_name != 'sessions' %>
-      <%= link_to "I already remember my password!", new_session_path(resource_name) %><br />
-    <% end %>
-  </div>
+<% content_for :auth_switch_text, "Remembered it?" %>
+<% content_for :auth_switch_link, link_to("Log in", new_session_path(resource_name)) %>
+
+<h1 class="bbcc-auth-title">Forgot password</h1>
+<p class="bbcc-auth-lead">Enter your email and we will send you instructions to reset your password.</p>
+<%= simple_form_for(resource, as: resource_name, url: password_path(resource_name), wrapper: :vertical_form_plain, html: { class: "bbcc-auth-formbody" }) do |f| %>
+  <%= f.input :email, label: "Email Address", placeholder: "Write your email here" %>
+  <button type="submit" class="bbcc-auth-submit">Send Instructions</button>
 <% end %>

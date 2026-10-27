@@ -1,51 +1,29 @@
 <%= content_for :head do %>
   <%= stylesheet_link_tag "main.css" %>
-  <style>
-    #user-schedule-calendar .fc-button-primary {
-      background-color: #6c757d;
-      border-color: #6c757d;
-      color: #fff;
-    }
-    #user-schedule-calendar .fc-button-primary:hover {
-      background-color: #5a6268;
-      border-color: #545b62;
-      color: #fff;
-    }
-    #user-schedule-calendar .fc-button-primary:not(:disabled):active,
-    #user-schedule-calendar .fc-button-primary:not(:disabled).fc-button-active {
-      background-color: #495057;
-      border-color: #42484e;
-      color: #fff;
-    }
-    #user-schedule-calendar .fc-button-primary:focus {
-      box-shadow: 0 0 0 0.2rem rgba(108,117,125,0.5);
-    }
-  </style>
 <% end %>
 
 <section class="bbcc-section bbcc-account">
     <div class="container-lg">
         <%= render "users/shared/account_nav" %>
         <%= render "users/shared/booking_view_switch" %>
-        <div class="row align-items-start mb-4">
-            <div class="col-12">
-                <div class="d-flex flex-wrap gap-3 mb-3 small align-items-center">
-                    <div class="d-flex align-items-center gap-1">
-                        <span style="display:inline-block;width:14px;height:14px;background:#ECFEED;border:1.5px solid #5BF651;border-radius:2px;flex-shrink:0;"></span>
-                        <span class="text-muted">Your Booking</span>
-                    </div>
-                    <div class="d-flex align-items-center gap-1">
-                        <span style="display:inline-block;width:14px;height:14px;background:#ffc107;border:1.5px solid #e6a800;border-radius:2px;flex-shrink:0;"></span>
-                        <span class="text-muted">Awaiting Payment</span>
-                    </div>
-                    <div class="d-flex align-items-center gap-1">
-                        <span style="display:inline-block;width:14px;height:14px;background:#E9F5FF;border:1.5px solid #3AA0FF;border-radius:2px;flex-shrink:0;"></span>
-                        <span class="text-muted">Golf</span>
-                    </div>
+        <div class="row g-4 g-xl-5 align-items-start mb-4 bbcc-cal">
+            <div class="col-12 col-lg-8">
+                <div class="bbcc-cal-legend">
+                    <span><i style="background:#B8A47D"></i>Your Booking</span>
+                    <span><i style="background:#E3D6B8"></i>Awaiting Payment</span>
+                    <span><i style="background:#8DB6C6"></i>Golf</span>
                 </div>
-
                 <div id="user-schedule-calendar"></div>
             </div>
+            <aside class="col-12 col-lg-4 bbcc-cal-panel" id="schedule-panel">
+                <h2 class="bbcc-cal-panel-title">Your Booking Details</h2>
+                <p class="bbcc-cal-panel-empty" id="sp-empty">Select a booking in the calendar to see its details.</p>
+                <div id="sp-body" hidden>
+                    <p class="bbcc-cal-panel-line" id="sp-date"></p>
+                    <p class="bbcc-cal-panel-line"><span id="sp-type"></span><br><span id="sp-subtitle-label"></span>: <span id="sp-subtitle"></span><br><span id="sp-pax-label"></span>: <span id="sp-pax"></span><br>Status: <span id="sp-status"></span><span id="sp-price-wrap"><br>Price: <span id="sp-price"></span></span></p>
+                    <p class="bbcc-cal-panel-line"><a href="#" id="sp-link" class="bbcc-text-link">View Full Details</a></p>
+                </div>
+            </aside>
         </div>
     </div>
 </section>
@@ -92,12 +70,19 @@
       var detailModal = detailModalEl ? new bootstrap.Modal(detailModalEl) : null;
 
       var calendar = new FullCalendar.Calendar(calendarEl, {
-        initialView: 'dayGridMonth',
+        initialView: 'timeGridWeek',
+        slotMinTime: '06:00:00',
+        slotMaxTime: '24:00:00',
+        allDaySlot: false,
+        slotLabelFormat: { hour: '2-digit', minute: '2-digit', hour12: false },
+        dayHeaderFormat: { weekday: 'short', month: 'numeric', day: 'numeric' },
+        firstDay: 0,
+        buttonText: { today: 'Today' },
         initialDate: '<%= Date.today.strftime('%Y-%m-%d') %>',
         headerToolbar: {
-          left: 'prev,next today',
-          center: 'title',
-          right: ''
+          left: 'today',
+          center: '',
+          right: 'prev,title,next'
         },
         navLinks: false,
         events: '<%= calendar_users_bookings_path(format: :json) %>',
@@ -130,7 +115,23 @@
             link.style.display = 'none';
           }
 
-          if (detailModal) detailModal.show();
+          var set = function(id, v) { document.getElementById(id).textContent = v; };
+          set('sp-date', props.dateLabel || '');
+          set('sp-type', props.type || '');
+          set('sp-subtitle-label', props.subtitleLabel || 'Court');
+          set('sp-subtitle', props.subtitle || '—');
+          set('sp-pax-label', props.paxLabel || 'Pax');
+          set('sp-pax', (props.pax !== undefined && props.pax !== null) ? props.pax : '—');
+          set('sp-status', props.statusLabel || '—');
+          document.getElementById('sp-price-wrap').style.display = props.priceLabel ? '' : 'none';
+          set('sp-price', props.priceLabel || '');
+          var spLink = document.getElementById('sp-link');
+          spLink.href = props.detailUrl || '#';
+          spLink.style.display = props.detailUrl ? '' : 'none';
+          document.getElementById('sp-empty').hidden = true;
+          document.getElementById('sp-body').hidden = false;
+          // on small screens the panel sits below the grid, so keep the pop-up too
+          if (detailModal && window.innerWidth < 992) detailModal.show();
         }
       });
       calendar.setOption('height', 'auto');
@@ -138,3 +139,5 @@
     });
   </script>
 <% end %>
+
+<%= render "home/social_media" %>

@@ -39,9 +39,9 @@ class Users::BookingsController < Users::BaseController
 		            .where("date >= ? AND date < ?", start_date, end_date)
 		            .includes(:court)
 		            .each do |b|
-			bg = b.status == Booking::PAID ? "#ECFEED" : "#ffc107"
-			br = b.status == Booking::PAID ? "#5BF651" : "#e6a800"
-			tx = b.status == Booking::PAID ? "#1a7a1a" : "#000"
+			bg = b.status == Booking::PAID ? "#B8A47D" : "#E3D6B8"
+			br = b.status == Booking::PAID ? "#B8A47D" : "#B8A47D"
+			tx = "#26241F"
 			events << { id: b.id, title: b.court.try(:name_label) || b.order_id,
 			            url: booking_path(b.order_id),
 			            start: b.date.strftime('%Y-%m-%dT%H:%M'),
@@ -97,9 +97,9 @@ class Users::BookingsController < Users::BaseController
 		            .where("tee_time >= ? AND tee_time < ?", start_date, end_date)
 		            .includes(:golf_course)
 		            .each do |g|
-			bg = g.status == GolfReservation::PAID ? "#E9F5FF" : "#ffe8b3"
-			br = g.status == GolfReservation::PAID ? "#3AA0FF" : "#d98c00"
-			tx = g.status == GolfReservation::PAID ? "#0a4a7a" : "#000"
+			bg = g.status == GolfReservation::PAID ? "#8DB6C6" : "#C9DDE5"
+			br = "#8DB6C6"
+			tx = "#26241F"
 			estimated_hours = g.holes.to_i <= 9 ? 2 : 4.5
 			events << {
 				id: "golf-#{g.id}",

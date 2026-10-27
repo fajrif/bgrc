@@ -22,6 +22,7 @@
 //= require bootstrap-select.min.js
 //= require main.js
 //= require offcanvas-menu
+//= require toast
 
 jQuery(document).ready(function($){
 	// Search

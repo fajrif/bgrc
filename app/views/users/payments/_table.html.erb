@@ -10,6 +10,7 @@
         <th>Payment Type</th>
         <th>Status</th>
         <th>Date</th>
+        <th></th>
       </tr>
     </thead>
     <tbody>
@@ -22,9 +23,6 @@
                  data-kind="<%= purchase.productable_type == "GolfReservation" ? "golf" : "booking" %>"><%= purchase.order_id %></a>
             <% else %>
               <%= purchase.order_id %>
-            <% end %>
-            <% if purchase.paid? %>
-              <a href="<%= users_payment_path(id: purchase.id) %>" class="bbcc-table-note receipt-trigger">View Receipt</a>
             <% end %>
           </td>
           <td><span class="bbcc-badge bbcc-badge-muted"><%= productable_type_label(purchase.productable_type) %></span></td>
@@ -41,6 +39,11 @@
             <% end %>
           </td>
           <td><%= (purchase.paid_at || purchase.created_at).strftime('%d %b %Y %H:%M') %></td>
+          <td class="bbcc-table-action">
+            <% if purchase.paid? %>
+              <a href="<%= users_payment_path(id: purchase.id) %>" class="bbcc-table-download receipt-trigger">Download</a>
+            <% end %>
+          </td>
         </tr>
       <% end %>
     </tbody>
