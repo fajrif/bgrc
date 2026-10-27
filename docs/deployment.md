@@ -59,15 +59,19 @@ mkdir -p tmp/pids tmp/sockets log
 ```bash
 cp deploy/env.production.example .env.production
 chmod 600 .env.production
-bin/rails secret                         # paste the output as SECRET_KEY_BASE
+openssl rand -hex 64                     # paste the output as SECRET_KEY_BASE (bin/rails secret needs the gems first)
 nano .env.production
 ```
 
 For pre-production: `SITE_URL=https://128.199.83.171`, `FORCE_SSL=true`, **`PAYMENT_GATEWAY=midtrans`** and the Midtrans sandbox keys. Copy the key values from `<DEV_DIR>/.env` (the Midtrans and reCAPTCHA entries). Xendit keys can be filled now and stay unused while `PAYMENT_GATEWAY=midtrans`.
 
 ```bash
-bundle install --deployment --without development test
+bundle config set --local deployment true
+bundle config set --local without 'development test'
+bundle install
 ```
+
+The gems compile native extensions. If `pg` or another gem fails to build, install `postgresql-devel` and `gcc make` with `sudo yum`.
 
 ## 4. Restore the database (rehearsal)
 

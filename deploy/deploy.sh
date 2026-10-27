@@ -15,7 +15,9 @@ git fetch origin
 git checkout "$BRANCH"
 git pull --ff-only origin "$BRANCH"
 
-bundle install --deployment --without development test
+bundle config set --local deployment true
+bundle config set --local without 'development test'
+bundle install
 bin/rails db:migrate
 bin/rails assets:precompile
 
