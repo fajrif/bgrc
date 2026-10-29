@@ -9,6 +9,7 @@
 						<%= f.input :time, as: :string, placeholder: "06:00 AM – 05:00 PM", hint: "Leave blank to hide the Time line." %>
 						<%= f.input :access, as: :string, placeholder: "Unlimited daily access", hint: "Leave blank to hide the Access line." %>
 						<%= f.input :price, as: :string, placeholder: "Rp 650.000" %>
+						<%= f.input :image, as: :file, hint: "Photo shown on the pricing card. Optional." %>
 					</fieldset>
 					<%= f.error :base %>
 					<div class="form-actions">

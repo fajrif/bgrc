@@ -1,0 +1,32 @@
+<%# Photo, serif title, optional text and meta lines, underlined link.
+    locals: title:. Optional: image: (attachment), size: [w, h] to crop to, ratio: "portrait"|"landscape",
+            text:, lines: [..], link_label:, link_path:, image_path: (bundled fallback URL) %>
+<%
+  image  = local_assigns[:image]
+  size   = local_assigns.fetch(:size, [720, 960])
+  ratio  = local_assigns.fetch(:ratio, "portrait")
+  lines  = Array(local_assigns[:lines]).compact_blank
+  has_image = image.present? && (!image.respond_to?(:attached?) || image.attached?)
+  fallback  = local_assigns[:image_path]
+%>
+<article class="bbcc-media-card">
+    <%= content_tag (local_assigns[:link_path].present? ? :a : :span), class: "bbcc-media-card-image bbcc-media-#{ratio}", href: local_assigns[:link_path].presence do %>
+        <% if has_image %>
+            <%= image_tag image.variant(resize_to_fill: size), alt: title, loading: "lazy" %>
+        <% elsif fallback.present? %>
+            <img src="<%= fallback %>" alt="<%= title %>" loading="lazy">
+        <% else %>
+            <span class="bbcc-media-ph" aria-hidden="true"></span>
+        <% end %>
+    <% end %>
+    <h3 class="bbcc-media-card-title"><%= title %></h3>
+    <% if local_assigns[:text].present? %>
+        <p class="bbcc-media-card-text"><%= local_assigns[:text] %></p>
+    <% end %>
+    <% if lines.any? %>
+        <p class="bbcc-media-card-meta"><%= safe_join(lines, tag.br) %></p>
+    <% end %>
+    <% if local_assigns[:link_label].present? %>
+        <%= link_to local_assigns[:link_label], local_assigns[:link_path], class: "bbcc-text-link" %>
+    <% end %>
+</article>

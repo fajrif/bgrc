@@ -1,0 +1,38 @@
+<%# Beach Club "Our Venues": text on the left, a Swiper of photo cards on the right.
+    locals: section:, venues:. Photos fall back to the bundled dining images until uploaded in admin. %>
+<%
+  fallbacks = %w[img-corsa.png img-kasumi.png tavara-banner.png dining-banner.png]
+%>
+<!-- start club life venues -->
+<section class="bbcc-section bbcc-venues">
+    <div class="container-lg">
+        <div class="row g-4 g-lg-5 align-items-start">
+            <div class="col-12 col-lg-3">
+                <h2 class="bbcc-title-lg">Our Venues</h2>
+                <% if section.facilities_intro.present? %>
+                    <p><%= section.facilities_intro %></p>
+                <% end %>
+                <%= link_to "Discover more", dining_path, class: "bbcc-text-link" %>
+            </div>
+            <div class="col-12 col-lg-9">
+                <div class="bbcc-swiper bbcc-slider bbcc-venue-slider" data-slides="1.2,2,3,3.3">
+                    <div class="swiper-wrapper">
+                        <% venues.each_with_index do |venue, index| %>
+                            <% photo = venue.image.attached? ? url_for(venue.image) : image_url("new-design/dining/#{fallbacks[index % fallbacks.size]}") %>
+                            <div class="swiper-slide">
+                                <article class="bbcc-venue-card" style="background-image:url('<%= photo %>');">
+                                    <span class="bbcc-venue-card-body">
+                                        <span class="bbcc-venue-card-name"><%= venue.name %></span>
+                                        <span class="bbcc-venue-card-desc"><%= venue.short_description.to_s.truncate(110) %></span>
+                                    </span>
+                                </article>
+                            </div>
+                        <% end %>
+                    </div>
+                    <%= render "shared/slider_controls" %>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- end club life venues -->

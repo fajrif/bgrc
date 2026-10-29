@@ -52,7 +52,7 @@ class Admins::FacilityRatesController < Admins::BaseController
   private
 
   def params_facility_rate
-    params.require(:facility_rate).permit(:name, :time, :access, :price, :facility_id, :position)
+    params.require(:facility_rate).permit(:name, :time, :access, :price, :facility_id, :position, :image)
   end
 
   def set_facility_rate

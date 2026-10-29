@@ -1,0 +1,38 @@
+<%# Facilities: title left, intro right, then image tiles — three per row, a
+    trailing pair runs one third + two thirds as in the mockup. locals: section:, items: %>
+<!-- start club life facilities -->
+<section class="bbcc-section bbcc-fac-row">
+    <div class="container-lg">
+        <div class="row g-4 g-lg-5 bbcc-fac-head">
+            <div class="col-12 col-lg-4">
+                <h2 class="bbcc-title-lg">BBCC <%= section.name %> Facilities</h2>
+            </div>
+            <div class="col-12 col-lg-8">
+                <% if section.facilities_intro.present? %>
+                    <p class="bbcc-lead"><%= section.facilities_intro %></p>
+                <% end %>
+            </div>
+        </div>
+        <% pair_last = items.size % 3 == 2 %>
+        <div class="row g-4">
+            <% items.each_with_index do |item, index| %>
+                <% col = if pair_last && index == items.size - 1 then "col-lg-8"
+                         else "col-lg-4" end %>
+                <div class="col-12 col-md-6 <%= col %>">
+                    <article class="bbcc-fac-tile">
+                        <span class="bbcc-fac-tile-image">
+                            <% if item.image.attached? %>
+                                <%= image_tag item.image.variant(resize_to_fill: [1000, 800]), alt: item.name, loading: "lazy" %>
+                            <% else %>
+                                <span class="bbcc-media-ph" aria-hidden="true"></span>
+                            <% end %>
+                        </span>
+                        <h3 class="bbcc-media-card-title"><%= item.name %></h3>
+                        <p class="bbcc-media-card-text"><%= item.short_description %></p>
+                    </article>
+                </div>
+            <% end %>
+        </div>
+    </div>
+</section>
+<!-- end club life facilities -->

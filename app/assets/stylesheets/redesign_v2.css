@@ -924,3 +924,90 @@ section.bbcc-auth-form-register { padding: 10px 0 0; }
   .bbcc-offcanvas .bbcc-offcanvas-panel { padding: 80px 28px 32px; }
   .bbcc-offcanvas .bbcc-offcanvas-nav li { margin-bottom: 24px; }
 }
+
+/* =====================================================================
+   Phase 4 — Club Life pages (Golf children, Beach Club, Racquet Sports)
+   ===================================================================== */
+/* a plain child page has no hero: leave room for the fixed header */
+.bbcc-band-page { padding-top: 112px; }
+.bbcc-band-page .bbcc-clublife-section { padding-top: 48px; padding-bottom: 72px; }
+.bbcc-band-page .bbcc-clublife-tabs a { font-size: 11px; padding: 10px 0 8px; }
+.bbcc-band-page .bbcc-clublife-tabs-row { gap: 8px 28px; }
+.bbcc-clublife-tabs-row-only:empty, .bbcc-band-page .bbcc-clublife-tabs .container-lg:empty { display: none; }
+
+/* intro: serif info-block titles, orange CTA */
+.bbcc-clublife-section .bbcc-detail-title {
+  font-family: var(--bbcc-font-title); font-size: 1.6rem; font-weight: 400; color: var(--bbcc-ink); margin: 28px 0 12px;
+}
+.bbcc-clublife-section .bbcc-detail-body p { font-size: 13px; line-height: 1.7; color: var(--bbcc-ink); margin-bottom: 12px; }
+.bbcc-clublife-section .bbcc-solid-btn { margin-top: 28px; padding: 14px 44px; font-size: 12px; }
+
+/* wide banner band under the intro */
+.bbcc-clublife-band { width: 100%; height: clamp(220px, 31vw, 448px); background-size: cover; background-position: center; }
+
+/* left-aligned serif section heads on these pages */
+.bbcc-band-page .bbcc-section-head, .bbcc-band-page .bbcc-section-head-center { text-align: left; margin-bottom: 36px; }
+.bbcc-band-page .bbcc-section-title { font-size: clamp(2rem, 3.2vw, 2.8rem); }
+.bbcc-band-page .bbcc-title-lg { margin: 0; }
+.bbcc-band-page .bbcc-rate-row, .bbcc-band-page .bbcc-service-row, .bbcc-band-page .bbcc-fac-row,
+.bbcc-band-page .bbcc-classes-row, .bbcc-band-page .bbcc-coach-row { padding: 72px 0 0; }
+.bbcc-band-page .bbcc-gallery-page { padding: 88px 0 80px; }
+.bbcc-band-page .bbcc-service-row:last-of-type { padding-bottom: 80px; }
+
+/* photo card: photo, serif title, text, underlined link */
+.bbcc-media-card { display: flex; flex-direction: column; height: 100%; }
+.bbcc-media-card-image { display: block; overflow: hidden; background: var(--bbcc-bg-alt); margin-bottom: 16px; }
+.bbcc-media-card-image img, .bbcc-media-ph { display: block; width: 100%; object-fit: cover; }
+.bbcc-media-portrait img, .bbcc-media-portrait .bbcc-media-ph { aspect-ratio: 3 / 4; }
+.bbcc-media-landscape img, .bbcc-media-landscape .bbcc-media-ph { aspect-ratio: 16 / 10; }
+.bbcc-media-square img, .bbcc-media-square .bbcc-media-ph { aspect-ratio: 1 / 1; }
+.bbcc-media-ph { background: var(--bbcc-book); opacity: .35; }
+.bbcc-media-card-title { font-family: var(--bbcc-font-title); font-weight: 400; font-size: 1.7rem; line-height: 1.15; margin: 0 0 8px; color: var(--bbcc-ink); }
+.bbcc-media-card-text { font-size: 13px; line-height: 1.6; margin: 0 0 12px; }
+.bbcc-media-card-meta { font-size: 13px; line-height: 1.7; margin: 0 0 14px; }
+.bbcc-media-card .bbcc-text-link { align-self: flex-start; margin-top: auto; font-size: 13px; }
+
+/* facilities: title left, intro right, image tiles */
+.bbcc-fac-head { margin-bottom: 40px; }
+.bbcc-fac-tile-image { display: block; overflow: hidden; background: var(--bbcc-bg-alt); margin-bottom: 16px; }
+.bbcc-fac-tile-image img, .bbcc-fac-tile-image .bbcc-media-ph { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; }
+@media (min-width: 992px) {
+  .bbcc-fac-tile-image img, .bbcc-fac-tile-image .bbcc-media-ph { height: 300px; aspect-ratio: auto; }
+}
+
+/* beach club: venues band */
+.bbcc-venues { background: var(--bbcc-book-soft, #D9CDB5); }
+.bbcc-venues .bbcc-title-lg { font-size: clamp(1.9rem, 2.6vw, 2.4rem); margin-bottom: 14px; }
+.bbcc-venue-card {
+  position: relative; display: flex; align-items: flex-end; height: 340px; overflow: hidden;
+  background-size: cover; background-position: center; color: var(--bbcc-cream);
+}
+.bbcc-venue-card::before { content: ""; position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,.65), rgba(0,0,0,.05) 70%); }
+.bbcc-venue-card-body { position: relative; display: block; padding: 20px; }
+.bbcc-venue-card-name { display: block; font-family: var(--bbcc-font-title); font-size: 1.7rem; line-height: 1.15; margin-bottom: 6px; }
+.bbcc-venue-card-desc { display: block; font-size: 12px; line-height: 1.5; color: rgba(245,242,232,.9); }
+
+/* coaches: department left / role right in gold, serif name */
+.bbcc-coach-row .bbcc-team-card-meta { display: flex; justify-content: space-between; gap: 12px; margin-bottom: 8px; }
+.bbcc-coach-row .bbcc-team-card-dept, .bbcc-coach-row .bbcc-team-card-role {
+  color: var(--bbcc-book); text-transform: none; letter-spacing: 0; font-size: 12px;
+}
+.bbcc-coach-row .bbcc-team-card-image img { aspect-ratio: 3 / 4; }
+
+/* racquet classes sit on the cream page: tan cards as in the mockup */
+.bbcc-band-page .bbcc-class-card { background: var(--bbcc-bg-alt); border-color: rgba(38, 36, 31, .35); }
+.bbcc-band-page .bbcc-class-tabs { justify-content: flex-start; margin-bottom: 28px; }
+.bbcc-band-page .bbcc-class-card .bbcc-btn { background: #C2792B; border-color: #C2792B; color: #fff; }
+
+/* the BBCC Golf sibling row on Golf's child pages */
+.bbcc-band-page .bbcc-service-row .bbcc-section-head { margin-bottom: 36px; }
+
+@media (max-width: 991px) {
+  .bbcc-band-page { padding-top: 92px; }
+  .bbcc-venue-card { height: 300px; }
+}
+@media (max-width: 575px) {
+  .bbcc-band-page .bbcc-rate-row, .bbcc-band-page .bbcc-service-row, .bbcc-band-page .bbcc-fac-row,
+  .bbcc-band-page .bbcc-classes-row, .bbcc-band-page .bbcc-coach-row { padding-top: 52px; }
+  .bbcc-media-card-title { font-size: 1.4rem; }
+}

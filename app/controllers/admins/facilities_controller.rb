@@ -96,7 +96,7 @@ class Admins::FacilitiesController < Admins::BaseController
     params.require(:facility).permit(:image, :banner, :middle_banner, :name, :short_description,
 																			:description, :facilities_intro, :treatments_title,
 																			:parent_id, :sport_id, :position, :club_life,
-																			:show_pricing, :show_specialists,
+																			:show_pricing, :show_specialists, :show_coaches,
 																			:cta_label, :cta_url, images: [])
   end
 

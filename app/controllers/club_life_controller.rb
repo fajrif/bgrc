@@ -39,7 +39,17 @@ class ClubLifeController < ApplicationController
     # membership pricing when it has any, otherwise from the sport's courts.
     @rate_cards  = @section.rate_cards
     @sport_rates = @section.rate_cards_from_sport?
-    @coaches     = @section.sport_id.present? ? Coach.for_sport(@section.sport_id).with_attached_photo : Coach.none
+    # Golf and Racquet Sports children are plain pages: light header, no hero,
+    # a wide banner band under the intro. Racquet children also get the sub-tabs.
+    @band_layout  = @root.present? && @root != @section && %w[Golf Racquet\ Sports].include?(@root.en_name)
+    @show_subtabs = @band_layout && @root.en_name == "Racquet Sports"
+
+    # Golf Course is linked to the Golf sport only for its gallery, so on Golf's
+    # child pages the coaches row is opt-in (Golf Lessons borrows its parent's sport).
+    coach_sport_id = @section.sport_id.presence || (@root.sport_id if @section.show_coaches?)
+    coaches_wanted = @band_layout && @root.en_name == "Golf" ? @section.show_coaches? : coach_sport_id.present?
+    @coaches     = coaches_wanted ? Coach.for_sport(coach_sport_id).with_attached_photo : Coach.none
+    @golf_siblings = @band_layout && @root.en_name == "Golf" ? @root.children : []
 
     @meta_title = @section.name
     @meta_desc  = @section.short_description

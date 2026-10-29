@@ -29,6 +29,22 @@ module ApplicationHelper
 		club_life_child_path(facility.parent, facility)
 	end
 
+	# Bundled hero/banner photo for the Phase 4 Club Life pages, used until an
+	# admin uploads a banner of their own.
+	CLUB_LIFE_FALLBACK_BANNERS = {
+		"Golf Course"    => "golf/banner-golf-course.jpg",
+		"Racquet Sports" => "racquet/banner-racquet.jpg",
+		"Tennis"         => "racquet/banner-tennis.jpg",
+		"Padel"          => "racquet/banner-padel.jpg",
+		"Pickleball"     => "racquet/banner-pickleball.jpg",
+		"Beach Club"     => "beach-club/banner-beach-club.jpg"
+	}.freeze
+
+	def club_life_fallback_banner(facility)
+		file = CLUB_LIFE_FALLBACK_BANNERS[facility.en_name]
+		image_url("new-design/club-life/#{file}") if file
+	end
+
 	def is_mobile_request?
 		request.user_agent =~ /Mobile|webOS/
 	end
