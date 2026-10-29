@@ -39,6 +39,19 @@ jQuery(document).ready(function($){
 	var maxBookingDate = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000);
 	$(".datecourtpicker").flatpickr({"altInput":true, minDate: "today", maxDate: maxBookingDate, "altFormat": "d/m/Y", "enableTime": false, "disableMobile":true, "dateFormat":"d/m/Y"});
 
+	// Hero search: the chevron / calendar icon opens its field like the input does
+	$(".bbcc-hero-field-icon").on("click", function () {
+		var field = $(this).closest(".bbcc-hero-field");
+		var select = field.find("select")[0];
+		var picker = field.find(".datecourtpicker")[0];
+		if (picker && picker._flatpickr) {
+			picker._flatpickr.open();
+		} else if (select) {
+			select.focus();
+			if (select.showPicker) { try { select.showPicker(); } catch (err) { /* needs a user gesture */ } }
+		}
+	});
+
 	// Sticky header: parked at the top and given a shadow once the page has
 	// scrolled past the navbar, so the navigation stays pinned as the visitor
 	// moves down the page.
