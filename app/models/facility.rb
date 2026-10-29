@@ -27,6 +27,9 @@ class Facility < ApplicationRecord
 	# sport's class programme.
 	has_many :treatments, -> { order(position: :asc, id: :asc) }, dependent: :destroy
 
+	# Icon cards ("Cardio Zone", "Stretching Area", ...) shown under the banner.
+	has_many :benefits, -> { order(position: :asc, id: :asc) }, class_name: "FacilityBenefit", dependent: :destroy
+
 	has_one_attached :image, dependent: :purge
 	has_one_attached :banner, dependent: :purge
 	has_one_attached :middle_banner, dependent: :purge

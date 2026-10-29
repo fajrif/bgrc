@@ -1,6 +1,9 @@
 class InquiriesController < ApplicationController
 
   def show
+		# a pricing card links here with ?about=<Section> – <Plan>; the page then
+		# offers a ready-made email / WhatsApp message about it
+		@about = params[:about].to_s.squish.truncate(110, omission: "").presence
 		@inquiry = Inquiry.new
     @articles = Article.where(status: 1).first(3)
   end

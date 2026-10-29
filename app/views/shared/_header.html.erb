@@ -9,7 +9,11 @@
                     <span class="bbcc-menu-label">Menu</span>
                 </button>
                 <%= link_to root_path, class: "bbcc-logo" do %>
-                    <%= image_tag(content_for?(:header_light) ? "new-design/logo-dark.png" : "new-design/logo.png", alt: "Bali Beach Country Club") %>
+                    <%= image_tag(content_for?(:header_light) ? "new-design/logo-dark.png" : "new-design/logo.png", alt: "Bali Beach Country Club", class: "bbcc-logo-top") %>
+                    <%# a hero page swaps to the dark wordmark once the header turns cream on scroll %>
+                    <% if content_for?(:hero) %>
+                        <%= image_tag("new-design/logo-dark.png", alt: "", class: "bbcc-logo-stuck", "aria-hidden": "true") %>
+                    <% end %>
                 <% end %>
                 <a href="<%= golf_path %>" class="bbcc-book-btn">Book Now</a>
                 <a href="<%= golf_path %>" class="bbcc-book-btn bbcc-book-btn-mobile">Book</a>

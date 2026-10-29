@@ -131,6 +131,7 @@ Rails.application.routes.draw do
       resources :amenities
       resources :facility_details
       resources :facility_rates
+      resources :facility_benefits
       resources :treatments
       resources :restaurants do
         member do

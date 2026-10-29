@@ -1,5 +1,7 @@
 <%# Facilities: title left, intro right, then image tiles — three per row, a
-    trailing pair runs one third + two thirds as in the mockup. locals: section:, items: %>
+    trailing pair runs one third + two thirds as in the mockup. locals: section:, items:,
+    optional square: true for square photo tiles (Fitness). %>
+<% square = local_assigns[:square] %>
 <!-- start club life facilities -->
 <section class="bbcc-section bbcc-fac-row">
     <div class="container-lg">
@@ -19,10 +21,10 @@
                 <% col = if pair_last && index == items.size - 1 then "col-lg-8"
                          else "col-lg-4" end %>
                 <div class="col-12 col-md-6 <%= col %>">
-                    <article class="bbcc-fac-tile">
+                    <article class="bbcc-fac-tile<%= " bbcc-fac-tile-square" if square %>">
                         <span class="bbcc-fac-tile-image">
                             <% if item.image.attached? %>
-                                <%= image_tag item.image.variant(resize_to_fill: [1000, 800]), alt: item.name, loading: "lazy" %>
+                                <%= image_tag item.image.variant(resize_to_fill: (square ? (col == "col-lg-8" ? [1800, 900] : [900, 900]) : [1000, 800])), alt: item.name, loading: "lazy" %>
                             <% else %>
                                 <span class="bbcc-media-ph" aria-hidden="true"></span>
                             <% end %>

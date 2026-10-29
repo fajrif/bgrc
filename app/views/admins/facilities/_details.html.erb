@@ -148,6 +148,19 @@
 	</table>
 <% end %>
 
+<% if @facility.benefits.any? %>
+	<h5 class="mt-4 mb-2">Benefits</h5>
+	<table class="table table-hover">
+		<% @facility.benefits.each do |benefit| %>
+			<tr>
+				<td style="width:25%;"><b><%= benefit.title %></b></td>
+				<td><%= benefit.description %></td>
+				<td style="width:10%;" class="text-end"><%= link_to "Edit", edit_admins_facility_benefit_path(benefit.id), class: "btn btn-light btn-sm" %></td>
+			</tr>
+		<% end %>
+	</table>
+<% end %>
+
 <% if @facility.facility_details.any? %>
 	<h5 class="mt-4 mb-2">Info Blocks</h5>
 	<table class="table table-hover">

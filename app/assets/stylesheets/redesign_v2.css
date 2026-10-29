@@ -303,7 +303,7 @@ a:hover > .bbcc-text-link-light { color: #fff; opacity: .8; }
 .bbcc-footer-links a:hover { color: #fff; opacity: .75; }
 .bbcc-footer-address { color: rgba(245,242,232,.85); font-size: 14px; }
 .bbcc-footer-social a { background: transparent; border: 1px solid rgba(245,242,232,.6); color: var(--bbcc-cream); }
-.bbcc-footer-social a:hover { background: var(--bbcc-cream); color: var(--bbcc-footer) !important; }
+.bbcc-footer-social a:hover { background: var(--bbcc-book); color: var(--bbcc-footer) !important; }
 .bbcc-footer-bottom { background: transparent; border-top: 1px solid rgba(245,242,232,.15); }
 .bbcc-footer-copy, .bbcc-footer-legal a { color: rgba(245,242,232,.75); font-size: 12px; }
 .bbcc-footer-legal a:hover { color: #fff; text-decoration: none; }
@@ -1010,4 +1010,74 @@ section.bbcc-auth-form-register { padding: 10px 0 0; }
   .bbcc-band-page .bbcc-rate-row, .bbcc-band-page .bbcc-service-row, .bbcc-band-page .bbcc-fac-row,
   .bbcc-band-page .bbcc-classes-row, .bbcc-band-page .bbcc-coach-row { padding-top: 52px; }
   .bbcc-media-card-title { font-size: 1.4rem; }
+}
+
+/* =====================================================================
+   Phase 5 — Fitness (root + Gym, Gyrotonic, Pilates, Yoga, Lap Pool)
+   ===================================================================== */
+/* photo-card ratios taken from the mockup crops */
+.bbcc-media-card-image { position: relative; }
+.bbcc-media-pricing img, .bbcc-media-pricing .bbcc-media-ph { aspect-ratio: 650 / 696; }
+.bbcc-media-photo img, .bbcc-media-photo .bbcc-media-ph { aspect-ratio: 880 / 756; }
+.bbcc-media-slide img, .bbcc-media-slide .bbcc-media-ph { aspect-ratio: 440 / 416; }
+.bbcc-media-chip {
+  position: absolute; top: 12px; left: 12px; padding: 5px 12px; background: #8FB9C4; color: var(--bbcc-ink);
+  font-size: 11px; line-height: 1.2; letter-spacing: .2px;
+}
+
+/* benefit: title left, four bordered icon cards right */
+.bbcc-benefit-row { padding: 0 0 8px; }
+.bbcc-benefit-card { height: 100%; padding: 22px 18px 24px; border: 1px solid rgba(38, 36, 31, .35); background: transparent; }
+.bbcc-benefit-icon { display: block; width: 35px; height: 35px; margin-bottom: 14px; opacity: .85; }
+.bbcc-benefit-title { font-family: var(--bbcc-font-title); font-weight: 400; font-size: 1.35rem; line-height: 1.15; margin: 0 0 8px; color: var(--bbcc-ink); }
+.bbcc-benefit-text { font-size: 12px; line-height: 1.55; margin: 0; }
+.bbcc-fitness-page .bbcc-benefit-row { padding: 72px 0 0; }
+
+/* facilities on Fitness pages: square tiles, the trailing wide one is 2:1 */
+.bbcc-fac-tile-square .bbcc-fac-tile-image img, .bbcc-fac-tile-square .bbcc-fac-tile-image .bbcc-media-ph { height: auto; aspect-ratio: 1 / 1; }
+@media (min-width: 992px) {
+  .bbcc-fac-tile-square .bbcc-fac-tile-image img, .bbcc-fac-tile-square .bbcc-fac-tile-image .bbcc-media-ph { height: auto; aspect-ratio: 1 / 1; }
+  .col-lg-8 > .bbcc-fac-tile-square .bbcc-fac-tile-image img, .col-lg-8 > .bbcc-fac-tile-square .bbcc-fac-tile-image .bbcc-media-ph { aspect-ratio: 2.04 / 1; }
+}
+.bbcc-fac-tile-square .bbcc-media-card-text { max-width: 560px; }
+
+/* bullet lists inside info blocks (Lap Pool rules) */
+.bbcc-detail-body .bbcc-detail-list { margin: 0 0 14px; padding-left: 18px; font-size: 13px; line-height: 1.7; }
+.bbcc-detail-body .bbcc-detail-list li { margin-bottom: 4px; }
+
+/* Fitness team / coaches: square portraits */
+.bbcc-fitness-team .bbcc-team-card-image img { aspect-ratio: 1 / 1; }
+.bbcc-fitness-team .text-center { margin-top: 40px; }
+.bbcc-fitness-page .bbcc-class-tabs { margin-bottom: 28px; }
+.bbcc-fitness-page .bbcc-service-row:last-of-type { padding-bottom: 0; }
+
+/* Fitness root: sauna photo with a paragraph under it, then the children slider */
+.bbcc-midbanner-caption { max-width: 560px; margin: 28px 0 0 auto; font-size: 13px; line-height: 1.7; }
+.bbcc-fitness-root .bbcc-midbanner { padding-bottom: 72px; }
+.bbcc-children-slider { padding: 72px 0 80px; }
+.bbcc-children-slider .bbcc-section-head, .bbcc-fitness-root .bbcc-fitness-team .bbcc-section-head { text-align: left; margin-bottom: 36px; }
+.bbcc-fitness-root .bbcc-fitness-team { padding: 80px 0 0; }
+.bbcc-fitness-root .bbcc-gallery-page { padding: 88px 0 80px; }
+.bbcc-fitness-root .bbcc-gallery-page .bbcc-section-head { text-align: left; margin-bottom: 36px; }
+
+@media (max-width: 991px) {
+  .bbcc-midbanner-caption { margin-left: 0; }
+}
+@media (max-width: 575px) {
+  .bbcc-fitness-page .bbcc-benefit-row { padding-top: 52px; }
+  .bbcc-benefit-card { padding: 18px 14px 20px; }
+  .bbcc-children-slider { padding: 52px 0 56px; }
+  .bbcc-fitness-root .bbcc-fitness-team { padding-top: 52px; }
+}
+
+/* Hero pages: once scrolled, the header turns cream and swaps the white emblem
+   for the dark wordmark (logo2.png) */
+.bbcc-logo .bbcc-logo-stuck { display: none; }
+.bbcc-has-hero .bbcc-header.bbcc-header-stuck { background: var(--bbcc-bg); box-shadow: 0 1px 0 var(--bbcc-line); }
+.bbcc-has-hero .bbcc-header-stuck .bbcc-logo-top { display: none; }
+.bbcc-has-hero .bbcc-header-stuck .bbcc-logo-stuck { display: block; height: 26px; width: auto; }
+.bbcc-has-hero .bbcc-header-stuck .bbcc-burger span { background: var(--bbcc-ink); }
+.bbcc-has-hero .bbcc-header-stuck .bbcc-menu-label { color: var(--bbcc-ink); }
+@media (max-width: 991px) {
+  .bbcc-has-hero .bbcc-header-stuck .bbcc-logo-stuck { height: 32px; }
 }

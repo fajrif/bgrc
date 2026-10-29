@@ -53,7 +53,7 @@ class Admins::TreatmentsController < Admins::BaseController
   private
 
   def params_treatment
-    params.require(:treatment).permit(:name, :short_description, :duration, :price, :image, :facility_id, :position)
+    params.require(:treatment).permit(:name, :short_description, :duration, :price, :category, :image, :facility_id, :position)
   end
 
   def set_treatment

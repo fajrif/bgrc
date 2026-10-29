@@ -41,8 +41,16 @@ class ClubLifeController < ApplicationController
     @sport_rates = @section.rate_cards_from_sport?
     # Golf and Racquet Sports children are plain pages: light header, no hero,
     # a wide banner band under the intro. Racquet children also get the sub-tabs.
-    @band_layout  = @root.present? && @root != @section && %w[Golf Racquet\ Sports].include?(@root.en_name)
-    @show_subtabs = @band_layout && @root.en_name == "Racquet Sports"
+    @band_layout  = @root.present? && @root != @section && %w[Golf Racquet\ Sports Fitness].include?(@root.en_name)
+    @show_subtabs = @band_layout && %w[Racquet\ Sports Fitness].include?(@root.en_name)
+
+    # Fitness has no sport behind it: its children list the shared Fitness team
+    # (Our Team → Fitness) instead of coaches, and the root fronts its children
+    # as a slider with the team underneath.
+    @fitness_root  = @root.present? && @root == @section && @root.en_name == "Fitness"
+    @fitness_child = @band_layout && @root.en_name == "Fitness"
+    @fitness_team  = @fitness_root || (@fitness_child && @section.show_coaches?) ? TeamMember.where(department: "fitness").with_attached_photo : TeamMember.none
+    @benefits      = @section.benefits.with_attached_icon
 
     # Golf Course is linked to the Golf sport only for its gallery, so on Golf's
     # child pages the coaches row is opt-in (Golf Lessons borrows its parent's sport).

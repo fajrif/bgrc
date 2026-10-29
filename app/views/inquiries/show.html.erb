@@ -1,5 +1,27 @@
 <% content_for :header_light, true %>
 
+<% if @about %>
+<!-- start enquiry -->
+<section class="bbcc-page-body bbcc-enquiry">
+    <div class="container-lg">
+        <div class="row g-4 g-lg-5 align-items-start">
+            <div class="col-12 col-lg-4">
+                <h1 class="bbcc-title-lg bbcc-intro-title">Enquiry</h1>
+            </div>
+            <div class="col-12 col-lg-8">
+                <% message = "Hi Bali Beach Country Club, I'd like to enquire about #{@about}." %>
+                <p class="bbcc-lead">You're enquiring about <strong><%= @about %></strong>. Send us a message and the team will get back to you with availability and how to sign up.</p>
+                <p>
+                    <%= link_to "Message on WhatsApp", "https://wa.me/#{configatron.whatsapp_number.to_s.gsub(/\D/, '')}?text=#{url_encode(message)}", class: "bbcc-solid-btn", target: "_blank", rel: "noopener" %>
+                    <%= link_to "Send an email", "mailto:#{configatron.admin_email}?subject=#{url_encode("Enquiry: #{@about}")}&body=#{url_encode(message)}", class: "bbcc-text-link ms-3" %>
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- end enquiry -->
+<% end %>
+
 <!-- start location -->
 <section class="bbcc-page-body bbcc-location-info">
     <div class="container-lg">

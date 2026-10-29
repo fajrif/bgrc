@@ -47,7 +47,7 @@
 							<%= f.input :position, as: :integer %>
 							<%= f.input :show_pricing, as: :boolean, label: "Show pricing section", hint: "Untick to hide the pricing row on this page without deleting the rates." %>
 							<%= f.input :show_specialists, as: :boolean, label: "Show specialists section", hint: "Spa + Wellness pages only — the shared Our Specialists row." %>
-							<%= f.input :show_coaches, as: :boolean, label: "Show coaches section", hint: "For a page with no sport of its own (e.g. Golf Lessons): shows the parent section's sport coaches." %>
+							<%= f.input :show_coaches, as: :boolean, label: "Show coaches section", hint: "For a page with no sport of its own: Golf Lessons shows Golf's coaches, Fitness pages show the Fitness team (Our Team → Fitness)." %>
 							<%= f.input :cta_label, as: :string, label: "Button label", placeholder: "Book Now" %>
 							<%= f.input :cta_url, as: :string, label: "Button link", placeholder: "/book/golf" %>
 						</div>

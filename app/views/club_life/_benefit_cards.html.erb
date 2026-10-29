@@ -1,0 +1,27 @@
+<%# Icon cards under a page's banner. locals: section:, benefits: %>
+<!-- start club life benefits -->
+<section class="bbcc-section bbcc-benefit-row">
+    <div class="container-lg">
+        <div class="row g-4 g-lg-5">
+            <div class="col-12 col-lg-4">
+                <h2 class="bbcc-title-lg">BBCC <%= section.name %> Benefit</h2>
+            </div>
+            <div class="col-12 col-lg-8">
+                <div class="row g-3">
+                    <% benefits.each do |benefit| %>
+                        <div class="col-6 col-md-3">
+                            <article class="bbcc-benefit-card">
+                                <% if benefit.icon.attached? %>
+                                    <%= image_tag benefit.icon, alt: "", class: "bbcc-benefit-icon", width: 35, height: 35, loading: "lazy" %>
+                                <% end %>
+                                <h3 class="bbcc-benefit-title"><%= benefit.title %></h3>
+                                <p class="bbcc-benefit-text"><%= benefit.description %></p>
+                            </article>
+                        </div>
+                    <% end %>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- end club life benefits -->

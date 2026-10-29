@@ -37,12 +37,34 @@ module ApplicationHelper
 		"Tennis"         => "racquet/banner-tennis.jpg",
 		"Padel"          => "racquet/banner-padel.jpg",
 		"Pickleball"     => "racquet/banner-pickleball.jpg",
-		"Beach Club"     => "beach-club/banner-beach-club.jpg"
+		"Beach Club"     => "beach-club/banner-beach-club.jpg",
+		"Fitness"        => "fitness/banners/banner-fitness.jpg",
+		"Gym"            => "fitness/banners/banner-gym.jpg",
+		"Gyrotonic"      => "fitness/banners/banner-gyrotonic.jpg",
+		"Pilates"        => "fitness/banners/banner-pilates.jpg",
+		"Yoga"           => "fitness/banners/banner-yoga.jpg",
+		"Lap Pool"       => "fitness/banners/banner-lap-pool.jpg"
 	}.freeze
 
 	def club_life_fallback_banner(facility)
 		file = CLUB_LIFE_FALLBACK_BANNERS[facility.en_name]
 		image_url("new-design/club-life/#{file}") if file
+	end
+
+	# Info-block body: a blank line opens a new paragraph, a single newline is a
+	# line break, and consecutive lines starting "- " or "• " become a bullet list.
+	def club_life_detail_body(body)
+		bullet = /\A\s*(?:-|•)\s+/
+		safe_join(body.to_s.split(/\n{2,}/).map do |block|
+			lines = block.split("\n").map(&:strip).reject(&:blank?)
+			safe_join(lines.chunk_while { |a, b| a.match?(bullet) == b.match?(bullet) }.map do |group|
+				if group.first.match?(bullet)
+					content_tag(:ul, safe_join(group.map { |line| content_tag(:li, line.sub(bullet, "")) }), class: "bbcc-detail-list")
+				else
+					content_tag(:p, safe_join(group, tag.br))
+				end
+			end)
+		end)
 	end
 
 	def is_mobile_request?

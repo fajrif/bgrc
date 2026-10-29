@@ -10,7 +10,7 @@ class TeamMember < ApplicationRecord
 
 	default_scope { order(position: :asc, id: :asc) }
 
-	DEPARTMENTS = %w[fnb sports specialists].freeze
+	DEPARTMENTS = %w[fnb sports specialists fitness].freeze
 	DEPARTMENT_LABELS = { "fnb" => "F&B" }.freeze
 
 	def self.department_label(key)

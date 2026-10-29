@@ -1,0 +1,41 @@
+<%= simple_form_for @facility_benefit, url: (@facility_benefit.new_record? ? admins_facility_benefits_path : admins_facility_benefit_path(@facility_benefit.id)), method: (@facility_benefit.new_record? ? :post : :put) do |f| %>
+	<div class="row">
+		<div class="col-lg-8">
+			<div class="card">
+				<div class="card-body">
+					<%= f.error_notification %>
+					<fieldset>
+						<%= f.input :title, as: :string, placeholder: "Cardio Zone" %>
+						<%= f.input :description, as: :text, input_html: { rows: 3 }, hint: "One short sentence." %>
+						<%= f.input :icon, as: :file, hint: "Small square icon (PNG, ~70 px). Optional.", input_html: { accept: "image/png, image/jpg, image/jpeg, image/webp, image/svg+xml" } %>
+					</fieldset>
+					<%= f.error :base %>
+					<div class="form-actions">
+						<%= f.button :submit, :class => 'btn btn-secondary' %>
+						<% unless @facility_benefit.new_record? %>
+							<%= link_to "Cancel", admins_facility_benefit_path(@facility_benefit.id), :class => 'btn btn-light' %>
+						<% else %>
+							<%= link_to "Cancel", admins_facility_benefits_path, :class => 'btn btn-light' %>
+						<% end %>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-lg-4">
+			<div class="row">
+				<%= render "admins/shared/error_messages", :target => @facility_benefit, col: 'col-lg-12' %>
+				<div class="col-lg-12">
+					<div class="card">
+						<div class="card-header">
+							<h5 class="card-title mb-0">Settings</h5>
+						</div>
+						<div class="card-body">
+							<%= f.association :facility, hint: "The page this benefit is listed on" %>
+							<%= f.input :position, as: :integer %>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+<% end %>

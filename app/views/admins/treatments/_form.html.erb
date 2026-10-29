@@ -8,6 +8,7 @@
 						<%= f.input :image, as: :file, input_html: { class: "mb-3", accept: "image/gif, image/png, image/jpg, image/jpeg, image/webp" } %>
 						<%= f.input :name, as: :string, placeholder: "Massage" %>
 						<%= f.input :short_description, as: :text, input_html: { rows: 3 } %>
+						<%= f.input :category, as: :select, collection: GroupClass::CATEGORIES, include_blank: "None", hint: "Fitness class tabs and the chip over the photo. Leave blank for none." %>
 						<%= f.input :duration, as: :string, placeholder: "60 minutes", hint: "Leave blank to hide the Duration line." %>
 						<%= f.input :price, as: :string, placeholder: "Rp 800.000", hint: "Leave blank to hide the Price line." %>
 					</fieldset>

@@ -1,0 +1,23 @@
+<%# A section's children as a slider of photo cards on a tan band. locals: title:, children: %>
+<!-- start club life children slider -->
+<section class="bbcc-section bbcc-section-alt bbcc-children-slider">
+    <div class="container-lg">
+        <div class="bbcc-section-head">
+            <h2 class="bbcc-title-lg"><%= title %></h2>
+        </div>
+        <div class="bbcc-swiper bbcc-slider" data-slides="1.15,2,3,3">
+            <div class="swiper-wrapper">
+                <% children.each do |child| %>
+                    <div class="swiper-slide">
+                        <%= render "club_life/media_card", title: child.name, image: child.card_image,
+                                   size: [900, 832], ratio: "slide",
+                                   text: child.short_description.to_s.truncate(110),
+                                   link_label: "Discover more", link_path: club_life_page_path(child) %>
+                    </div>
+                <% end %>
+            </div>
+            <%= render "shared/slider_controls" %>
+        </div>
+    </div>
+</section>
+<!-- end club life children slider -->

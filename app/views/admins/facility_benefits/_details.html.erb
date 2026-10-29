@@ -1,0 +1,26 @@
+<table class="table table-hover">
+	<tr>
+		<td style="width:15%;"><b>ID</b></td>
+		<td><%= @facility_benefit.id %></td>
+	</tr>
+	<tr>
+		<td><b>Title</b></td>
+		<td><h5 class="fs-14 mb-0 text-body"><%= @facility_benefit.title %></h5></td>
+	</tr>
+	<tr>
+		<td><b>Description</b></td>
+		<td><%= blank_or_not(@facility_benefit.description) %></td>
+	</tr>
+	<tr>
+		<td><b>Icon</b></td>
+		<td><%= @facility_benefit.icon.attached? ? image_tag(@facility_benefit.icon, width: 35) : blank_or_not(nil) %></td>
+	</tr>
+	<tr>
+		<td><b>Facility</b></td>
+		<td><%= blank_or_not(@facility_benefit.facility&.name) %></td>
+	</tr>
+	<tr>
+		<td><b>Position</b></td>
+		<td><%= @facility_benefit.position %></td>
+	</tr>
+</table>

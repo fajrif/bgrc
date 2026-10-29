@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_10_29_100000) do
+ActiveRecord::Schema[7.1].define(version: 2026_10_29_110100) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -299,6 +299,16 @@ ActiveRecord::Schema[7.1].define(version: 2026_10_29_100000) do
     t.index ["parent_id"], name: "index_facilities_on_parent_id"
     t.index ["slug"], name: "index_facilities_on_slug", unique: true
     t.index ["sport_id"], name: "index_facilities_on_sport_id"
+  end
+
+  create_table "facility_benefits", force: :cascade do |t|
+    t.integer "facility_id"
+    t.jsonb "title", default: {}
+    t.jsonb "description", default: {}
+    t.integer "position", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["facility_id"], name: "index_facility_benefits_on_facility_id"
   end
 
   create_table "facility_details", force: :cascade do |t|
@@ -754,6 +764,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_10_29_100000) do
     t.integer "position", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "category"
     t.index ["facility_id"], name: "index_treatments_on_facility_id"
   end
 

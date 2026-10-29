@@ -19,7 +19,7 @@
     <%= render "shared/hero_search", hero_image: hero_image, selected_sport_id: @section.sport_id %>
 <% end %>
 
-<div class="bbcc-clublife-page<%= " bbcc-band-page" if @band_layout %>">
+<div class="bbcc-clublife-page<%= " bbcc-band-page" if @band_layout %><%= " bbcc-fitness-page" if @fitness_child %><%= " bbcc-fitness-root" if @fitness_root %>">
 <!-- start club life tabs -->
 <% tab_root = @root || @section %>
 <nav class="bbcc-clublife-tabs bbcc-clublife-tabs-row-only" aria-label="Club Life sections">
@@ -38,7 +38,7 @@
                     <%= link_to section.name, club_life_page_path(section), class: ("active" if section == tab_root), "aria-current": (section == tab_root ? "page" : nil) %>
                 <% end %>
             </div>
-            <% if tab_root.children.any? && !racquet_root %>
+            <% if tab_root.children.any? && !racquet_root && !@fitness_root %>
                 <div class="bbcc-clublife-subtabs">
                     <% tab_root.children.each do |child| %>
                         <%= link_to child.name, club_life_page_path(child), class: ("active" if child == @section) %>
@@ -68,10 +68,7 @@
                 <% @details.each do |detail| %>
                     <h2 class="bbcc-detail-title"><%= detail.title %></h2>
                     <div class="bbcc-detail-body">
-                        <%# a blank line opens a new block, a single newline just breaks the line %>
-                        <% detail.body.to_s.split(/\n{2,}/).each do |para| %>
-                            <p><%= safe_join(para.split("\n").map(&:strip), tag.br) %></p>
-                        <% end %>
+                        <%= club_life_detail_body(detail.body) %>
                     </div>
                 <% end %>
                 <% if @section.cta_url.present? %>
@@ -91,19 +88,26 @@
     <!-- end club life banner band -->
 <% end %>
 
-<% unless @band_layout || beach_club || racquet_root %>
+<% unless @band_layout || beach_club || racquet_root || @fitness_root %>
     <%= render "shared/bbcc_highlights" %>
 <% end %>
 
-<% if @section.middle_banner.attached? %>
+<% if @section.middle_banner.attached? && !@band_layout %>
     <!-- start club life middle banner -->
     <section class="bbcc-section bbcc-midbanner">
         <div class="container-lg">
             <span class="bbcc-midbanner-image" style="background-image:url('<%= url_for(@section.middle_banner) %>');"
                   role="img" aria-label="<%= @section.name %>"></span>
+            <% if @fitness_root && @section.facilities_intro.present? %>
+                <p class="bbcc-midbanner-caption"><%= @section.facilities_intro %></p>
+            <% end %>
         </div>
     </section>
     <!-- end club life middle banner -->
+<% end %>
+
+<% if @benefits.any? %>
+    <%= render "club_life/benefit_cards", section: @section, benefits: @benefits %>
 <% end %>
 
 <% if @rate_cards.any? && @section.show_pricing? %>
@@ -122,12 +126,13 @@
                         <% photo = rate[:image] || (@gallery[index % @gallery.size] if @gallery.any?) %>
                         <div class="col-12 <%= wide ? "col-md-6" : "col-6 col-lg-3" %>">
                             <%= render "club_life/media_card", title: rate[:name], image: photo,
-                                       size: (wide ? [900, 560] : [600, 800]), ratio: (wide ? "landscape" : "portrait"),
+                                       size: (wide ? [900, 560] : (@fitness_child ? [650, 696] : [600, 800])), ratio: (wide ? "landscape" : (@fitness_child ? "pricing" : "portrait")),
                                        lines: [(rate[:time].present? ? "Time: #{rate[:time]}" : nil),
                                                (rate[:duration].present? ? "Duration: #{rate[:duration]}" : nil),
                                                (rate[:access].present? ? "Access: #{rate[:access]}" : nil),
                                                "Price: #{rate[:price]}"],
-                                       link_label: "Book Now", link_path: book_path %>
+                                       link_label: "Book Now",
+                                       link_path: (@section.sport_id.present? ? book_path : get_contact_path(about: "#{@section.name} – #{rate[:name]}")) %>
                         </div>
                     <% end %>
                 </div>
@@ -169,7 +174,7 @@
 <% if @amenities.any? && beach_club %>
     <%= render "club_life/venue_slider", section: @section, venues: @amenities %>
 <% elsif @amenities.any? && @band_layout %>
-    <%= render "club_life/facility_grid", section: @section, items: @amenities %>
+    <%= render "club_life/facility_grid", section: @section, items: @amenities, square: @fitness_child %>
 <% elsif @amenities.any? %>
     <!-- start club life facilities (card-only, no page of their own) -->
     <section class="bbcc-section bbcc-cat-row">
@@ -193,6 +198,8 @@
         </div>
     </section>
     <!-- end club life facilities -->
+<% elsif @fitness_root && @children.any? %>
+    <%= render "club_life/children_slider", title: "BBCC #{@section.name}", children: @children %>
 <% elsif @children.any? && @use_overlay_cards %>
     <!-- start club life categories -->
     <section class="bbcc-section bbcc-cat-row">
@@ -218,19 +225,30 @@
     <% book_path = @section.cta_url.presence || get_contact_path %>
     <% if @band_layout %>
         <!-- start club life lessons (photo cards) -->
-        <section class="bbcc-section bbcc-service-row">
+        <% treatment_categories = GroupClass::CATEGORIES.select { |_label, slug| @treatments.any? { |t| t.category == slug } } %>
+        <section class="bbcc-section bbcc-service-row" data-class-filter>
             <div class="container-lg">
                 <div class="bbcc-section-head">
                     <h2 class="bbcc-title-lg"><%= @section.treatments_title.presence || "Treatment" %></h2>
                 </div>
-                <div class="row g-4">
+                <% if treatment_categories.size > 1 %>
+                    <nav class="bbcc-tabs bbcc-tabs-center bbcc-class-tabs" aria-label="Class categories">
+                        <button type="button" class="bbcc-tab active" data-filter="all">All</button>
+                        <% treatment_categories.each do |label, slug| %>
+                            <button type="button" class="bbcc-tab" data-filter="<%= slug %>"><%= label.pluralize %></button>
+                        <% end %>
+                    </nav>
+                <% end %>
+                <div class="row g-4 bbcc-class-grid">
                     <% @treatments.each do |treatment| %>
-                        <div class="col-6 col-lg-3">
+                        <div class="col-6 col-lg-<%= @fitness_child ? 4 : 3 %> bbcc-class-col" data-category="<%= treatment.category %>">
                             <%= render "club_life/media_card", title: treatment.name, image: treatment.image,
-                                       size: [600, 800], text: treatment.short_description,
+                                       size: (@fitness_child ? [880, 756] : [600, 800]), ratio: (@fitness_child ? "photo" : "portrait"),
+                                       text: treatment.short_description, chip: (treatment_categories.size > 1 ? treatment.category_label : nil),
                                        lines: [(treatment.duration.present? ? "Duration: #{treatment.duration}" : nil),
                                                (treatment.price.present? ? "Price: #{treatment.price}" : nil)],
-                                       link_label: "Book Now", link_path: book_path %>
+                                       link_label: "Book Now",
+                                       link_path: (@fitness_child ? get_contact_path(about: "#{@section.name} – #{treatment.name}") : book_path) %>
                         </div>
                     <% end %>
                 </div>
@@ -278,7 +296,7 @@
     <%# only offer a tab for a category that actually has classes here %>
     <% present_categories = GroupClass::CATEGORIES.select { |_label, slug| @group_classes.any? { |gc| gc.category == slug } } %>
     <!-- start club life classes -->
-    <section class="bbcc-section bbcc-classes-row<%= " bbcc-section-alt" unless @band_layout %>">
+    <section class="bbcc-section bbcc-classes-row<%= " bbcc-section-alt" unless @band_layout %>" data-class-filter>
         <div class="container-lg">
             <div class="bbcc-section-head bbcc-section-head-center">
                 <h2 class="bbcc-section-title">BBCC <%= @section.name %> Classes</h2>
@@ -305,12 +323,15 @@
     </section>
     <!-- end club life classes -->
 
+<% end %>
+
+<% if @treatments.any? || @group_classes.any? %>
     <script>
       // plain JS: filters in place so the visitor keeps their scroll position,
       // which a link_to tab strip two-thirds down the page would lose.
-      (function () {
-        var tabs = document.querySelectorAll('.bbcc-class-tabs .bbcc-tab');
-        var cards = document.querySelectorAll('.bbcc-class-grid .bbcc-class-col');
+      document.querySelectorAll('[data-class-filter]').forEach(function (section) {
+        var tabs = section.querySelectorAll('.bbcc-class-tabs .bbcc-tab');
+        var cards = section.querySelectorAll('.bbcc-class-grid .bbcc-class-col');
         tabs.forEach(function (tab) {
           tab.addEventListener('click', function () {
             var filter = tab.getAttribute('data-filter');
@@ -321,7 +342,7 @@
             });
           });
         });
-      })();
+      });
     </script>
 <% end %>
 
@@ -358,6 +379,44 @@
         </div>
     </section>
     <!-- end club life coaches -->
+<% end %>
+
+<% if @fitness_team.any? %>
+    <!-- start fitness team -->
+    <section class="bbcc-section bbcc-coach-row bbcc-fitness-team">
+        <div class="container-lg">
+            <div class="bbcc-section-head bbcc-section-head-center">
+                <h2 class="bbcc-title-lg"><%= @fitness_root ? "Our #{@section.name} Team" : "Our Coaches" %></h2>
+            </div>
+            <div class="row g-4">
+                <% @fitness_team.each do |member| %>
+                    <div class="col-12 col-sm-6 col-lg-4">
+                        <article class="bbcc-team-card">
+                            <span class="bbcc-team-card-image">
+                                <% if member.photo.attached? %>
+                                    <%= image_tag member.photo.variant(resize_to_fill: [900, 900]), alt: member.name, loading: "lazy" %>
+                                <% else %>
+                                    <span class="bbcc-post-image-ph" style="background-image:url('<%= image_url('images/image-2.png') %>');"></span>
+                                <% end %>
+                            </span>
+                            <div class="bbcc-team-card-body">
+                                <div class="bbcc-team-card-meta">
+                                    <span class="bbcc-team-card-dept"><%= member.department_label %></span>
+                                    <span class="bbcc-team-card-role"><%= member.role %></span>
+                                </div>
+                                <span class="bbcc-team-card-name"><%= member.name %></span>
+                                <p class="bbcc-team-card-bio"><%= member.bio.to_s.truncate(160) %></p>
+                            </div>
+                        </article>
+                    </div>
+                <% end %>
+            </div>
+            <div class="text-center">
+                <%= link_to "View All", our_team_path(department: "fitness"), class: "bbcc-btn" %>
+            </div>
+        </div>
+    </section>
+    <!-- end fitness team -->
 <% end %>
 
 <% if @specialists.any? %>

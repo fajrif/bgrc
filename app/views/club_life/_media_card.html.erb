@@ -1,6 +1,7 @@
 <%# Photo, serif title, optional text and meta lines, underlined link.
     locals: title:. Optional: image: (attachment), size: [w, h] to crop to, ratio: "portrait"|"landscape",
-            text:, lines: [..], link_label:, link_path:, image_path: (bundled fallback URL) %>
+            text:, lines: [..], link_label:, link_path:, image_path: (bundled fallback URL),
+            chip: (small label over the photo) %>
 <%
   image  = local_assigns[:image]
   size   = local_assigns.fetch(:size, [720, 960])
@@ -17,6 +18,9 @@
             <img src="<%= fallback %>" alt="<%= title %>" loading="lazy">
         <% else %>
             <span class="bbcc-media-ph" aria-hidden="true"></span>
+        <% end %>
+        <% if local_assigns[:chip].present? %>
+            <span class="bbcc-media-chip"><%= local_assigns[:chip] %></span>
         <% end %>
     <% end %>
     <h3 class="bbcc-media-card-title"><%= title %></h3>
