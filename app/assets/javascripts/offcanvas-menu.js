@@ -143,7 +143,46 @@ jQuery(function ($) {
       if (el.classList.contains('bbcc-testimonials-swiper')) {
         options.autoplay = { delay: 5000, disableOnInteraction: false, pauseOnMouseEnter: true };
       }
-      new Swiper(el, options);
+      var swiper = new Swiper(el, options);
+      var bar = el.querySelector('.bbcc-progress');
+      if (dot && bar) bindProgressDrag(bar, dot, swiper);
+    });
+  }
+
+  // The progress line is a seek control: press or drag anywhere on it (or the dot)
+  // to move the carousel to that point, and arrow keys step through slides.
+  function bindProgressDrag(bar, dot, swiper) {
+    var dragging = false;
+    var seek = function (clientX, speed) {
+      var rect = bar.getBoundingClientRect();
+      if (!rect.width) return;
+      var p = Math.min(Math.max((clientX - rect.left) / rect.width, 0), 1);
+      swiper.setProgress(p, speed);
+    };
+    bar.addEventListener('pointerdown', function (e) {
+      if (e.button !== undefined && e.button !== 0) return;
+      dragging = true;
+      try { bar.setPointerCapture(e.pointerId); } catch (err) { /* synthetic or already-released pointer */ }
+      bar.classList.add('is-dragging');
+      seek(e.clientX, 0);
+      e.preventDefault();
+    });
+    bar.addEventListener('pointermove', function (e) {
+      if (dragging) seek(e.clientX, 0);
+    });
+    var stop = function () {
+      dragging = false;
+      bar.classList.remove('is-dragging');
+    };
+    bar.addEventListener('pointerup', stop);
+    bar.addEventListener('pointercancel', stop);
+
+    dot.setAttribute('role', 'slider');
+    dot.setAttribute('tabindex', '0');
+    dot.setAttribute('aria-label', 'Carousel position');
+    dot.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowRight' || e.key === 'ArrowUp') { swiper.slideNext(); e.preventDefault(); }
+      if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') { swiper.slidePrev(); e.preventDefault(); }
     });
   }
 });

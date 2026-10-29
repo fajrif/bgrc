@@ -224,11 +224,14 @@ a:hover > .bbcc-text-link-light { color: #fff; opacity: .8; }
 .bbcc-slider .swiper-slide { height: auto; }
 .bbcc-slider-controls { display: flex; align-items: center; gap: 28px; margin-top: 44px; }
 .bbcc-slider-controls .bbcc-swiper-prev, .bbcc-slider-controls .bbcc-swiper-next { font-size: 15px; padding: 4px; }
-.bbcc-progress { position: relative; flex: 1 1 auto; margin: 0 4px; height: 1px; background: rgba(38,36,31,.45); }
+.bbcc-progress { position: relative; flex: 1 1 auto; margin: 0 4px; height: 1px; background: rgba(38,36,31,.45); cursor: pointer; touch-action: none; user-select: none; }
+.bbcc-progress::before { content: ""; position: absolute; left: 0; right: 0; top: -16px; bottom: -16px; }
 .bbcc-progress-dot {
-  position: absolute; left: 0; top: 50%; width: 7px; height: 7px; border-radius: 50%;
-  background: var(--bbcc-ink); transform: translate(-50%, -50%);
+  position: absolute; left: 0; top: 50%; width: 11px; height: 11px; border-radius: 50%;
+  background: var(--bbcc-ink); transform: translate(-50%, -50%); cursor: grab; touch-action: none;
 }
+.bbcc-progress-dot:focus-visible { outline: 2px solid var(--bbcc-book); outline-offset: 3px; }
+.bbcc-progress.is-dragging, .bbcc-progress.is-dragging .bbcc-progress-dot { cursor: grabbing; }
 
 /* ---------- news & highlights cards ---------- */
 .bbcc-news-card-image { display: block; overflow: hidden; margin-bottom: 18px; }
@@ -352,7 +355,7 @@ a:hover > .bbcc-text-link-light { color: #fff; opacity: .8; }
 .bbcc-header-light .bbcc-header.bbcc-header-stuck { box-shadow: 0 1px 0 var(--bbcc-line); }
 
 /* ---------- page intro (title left, description right, optional tabs) ---------- */
-.bbcc-intro-head { padding: 56px 0 8px; background: var(--bbcc-bg); }
+.bbcc-intro-head { padding: 56px 0; background: var(--bbcc-bg); }
 .bbcc-intro-title { margin: 0; }
 .bbcc-intro-desc { font-size: 14px; line-height: 1.75; color: var(--bbcc-ink); max-width: 760px; }
 .bbcc-intro-desc p { margin: 0 0 1.1em; }
@@ -528,8 +531,9 @@ a:hover > .bbcc-text-link-light { color: #fff; opacity: .8; }
 .bbcc-mits-split { background: var(--bbcc-bg); padding: 72px 0; }
 .bbcc-mits-split-body, .bbcc-mits-contact { background: var(--bbcc-blue); color: var(--bbcc-cream); padding: 56px; }
 .bbcc-mits-split-body p, .bbcc-mits-contact p, .bbcc-mits-contact .bbcc-info-body { color: var(--bbcc-cream); font-size: 13px; line-height: 1.7; }
-.bbcc-mits-contact .bbcc-vision-label { color: var(--bbcc-cream); font-family: var(--bbcc-font-title); text-transform: none; letter-spacing: 0; font-size: 1.5rem; font-weight: 400; margin-bottom: 22px; }
-.bbcc-mits-contact .bbcc-info-icon { background: #b9c3cc; color: var(--bbcc-blue); }
+.bbcc-mits-contact .bbcc-vision-label { color: #fff; font-family: var(--bbcc-font-title); text-transform: none; letter-spacing: 0; font-size: 1.5rem; font-weight: 400; margin-bottom: 22px; }
+.bbcc-mits-contact, .bbcc-mits-contact p, .bbcc-mits-contact .bbcc-info-body { color: #fff; }
+.bbcc-mits-contact .bbcc-info-body::first-line { color: #fff; }
 .bbcc-mits-split-body .bbcc-btn, .bbcc-mits-contact-actions .bbcc-btn {
   background: #8fb7c0; border-color: #8fb7c0; color: var(--bbcc-blue); text-transform: none; letter-spacing: 0; font-size: 13px; padding: 12px 28px; width: auto; align-self: flex-start;
 }
