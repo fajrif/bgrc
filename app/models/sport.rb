@@ -11,6 +11,8 @@ class Sport < ApplicationRecord
 
 	has_one_attached :image, dependent: :purge
 	has_many_attached :images, dependent: :purge
+	# Photos for the pricing cards, in card order. Cards fall back to the gallery when empty.
+	has_many_attached :pricing_images, dependent: :purge
   has_many :events
   has_many :promos
   has_many :courts
@@ -35,7 +37,7 @@ class Sport < ApplicationRecord
 	def rate_cards
 		return [] if golf?
 
-		courts.includes(:court_type, :costs, :business_hours).group_by { |c| c.court_type&.name }.filter_map do |type_name, type_courts|
+		cards = courts.includes(:court_type, :costs, :business_hours).group_by { |c| c.court_type&.name }.filter_map do |type_name, type_courts|
 			next if type_name.blank?
 			court = type_courts.min_by(&:price)
 			windows = court.costs.select { |cost| cost.day_code == representative_day_code(court) }
@@ -49,6 +51,8 @@ class Sport < ApplicationRecord
 				[rate_card(court, "#{type_name} Rate", hours&.open || "06:00", hours&.close || "22:00", court.price)]
 			end
 		end.flatten
+		cards.each_with_index { |card, index| card[:image] = pricing_images[index] if pricing_images[index] }
+		cards
 	end
 
 	private

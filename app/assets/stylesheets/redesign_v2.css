@@ -1085,3 +1085,6 @@ section.bbcc-auth-form-register { padding: 10px 0 0; }
 @media (max-width: 991px) {
   .bbcc-has-hero .bbcc-header-stuck .bbcc-logo-stuck { height: 32px; }
 }
+
+/* Dining index — the design photos carry the venue names, so no dimming layer behind a logo */
+.bbcc-dining-grid .bbcc-dining-card-image::before { display: none; }

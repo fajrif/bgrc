@@ -63,7 +63,7 @@ class Admins::SportsController < Admins::BaseController
   private
 
   def params_sport
-    params.require(:sport).permit(:image, :name, :short_description, :description, images: [])
+    params.require(:sport).permit(:image, :name, :short_description, :description, images: [], pricing_images: [])
   end
 
   def set_sport

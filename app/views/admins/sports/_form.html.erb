@@ -7,6 +7,7 @@
 					<fieldset>
 						<%= f.input :image, as: :file, input_html: { class: "mb-3", accept: "image/gif, image/png, image/jpg, image/jpeg, image/webp" } %>
 						<%= f.input :images, as: :file, input_html: { class: "mb-3", accept: "image/gif, image/png, image/jpg, image/jpeg, image/webp", multiple: true } %>
+						<%= f.input :pricing_images, as: :file, hint: "Photos for the pricing cards, in card order. Cards use the gallery when empty.", input_html: { class: "mb-3", accept: "image/gif, image/png, image/jpg, image/jpeg, image/webp", multiple: true } %>
 						<%= f.input :name, as: :string %>
 						<%= f.input :short_description, as: :text %>
 						<%= f.input :description, as: :text %>

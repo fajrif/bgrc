@@ -49,16 +49,16 @@ class HomeController < ApplicationController
       "tennis"     => sport_images("Tennis"),
       "padel"      => sport_images("Padel"),
       "pickleball" => sport_images("Pickleball"),
-      "fitness"    => [facility_image("Gym")].compact,
-      "spa"        => [facility_image("Yoga"), facility_image("Pilates"), facility_image("Recovery")].compact,
+      "fitness"    => facility_images("Fitness", fallback: ["Gym"]),
+      "spa"        => facility_images("Spa", fallback: ["Yoga", "Pilates", "Recovery"]),
       "dining"     => Restaurant.all.filter_map { |r| r.image if r.image.attached? },
-      "events"     => Event.all.map(&:image) + RecurringEvent.active.map(&:image),
-      "club_life"  => [facility_image("Pro Shop"), facility_image("Locker Room"),
-                        facility_image("Lap Pool"), facility_image("Golf Course")].compact
+      "events"     => event_images,
+      "club_life"  => facility_images("Beach Club", fallback: ["Pro Shop", "Locker Room", "Lap Pool", "Golf Course"])
     }
 
     @section = @galleries.key?(params[:category]) ? params[:category] : "all"
-    @items = @section == "all" ? @galleries.values.flatten : @galleries[@section]
+    # "All" mixes the categories one photo at a time so the first rows are not all one sport
+    @items = @section == "all" ? interleave(@galleries.values) : @galleries[@section]
     @articles = Article.where(status: 1).first(3)
   end
 
@@ -86,5 +86,22 @@ class HomeController < ApplicationController
 
   def facility_image(name)
     Facility.find_by("name @> ?", { en: name }.to_json)&.image
+  end
+
+  # A facility's own gallery, or its card photo (and its siblings') when it has none.
+  def facility_images(name, fallback: [])
+    gallery = Facility.find_by("name @> ?", { en: name }.to_json)&.ordered_images&.to_a || []
+    return gallery if gallery.any?
+    ([name] + fallback).filter_map { |n| facility_image(n) }.select(&:attached?)
+  end
+
+  def event_images
+    types = EventType.all.flat_map { |type| type.images.attached? ? type.images.to_a : [type.image].select(&:attached?) }
+    types + Event.all.map(&:image) + RecurringEvent.active.map(&:image)
+  end
+
+  def interleave(lists)
+    longest = lists.map(&:size).max.to_i
+    (0...longest).flat_map { |i| lists.filter_map { |list| list[i] } }
   end
 end
