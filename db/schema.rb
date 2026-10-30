@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_10_29_110100) do
+ActiveRecord::Schema[7.1].define(version: 2026_10_30_100000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -295,6 +295,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_10_29_110100) do
     t.jsonb "treatments_title", default: {}
     t.boolean "show_specialists", default: true, null: false
     t.boolean "show_coaches", default: false, null: false
+    t.jsonb "page_heading", default: {}
     t.index ["name"], name: "index_facilities_on_name", unique: true
     t.index ["parent_id"], name: "index_facilities_on_parent_id"
     t.index ["slug"], name: "index_facilities_on_slug", unique: true

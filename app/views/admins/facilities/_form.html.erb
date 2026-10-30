@@ -14,6 +14,8 @@
 						<%= f.input :description, as: :text %>
 						<%= f.input :facilities_intro, as: :text, label: "Facilities intro", input_html: { rows: 3 },
 												hint: "Paragraph under the \"BBCC … Facilities\" heading." %>
+						<%= f.input :page_heading, as: :string, label: "Page heading",
+												hint: "Heading on the page and on its card when it differs from the name used in the tabs — e.g. \"Reverie Recovery\"." %>
 						<%= f.input :treatments_title, as: :string, label: "Treatments heading", placeholder: "Treatment",
 												hint: "Heading over the treatment cards — e.g. \"Services\". Defaults to \"Treatment\"." %>
 					</fieldset>

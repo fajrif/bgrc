@@ -27,12 +27,12 @@ class ClubLifeController < ApplicationController
 
     # Linked sports carry the real class programme; unlinked sections show none.
     @group_classes = @section.sport_id.present? ? GroupClass.available.where(sport_id: @section.sport_id).includes(:sport) : GroupClass.none
-    @specialists   = @root&.en_name == "Spa + Wellness" && @section.show_specialists? ? TeamMember.where(department: "specialists") : TeamMember.none
+    @specialists   = @root&.en_name == "Spa + Wellness" && @section != @root && @section.show_specialists? ? TeamMember.where(department: "specialists") : TeamMember.none
     @show_mits     = @root&.en_name == "Racquet Sports"
 
     # Racquet Sports fronts its children as hover-overlay photo cards; Golf and
     # Spa + Wellness keep the service card with its own CTA.
-    @use_overlay_cards = @show_mits
+    @use_overlay_cards = @show_mits || @root&.en_name == "Spa + Wellness" && @root == @section
 
     # A section tied to a sport is a bookable venue: it gets a class programme
     # and a coaching team of its own. Rates come from the section's own
@@ -41,8 +41,14 @@ class ClubLifeController < ApplicationController
     @sport_rates = @section.rate_cards_from_sport?
     # Golf and Racquet Sports children are plain pages: light header, no hero,
     # a wide banner band under the intro. Racquet children also get the sub-tabs.
-    @band_layout  = @root.present? && @root != @section && %w[Golf Racquet\ Sports Fitness].include?(@root.en_name)
-    @show_subtabs = @band_layout && %w[Racquet\ Sports Fitness].include?(@root.en_name)
+    @band_layout  = @root.present? && @root != @section && %w[Golf Racquet\ Sports Fitness Spa\ +\ Wellness].include?(@root.en_name)
+    @show_subtabs = @band_layout && %w[Racquet\ Sports Fitness Spa\ +\ Wellness].include?(@root.en_name)
+
+    # Spa + Wellness: the root fronts its three children as service cards under a
+    # wide photo; the children are band pages with no gallery of their own.
+    @spa_root  = @root.present? && @root == @section && @root.en_name == "Spa + Wellness"
+    @spa_child = @band_layout && @root.en_name == "Spa + Wellness"
+    @gallery   = [] if @spa_child
 
     # Fitness has no sport behind it: its children list the shared Fitness team
     # (Our Team → Fitness) instead of coaches, and the root fronts its children

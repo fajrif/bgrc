@@ -1088,3 +1088,13 @@ section.bbcc-auth-form-register { padding: 10px 0 0; }
 
 /* Dining index — the design photos carry the venue names, so no dimming layer behind a logo */
 .bbcc-dining-grid .bbcc-dining-card-image::before { display: none; }
+
+/* Phase 6 — Spa & Wellness: children reuse the Fitness band layout; specialists are square portraits */
+.bbcc-specialists .bbcc-team-card-image img { aspect-ratio: 1 / 1; }
+.bbcc-fitness-page .bbcc-specialists { padding: 80px 0 0; }
+.bbcc-fitness-page .bbcc-specialists .bbcc-section-head { text-align: left; margin-bottom: 36px; }
+.bbcc-fitness-root .bbcc-cat-row { padding: 0 0 80px; }
+.bbcc-fitness-root .bbcc-cat-row .bbcc-section-head { text-align: left; margin-bottom: 36px; }
+@media (max-width: 767.98px) {
+  .bbcc-fitness-page .bbcc-specialists { padding-top: 52px; }
+}

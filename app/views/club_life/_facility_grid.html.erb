@@ -7,7 +7,7 @@
     <div class="container-lg">
         <div class="row g-4 g-lg-5 bbcc-fac-head">
             <div class="col-12 col-lg-4">
-                <h2 class="bbcc-title-lg">BBCC <%= section.name %> Facilities</h2>
+                <h2 class="bbcc-title-lg"><%= local_assigns[:title] || "BBCC #{section.name} Facilities" %></h2>
             </div>
             <div class="col-12 col-lg-8">
                 <% if section.facilities_intro.present? %>

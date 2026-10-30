@@ -19,7 +19,7 @@
     <%= render "shared/hero_search", hero_image: hero_image, selected_sport_id: @section.sport_id %>
 <% end %>
 
-<div class="bbcc-clublife-page<%= " bbcc-band-page" if @band_layout %><%= " bbcc-fitness-page" if @fitness_child %><%= " bbcc-fitness-root" if @fitness_root %>">
+<div class="bbcc-clublife-page<%= " bbcc-band-page" if @band_layout %><%= " bbcc-fitness-page" if @fitness_child || @spa_child %><%= " bbcc-fitness-root" if @fitness_root || @spa_root %>">
 <!-- start club life tabs -->
 <% tab_root = @root || @section %>
 <nav class="bbcc-clublife-tabs bbcc-clublife-tabs-row-only" aria-label="Club Life sections">
@@ -35,10 +35,10 @@
         <% else %>
             <div class="bbcc-clublife-tabs-row">
                 <% Facility.club_life_roots.each do |section| %>
-                    <%= link_to section.name, club_life_page_path(section), class: ("active" if section == tab_root), "aria-current": (section == tab_root ? "page" : nil) %>
+                    <%= link_to section.name.sub("+", "&"), club_life_page_path(section), class: ("active" if section == tab_root), "aria-current": (section == tab_root ? "page" : nil) %>
                 <% end %>
             </div>
-            <% if tab_root.children.any? && !racquet_root && !@fitness_root %>
+            <% if tab_root.children.any? && !racquet_root && !@fitness_root && !@spa_root %>
                 <div class="bbcc-clublife-subtabs">
                     <% tab_root.children.each do |child| %>
                         <%= link_to child.name, club_life_page_path(child), class: ("active" if child == @section) %>
@@ -55,7 +55,7 @@
     <div class="container-lg">
         <div class="row g-4 g-lg-5">
             <div class="col-12 col-lg-4">
-                <h1 class="bbcc-title-lg">BBCC <%= @section.name %></h1>
+                <h1 class="bbcc-title-lg"><%= @spa_child ? @section.heading : "BBCC #{@spa_root ? @section.name.sub("+", "&") : @section.name}" %></h1>
             </div>
             <div class="col-12 col-lg-8">
                 <p class="bbcc-lead"><%= @section.short_description %></p>
@@ -88,7 +88,7 @@
     <!-- end club life banner band -->
 <% end %>
 
-<% unless @band_layout || beach_club || racquet_root || @fitness_root %>
+<% unless @band_layout || beach_club || racquet_root || @fitness_root || @spa_root %>
     <%= render "shared/bbcc_highlights" %>
 <% end %>
 
@@ -98,7 +98,7 @@
         <div class="container-lg">
             <span class="bbcc-midbanner-image" style="background-image:url('<%= url_for(@section.middle_banner) %>');"
                   role="img" aria-label="<%= @section.name %>"></span>
-            <% if @fitness_root && @section.facilities_intro.present? %>
+            <% if (@fitness_root || @spa_root) && @section.facilities_intro.present? %>
                 <p class="bbcc-midbanner-caption"><%= @section.facilities_intro %></p>
             <% end %>
         </div>
@@ -174,7 +174,8 @@
 <% if @amenities.any? && beach_club %>
     <%= render "club_life/venue_slider", section: @section, venues: @amenities %>
 <% elsif @amenities.any? && @band_layout %>
-    <%= render "club_life/facility_grid", section: @section, items: @amenities, square: @fitness_child %>
+    <%= render "club_life/facility_grid", section: @section, items: @amenities, square: (@fitness_child || @spa_child),
+               title: (@spa_child && @section.page_heading.present? ? "#{@section.heading} Facilities" : nil) %>
 <% elsif @amenities.any? %>
     <!-- start club life facilities (card-only, no page of their own) -->
     <section class="bbcc-section bbcc-cat-row">
@@ -204,10 +205,15 @@
     <!-- start club life categories -->
     <section class="bbcc-section bbcc-cat-row">
         <div class="container-lg">
+            <% if @spa_root %>
+                <div class="bbcc-section-head">
+                    <h2 class="bbcc-title-lg">Services</h2>
+                </div>
+            <% end %>
             <div class="row g-4">
                 <% @children.each do |child| %>
                     <div class="col-12 col-md-6 col-lg-4">
-                        <%= render "club_life/media_card", title: child.name, image: child.card_image,
+                        <%= render "club_life/media_card", title: child.heading, image: child.card_image,
                                    size: [900, 800], ratio: "square",
                                    text: child.short_description.to_s.truncate(120),
                                    link_label: "Discover more", link_path: club_life_page_path(child) %>
@@ -241,14 +247,14 @@
                 <% end %>
                 <div class="row g-4 bbcc-class-grid">
                     <% @treatments.each do |treatment| %>
-                        <div class="col-6 col-lg-<%= @fitness_child ? 4 : 3 %> bbcc-class-col" data-category="<%= treatment.category %>">
+                        <div class="col-6 col-lg-<%= (@fitness_child || @spa_child) ? 4 : 3 %> bbcc-class-col" data-category="<%= treatment.category %>">
                             <%= render "club_life/media_card", title: treatment.name, image: treatment.image,
-                                       size: (@fitness_child ? [880, 756] : [600, 800]), ratio: (@fitness_child ? "photo" : "portrait"),
+                                       size: ((@fitness_child || @spa_child) ? [880, 756] : [600, 800]), ratio: ((@fitness_child || @spa_child) ? "photo" : "portrait"),
                                        text: treatment.short_description, chip: (treatment_categories.size > 1 ? treatment.category_label : nil),
                                        lines: [(treatment.duration.present? ? "Duration: #{treatment.duration}" : nil),
                                                (treatment.price.present? ? "Price: #{treatment.price}" : nil)],
                                        link_label: "Book Now",
-                                       link_path: (@fitness_child ? get_contact_path(about: "#{@section.name} – #{treatment.name}") : book_path) %>
+                                       link_path: ((@fitness_child || @spa_child) ? get_contact_path(about: "#{@section.name} – #{treatment.name}") : book_path) %>
                         </div>
                     <% end %>
                 </div>
@@ -421,10 +427,10 @@
 
 <% if @specialists.any? %>
     <!-- start specialists -->
-    <section class="bbcc-section bbcc-specialists">
+    <section class="bbcc-section bbcc-coach-row bbcc-specialists">
         <div class="container-lg">
-            <div class="bbcc-section-head bbcc-section-head-center">
-                <h2 class="bbcc-section-title">Our Specialists</h2>
+            <div class="bbcc-section-head<%= " bbcc-section-head-center" unless @spa_child %>">
+                <h2 class="<%= @spa_child ? "bbcc-title-lg" : "bbcc-section-title" %>">Our Specialists</h2>
             </div>
             <div class="row g-4">
                 <% @specialists.each do |member| %>
@@ -432,27 +438,35 @@
                         <article class="bbcc-team-card">
                             <span class="bbcc-team-card-image">
                                 <% if member.photo.attached? %>
-                                    <%= image_tag member.photo.variant(resize_to_fill: [600, 700]), alt: member.name %>
+                                    <%= image_tag member.photo.variant(resize_to_fill: [900, 900]), alt: member.name, loading: "lazy" %>
                                 <% else %>
                                     <span class="bbcc-post-image-ph" style="background-image:url('<%= image_url('images/image-2.png') %>');"></span>
                                 <% end %>
                             </span>
                             <div class="bbcc-team-card-body">
-                                <span class="bbcc-team-card-dept"><%= member.department_label %></span>
+                                <div class="bbcc-team-card-meta">
+                                    <span class="bbcc-team-card-dept"><%= member.department_label %></span>
+                                    <span class="bbcc-team-card-role"><%= member.role %></span>
+                                </div>
                                 <span class="bbcc-team-card-name"><%= member.name %></span>
-                                <span class="bbcc-team-card-role"><%= member.role %></span>
                                 <p class="bbcc-team-card-bio"><%= member.bio.to_s.truncate(160) %></p>
                             </div>
                         </article>
                     </div>
                 <% end %>
             </div>
-            <div class="text-center">
-                <%= link_to "View All", our_team_path(department: "specialists"), class: "bbcc-btn" %>
-            </div>
+            <% unless @spa_child %>
+                <div class="text-center">
+                    <%= link_to "View All", our_team_path(department: "specialists"), class: "bbcc-btn" %>
+                </div>
+            <% end %>
         </div>
     </section>
     <!-- end specialists -->
+<% end %>
+
+<% if @spa_root %>
+    <%= render "shared/bbcc_highlights" %>
 <% end %>
 
 <% if @show_mits && racquet_root %>

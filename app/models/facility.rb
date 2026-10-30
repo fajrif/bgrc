@@ -3,7 +3,7 @@ class Facility < ApplicationRecord
 
 	extend Mobility
   translates :slug, :name, :short_description, :description, :cta_label, :facilities_intro,
-						 :treatments_title
+						 :treatments_title, :page_heading
 
 	extend FriendlyId
   friendly_id :name, use: :mobility
@@ -59,6 +59,11 @@ class Facility < ApplicationRecord
 	# so the layout does not change when the visitor switches to Indonesian.
 	def en_name
 		Mobility.with_locale(:en) { name }
+	end
+
+	# Title shown on the page and its cards; the tabs keep the plain name.
+	def heading
+		page_heading.presence || name
 	end
 
 	# Rates entered against the section itself win — they describe memberships and

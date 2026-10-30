@@ -43,7 +43,10 @@ module ApplicationHelper
 		"Gyrotonic"      => "fitness/banners/banner-gyrotonic.jpg",
 		"Pilates"        => "fitness/banners/banner-pilates.jpg",
 		"Yoga"           => "fitness/banners/banner-yoga.jpg",
-		"Lap Pool"       => "fitness/banners/banner-lap-pool.jpg"
+		"Lap Pool"       => "fitness/banners/banner-lap-pool.jpg",
+		"Spa"            => "spa/banner-spa.jpg",
+		"Recovery Center" => "spa/banner-recovery.jpg",
+		"Anti-Aging"     => "spa/banner-anti-aging.jpg"
 	}.freeze
 
 	def club_life_fallback_banner(facility)

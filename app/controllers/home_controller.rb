@@ -50,7 +50,7 @@ class HomeController < ApplicationController
       "padel"      => sport_images("Padel"),
       "pickleball" => sport_images("Pickleball"),
       "fitness"    => facility_images("Fitness", fallback: ["Gym"]),
-      "spa"        => facility_images("Spa", fallback: ["Yoga", "Pilates", "Recovery"]),
+      "spa"        => facility_images("Spa", fallback: ["Yoga", "Pilates", "Recovery Center", "Recovery"]),
       "dining"     => Restaurant.all.filter_map { |r| r.image if r.image.attached? },
       "events"     => event_images,
       "club_life"  => facility_images("Beach Club", fallback: ["Pro Shop", "Locker Room", "Lap Pool", "Golf Course"])
