@@ -75,17 +75,29 @@
 
 			<% if @court %>
 				<%= simple_form_for(:booking, url: bookings_url, method: :post) do %>
-					<input type="hidden" id="court_pax_select" value="4">
 					<input id="date" type="hidden" value="<%= @date %>" name="date">
 					<input id="court-id" type="hidden" value="<%= @court.id %>" name="court_id">
 					<input id="input-book" type="hidden" value="" name="dates">
 					<input id="input-duration" type="hidden" value="" name="duration">
 					<input id="input-court-type" type="hidden" value="court_only" name="court_type">
-					<input id="input-pax" type="hidden" value="<%= @pax %>" name="pax">
 
 					<div id="calculate_table">
 						<%= render "calculate_info" %>
 					</div>
+
+					<% unless @group_class %>
+						<div class="bbcc-field bbcc-rail-field">
+							<label for="input-pax">Players</label>
+							<select name="pax" id="input-pax">
+								<% (1..4).each do |n| %>
+									<option value="<%= n %>" <%= "selected" if n == (@pax.presence || 4).to_i %>><%= n %> <%= "Player".pluralize(n) %></option>
+								<% end %>
+							</select>
+						</div>
+						<%= render "shared/player_names", count_source: "#input-pax" %>
+					<% else %>
+						<input id="input-pax" type="hidden" value="<%= @pax %>" name="pax">
+					<% end %>
 
 					<button id="btnSubmit" type="submit" class="bbcc-btn disabled" disabled>Submit</button>
 				<% end %>

@@ -63,7 +63,7 @@ class GolfReservationsController < ApplicationController
       players_count: players_count,
       holes: holes,
       notes: params[:notes],
-      player_names: params[:player_names]&.reject(&:blank?)
+      player_names: Array(params[:player_names]).map { |n| n.to_s.strip.first(60) }.reject(&:blank?).first([players_count - 1, 0].max)
     )
 
     if @golf_reservation.save

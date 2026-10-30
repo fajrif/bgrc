@@ -35,6 +35,7 @@ class BookingsController < ApplicationController
         unless params[:pax].blank?
           @booking.pax = params[:pax]
         end
+        @booking.player_names = clean_player_names(params[:player_names], @booking.pax)
         @booking.coach_id = params[:coach_id] if params[:coach_id].present?
         if @booking.save
           # Track guest bookings in session
@@ -173,6 +174,11 @@ class BookingsController < ApplicationController
   end
 
   private
+
+  # Optional names of the other players: trimmed, blanks dropped, one per seat after the booker.
+  def clean_player_names(names, pax)
+    Array(names).map { |n| n.to_s.strip.first(60) }.reject(&:blank?).first([pax.to_i - 1, 0].max)
+  end
 
   def find_valid_credit_for_booking(booking)
     return nil unless user_signed_in?

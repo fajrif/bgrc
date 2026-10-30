@@ -9,7 +9,7 @@
     <li>Class Name: <%= @group_class.name_with_pax(@pax) %></li>
   <% end %>
   <% if @pax %>
-    <li>Pax: <%= @pax %></li>
+    <li>Pax: <span class="js-pax-value"><%= @pax %></span></li>
   <% end %>
   <li>Total Price: <%= @priceLabel %></li>
 </ul>

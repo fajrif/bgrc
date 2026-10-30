@@ -1,0 +1,13 @@
+<%# Collapsible, optional names of the other players. locals: count_source: (CSS selector of the
+    party-size select), optional field: (input name, default player_names[]). Behaviour lives in
+    app/assets/javascripts/player-names.js. %>
+<div class="bbcc-players" data-player-names data-count-source="<%= count_source %>"
+     data-field="<%= local_assigns.fetch(:field, "player_names[]") %>" hidden>
+    <button type="button" class="bbcc-players-toggle" aria-expanded="false">
+        <span>Add other players' names <em>(optional)</em></span>
+        <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+    </button>
+    <div class="bbcc-players-panel" hidden>
+        <div class="bbcc-players-fields"></div>
+    </div>
+</div>

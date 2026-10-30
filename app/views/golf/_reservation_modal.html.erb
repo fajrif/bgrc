@@ -1,4 +1,4 @@
-<div class="modal fade bbcc-modal" id="reservationModal" tabindex="-1" aria-labelledby="reservationModalLabel" aria-hidden="true">
+<div class="modal fade bbcc-modal bbcc-modal-form" id="reservationModal" tabindex="-1" aria-labelledby="reservationModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
@@ -12,14 +12,12 @@
         <div class="modal-body">
           <input type="hidden" name="tee_time" id="modal-tee-time-input">
 
-          <!-- Selected Tee Time -->
-          <div class="bbcc-modal-callout">
-            <span class="bbcc-modal-label">Selected Tee Time</span>
-            <span class="bbcc-modal-value" id="modal-tee-time-display">—</span>
+          <div class="bbcc-field">
+            <label>Selected Tee Time</label>
+            <div class="bbcc-field-static" id="modal-tee-time-display">—</div>
           </div>
           <p id="modal-tee-time-error" class="bbcc-field-error-text" style="display:none;"></p>
 
-          <!-- Number of Players -->
           <div class="bbcc-field">
             <label for="modal_players_count">Number of Players</label>
             <select name="players_count" id="modal_players_count">
@@ -29,9 +27,10 @@
             </select>
           </div>
 
-          <!-- Number of Holes -->
-          <div class="bbcc-modal-group">
-            <span class="bbcc-modal-label">Number of Holes</span>
+          <%= render "shared/player_names", count_source: "#modal_players_count" %>
+
+          <div class="bbcc-field">
+            <label>Number of Holes</label>
             <div class="bbcc-radio-row">
               <% golf_course.holes_list.each do |holes| %>
                 <label class="bbcc-radio" for="modal_holes_<%= holes %>">
@@ -43,7 +42,6 @@
             </div>
           </div>
 
-          <!-- Estimated Green Fee -->
           <div class="bbcc-modal-summary">
             <div class="bbcc-modal-summary-row">
               <span>Rate per player</span>

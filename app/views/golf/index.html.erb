@@ -1,4 +1,4 @@
-<%= render "shared/breadcrumb", crumbs: [{ label: "Book", path: book_path }, { label: "Golf" }] %>
+<% content_for :header_light, true %>
 
 <!-- start booking hub — golf -->
 <section class="bbcc-section bbcc-hub">
@@ -12,13 +12,16 @@
             </div>
         <% else %>
             <div class="row g-4 g-lg-5">
-                <!-- Left: course details + green fees -->
+                <!-- Left: course details + green fees + confirm -->
                 <div class="col-12 col-lg-4">
                     <h2 class="bbcc-hub-heading">Course Details</h2>
                     <ul class="bbcc-hub-list">
                         <li>Available Holes: <%= @golf_course.holes_list.join(" / ") %> Holes</li>
-                        <li>Tee Time Interval: <%= @golf_course.interval_minutes %> minutes</li>
+                        <li>Tee Time Interval: Every <%= @golf_course.interval_minutes %> minutes</li>
                         <li>Max Players Per Group: <%= @golf_course.max_players %></li>
+                        <% if @golf_course.location.present? %>
+                            <li>Location: <%= @golf_course.location %></li>
+                        <% end %>
                     </ul>
 
                     <% if @golf_course.golf_rates.any? %>
@@ -71,8 +74,9 @@
                         </table>
                     <% end %>
 
-                    <%# the mockup leaves this column empty below the fees; the course photo only
-                        shows when an admin has attached one %>
+                    <button type="button" id="tee-confirm-btn" class="bbcc-btn bbcc-hub-confirm" disabled>Confirm</button>
+
+                    <%# the course photo only shows when an admin has attached one %>
                     <% if @golf_course.image.attached? %>
                         <div class="bbcc-hub-photo">
                             <%= image_tag @golf_course.image, alt: @golf_course.name %>
@@ -82,34 +86,31 @@
 
                 <!-- Right: tee time selector -->
                 <div class="col-12 col-lg-8">
-                    <div class="bbcc-teetime-card">
-                        <h2 class="bbcc-teetime-title">Select Your Tee Time</h2>
+                    <h2 class="bbcc-hub-heading bbcc-teetime-title">Select Your Tee Time</h2>
 
-                        <div class="bbcc-teetime-datefield">
-                            <label for="golf-date-picker">Select Date</label>
+                    <div class="bbcc-teetime-datefield">
+                        <label for="golf-date-picker">Select Date</label>
+                        <div class="bbcc-datenav">
+                            <button type="button" id="golf-date-prev" class="bbcc-datenav-btn" aria-label="Previous day">
+                                <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+                            </button>
                             <input type="text" id="golf-date-picker"
                                    value="<%= Date.today.strftime('%d/%m/%Y') %>"
                                    placeholder="Select a date" readonly>
+                            <button type="button" id="golf-date-next" class="bbcc-datenav-btn bbcc-datenav-btn-next" aria-label="Next day">
+                                <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+                            </button>
                         </div>
+                    </div>
 
-                        <p id="tee-time-loading" class="bbcc-teetime-note" style="display:none;">
-                            <i class="fa-solid fa-circle-notch fa-spin" aria-hidden="true"></i>
-                            Loading available tee times…
-                        </p>
+                    <p id="tee-time-loading" class="bbcc-teetime-note" style="display:none;">
+                        <i class="fa-solid fa-circle-notch fa-spin" aria-hidden="true"></i>
+                        Loading available tee times…
+                    </p>
 
-                        <div id="tee-time-grid" class="bbcc-teetime-grid">
-                            <!-- Tee time slots loaded via AJAX -->
-                            <p class="bbcc-teetime-note" id="tee-time-placeholder">Select a date to see available tee times.</p>
-                        </div>
-
-                        <div class="bbcc-teetime-legend">
-                            <span><i class="bbcc-teetime-swatch bbcc-teetime-swatch-4"></i>4 Left</span>
-                            <span><i class="bbcc-teetime-swatch bbcc-teetime-swatch-3"></i>3 Left</span>
-                            <span><i class="bbcc-teetime-swatch bbcc-teetime-swatch-2"></i>2 Left</span>
-                            <span><i class="bbcc-teetime-swatch bbcc-teetime-swatch-1"></i>1 Left</span>
-                            <span><i class="bbcc-teetime-swatch bbcc-teetime-swatch-booked"></i>Booked</span>
-                            <span><i class="bbcc-teetime-swatch bbcc-teetime-swatch-past"></i>Passed</span>
-                        </div>
+                    <div id="tee-time-grid" class="bbcc-teetime-grid">
+                        <!-- Tee time slots loaded via AJAX -->
+                        <p class="bbcc-teetime-note" id="tee-time-placeholder">Select a date to see available tee times.</p>
                     </div>
                 </div>
             </div>
@@ -117,6 +118,8 @@
     </div>
 </section>
 <!-- end booking hub — golf -->
+
+<%= render "home/social_media" %>
 
 <% if @golf_course %>
 <%= render 'golf/reservation_modal', golf_course: @golf_course %>
@@ -126,6 +129,8 @@
   var selectedDate = '<%= Date.today.strftime('%d/%m/%Y') %>';
   var teeTimesUrl = '<%= golf_tee_times_path %>';
   var autoRefreshInterval = null;
+  var selectedSlot = null;   // { time, date, remaining } — chosen but not yet confirmed
+  var picker = null;
 
   function formatDateForApi(dateStr) {
     var parts = dateStr.split('/');
@@ -135,51 +140,60 @@
   function formatTeeTimeLabel(apiDate, time) {
     var dt = new Date(apiDate + 'T' + time);
     var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-    return dt.toLocaleDateString('en-US', options) + ' — ' + time;
+    return dt.toLocaleDateString('en-US', options) + ' - ' + time;
   }
 
-  function openReservationModal(time, apiDate, remaining) {
-    var isoStr = apiDate + 'T' + time;
+  function openReservationModal(slot) {
+    var isoStr = slot.date + 'T' + slot.time;
     document.getElementById('modal-tee-time-input').value = isoStr;
-    document.getElementById('modal-tee-time-display').textContent = formatTeeTimeLabel(apiDate, time);
+    document.getElementById('modal-tee-time-display').textContent = formatTeeTimeLabel(slot.date, slot.time);
     document.getElementById('modal-tee-time-error').style.display = 'none';
     document.getElementById('modal-tee-time-error').textContent = '';
-    if (typeof window.setModalMaxPlayers === 'function') window.setModalMaxPlayers(remaining);
+    if (typeof window.setModalMaxPlayers === 'function') window.setModalMaxPlayers(slot.remaining);
     if (typeof window.updateModalPrice === 'function') window.updateModalPrice();
-    var modal = new bootstrap.Modal(document.getElementById('reservationModal'));
-    modal.show();
+    if (window.bbccPlayerNames) window.bbccPlayerNames.reset(document.getElementById('reservationModal'));
+    bootstrap.Modal.getOrCreateInstance(document.getElementById('reservationModal')).show();
+  }
+
+  function setSelected(slot, button) {
+    selectedSlot = slot;
+    document.querySelectorAll('#tee-time-grid .bbcc-teeslot.is-selected').forEach(function(el) {
+      el.classList.remove('is-selected');
+      el.setAttribute('aria-pressed', 'false');
+    });
+    if (button) {
+      button.classList.add('is-selected');
+      button.setAttribute('aria-pressed', 'true');
+    }
+    document.getElementById('tee-confirm-btn').disabled = !slot;
   }
 
   function slotMarkup(slot, apiDate) {
     if (slot.past) {
-      return '<div class="col"><span class="bbcc-teeslot bbcc-teeslot-past" ' +
-             'title="This tee time has already passed">' + slot.time + '</span></div>';
+      return '<span class="bbcc-teeslot is-disabled" title="This tee time has already passed">' + slot.time + '</span>';
     }
     if (!slot.available) {
-      return '<div class="col"><span class="bbcc-teeslot bbcc-teeslot-booked" ' +
-             'title="Fully booked">' + slot.time + '</span></div>';
+      return '<span class="bbcc-teeslot is-disabled" title="Fully booked">' + slot.time + '</span>';
     }
-    var remainingLabel = slot.remaining + ' spot' + (slot.remaining === 1 ? '' : 's') + ' left';
-    var tier = Math.min(slot.remaining, 4);
-    return '<div class="col"><button type="button" class="bbcc-teeslot bbcc-teeslot-remaining-' + tier + ' tee-slot-btn" ' +
-           'data-time="' + slot.time + '" data-date="' + apiDate + '" data-remaining="' + slot.remaining + '">' +
-           slot.time + '<br><small style="font-weight:400;">' + remainingLabel + '</small></button></div>';
+    return '<button type="button" class="bbcc-teeslot tee-slot-btn" aria-pressed="false" ' +
+           'data-time="' + slot.time + '" data-date="' + apiDate + '" data-remaining="' + slot.remaining + '" ' +
+           'title="' + slot.remaining + ' spot' + (slot.remaining === 1 ? '' : 's') + ' left">' + slot.time + '</button>';
   }
 
   function loadTeeTimes(dateStr) {
     var grid = document.getElementById('tee-time-grid');
     var loading = document.getElementById('tee-time-loading');
     var placeholder = document.getElementById('tee-time-placeholder');
+    var apiDate = formatDateForApi(dateStr);
+    // an auto-refresh of the same day keeps the visitor's pick; a new day clears it
+    var keep = selectedSlot && selectedSlot.date === apiDate ? selectedSlot : null;
 
     if (placeholder) placeholder.style.display = 'none';
     loading.style.display = 'block';
     grid.innerHTML = '';
+    setSelected(null);
 
-    var apiDate = formatDateForApi(dateStr);
-
-    fetch(teeTimesUrl + '?date=' + apiDate, {
-      headers: { 'Accept': 'application/json' }
-    })
+    fetch(teeTimesUrl + '?date=' + apiDate, { headers: { 'Accept': 'application/json' } })
     .then(function(r) { return r.json(); })
     .then(function(slots) {
       loading.style.display = 'none';
@@ -187,17 +201,16 @@
         grid.innerHTML = '<p class="bbcc-teetime-note">No tee times available for this date.</p>';
         return;
       }
-
-      var html = '<div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-3">';
-      slots.forEach(function(slot) { html += slotMarkup(slot, apiDate); });
-      html += '</div>';
-      grid.innerHTML = html;
-
-      // Attach modal-open handlers to available slot buttons
+      grid.innerHTML = slots.map(function(slot) { return slotMarkup(slot, apiDate); }).join('');
       grid.querySelectorAll('.tee-slot-btn').forEach(function(btn) {
         btn.addEventListener('click', function() {
-          openReservationModal(btn.dataset.time, btn.dataset.date, parseInt(btn.dataset.remaining, 10));
+          setSelected({ time: btn.dataset.time, date: btn.dataset.date,
+                        remaining: parseInt(btn.dataset.remaining, 10) }, btn);
         });
+        if (keep && btn.dataset.time === keep.time) {
+          setSelected({ time: btn.dataset.time, date: btn.dataset.date,
+                        remaining: parseInt(btn.dataset.remaining, 10) }, btn);
+        }
       });
     })
     .catch(function() {
@@ -211,10 +224,24 @@
     // Only auto-refresh for today — future dates have no slots going past
     var todayApi = formatDateForApi('<%= Date.today.strftime('%d/%m/%Y') %>');
     if (formatDateForApi(dateStr) === todayApi) {
-      autoRefreshInterval = setInterval(function() {
-        loadTeeTimes(dateStr);
-      }, 60000);
+      autoRefreshInterval = setInterval(function() { loadTeeTimes(dateStr); }, 60000);
     }
+  }
+
+  function updateDateNav() {
+    var day = picker && picker.selectedDates[0];
+    if (!day) return;
+    var start = new Date(); start.setHours(0, 0, 0, 0);
+    var current = new Date(day.getFullYear(), day.getMonth(), day.getDate());
+    var diff = Math.round((current - start) / 86400000);
+    document.getElementById('golf-date-prev').disabled = diff <= 0;
+    document.getElementById('golf-date-next').disabled = diff >= 30;
+  }
+
+  function shiftDate(days) {
+    var day = picker.selectedDates[0] || new Date();
+    var next = new Date(day.getFullYear(), day.getMonth(), day.getDate() + days);
+    picker.setDate(next, true);
   }
 
   document.addEventListener('DOMContentLoaded', function() {
@@ -230,8 +257,7 @@
           errorEl.style.display = 'block';
           return;
         }
-        var teeTime = new Date(teeTimeVal);
-        if (teeTime <= new Date()) {
+        if (new Date(teeTimeVal) <= new Date()) {
           e.preventDefault();
           errorEl.textContent = 'This tee time has already passed. Please select another slot.';
           errorEl.style.display = 'block';
@@ -239,18 +265,27 @@
       });
     }
 
+    document.getElementById('tee-confirm-btn').addEventListener('click', function() {
+      if (selectedSlot) openReservationModal(selectedSlot);
+    });
+    document.getElementById('golf-date-prev').addEventListener('click', function() { shiftDate(-1); });
+    document.getElementById('golf-date-next').addEventListener('click', function() { shiftDate(1); });
+
     if (typeof flatpickr === 'undefined') return;
 
-    flatpickr('#golf-date-picker', {
+    picker = flatpickr('#golf-date-picker', {
       dateFormat: 'd/m/Y',
       minDate: 'today',
       maxDate: new Date().fp_incr(30),
+      defaultDate: 'today',
       onChange: function(selectedDates, dateStr) {
         selectedDate = dateStr;
         loadTeeTimes(dateStr);
         startAutoRefresh(dateStr);
+        updateDateNav();
       }
     });
+    updateDateNav();
 
     // Load today's tee times on page load and start auto-refresh
     loadTeeTimes(selectedDate);

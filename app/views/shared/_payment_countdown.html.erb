@@ -1,0 +1,18 @@
+<%# locals: record: (Booking / GolfReservation), expire_url:, noun: ("booking" | "reservation") %>
+<% if record.is_unpaid? %>
+    <div id="countdown-timer" class="bbcc-countdown-box"
+         data-time-remaining="<%= record.time_remaining %>" data-expire-url="<%= expire_url %>">
+        <p class="bbcc-countdown-label">Time Remaining to Complete Payment</p>
+        <div id="timer-display" class="bbcc-countdown-time">--:--</div>
+        <p class="bbcc-countdown-note">Your <%= noun %> will be automatically cancelled if payment is not completed</p>
+    </div>
+    <div id="expired-message" class="bbcc-countdown-box is-expired" hidden>
+        <p class="bbcc-countdown-label">Payment Time Expired</p>
+        <p class="bbcc-countdown-note">The payment window has ended. This <%= noun %> has been cancelled.</p>
+    </div>
+<% elsif record.expired? %>
+    <div class="bbcc-countdown-box is-expired">
+        <p class="bbcc-countdown-label">Payment Time Expired</p>
+        <p class="bbcc-countdown-note">The payment window has ended. This <%= noun %> has been cancelled.</p>
+    </div>
+<% end %>

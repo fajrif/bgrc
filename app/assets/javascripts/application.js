@@ -23,6 +23,7 @@
 //= require main.js
 //= require offcanvas-menu
 //= require toast
+//= require player-names
 
 jQuery(document).ready(function($){
 	// Search

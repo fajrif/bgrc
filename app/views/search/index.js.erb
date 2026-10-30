@@ -1,4 +1,5 @@
 $("#searchResults").html("<%= escape_javascript(render("search_results")) %>");
+if (window.bbccPlayerNames) window.bbccPlayerNames.init(document.getElementById("searchResults"));
 // Build query string from merged parameters
 <%
   # Merge new param into current query string
@@ -44,9 +45,10 @@ function createEvent(arg, calendar) {
     title: 'Check price',
     start: arg.start,
     end: arg.end,
-    textColor: '#ffffff',
-    borderColor: '#3a3a3a',
-    color: '#3a3a3a'
+    classNames: ['book-selection'],
+				textColor: '#26241F',
+				borderColor: '#8FBBC4',
+				color: '#8FBBC4'
   });
 
   var formatDates = startDay.format('DD/MM/YYYY HH:mm');
@@ -60,7 +62,7 @@ function createEvent(arg, calendar) {
       court_type: <%= blank_or_not(@type, 0) %><% if @group_class %>,
       group_class_id: <%= @group_class.try(:id) %>,
       pax: "<%= @pax %>"<% else %>,
-      pax: ($('#court_pax_select').length ? $('#court_pax_select').val() : "")<% end %>
+      pax: ($('#input-pax').length ? $('#input-pax').val() : "")<% end %>
     },
     success: function(data, textStatus, jqXHR){
       // console.log(textStatus);

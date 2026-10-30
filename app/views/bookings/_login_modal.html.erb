@@ -1,35 +1,74 @@
-<!-- Login Modal -->
-<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
+<%# Sign-in pop-up shown when a guest presses Pay. Signing in reloads the page, at which point
+    the order is adopted into the account by the controller's #show. %>
+<div class="modal fade bbcc-modal bbcc-modal-form" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
     <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="loginModalLabel">Sign In to Complete Payment</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
+      <button type="button" class="bbcc-modal-close bbcc-modal-close-abs" data-bs-dismiss="modal" aria-label="Close">
+        <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+      </button>
       <div class="modal-body">
-        <p class="text-medium mb-3">Please sign in or create an account to proceed with your payment.</p>
+        <h2 class="bbcc-modal-title bbcc-modal-title-center" id="loginModalLabel">Log in to Complete Payment</h2>
+        <p class="bbcc-modal-sub">Please login or create an account to proceed with your payment.</p>
 
-        <div id="login-error" class="alert" style="display:none; background-color: #f8d7da; color: #721c24; padding: 10px; border-radius: 4px; margin-bottom: 15px;"></div>
+        <p id="login-error" class="bbcc-field-error-text bbcc-login-error" style="display:none;"></p>
 
-        <form id="ajax-login-form">
+        <form id="ajax-login-form" novalidate>
           <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
-          <div class="mb-3">
-            <input type="email" class="form-control" id="login-email" name="email" required placeholder="Enter your email">
+          <div class="bbcc-field">
+            <label for="login-email">Email Address</label>
+            <input type="email" id="login-email" name="email" required autocomplete="email" placeholder="Write your email here">
           </div>
-          <div class="mb-3">
-            <input type="password" class="form-control" id="login-password" name="password" required placeholder="Enter your password">
+          <div class="bbcc-field">
+            <label for="login-password">Password</label>
+            <input type="password" id="login-password" name="password" required autocomplete="current-password" placeholder="Write your password here">
           </div>
-          <button type="submit" class="btn btn-dark-gray btn-medium text-medium w-100">Sign In</button>
+          <div class="bbcc-login-row">
+            <label class="bbcc-check" for="login-remember">
+              <input type="checkbox" id="login-remember" name="remember_me" value="1">
+              <span class="bbcc-check-box" aria-hidden="true"></span>
+              <span>Remember me</span>
+            </label>
+            <%= link_to "Forgot password?", new_user_password_path, class: "bbcc-login-forgot" %>
+          </div>
+          <button type="submit" class="bbcc-btn bbcc-btn-block bbcc-login-submit">Log in</button>
         </form>
 
-        <hr class="my-3"/>
-
-        <div class="text-center">
-          <p class="text-medium mb-0">Don't have an account?
-            <%= link_to "Register", new_user_registration_path, class: "text-decoration-underline" %>
-          </p>
-        </div>
+        <p class="bbcc-login-signup">Don't have an account? <%= link_to "Sign Up", new_user_registration_path %></p>
       </div>
     </div>
   </div>
 </div>
+
+<script>
+(function() {
+  function initLoginForm() {
+    var form = document.getElementById('ajax-login-form');
+    if (!form) return;
+    var errorEl = document.getElementById('login-error');
+    function fail(message) { errorEl.textContent = message; errorEl.style.display = 'block'; }
+
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      errorEl.style.display = 'none';
+      errorEl.textContent = '';
+
+      fetch('<%= ajax_login_path %>', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
+        },
+        body: new URLSearchParams(new FormData(form)).toString()
+      })
+      .then(function(r) { return r.json().then(function(d) { return { ok: r.ok, data: d }; }); })
+      .then(function(result) {
+        if (result.ok && result.data.success) { location.reload(); }
+        else { fail(result.data.message || 'Invalid email or password.'); }
+      })
+      .catch(function() { fail('An error occurred. Please try again.'); });
+    });
+  }
+  if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', initLoginForm); }
+  else { initLoginForm(); }
+})();
+</script>

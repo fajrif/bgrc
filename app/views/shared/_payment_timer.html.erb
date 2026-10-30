@@ -1,0 +1,66 @@
+<%# Countdown for an unpaid booking / reservation. Needs #countdown-timer (data-time-remaining,
+    data-expire-url) and #timer-display on the page; hitting zero tells the server to expire the
+    order and swaps the page into its expired state. %>
+<script>
+(function() {
+  function initTimer() {
+    var timerEl = document.getElementById('countdown-timer');
+    if (!timerEl) return;
+
+    var secondsLeft = parseInt(timerEl.getAttribute('data-time-remaining'), 10);
+    var expireUrl = timerEl.getAttribute('data-expire-url');
+    var displayEl = document.getElementById('timer-display');
+    var isExpired = false;
+    var timerInterval;
+
+    function hide(id) { var el = document.getElementById(id); if (el) el.hidden = true; }
+    function show(id) { var el = document.getElementById(id); if (el) el.hidden = false; }
+
+    function showExpiredState() {
+      timerEl.hidden = true;
+      show('expired-message');
+      hide('cancellation-note');
+      hide('payment-actions');
+      show('expired-actions');
+
+      var statusBadge = document.getElementById('payment-status-badge');
+      if (statusBadge) {
+        statusBadge.classList.add('is-expired');
+        var label = statusBadge.querySelector('small');
+        if (label) label.textContent = 'STATUS: EXPIRED';
+      }
+      var itemLists = document.getElementById('itemLists');
+      if (itemLists) itemLists.classList.add('is-locked');
+    }
+
+    function expireOnServer() {
+      var csrfToken = document.querySelector('meta[name="csrf-token"]');
+      fetch(expireUrl, {
+        method: 'POST',
+        headers: { 'X-CSRF-Token': csrfToken ? csrfToken.content : '', 'Content-Type': 'application/json' }
+      }).catch(function() {});
+    }
+
+    function updateTimer() {
+      var minutes = Math.floor(Math.max(secondsLeft, 0) / 60);
+      var seconds = Math.max(secondsLeft, 0) % 60;
+      displayEl.textContent = String(minutes).padStart(2, '0') + ':' + String(seconds).padStart(2, '0');
+      timerEl.classList.toggle('is-urgent', secondsLeft <= 60);
+
+      if (secondsLeft <= 0 && !isExpired) {
+        isExpired = true;
+        clearInterval(timerInterval);
+        expireOnServer();
+        showExpiredState();
+      }
+      secondsLeft--;
+    }
+
+    updateTimer();
+    timerInterval = setInterval(updateTimer, 1000);
+  }
+
+  if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', initTimer); }
+  else { initTimer(); }
+})();
+</script>

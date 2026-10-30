@@ -4,6 +4,7 @@ class AjaxSessionsController < ApplicationController
   def create
     user = User.find_for_authentication(email: params[:email])
     if user && user.valid_password?(params[:password])
+      user.remember_me = true if params[:remember_me].present? && user.respond_to?(:remember_me=)
       sign_in(:user, user)
       render json: { success: true, message: "Signed in successfully." }
     else

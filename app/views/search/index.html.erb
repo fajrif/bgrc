@@ -3,7 +3,7 @@
 	<%= stylesheet_link_tag "main.css" %>
 <% end %>
 
-<%= render "shared/breadcrumb", crumbs: [{ label: "Book", path: book_path }, { label: "Racquet Sports" }] %>
+<% content_for :header_light, true %>
 
 <!-- start booking hub — racquet sports -->
 <section class="bbcc-section bbcc-hub">
@@ -18,6 +18,7 @@
 <!-- end booking hub -->
 
 <%= render "info" %>
+<%= render "home/social_media" %>
 
 <%= content_for :tail do %>
 	<%= javascript_include_tag "fullcalendar.js" %>
@@ -106,6 +107,9 @@
   });
 
 	// classes and open events are bookable elsewhere, so they get a sign-up affordance
+	// the players select in the booking rail drives the "Pax" line of the price summary
+	$(document).on('change', '#input-pax', function() { $('.js-pax-value').text(this.value); });
+
 	function decorateEvent(arg) {
 		if (!arg.event.extendedProps.signUpUrl && !arg.event.extendedProps.classUrl) return;
 		var frame = arg.el.querySelector('.fc-event-main-frame');
@@ -135,9 +139,10 @@
 				title: 'Check price',
 				start: arg.start,
 				end: arg.end,
-				textColor: '#ffffff',
-				borderColor: '#3a3a3a',
-				color: '#3a3a3a'
+				classNames: ['book-selection'],
+				textColor: '#26241F',
+				borderColor: '#8FBBC4',
+				color: '#8FBBC4'
 			});
 
 			var formatDates = startDay.format('DD/MM/YYYY HH:mm');
@@ -151,7 +156,7 @@
         <%- if @group_class -%>
         data: {dates: formatDates, duration: duration, court_type: <%= blank_or_not(@type, 0) %>, group_class_id: <%= @group_class.try(:id) %>, pax: <%= @pax %>, coach_id: coachId },
         <%- else -%>
-        data: {dates: formatDates, duration: duration, court_type: <%= blank_or_not(@type, 0) %>, pax: ($('#court_pax_select').length ? $('#court_pax_select').val() : ""), coach_id: coachId },
+        data: {dates: formatDates, duration: duration, court_type: <%= blank_or_not(@type, 0) %>, pax: ($('#input-pax').length ? $('#input-pax').val() : ""), coach_id: coachId },
         <%- end -%>
 				success: function(data, textStatus, jqXHR){
 					// console.log(textStatus);

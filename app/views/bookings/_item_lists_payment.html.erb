@@ -1,82 +1,68 @@
-<!-- Payment Status Badge -->
-<% if @booking.is_unpaid? %>
-  <div id="payment-status-badge" class="mb-3 p-2 text-center" style="background-color: #fff3cd; border-radius: 6px; border: 1px solid #ffc107;">
-    <small style="color: #856404; font-weight: 600;">
-      STATUS: AWAITING PAYMENT
-    </small>
-  </div>
-<% elsif @booking.status == Booking::PAID %>
-  <div class="mb-3 p-2 text-center" style="background-color: #d4edda; border-radius: 6px; border: 1px solid #28a745;">
-    <small style="color: #155724; font-weight: 600;">STATUS: PAID ✓</small>
-  </div>
-<% elsif @booking.expired? %>
-  <div class="mb-3 p-2 text-center" style="background-color: #f8d7da; border-radius: 6px; border: 1px solid #dc3545;">
-    <small style="color: #721c24; font-weight: 600;">STATUS: EXPIRED</small>
-  </div>
-<% end %>
+<% status_class, status_text =
+     if @booking.is_unpaid? then ["", "AWAITING PAYMENT"]
+     elsif @booking.status == Booking::PAID then ["is-paid", "PAID ✓"]
+     elsif @booking.expired? then ["is-expired", "EXPIRED"]
+     else ["is-expired", "CANCELLED"] end %>
+<div id="payment-status-badge" class="bbcc-status-bar <%= status_class %>">
+  <small>STATUS: <%= status_text %></small>
+</div>
 
-<ul class="list-style-6 margin-50px-bottom text-medium">
-  <li><strong><%= @booking.get_court_type %></strong><span><%= @booking.price_label %></span></li>
+<ul class="bbcc-confirm-lines">
+  <li><span><%= @booking.get_court_type %></span><span><%= @booking.price_label %></span></li>
   <% if @booking.pax && !@booking.group_class %>
-  <li><strong>Pax</strong><span><%= @booking.pax %></span></li>
+    <li><span>Pax</span><span><%= @booking.pax %></span></li>
   <% end %>
   <% if @booking.group_class %>
-  <li><strong>Class Name</strong><span class="text-small"><%= @booking.group_class.name_with_pax(@booking.pax) %></span></li>
+    <li><span>Class Name</span><span><%= @booking.group_class.name_with_pax(@booking.pax) %></span></li>
   <% end %>
   <% if @booking.coach %>
-    <li><strong>Coach (<%= @booking.coach.name %>)</strong><span><%= @booking.price_coach_label %></strong></li>
+    <li><span>Coach (<%= @booking.coach.name %>)</span><span><%= @booking.price_coach_label %></span></li>
   <% end %>
   <% @booking.add_ons.each do |add_on| %>
-    <li><strong><%= add_on.item_with_quantity %></strong><span><%= add_on.total_price_label %></span></li>
+    <li><span><%= add_on.item_with_quantity %></span><span><%= add_on.total_price_label %></span></li>
   <% end %>
-  <li class="margin-30px-top font-weight-700"><strong>Total</strong><span><%= @booking.total_price_label %></strong></li>
+  <li class="is-total"><span>Total</span><span><%= @booking.total_price_label %></span></li>
 </ul>
-<div class="d-flex flex-wrap justify-content-center gap-4">
-  <% if @booking.is_unpaid? %>
-    <% if @available_credit %>
-      <div class="alert alert-info mb-3">
-        <strong><%= @available_credit.sessions_remaining %> session credit(s) available</strong>
-        for <%= @booking.group_class.name %>
-        <small class="text-muted d-block">Expires <%= @available_credit.expires_at.strftime('%d %b %Y') %></small>
-      </div>
-      <%= button_to "Use 1 Session Credit", pay_with_credit_booking_path(@booking.order_id),
-            method: :post, class: "btn btn-success w-100 mb-2",
-            data: { confirm: "Use 1 session credit for this booking?" } %>
-      <p class="text-center text-muted small mb-3">— or pay with gateway below —</p>
-    <% end %>
-    <div id="payment-actions">
-      <%= link_to "Cancel", booking_path(@booking.order_id), class: "btn btn-light-gray btn-small text-medium", method: :delete %>
-      <% if user_signed_in? %>
-        <a href="#" class="btn btn-dark-gray btn-medium text-medium" data-bs-toggle="modal" data-bs-target="#disclaimerModal">Pay</a>
-      <% else %>
-        <a href="#" class="btn btn-dark-gray btn-medium text-medium" data-bs-toggle="modal" data-bs-target="#loginModal">Pay</a>
-      <% end %>
+
+<% if @booking.is_unpaid? %>
+  <% if @available_credit %>
+    <div class="bbcc-credit-note">
+      <strong><%= @available_credit.sessions_remaining %> session credit(s) available</strong>
+      for <%= @booking.group_class.name %>
+      <small>Expires <%= @available_credit.expires_at.strftime('%d %b %Y') %></small>
     </div>
-    <div id="expired-actions" style="display: none;">
-      <div class="text-center w-100">
-        <p class="text-medium mb-2" style="color: #dc3545;"><strong>The time limit for payment has expired.</strong></p>
-        <%= link_to "Search Again", search_path(sport_id: @booking.court.sport_id), class: "btn btn-light-gray btn-small text-medium" %>
-      </div>
-    </div>
-  <% elsif @booking.expired? %>
-    <div class="text-center w-100">
-      <p class="text-medium mb-2" style="color: #dc3545;"><strong>The time limit for payment has expired.</strong></p>
-      <%= link_to "Search Again", search_path(sport_id: @booking.court.sport_id), class: "btn btn-light-gray btn-small text-medium" %>
-    </div>
-  <% elsif @booking.cancelled? %>
-    <div class="text-center w-100">
-      <p class="text-medium mb-2" style="color: #6c757d;"><strong>This booking has been cancelled.</strong></p>
-      <%= link_to "Search Again", search_path(sport_id: @booking.court.sport_id), class: "btn btn-light-gray btn-small text-medium" %>
-    </div>
-  <% else %>
-    <%# A paid booking is redirected to My Bookings by BookingsController#show,
-        where the e-ticket and QR live. This branch is only reachable by someone
-        who is not the owner (a guest session holding the order id), so it just
-        points at the account page rather than duplicating the modal here. %>
-    <div class="text-center w-100">
-      <p class="text-medium mb-2"><strong>This booking is confirmed.</strong></p>
-      <%= link_to "View in My Bookings", users_bookings_path(booking: @booking.order_id),
-                  class: "btn btn-dark-gray btn-small text-medium" %>
-    </div>
+    <%= button_to "Use 1 Session Credit", pay_with_credit_booking_path(@booking.order_id),
+          method: :post, class: "bbcc-btn bbcc-btn-block",
+          data: { confirm: "Use 1 session credit for this booking?" } %>
+    <p class="bbcc-confirm-or">— or pay with gateway below —</p>
   <% end %>
-</div>
+  <div id="payment-actions" class="bbcc-confirm-actions">
+    <%= link_to "Cancel", booking_path(@booking.order_id), class: "bbcc-btn bbcc-btn-light", method: :delete %>
+    <% if user_signed_in? %>
+      <a href="#" class="bbcc-btn" data-bs-toggle="modal" data-bs-target="#disclaimerModal">Pay Now</a>
+    <% else %>
+      <a href="#" class="bbcc-btn" data-bs-toggle="modal" data-bs-target="#loginModal">Pay Now</a>
+    <% end %>
+  </div>
+  <div id="expired-actions" class="bbcc-confirm-end" hidden>
+    <p>The time limit for payment has expired.</p>
+    <%= link_to "Search Again", search_path(sport_id: @booking.court.sport_id), class: "bbcc-btn bbcc-btn-light" %>
+  </div>
+<% elsif @booking.expired? %>
+  <div class="bbcc-confirm-end">
+    <p>The time limit for payment has expired.</p>
+    <%= link_to "Search Again", search_path(sport_id: @booking.court.sport_id), class: "bbcc-btn bbcc-btn-light" %>
+  </div>
+<% elsif @booking.cancelled? %>
+  <div class="bbcc-confirm-end">
+    <p>This booking has been cancelled.</p>
+    <%= link_to "Search Again", search_path(sport_id: @booking.court.sport_id), class: "bbcc-btn bbcc-btn-light" %>
+  </div>
+<% else %>
+  <%# A paid booking is redirected to My Bookings by BookingsController#show, where the e-ticket
+      and QR live. This branch is only reachable by someone who is not the owner. %>
+  <div class="bbcc-confirm-end">
+    <p>This booking is confirmed.</p>
+    <%= link_to "View in My Bookings", users_bookings_path(booking: @booking.order_id), class: "bbcc-btn" %>
+  </div>
+<% end %>

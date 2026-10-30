@@ -1,0 +1,68 @@
+<%# "Terms & Conditions" pop-up shown before a signed-in customer pays.
+    locals: purchase_url: (GET script endpoint that opens the gateway checkout),
+            snippets: (list of snippet keys; an entry may be an array of keys to try in order),
+            optional modal_id: ("disclaimerModal"), agree_id: ("btn-agree-pay"), intro: (lead paragraph) %>
+<%
+  modal_id = local_assigns.fetch(:modal_id, "disclaimerModal")
+  agree_id = local_assigns.fetch(:agree_id, "btn-agree-pay")
+  found = snippets.filter_map { |keys| Array(keys).lazy.filter_map { |key| Snippet.find_by_key(key) }.first }
+%>
+<div class="modal fade bbcc-modal bbcc-modal-terms" id="<%= modal_id %>" tabindex="-1" aria-labelledby="<%= modal_id %>Label" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+    <div class="modal-content">
+      <button type="button" class="bbcc-modal-close bbcc-modal-close-abs" data-bs-dismiss="modal" aria-label="Close">
+        <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+      </button>
+      <div class="modal-body">
+        <h2 class="bbcc-modal-title bbcc-modal-title-center" id="<%= modal_id %>Label">Terms &amp; Conditions</h2>
+        <% if local_assigns[:intro].present? %>
+          <p class="bbcc-terms-intro"><%= intro %></p>
+        <% end %>
+        <% found.each do |snippet| %>
+          <div class="bbcc-terms-block">
+            <h3><%= snippet.title %></h3>
+            <div class="bbcc-terms-body"><%= snippet.content %></div>
+          </div>
+        <% end %>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="bbcc-btn bbcc-btn-light" data-bs-dismiss="modal">Cancel</button>
+        <a href="#" id="<%= agree_id %>" class="bbcc-btn">I Agree &amp; Pay</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  function init() {
+    var button = document.getElementById('<%= agree_id %>');
+    if (!button) return;
+
+    button.addEventListener('click', function(e) {
+      e.preventDefault();
+
+      var modalEl = document.getElementById('<%= modal_id %>');
+      if (modalEl && typeof bootstrap !== 'undefined') {
+        var modal = bootstrap.Modal.getInstance(modalEl);
+        if (modal) modal.hide();
+      }
+
+      // The response navigates to the gateway; the result comes back by webhook.
+      $.ajax({
+        url: '<%= purchase_url %>',
+        type: 'GET',
+        dataType: 'script',
+        beforeSend: function(xhr) {
+          xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'));
+        },
+        error: function() {
+          alert('An error occurred while processing payment. Please try again.');
+        }
+      });
+    });
+  }
+  if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', init); }
+  else { init(); }
+})();
+</script>

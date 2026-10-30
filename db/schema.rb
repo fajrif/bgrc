@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_10_30_100000) do
+ActiveRecord::Schema[7.1].define(version: 2026_10_31_100000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -161,6 +161,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_10_30_100000) do
     t.integer "class_credit_purchase_id"
     t.integer "reschedule_count", default: 0, null: false
     t.boolean "refunded", default: false, null: false
+    t.jsonb "player_names", default: []
     t.index ["court_id"], name: "index_bookings_on_court_id"
     t.index ["user_id"], name: "index_bookings_on_user_id"
   end
