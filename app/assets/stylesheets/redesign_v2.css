@@ -1422,3 +1422,15 @@ button.bbcc-teeslot.is-selected, button.bbcc-teeslot.is-selected:hover { backgro
   padding: 12px 16px; font-size: 13px; color: var(--bbcc-ink);
   background: transparent url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%2326241F' stroke-width='1.6'/%3E%3C/svg%3E") no-repeat right 16px center;
 }
+
+/* Restaurant show page (Phase 2 template) */
+.bbcc-menu-highlight .bbcc-venue-card { height: 380px; }
+.bbcc-menu-highlight .bbcc-venue-card:not([style]) { background-color: #5A4636; }
+.bbcc-restaurant-gallery { background: var(--bbcc-bg); padding: 88px 0 80px; }
+.bbcc-restaurant-gallery .bbcc-title-lg { margin: 0 0 32px; }
+.bbcc-dine-now .bbcc-title-lg { font-size: clamp(1.9rem, 2.6vw, 2.4rem); margin: 0; }
+.bbcc-dine-now .bbcc-intro-desc { margin: 0; max-width: none; }
+@media (max-width: 767px) {
+  .bbcc-menu-highlight .bbcc-venue-card { height: 300px; }
+  .bbcc-restaurant-gallery { padding: 56px 0; }
+}
