@@ -85,6 +85,16 @@ module PaymentGateways
 				)
 				return nil unless status == 200
 
+				# Midtrans answers 200 even when it has no such transaction yet, with its
+				# own status_code ("404") in the body. That is not a payment state and must
+				# never be written onto the purchase, or the purchase stops being checked.
+				if body["transaction_status"].blank?
+					unless body["status_code"].to_s == "404"
+						Rails.logger.warn("[midtrans] status for #{purchase.order_id} has no transaction: #{body}")
+					end
+					return nil
+				end
+
 				normalize_callback(body)
 			rescue RequestError => e
 				Rails.logger.warn("[midtrans] status lookup failed for #{purchase.order_id}: #{e.message}")
