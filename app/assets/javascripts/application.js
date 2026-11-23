@@ -156,3 +156,23 @@ jQuery(document).ready(function($){
 		});
 	});
 });
+
+// The club's current wall-clock time as "YYYY-MM-DDTHH:mm:ss" (no zone), read from the
+// device's real clock in the club's time zone. Booking grids are club wall-clock times,
+// so "has this slot passed" compares against this, not against the browser's own zone.
+window.bbccClubNow = function () {
+  var meta = document.querySelector('meta[name="club-tz"]');
+  var tz = meta ? meta.content : 'Asia/Makassar';
+  try {
+    var parts = {};
+    new Intl.DateTimeFormat('en-CA', {
+      timeZone: tz, hourCycle: 'h23',
+      year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'
+    }).formatToParts(new Date()).forEach(function (p) { parts[p.type] = p.value; });
+    return parts.year + '-' + parts.month + '-' + parts.day + 'T' + parts.hour + ':' + parts.minute + ':' + parts.second;
+  } catch (e) {
+    var d = new Date(), pad = function (n) { return String(n).padStart(2, '0'); };
+    return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()) + 'T' +
+           pad(d.getHours()) + ':' + pad(d.getMinutes()) + ':' + pad(d.getSeconds());
+  }
+};

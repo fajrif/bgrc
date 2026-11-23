@@ -22,6 +22,16 @@ class GolfCourse < ApplicationRecord
     7.times { |num| self.golf_business_hours.create(day_code: num) } if self.golf_business_hours.empty?
   end
 
+  # Tee times are club wall-clock times, so "now" and "today" are the club's, whatever
+  # zone the server runs in.
+  def self.club_now
+    ActiveSupport::TimeZone[ENV.fetch("CLUB_TIME_ZONE", "Asia/Makassar")].now
+  end
+
+  def self.club_today
+    club_now.to_date
+  end
+
   def available_tee_times(date)
     date = date.is_a?(Date) ? date : Date.parse(date.to_s)
     day_code = date.wday
@@ -31,7 +41,7 @@ class GolfCourse < ApplicationRecord
     open_time  = Time.parse("#{date} #{bh.open}")
     close_time = Time.parse("#{date} #{bh.close}")
 
-    now = Time.current
+    club_now = self.class.club_now.strftime("%Y-%m-%d %H:%M")
 
     slots = []
     t = open_time
@@ -48,7 +58,7 @@ class GolfCourse < ApplicationRecord
                         .transform_keys { |tt| tt.in_time_zone.strftime("%H:%M") }
 
     slots.map do |slot|
-      if date == Date.current && slot <= now
+      if slot.strftime("%Y-%m-%d %H:%M") <= club_now
         { time: slot, available: false, past: true, remaining: 0 }
       else
         booked = booked_counts[slot.strftime("%H:%M")] || 0

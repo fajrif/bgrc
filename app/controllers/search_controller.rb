@@ -5,9 +5,7 @@ class SearchController < ApplicationController
   def index
     Booking.expire_stale_bookings!
     # The grid is the club's wall clock, so "now" is the club's, not the server's.
-    club_now = ActiveSupport::TimeZone[ENV.fetch("CLUB_TIME_ZONE", "Asia/Makassar")].now
-    @club_now = club_now.strftime("%Y-%m-%dT%H:%M:%S")
-    @date = club_now.strftime("%Y-%m-%d")
+    @date = ActiveSupport::TimeZone[ENV.fetch("CLUB_TIME_ZONE", "Asia/Makassar")].now.strftime("%Y-%m-%d")
     unless params[:date].blank?
       @date = Date.parse(params[:date]).strftime("%Y-%m-%d")
     end
@@ -34,11 +32,6 @@ class SearchController < ApplicationController
       @business_hours = @court.business_hours.map{|bh| { daysOfWeek: [bh.day_code], startTime: bh.open, endTime: bh.close } }
       @bookings = @court.bookings.where("date >= ? AND status NOT IN (?, ?)", @date, Booking::EXPIRED, Booking::CANCELLED)
       @events = @bookings.map{|b| {title: 'Booked', editable: false, className: 'booking-block', start: b.date.strftime('%Y-%m-%d %H:%M'), end: b.end_date.strftime('%Y-%m-%d %H:%M') }}
-
-      # Everything before now can no longer be booked: shade it so the grid shows it.
-      if @date <= @club_now[0, 10]
-        @events << { start: "#{@date}T00:00:00", end: @club_now, display: 'background', classNames: ['bbcc-past-slot'] }
-      end
 
       @recurring_events = @court.recurring_events.where(active: true)
 

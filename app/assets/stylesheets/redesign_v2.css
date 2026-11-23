@@ -99,6 +99,8 @@ a:hover > .bbcc-text-link-light { color: #fff; opacity: .8; }
 }
 .bbcc-book-btn:hover, .bbcc-book-btn:focus { background: #a8946d; border-color: #a8946d; color: var(--bbcc-footer); }
 .bbcc-book-btn-mobile:hover, .bbcc-book-btn-mobile:focus { background: #a8946d; color: var(--bbcc-footer); }
+/* the compact header button: only shown on small screens, and kept small there */
+.bbcc-book-btn.bbcc-book-btn-mobile { font-size: 11px; letter-spacing: 1.5px; padding: 8px 18px; }
 
 .bbcc-offcanvas-auth { flex-wrap: wrap; gap: 14px 24px; }
 
@@ -185,6 +187,7 @@ a:hover > .bbcc-text-link-light { color: #fff; opacity: .8; }
 .bbcc-dining-card-image::before { content: ""; position: absolute; inset: 0; background: rgba(0,0,0,.28); }
 .bbcc-dining-card-logo { position: relative; max-width: 52%; max-height: 38%; width: auto; height: auto; }
 .bbcc-dining-card p { margin-bottom: 12px; }
+.bbcc-dining-slider { margin-top: 36px; }
 
 .bbcc-image-band { padding: 0; height: 360px; background-size: cover; background-position: center; }
 
@@ -1187,6 +1190,11 @@ section.bbcc-auth-form-register { padding: 10px 0 0; }
 button.bbcc-teeslot:hover, button.bbcc-teeslot:focus { background: var(--bbcc-tan-soft); color: var(--bbcc-ink); }
 button.bbcc-teeslot.is-selected, button.bbcc-teeslot.is-selected:hover { background: var(--bbcc-tan); border-color: var(--bbcc-tan); color: var(--bbcc-ink); }
 .bbcc-teeslot.is-disabled { color: #b9b3a3; border-color: #ddd5c3; background: transparent; cursor: not-allowed; }
+/* tee times already gone: hatched like the past slots in the court grid */
+.bbcc-teeslot.is-past {
+  background: repeating-linear-gradient(135deg, rgba(184, 164, 125, .28) 0 6px, rgba(184, 164, 125, .12) 6px 12px);
+  color: #9a937f; border-color: #d4cbb4; text-decoration: line-through;
+}
 @media (max-width: 767.98px) { .bbcc-teetime-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; } }
 @media (max-width: 420px) { .bbcc-teetime-grid { grid-template-columns: repeat(2, 1fr); } }
 

@@ -92,19 +92,17 @@ function isCrossDay(arg) {
 }
 
 var calendarEl = document.getElementById('calendar');
-// the club's wall clock (no zone), read in the same local frame as the grid
-var clubNow = new Date('<%= @club_now %>');
 
 calendar = new FullCalendar.Calendar(calendarEl, {
   headerToolbar: false,
   initialView: 'timeGridWeek',
   initialDate: '<%= @date %>',
-  now: '<%= @club_now %>',
+  now: window.bbccClubNow(),
   firstDay: moment('<%= @date %>').day(),
   navLinks: false, // can click day/week names to navigate views
   selectable: true,
   selectAllow: function(arg) {
-    return isCrossDay(arg) && arg.start >= clubNow;
+    return isCrossDay(arg) && arg.start >= new Date(window.bbccClubNow());
   },
   validRange: {
     start: moment('<%= @date %>').format('YYYY-MM-DD'),
@@ -131,7 +129,7 @@ calendar = new FullCalendar.Calendar(calendarEl, {
     createEvent(arg, calendar);
   },
   eventChange: function(changeInfo) {
-    if(isCrossDay(changeInfo.event) && changeInfo.event.start >= clubNow) {
+    if(isCrossDay(changeInfo.event) && changeInfo.event.start >= new Date(window.bbccClubNow())) {
       if(changeInfo.event.title == changeInfo.oldEvent.title) {
         createEvent(changeInfo.event, calendar);
       }
@@ -170,4 +168,20 @@ calendar = new FullCalendar.Calendar(calendarEl, {
 
 calendar.setOption('height', 'auto');
 calendar.render();
+
+// shade every slot before the club's current time (see bbccClubNow), refreshed each minute
+function paintPastSlots() {
+  var nowStr = window.bbccClubNow();
+  calendar.getEvents().forEach(function (ev) { if (ev.extendedProps.pastSlots) ev.remove(); });
+  if ('<%= @date %>' <= nowStr.slice(0, 10)) {
+    calendar.addEvent({
+      start: '<%= @date %>T00:00:00', end: nowStr, display: 'background',
+      classNames: ['bbcc-past-slot'], extendedProps: { pastSlots: true }
+    });
+  }
+}
+paintPastSlots();
+clearInterval(window.bbccPastTimer);
+window.bbccPastTimer = setInterval(paintPastSlots, 60000);
+
 <%- end -%>

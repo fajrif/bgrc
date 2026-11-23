@@ -95,7 +95,7 @@
                                 <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
                             </button>
                             <input type="text" id="golf-date-picker"
-                                   value="<%= Date.today.strftime('%d/%m/%Y') %>"
+                                   value="<%= GolfCourse.club_today.strftime('%d/%m/%Y') %>"
                                    placeholder="Select a date" readonly>
                             <button type="button" id="golf-date-next" class="bbcc-datenav-btn bbcc-datenav-btn-next" aria-label="Next day">
                                 <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
@@ -126,7 +126,7 @@
 
 <script>
 (function() {
-  var selectedDate = '<%= Date.today.strftime('%d/%m/%Y') %>';
+  var selectedDate = '<%= GolfCourse.club_today.strftime('%d/%m/%Y') %>';
   var teeTimesUrl = '<%= golf_tee_times_path %>';
   var autoRefreshInterval = null;
   var selectedSlot = null;   // { time, date, remaining } — chosen but not yet confirmed
@@ -169,8 +169,11 @@
   }
 
   function slotMarkup(slot, apiDate) {
-    if (slot.past) {
-      return '<span class="bbcc-teeslot is-disabled" title="This tee time has already passed">' + slot.time + '</span>';
+    // past by the server's answer, or by the club's clock in this browser (never selectable)
+    var now = window.bbccClubNow();
+    var pastHere = apiDate === now.slice(0, 10) && slot.time <= now.slice(11, 16);
+    if (slot.past || pastHere) {
+      return '<span class="bbcc-teeslot is-disabled is-past" title="This tee time has already passed">' + slot.time + '</span>';
     }
     if (!slot.available) {
       return '<span class="bbcc-teeslot is-disabled" title="Fully booked">' + slot.time + '</span>';
@@ -222,7 +225,7 @@
   function startAutoRefresh(dateStr) {
     clearInterval(autoRefreshInterval);
     // Only auto-refresh for today — future dates have no slots going past
-    var todayApi = formatDateForApi('<%= Date.today.strftime('%d/%m/%Y') %>');
+    var todayApi = formatDateForApi('<%= GolfCourse.club_today.strftime('%d/%m/%Y') %>');
     if (formatDateForApi(dateStr) === todayApi) {
       autoRefreshInterval = setInterval(function() { loadTeeTimes(dateStr); }, 60000);
     }
@@ -257,7 +260,7 @@
           errorEl.style.display = 'block';
           return;
         }
-        if (new Date(teeTimeVal) <= new Date()) {
+        if (new Date(teeTimeVal) <= new Date(window.bbccClubNow())) {
           e.preventDefault();
           errorEl.textContent = 'This tee time has already passed. Please select another slot.';
           errorEl.style.display = 'block';

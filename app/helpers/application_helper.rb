@@ -212,6 +212,11 @@ module ApplicationHelper
 		end
 	end
 
+	# The club's own time zone: slot grids and tee sheets are club wall-clock times.
+	def club_time_zone_name
+		ENV.fetch("CLUB_TIME_ZONE", "Asia/Makassar")
+	end
+
 	# Snap has to be loaded into the page because Midtrans renders its checkout
 	# in-page. Xendit hosts its own checkout, so under Xendit this emits nothing.
 	def gateway_checkout_script_tag
