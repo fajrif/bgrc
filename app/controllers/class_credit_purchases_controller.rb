@@ -69,14 +69,17 @@ class ClassCreditPurchasesController < ApplicationController
     end
 
     existing = Purchase.find_by(productable: @credit_purchase, user: current_user, status_code: Purchase::INITIALIZED_CODE)
-    existing&.destroy
-
-    @purchase = Purchase.create!(
-      productable: @credit_purchase,
-      user: current_user,
-      status_code: Purchase::INITIALIZED_CODE,
-    )
-    @purchase.start_checkout!
+    # A still-open Midtrans transaction is resumed: its order_id cannot be opened twice.
+    @purchase = existing if existing&.resumable?
+    unless @purchase
+      existing&.destroy
+      @purchase = Purchase.create!(
+        productable: @credit_purchase,
+        user: current_user,
+        status_code: Purchase::INITIALIZED_CODE,
+      )
+      @purchase.start_checkout!
+    end
 
     respond_to { |f| f.js }
   rescue StandardError => e

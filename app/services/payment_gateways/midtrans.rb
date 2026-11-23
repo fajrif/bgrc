@@ -23,6 +23,13 @@ module PaymentGateways
 							"email" => purchase.user.email,
 						},
 						"credit_card" => { "secure" => true, "save_card" => true, "save_token_id" => true },
+						# Where Snap sends the customer once done, back to their own order page. The
+						# page then asks Midtrans for the result (PaymentReconciliation), so this
+						# also replaces the static Finish Redirect URL in the dashboard.
+						"callbacks" => {
+							"finish" => purchase.checkout_return_url(status: "success"),
+							"error" => purchase.checkout_return_url(status: "failed"),
+						},
 					},
 					basic_auth_user: server_key,
 				)

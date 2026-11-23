@@ -5,12 +5,32 @@
 <% if purchase.checkout_url.present? %>
 window.location.href = '<%= j purchase.checkout_url %>';
 <% elsif purchase.token.present? %>
-snap.pay('<%= j purchase.token %>', {
-	onSuccess: function(){ window.location.reload(); },
-	onPending: function(){ window.location.reload(); },
-	onError:   function(){ window.location.reload(); },
-	onClose:   function(){ window.location.reload(); }
-});
+// Snap reports the result to this page only through the callbacks below, and the
+// webhook may be slow or unreachable. So ask our server every 3 seconds whether
+// the order is paid yet (it checks with the gateway) and move on the moment it is.
+(function(){
+	var statusUrl = '<%= j users_purchase_status_path(purchase.productable.class.name.underscore, purchase.productable.id.to_s) %>';
+	var done = false;
+	function paidNow(){
+		if (done) return;
+		done = true;
+		window.location.href = window.location.pathname + '?payment=success';
+	}
+	var timer = setInterval(function(){
+		if (done) return clearInterval(timer);
+		fetch(statusUrl, { headers: { 'Accept': 'application/json' }, credentials: 'same-origin' })
+			.then(function(r){ return r.ok ? r.json() : null; })
+			.then(function(data){ if (data && data.paid) { clearInterval(timer); paidNow(); } })
+			.catch(function(){});
+	}, 3000);
+
+	snap.pay('<%= j purchase.token %>', {
+		onSuccess: paidNow,
+		onPending: paidNow,
+		onError:   function(){ done = true; clearInterval(timer); window.location.href = window.location.pathname + '?payment=failed'; },
+		onClose:   function(){ done = true; clearInterval(timer); window.location.reload(); }
+	});
+})();
 <% else %>
 <%= toast_js %>
 <% end %>

@@ -212,6 +212,9 @@ Rails.application.routes.draw do
 
       # Opens a checkout. Results arrive at /webhooks/*, never from the browser.
       get "purchase/:type/:id" => "purchases#new", :as => :new_purchase
+      # Polled by the page while Snap is open, so a successful payment shows as paid
+      # within seconds even when the gateway's webhook is slow or unreachable.
+      get "purchase/:type/:id/status" => "purchases#status", :as => :purchase_status
 
       # Bookings (index, destroy stay authenticated; create/show/add_on moved to public)
       resources :bookings, :only => [:index, :destroy] do

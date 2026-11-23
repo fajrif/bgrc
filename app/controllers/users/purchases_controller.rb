@@ -29,7 +29,7 @@ class Users::PurchasesController < Users::BaseController
 		end
 
 		@purchase = build_purchase
-		@purchase.start_checkout!
+		@purchase.start_checkout! unless @purchase.resumable?
 
 		respond_to { |format| format.js }
 	rescue StandardError => e
@@ -39,7 +39,31 @@ class Users::PurchasesController < Users::BaseController
 		render_payment_error(checkout_error_message(e))
 	end
 
+	# Is this order paid yet? While it is not, asks the gateway directly and settles
+	# through the same idempotent Purchase#apply_gateway_result! the webhook uses,
+	# so the answer never depends on the webhook having arrived.
+	def status
+		purchases = Purchase.where(productable: @productable, user: current_user)
+		paid = purchases.exists?(status_code: Purchase::SUCCESS_CODES)
+
+		if !paid && (purchase = purchases.awaiting_payment.first) && !purchase.cashier?
+			paid = settle_from_gateway(purchase)
+		end
+
+		render json: { paid: paid }
+	end
+
 	private
+
+	def settle_from_gateway(purchase)
+		result = purchase.gateway.fetch_status(purchase)
+		return false if result.nil?
+
+		%i[settled already_settled].include?(purchase.apply_gateway_result!(result))
+	rescue StandardError => e
+		Rails.logger.warn("[payment-status] #{purchase.order_id}: #{e.class} #{e.message}")
+		false
+	end
 
 	def timed_product?
 		TIMED_TYPES.include?(@productable.class.name)
@@ -52,13 +76,18 @@ class Users::PurchasesController < Users::BaseController
 	end
 
 	# A previous unfinished attempt is replaced rather than reused: its checkout URL
-	# may point at an invoice that has since expired at the gateway.
+	# may point at an invoice that has since expired at the gateway. A Midtrans Snap
+	# transaction is the exception: its order_id cannot be opened twice, so a
+	# still-open one is resumed from its token.
 	def build_purchase
-		Purchase.find_by(
+		previous = Purchase.find_by(
 			productable: @productable,
 			user: current_user,
 			status_code: Purchase::INITIALIZED_CODE,
-		)&.destroy
+		)
+		return previous if previous&.resumable?
+
+		previous&.destroy
 
 		Purchase.create!(
 			productable: @productable,

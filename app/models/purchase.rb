@@ -70,6 +70,14 @@ class Purchase < ApplicationRecord
 		self
 	end
 
+	# A Snap transaction that is already open at Midtrans can be shown again from
+	# its stored token. Midtrans rejects a second transaction under the same
+	# order_id ("order_id has already been taken"), so asking again would only fail.
+	def resumable?
+		payment_gateway == "midtrans" && awaiting_payment? && token.present? &&
+			gross_amount.to_i == productable.total_price.to_i && checkout_window_open?
+	end
+
 	# The one place a purchase is allowed to change payment state, whether the news
 	# arrives by webhook, by an on-return status fetch, or by the reconciliation
 	# sweep. Idempotent under lock, because gateways retry callbacks.
