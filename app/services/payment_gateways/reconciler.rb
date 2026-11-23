@@ -28,7 +28,7 @@ module PaymentGateways
 		end
 
 		def scope
-			Purchase.through_gateway.awaiting_payment.where(created_at: @lookback.ago..)
+			Purchase.through_gateway.unsettled.where(created_at: @lookback.ago..)
 		end
 
 		private

@@ -21,6 +21,10 @@ class Purchase < ApplicationRecord
 
 	default_scope { order(created_at: :desc) }
 	scope :awaiting_payment, -> { where(status_code: INITIALIZED_CODE) }
+	# Not settled yet: just opened, or reported pending by the gateway (Midtrans says
+	# "201" while a card is in 3-D Secure or a transfer is outstanding). Both can
+	# still turn into a payment.
+	scope :unsettled, -> { where(status_code: [INITIALIZED_CODE, PENDING_CODE]) }
 	scope :through_gateway, -> { where.not(payment_gateway: PaymentGateways::CASHIER) }
 
 	# Hooks
@@ -39,7 +43,7 @@ class Purchase < ApplicationRecord
 	end
 
 	def awaiting_payment?
-		status_code == INITIALIZED_CODE
+		status_code.in?([INITIALIZED_CODE, PENDING_CODE])
 	end
 
 	def cashier?
@@ -85,7 +89,9 @@ class Purchase < ApplicationRecord
 		outcome = nil
 
 		with_lock do
-			if paid?
+			# Only a completed payment short-circuits. A pending one ("201" counts as
+			# paid? for listings) must still be able to settle when the money arrives.
+			if status_code == SUCCESS_CODE
 				outcome = :already_settled
 			else
 				assign_attributes(result.attributes.compact)

@@ -43,14 +43,11 @@ class Users::PurchasesController < Users::BaseController
 	# through the same idempotent Purchase#apply_gateway_result! the webhook uses,
 	# so the answer never depends on the webhook having arrived.
 	def status
-		purchases = Purchase.where(productable: @productable, user: current_user)
-		paid = purchases.exists?(status_code: Purchase::SUCCESS_CODES)
+		purchase = Purchase.where(productable: @productable, user: current_user).unsettled.first
+		settle_from_gateway(purchase) if purchase && !purchase.cashier?
 
-		if !paid && (purchase = purchases.awaiting_payment.first) && !purchase.cashier?
-			paid = settle_from_gateway(purchase)
-		end
-
-		render json: { paid: paid }
+		# The order's own state is the answer, not the purchase row's.
+		render json: { paid: @productable.reload.paid? }
 	end
 
 	private
@@ -71,7 +68,7 @@ class Users::PurchasesController < Users::BaseController
 
 	def existing_paid_purchase
 		Purchase.where(productable: @productable)
-		        .where(status_code: Purchase::SUCCESS_CODES)
+		        .where(status_code: Purchase::SUCCESS_CODE)
 		        .first
 	end
 
@@ -80,11 +77,7 @@ class Users::PurchasesController < Users::BaseController
 	# transaction is the exception: its order_id cannot be opened twice, so a
 	# still-open one is resumed from its token.
 	def build_purchase
-		previous = Purchase.find_by(
-			productable: @productable,
-			user: current_user,
-			status_code: Purchase::INITIALIZED_CODE,
-		)
+		previous = Purchase.unsettled.find_by(productable: @productable, user: current_user)
 		return previous if previous&.resumable?
 
 		previous&.destroy

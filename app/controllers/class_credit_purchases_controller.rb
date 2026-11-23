@@ -68,7 +68,7 @@ class ClassCreditPurchasesController < ApplicationController
       return respond_to { |f| f.js { render "initiate_payment_error" } }
     end
 
-    existing = Purchase.find_by(productable: @credit_purchase, user: current_user, status_code: Purchase::INITIALIZED_CODE)
+    existing = Purchase.unsettled.find_by(productable: @credit_purchase, user: current_user)
     # A still-open Midtrans transaction is resumed: its order_id cannot be opened twice.
     @purchase = existing if existing&.resumable?
     unless @purchase

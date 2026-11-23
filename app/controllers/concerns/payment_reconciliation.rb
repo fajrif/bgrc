@@ -20,10 +20,10 @@ module PaymentReconciliation
 
 		return unless params[:payment] == "success"
 
-		purchase = Purchase.where(productable: productable).awaiting_payment.first
+		purchase = Purchase.where(productable: productable).unsettled.first
 		if purchase.nil? || purchase.cashier?
 			# Already settled by the webhook before the redirect landed.
-			flash.now[:notice] = "Payment received. Thank you!"
+			flash.now[:notice] = productable.paid? ? "Payment received. Thank you!" : "We are still confirming your payment. Refresh in a moment."
 			return
 		end
 
