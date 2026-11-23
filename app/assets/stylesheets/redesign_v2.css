@@ -815,6 +815,10 @@ body.bbcc-auth-body { background: var(--bbcc-bg); color: var(--bbcc-ink); font-f
 .bbcc-table thead th { padding: 0 12px 0; font-size: 13px; font-weight: 600; color: var(--bbcc-book); }
 .bbcc-table tbody td { padding: 18px 12px; background: var(--bbcc-book); color: var(--bbcc-ink); font-size: 14px; }
 .bbcc-table tbody tr:hover td { background: #b09b72; }
+/* My Account lists: the soft secondary tone rather than the full Book-button tan */
+.bbcc-account .bbcc-table tbody td { background: var(--bbcc-bg-alt); }
+.bbcc-account .bbcc-table tbody tr:hover td { background: #E3DCCB; }
+.bbcc-account .bbcc-credit-panel > td { background: var(--bbcc-bg-alt); }
 .bbcc-table-id, .bbcc-table-id:hover { color: var(--bbcc-ink); font-weight: 700; }
 .bbcc-table-note { color: var(--bbcc-ink); text-decoration: underline; }
 .bbcc-table-empty { padding: 56px 0; }
@@ -1232,6 +1236,11 @@ button.bbcc-teeslot.is-selected, button.bbcc-teeslot.is-selected:hover { backgro
 .bbcc-schedule .fc-event.recurring-event-visible,
 .bbcc-schedule .fc-event.class-schedule-block {
   background-color: var(--bbcc-tan) !important; border-color: var(--bbcc-tan) !important; color: var(--bbcc-ink) !important;
+}
+/* slots already in the past */
+.bbcc-schedule .fc-bg-event.bbcc-past-slot {
+  background: repeating-linear-gradient(135deg, rgba(184, 164, 125, .28) 0 6px, rgba(184, 164, 125, .12) 6px 12px);
+  opacity: 1; cursor: not-allowed;
 }
 .bbcc-schedule .fc-event .fc-signup-hint { background: var(--bbcc-booked); border: 0; color: #fff; }
 .bbcc-schedule .recurring-event-visible .fc-event-time,
