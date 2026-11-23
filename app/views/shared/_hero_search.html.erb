@@ -4,7 +4,8 @@
 <% selected_sport_id = local_assigns[:selected_sport_id] %>
 <% hero_video = local_assigns[:hero_video] %>
 <% hero_title = local_assigns[:hero_title] || "Where Sport Meets Lifestyle" %>
-<% show_search = local_assigns.fetch(:search, true) %>
+<%# Search bar hidden on every banner for now; pass search: true to bring it back. %>
+<% show_search = local_assigns.fetch(:search, false) %>
 <% content_for :hero, true %>
 <!-- start hero + availability search -->
 <section class="bbcc-hero" style="background-image:url('<%= hero_image %>');">

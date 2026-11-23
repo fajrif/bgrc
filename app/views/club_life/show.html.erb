@@ -71,7 +71,8 @@
                         <%= club_life_detail_body(detail.body) %>
                     </div>
                 <% end %>
-                <% if @section.cta_url.present? %>
+                <%# Intro CTA button hidden for now; drop the `false &&` to bring it back. %>
+                <% if false && @section.cta_url.present? %>
                     <% cta_external = @section.cta_url.start_with?("http://", "https://") %>
                     <%= link_to (@section.cta_label.presence || "Enquire Today"), @section.cta_url, class: "bbcc-solid-btn",
                                 target: (cta_external ? "_blank" : nil), rel: (cta_external ? "noopener" : nil) %>

@@ -44,7 +44,8 @@
                     <% intro_lines.each do |label, value| %>
                         <p class="bbcc-intro-fact"><%= label %>: <%= value %></p>
                     <% end %>
-                    <%= link_to "Reserve Now", get_contact_path, class: "bbcc-solid-btn" %>
+                    <%# Reserve Now button hidden for now; remove the `if false` to bring it back. %>
+                    <%= link_to "Reserve Now", get_contact_path, class: "bbcc-solid-btn" if false %>
                 </div>
             </div>
         </div>
