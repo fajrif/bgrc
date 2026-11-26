@@ -906,30 +906,30 @@ section.bbcc-auth-form-register { padding: 10px 0 0; }
 .bbcc-toast-warning { background: #FBF0C4; color: #5A4300; border-left-color: #C9A227; }
 .bbcc-toast-info    { background: #DDE6EE; color: #1F3345; border-left-color: #3A4E62; }
 
-/* ===== Off-canvas menu: plain brown panel, cream type ===== */
+/* ===== Off-canvas menu: tan panel (--bbcc-book), dark type ===== */
 .bbcc-offcanvas .bbcc-offcanvas-panel {
   width: 500px; padding: 96px 56px 48px;
-  background: #5C4632; background-image: none; box-shadow: none;
+  background: var(--bbcc-book); background-image: none; box-shadow: none;
 }
-.bbcc-offcanvas-close { color: var(--bbcc-cream); }
+.bbcc-offcanvas-close { color: var(--bbcc-footer); }
 .bbcc-offcanvas .bbcc-offcanvas-nav li { margin-bottom: 34px; }
 .bbcc-offcanvas .bbcc-offcanvas-nav a {
   font-family: var(--bbcc-font-title); text-transform: none; letter-spacing: 0;
-  font-size: clamp(36px, 4vw, 52px); line-height: 1.1; font-weight: 400; color: var(--bbcc-cream); border-bottom: 0;
+  font-size: clamp(36px, 4vw, 52px); line-height: 1.1; font-weight: 400; color: var(--bbcc-footer); border-bottom: 0;
 }
-.bbcc-offcanvas .bbcc-offcanvas-nav a:hover { color: var(--bbcc-book); }
-.bbcc-offcanvas .bbcc-offcanvas-nav a.active { font-weight: 600; color: var(--bbcc-book); border-bottom: 0; }
-.bbcc-offcanvas .bbcc-offcanvas-nav .bbcc-offcanvas-child { font-size: 26px; text-transform: none; letter-spacing: 0; color: var(--bbcc-cream); }
-.bbcc-offcanvas .bbcc-offcanvas-nav .bbcc-offcanvas-child:hover { color: var(--bbcc-book); }
+.bbcc-offcanvas .bbcc-offcanvas-nav a:hover { color: #fff; }
+.bbcc-offcanvas .bbcc-offcanvas-nav a.active { font-weight: 600; color: #fff; border-bottom: 0; }
+.bbcc-offcanvas .bbcc-offcanvas-nav .bbcc-offcanvas-child { font-size: 26px; text-transform: none; letter-spacing: 0; color: var(--bbcc-footer); }
+.bbcc-offcanvas .bbcc-offcanvas-nav .bbcc-offcanvas-child:hover { color: #fff; }
 .bbcc-offcanvas .bbcc-offcanvas-children .bbcc-offcanvas-children .bbcc-offcanvas-child { font-size: 20px; }
 .bbcc-offcanvas .bbcc-offcanvas-children { gap: 14px; margin-top: 14px; }
-.bbcc-offcanvas .bbcc-offcanvas-toggle { color: var(--bbcc-cream); }
+.bbcc-offcanvas .bbcc-offcanvas-toggle { color: var(--bbcc-footer); }
 .bbcc-offcanvas .bbcc-offcanvas-auth { border-top: 0; padding-top: 36px; gap: 14px 36px; }
 .bbcc-offcanvas .bbcc-offcanvas-auth a {
   font-family: var(--bbcc-font-body); text-transform: none; letter-spacing: 0;
-  font-size: 20px; font-weight: 700; color: var(--bbcc-cream);
+  font-size: 20px; font-weight: 700; color: var(--bbcc-footer);
 }
-.bbcc-offcanvas .bbcc-offcanvas-auth a:hover { color: var(--bbcc-book); }
+.bbcc-offcanvas .bbcc-offcanvas-auth a:hover { color: #fff; }
 @media (max-width: 575px) {
   .bbcc-offcanvas .bbcc-offcanvas-panel { padding: 80px 28px 32px; }
   .bbcc-offcanvas .bbcc-offcanvas-nav li { margin-bottom: 24px; }
@@ -1467,3 +1467,15 @@ button.bbcc-teeslot.is-selected, button.bbcc-teeslot.is-selected:hover { backgro
 
 /* ===== Court slot picker: tap to select (no drag) ===== */
 .bbcc-slot-hint { margin: 0 0 10px; font-size: 13px; color: var(--bbcc-ink-soft); }
+
+/* the price label on the selected hours */
+.bbcc-schedule .fc-bg-event.book-selection,
+.bbcc-schedule .book-selection {
+  opacity: 1; background-color: #8FBBC4; padding: 10px 12px; font-style: normal; font-weight: 600;
+  font-size: 15px; line-height: 1.35; color: var(--bbcc-ink);
+}
+.bbcc-schedule .book-selection .fc-event-title,
+.bbcc-schedule .book-selection .fc-event-title-container {
+  display: block; padding: 10px 12px; font-style: normal; font-weight: 600; font-size: 15px;
+  line-height: 1.35; color: var(--bbcc-ink) !important; white-space: normal;
+}
