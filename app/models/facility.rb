@@ -39,7 +39,15 @@ class Facility < ApplicationRecord
 	validates_uniqueness_of :name
 
 	# => Club Life: the five top-level sections, in display order.
-	scope :club_life_roots, -> { where(club_life: true).order(position: :asc, id: :asc) }
+	# Sections kept off the site for now (their pages and buttons are hidden, not deleted).
+	# Flip a name out of this list to bring the section back.
+	HIDDEN_CLUB_LIFE_NAMES = ["Beach Club"].freeze
+
+	scope :club_life_roots, -> {
+		where(club_life: true)
+			.where("COALESCE(name->>'en', '') NOT IN (?)", HIDDEN_CLUB_LIFE_NAMES)
+			.order(position: :asc, id: :asc)
+	}
 
 	def should_generate_new_friendly_id?
 		self.name_changed?

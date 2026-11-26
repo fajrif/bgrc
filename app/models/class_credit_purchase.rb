@@ -36,6 +36,11 @@ class ClassCreditPurchase < ApplicationRecord
     expires_at.present? && expires_at < Time.current
   end
 
+  # Paid, not expired, and (for a pack) sessions still left to book.
+  def active_credit?
+    paid? && !credit_expired? && (group_class.is_prescheduled? || sessions_remaining.positive?)
+  end
+
   def valid_credit?
     paid? && !credit_expired? && sessions_remaining > 0
   end

@@ -8,16 +8,11 @@
 
 <h1 class="bbcc-auth-title">Register</h1>
 <%= simple_form_for(resource, as: resource_name, url: registration_path(resource_name), wrapper: :vertical_form_plain, html: { class: "bbcc-auth-formbody" }) do |f| %>
-  <%= f.input :full_name, label: "First & Last Name", placeholder: "Write your name here" %>
+  <%= f.input :full_name, label: "Full Name", placeholder: "Write your name here" %>
   <div class="bbcc-auth-cols">
     <%= f.input :email, label: "Email Address", placeholder: "Write your email here" %>
-    <%= f.input :phone, label: "Phone Number", placeholder: "Write your phone here" %>
+    <%= render "shared/phone_field", phone: f.object.phone %>
   </div>
-  <div class="bbcc-auth-cols">
-    <%= f.input :dob, as: :string, label: "Date of Birth", placeholder: "Write your birth date", wrapper_html: { class: "bbcc-auth-date" }, input_html: { class: "datepicker", value: get_input_date_value(f.object.dob, '%d/%m/%Y') } %>
-    <%= f.input :gender, as: :select, label: "Gender", wrapper: :vertical_form_plain, collection: [[1, "Male"], [0, "Female"]], value_method: :first, label_method: :last, prompt: "Choose your gender", input_html: { class: "form-select big-input" } %>
-  </div>
-  <%= f.input :nationality, as: :select, label: "Nationality", wrapper: :vertical_form_plain, collection: options_for_nationalities, prompt: "Choose your nationality", input_html: { class: "form-select big-input" } %>
   <%= f.input :password, label: "Password", placeholder: "Write your password here", input_html: { autocomplete: "new-password" } %>
   <%= f.input :password_confirmation, label: "Password Confirmation", placeholder: "Write your password here", input_html: { autocomplete: "new-password" } %>
   <div class="bbcc-auth-terms">

@@ -11,7 +11,7 @@
 										<%= simple_form_for(@resource, as: :user, url: user_registration_by_provider_path, html: { method: :post, class: "contact-validation-active" }) do |f| %>
 											<%= f.input :email, as: text_or_hidden(f.object.email), label: false, placeholder: "Email address" %>
 											<%= f.input :full_name, as: text_or_hidden(f.object.full_name), label: false, placeholder: "Full name" %>
-											<%= f.input :phone, as: text_or_hidden(f.object.phone), label: false, placeholder: "Phone" %>
+											<%= render "shared/phone_field", phone: f.object.phone %>
 											<div class="submit-btn-wrapper">
 													<button type="submit" class="theme-btn btn-big default">Submit</button>
 											</div>

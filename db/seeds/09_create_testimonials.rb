@@ -2,7 +2,7 @@ puts "create all testimonials"
 
 testimonials = [
 	{ name: "Wayan Kertha", email: "wayan.kertha@example.com", company_name: "Member since 2021",
-		comment: "The course at Tuban is the reason I joined, but the coaching team on the tennis side is why I stayed. Booking a tee time or a court takes thirty seconds on the app." },
+		comment: "The course at Nusa Dua is the reason I joined, but the coaching team on the tennis side is why I stayed. Booking a tee time or a court takes thirty seconds on the app." },
 	{ name: "Sarah Whitfield", email: "sarah.whitfield@example.com", company_name: "Member since 2022",
 		comment: "We host our company's quarterly golf day here every year. The events team handles everything from tee times to catering, and our clients always ask where we're playing next." },
 	{ name: "Made Suryani", email: "made.suryani@example.com", company_name: "Member since 2023",

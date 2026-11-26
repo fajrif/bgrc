@@ -906,31 +906,30 @@ section.bbcc-auth-form-register { padding: 10px 0 0; }
 .bbcc-toast-warning { background: #FBF0C4; color: #5A4300; border-left-color: #C9A227; }
 .bbcc-toast-info    { background: #DDE6EE; color: #1F3345; border-left-color: #3A4E62; }
 
-/* ===== Off-canvas menu: tan panel with the carved logo art ===== */
+/* ===== Off-canvas menu: plain brown panel, cream type ===== */
 .bbcc-offcanvas .bbcc-offcanvas-panel {
   width: 500px; padding: 96px 56px 48px;
-  background-color: #B2A485; background-repeat: no-repeat; background-position: right -40px bottom -30px;
-  background-size: auto 115%; background-blend-mode: multiply; box-shadow: none;
+  background: #5C4632; background-image: none; box-shadow: none;
 }
-.bbcc-offcanvas-close { color: #5A4E42; }
+.bbcc-offcanvas-close { color: var(--bbcc-cream); }
 .bbcc-offcanvas .bbcc-offcanvas-nav li { margin-bottom: 34px; }
 .bbcc-offcanvas .bbcc-offcanvas-nav a {
   font-family: var(--bbcc-font-title); text-transform: none; letter-spacing: 0;
-  font-size: clamp(36px, 4vw, 52px); line-height: 1.1; font-weight: 400; color: #5A4E42; border-bottom: 0;
+  font-size: clamp(36px, 4vw, 52px); line-height: 1.1; font-weight: 400; color: var(--bbcc-cream); border-bottom: 0;
 }
-.bbcc-offcanvas .bbcc-offcanvas-nav a:hover { color: var(--bbcc-footer); }
-.bbcc-offcanvas .bbcc-offcanvas-nav a.active { font-weight: 600; color: var(--bbcc-footer); border-bottom: 0; }
-.bbcc-offcanvas .bbcc-offcanvas-nav .bbcc-offcanvas-child { font-size: 26px; text-transform: none; letter-spacing: 0; color: #5A4E42; }
-.bbcc-offcanvas .bbcc-offcanvas-nav .bbcc-offcanvas-child:hover { color: var(--bbcc-footer); }
+.bbcc-offcanvas .bbcc-offcanvas-nav a:hover { color: var(--bbcc-book); }
+.bbcc-offcanvas .bbcc-offcanvas-nav a.active { font-weight: 600; color: var(--bbcc-book); border-bottom: 0; }
+.bbcc-offcanvas .bbcc-offcanvas-nav .bbcc-offcanvas-child { font-size: 26px; text-transform: none; letter-spacing: 0; color: var(--bbcc-cream); }
+.bbcc-offcanvas .bbcc-offcanvas-nav .bbcc-offcanvas-child:hover { color: var(--bbcc-book); }
 .bbcc-offcanvas .bbcc-offcanvas-children .bbcc-offcanvas-children .bbcc-offcanvas-child { font-size: 20px; }
 .bbcc-offcanvas .bbcc-offcanvas-children { gap: 14px; margin-top: 14px; }
-.bbcc-offcanvas .bbcc-offcanvas-toggle { color: #5A4E42; }
+.bbcc-offcanvas .bbcc-offcanvas-toggle { color: var(--bbcc-cream); }
 .bbcc-offcanvas .bbcc-offcanvas-auth { border-top: 0; padding-top: 36px; gap: 14px 36px; }
 .bbcc-offcanvas .bbcc-offcanvas-auth a {
   font-family: var(--bbcc-font-body); text-transform: none; letter-spacing: 0;
-  font-size: 20px; font-weight: 700; color: #5A4E42;
+  font-size: 20px; font-weight: 700; color: var(--bbcc-cream);
 }
-.bbcc-offcanvas .bbcc-offcanvas-auth a:hover { color: var(--bbcc-footer); }
+.bbcc-offcanvas .bbcc-offcanvas-auth a:hover { color: var(--bbcc-book); }
 @media (max-width: 575px) {
   .bbcc-offcanvas .bbcc-offcanvas-panel { padding: 80px 28px 32px; }
   .bbcc-offcanvas .bbcc-offcanvas-nav li { margin-bottom: 24px; }
@@ -1451,3 +1450,20 @@ button.bbcc-teeslot.is-selected, button.bbcc-teeslot.is-selected:hover { backgro
   .bbcc-menu-highlight .bbcc-venue-card { height: 300px; }
   .bbcc-restaurant-gallery { padding: 56px 0; }
 }
+
+/* ===== Phone field with country code (sign-up, account, Google sign-up) ===== */
+.bbcc-phone-field { margin-bottom: 18px; }
+.bbcc-phone-label { display: block; margin: 0 0 8px; font-family: var(--bbcc-font-title); font-size: 21px; font-weight: 400; color: var(--bbcc-ink); }
+.bbcc-phone-row { display: flex; gap: 10px; }
+.bbcc-phone-row select,
+.bbcc-phone-row input {
+  height: 56px; border: 1px solid var(--bbcc-ink); border-radius: 0; background: var(--bbcc-bg);
+  font-family: var(--bbcc-font-body); font-size: 15px; color: var(--bbcc-ink); padding: 0 16px; min-width: 0;
+}
+.bbcc-phone-code { flex: 0 0 44%; }
+.bbcc-phone-number { flex: 1 1 auto; }
+.bbcc-phone-row select:focus, .bbcc-phone-row input:focus { outline: none; border-color: var(--bbcc-search-btn); box-shadow: 0 0 0 1px var(--bbcc-search-btn); }
+.bbcc-phone-code { appearance: auto; }
+
+/* ===== Court slot picker: tap to select (no drag) ===== */
+.bbcc-slot-hint { margin: 0 0 10px; font-size: 13px; color: var(--bbcc-ink-soft); }

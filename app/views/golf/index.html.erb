@@ -279,7 +279,7 @@
     picker = flatpickr('#golf-date-picker', {
       dateFormat: 'd/m/Y',
       minDate: 'today',
-      maxDate: new Date().fp_incr(30),
+      maxDate: new Date().fp_incr(<%= BookingRules.golf_window_days %>),
       defaultDate: 'today',
       onChange: function(selectedDates, dateStr) {
         selectedDate = dateStr;

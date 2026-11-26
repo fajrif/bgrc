@@ -46,8 +46,8 @@ class GolfReservationsController < ApplicationController
       redirect_to golf_path, alert: "Cannot book a tee time in the past." and return
     end
 
-    if tee_time > 30.days.from_now
-      redirect_to golf_path, alert: "Bookings can only be made up to 30 days in advance." and return
+    if tee_time > BookingRules.golf_window_days.days.from_now
+      redirect_to golf_path, alert: "Bookings can only be made up to #{BookingRules.golf_window_days} days in advance." and return
     end
 
     unless GolfReservation.check_available?(@golf_course, tee_time, players_count)

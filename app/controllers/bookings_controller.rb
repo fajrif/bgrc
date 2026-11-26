@@ -17,8 +17,11 @@ class BookingsController < ApplicationController
       if parsed_date && parsed_date < Time.current
         redirect_to search_path, alert: "Cannot book a time slot in the past." and return
       end
-      if parsed_date && parsed_date > 14.days.from_now
-        redirect_to search_path, alert: "Bookings can only be made up to 14 days in advance. Please contact us via WhatsApp for special requests." and return
+      if parsed_date && parsed_date > BookingRules.court_window_days.days.from_now
+        redirect_to search_path, alert: "Bookings can only be made up to #{BookingRules.court_window_days} days in advance. Please contact us via WhatsApp for special requests." and return
+      end
+      if duration.present? && duration.to_i > BookingRules.court_max_hours
+        redirect_to search_path, alert: "Individual court bookings are limited to #{BookingRules.court_max_hours} hours. Please contact us for longer events." and return
       end
 
       if Booking.check_available_dates?(@court.id, dates, duration)

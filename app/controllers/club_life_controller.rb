@@ -16,6 +16,7 @@ class ClubLifeController < ApplicationController
   def show
     @section = resolve_section
     return if performed?
+    return redirect_to(club_life_path) if Facility::HIDDEN_CLUB_LIFE_NAMES.include?(@section.club_life_root&.en_name)
     raise ActiveRecord::RecordNotFound unless @section.in_club_life?
 
     @root      = @section.club_life_root

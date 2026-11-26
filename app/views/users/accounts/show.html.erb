@@ -37,8 +37,7 @@
                         <%= f.email_field :email %>
                     </div>
                     <div class="bbcc-field">
-                        <%= f.label :phone, "Phone Number" %>
-                        <%= f.text_field :phone %>
+                        <%= render "shared/phone_field", phone: @user.phone %>
                     </div>
                     <div class="bbcc-field">
                         <%= f.label :dob, "Date of Birth" %>

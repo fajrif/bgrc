@@ -37,7 +37,8 @@ jQuery(document).ready(function($){
 
 	// Flatpickr
 	$(".datepicker").flatpickr({"altInput":true, "altFormat": "d/m/Y", "enableTime": false, "disableMobile":true, "dateFormat":"d/m/Y"});
-	var maxBookingDate = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000);
+	var bookingWindowDays = parseInt($('meta[name="booking-window-days"]').attr('content'), 10) || 14;
+	var maxBookingDate = new Date(Date.now() + bookingWindowDays * 24 * 60 * 60 * 1000);
 	$(".datecourtpicker").flatpickr({"altInput":true, minDate: "today", maxDate: maxBookingDate, "altFormat": "d/m/Y", "enableTime": false, "disableMobile":true, "dateFormat":"d/m/Y"});
 
 	// Hero search: the chevron / calendar icon opens its field like the input does

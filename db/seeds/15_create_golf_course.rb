@@ -2,9 +2,9 @@ puts "Seeding golf course..."
 
 golf_course = GolfCourse.find_or_initialize_by(name: "BGRC Golf Course")
 golf_course.assign_attributes(
-  location: "Bali Beach Country Club, Tuban, Bali",
+  location: "Bali Beach Country Club, Nusa Dua, Bali",
   holes_available: "9,18",
-  interval_minutes: 10,
+  interval_minutes: 15,
   max_players: 4,
   status: GolfCourse::AVAILABLE
 )

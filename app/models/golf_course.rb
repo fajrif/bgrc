@@ -32,6 +32,12 @@ class GolfCourse < ApplicationRecord
     club_now.to_date
   end
 
+  # BookingRules.golf_tee_interval (GOLF_TEE_INTERVAL_MINUTES) overrides the course's own
+  # setting when it is set; otherwise the value saved on the course is used.
+  def interval_minutes
+    BookingRules.golf_tee_interval || super
+  end
+
   def available_tee_times(date)
     date = date.is_a?(Date) ? date : Date.parse(date.to_s)
     day_code = date.wday

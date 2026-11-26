@@ -1,0 +1,13 @@
+<%# Phone number with a country-code picker. Posts user[country_code] and user[phone];
+    the controller joins them with User.join_phone before the record is saved.
+    locals: form (optional, for the label), phone (the stored value, may be blank). %>
+<% code, local = User.split_phone(local_assigns[:phone]) %>
+<div class="bbcc-phone-field">
+    <label class="bbcc-phone-label" for="user_phone">Phone Number</label>
+    <div class="bbcc-phone-row">
+        <select name="user[country_code]" id="user_country_code" class="bbcc-phone-code" aria-label="Country code">
+            <%= options_for_select(User::PHONE_COUNTRY_CODES.map { |label, value| [label, value] }, code) %>
+        </select>
+        <input type="tel" name="user[phone]" id="user_phone" class="bbcc-phone-number" inputmode="tel" autocomplete="tel-national" placeholder="Write your phone here" value="<%= local %>">
+    </div>
+</div>

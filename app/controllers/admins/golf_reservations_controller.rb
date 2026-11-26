@@ -17,7 +17,7 @@ class Admins::GolfReservationsController < Admins::BaseController
     reservations = GolfReservation.unscoped
                                   .where("to_char(tee_time, 'YYYYMM') = ?", "#{@year}#{@month.to_s.rjust(2, '0')}")
 
-    interval = @golf_course&.interval_minutes || 10
+    interval = @golf_course&.interval_minutes || 15
 
     @events = JSON[reservations.map do |r|
       color = case r.status

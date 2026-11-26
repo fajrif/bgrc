@@ -1,8 +1,9 @@
 class Users::ClassCreditsController < Users::BaseController
   def index
-    @credit_purchases = current_user.class_credit_purchases
-                                    .includes(:group_class)
-                                    .order(created_at: :desc)
+    # Credits still in use come first, then used-up, expired and unpaid orders.
+    # Each group keeps the newest-first order.
+    purchases = current_user.class_credit_purchases.includes(:group_class).order(created_at: :desc).to_a
+    @credit_purchases = purchases.partition(&:active_credit?).flatten
   end
 
   def destroy

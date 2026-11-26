@@ -59,6 +59,7 @@
 	<div class="col-12 col-lg-8">
 		<% if @court %>
 			<div class="bbcc-schedule" id="schedule">
+				<p class="bbcc-slot-hint">Tap a time to select it. Tap the next hour to extend, or tap the selection again to shorten or remove it.</p>
 				<div id="calendar"></div>
 			</div>
 		<% else %>
@@ -106,8 +107,8 @@
 			<% end %>
 
 			<p class="bbcc-booking-note">
-				Booking window: Online bookings are available up to 14 days in advance.
-				Need a booking outside regular hours or beyond 14 days?
+				Booking window: Online bookings are available up to <%= BookingRules.court_window_days %> days in advance.
+				Need a booking outside regular hours or beyond <%= BookingRules.court_window_days %> days?
 				<br>
 				<a href="https://wa.me/<%= configatron.whatsapp_number.to_s.gsub(/\D/, '') %>" target="_blank" rel="noopener">Contact us via WhatsApp</a>.
 			</p>
@@ -138,7 +139,7 @@
 			flatpickr(date, {
 				dateFormat: 'd/m/Y',
 				minDate: 'today',
-				maxDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000),
+				maxDate: new Date(Date.now() + <%= BookingRules.court_window_days %> * 24 * 60 * 60 * 1000),
 				disableMobile: true,
 				onChange: function() { form.submit(); }
 			});

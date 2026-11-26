@@ -1,0 +1,117 @@
+<%# Tap-to-select booking slots, shared by the first render (index.html.erb) and the AJAX
+    re-render (index.js.erb). Expects the page's `calendar` variable and `@court`.
+    One tap picks one hour. A tap next to the selection extends it; a tap on its first
+    or last hour shortens it; any other tap starts a new selection. Classes sell a fixed block. %>
+var BBCC_MAX_HOURS = <%= BookingRules.court_max_hours %>;
+var BBCC_FIXED_HOURS = <%= @group_class ? @group_class.min_duration.to_i : "null" %>;
+var BBCC_BUSINESS_HOURS = <%= (@business_hours.presence || "[]").html_safe %>;
+var BBCC_HOUR_MS = 3600000;
+
+// inside the court's opening hours on that weekday
+function bbccSlotOpen(start) {
+  var minutes = start.getHours() * 60 + start.getMinutes();
+  return BBCC_BUSINESS_HOURS.some(function (bh) {
+    if (bh.daysOfWeek.indexOf(start.getDay()) === -1) return false;
+    var from = bh.startTime.split(':'), to = bh.endTime.split(':');
+    return minutes >= (+from[0]) * 60 + (+from[1]) && minutes + 60 <= (+to[0]) * 60 + (+to[1]);
+  });
+}
+
+// no booking or class already sits on this hour (the selection itself does not count)
+function bbccSlotFree(start) {
+  var end = start.getTime() + BBCC_HOUR_MS;
+  return !calendar.getEvents().some(function (ev) {
+    if (ev.id === 'book1' || ev.display === 'background' || !ev.start) return false;
+    var evEnd = ev.end ? ev.end.getTime() : ev.start.getTime() + BBCC_HOUR_MS;
+    return ev.start.getTime() < end && evEnd > start.getTime();
+  });
+}
+
+function bbccSlotOK(start) {
+  return start >= new Date(window.bbccClubNow()) && bbccSlotOpen(start) && bbccSlotFree(start);
+}
+
+function bbccPickSlot(start) {
+  var sel = calendar.getEventById('book1');
+  sel = sel ? { start: sel.start, end: sel.end } : null;
+  var t = start.getTime(), next;
+
+  if (BBCC_FIXED_HOURS) {
+    var sameBlock = sel && sel.start.getTime() === t;
+    next = sameBlock ? null : { start: start, end: new Date(t + BBCC_FIXED_HOURS * BBCC_HOUR_MS) };
+  } else if (!sel || sel.start.toDateString() !== start.toDateString()) {
+    next = { start: start, end: new Date(t + BBCC_HOUR_MS) };
+  } else {
+    var s = sel.start.getTime(), e = sel.end.getTime(), multi = e - s > BBCC_HOUR_MS;
+    if (t === e) next = { start: sel.start, end: new Date(e + BBCC_HOUR_MS) };
+    else if (t === s - BBCC_HOUR_MS) next = { start: new Date(t), end: sel.end };
+    else if (t === s && multi) next = { start: new Date(s + BBCC_HOUR_MS), end: sel.end };
+    else if (t === e - BBCC_HOUR_MS && multi) next = { start: sel.start, end: new Date(e - BBCC_HOUR_MS) };
+    else if (t === s) next = null;
+    else next = { start: start, end: new Date(t + BBCC_HOUR_MS) };
+  }
+
+  if (next) {
+    var hours = (next.end - next.start) / BBCC_HOUR_MS;
+    if (!BBCC_FIXED_HOURS && hours > BBCC_MAX_HOURS) {
+      bbccToast("warning", "Individual court bookings are limited to " + BBCC_MAX_HOURS + " hours. For longer events please contact us.");
+      return;
+    }
+    for (var h = next.start.getTime(); h < next.end.getTime(); h += BBCC_HOUR_MS) {
+      if (!bbccSlotOK(new Date(h))) {
+        bbccToast("warning", "That time is not available to book.");
+        return;
+      }
+    }
+    applyBbccSelection(next);
+  } else {
+    clearBbccSelection();
+  }
+}
+
+function applyBbccSelection(range) {
+  var old = calendar.getEventById('book1');
+  if (old) old.remove();
+  calendar.addEvent({
+    id: 'book1',
+    start: range.start,
+    end: range.end,
+    display: 'background',
+    classNames: ['book-selection'],
+    backgroundColor: '#8FBBC4'
+  });
+  requestBbccPrice(range.start, (range.end - range.start) / BBCC_HOUR_MS);
+}
+
+function clearBbccSelection() {
+  var old = calendar.getEventById('book1');
+  if (old) old.remove();
+  $('#btnSubmit').prop("disabled", true);
+  $('#btnSubmit').addClass("disabled");
+  $('#input-book').val('');
+  $('#input-duration').val('');
+  $('#calculate_table').html("<%= escape_javascript(render('calculate_info')) %>");
+}
+
+function requestBbccPrice(start, duration) {
+  var formatDates = moment(start).format('DD/MM/YYYY HH:mm');
+  var coachId = $('#court_coach_select').length ? $('#court_coach_select').val() : "";
+  $('#input-coach-id').val(coachId);
+
+  $.ajax({
+    type: "GET",
+    url: "/courts/<%= @court.id %>/calculate_price",
+    <%- if @group_class -%>
+    data: {dates: formatDates, duration: duration, court_type: <%= blank_or_not(@type, 0) %>, group_class_id: <%= @group_class.try(:id) %>, pax: <%= @pax %>, coach_id: coachId },
+    <%- else -%>
+    data: {dates: formatDates, duration: duration, court_type: <%= blank_or_not(@type, 0) %>, pax: ($('#input-pax').length ? $('#input-pax').val() : ""), coach_id: coachId },
+    <%- end -%>
+    success: function(data, textStatus, jqXHR){
+      $('#input-book').val(formatDates);
+      $('#input-duration').val(duration);
+    },
+    error: function(jqXHR, textStatus, errorThrown){
+      console.log(textStatus);
+    }
+  });
+}

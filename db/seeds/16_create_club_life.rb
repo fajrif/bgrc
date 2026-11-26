@@ -84,13 +84,13 @@ golf = club_life_node!(
 	attrs: {
 		club_life: true, position: 1, parent_id: nil, sport_id: golf_sport&.id,
 		cta_label: "Book Tee Time", cta_url: "/book/golf",
-		short_description: "A coastal course at Tuban playable as nine or eighteen holes, with tee times released daily and green fees set per player.",
-		description: "Our course runs along the coast at Tuban and can be played as a nine or an eighteen hole round. Tee times are released on a rolling daily basis and spaced at ten minute intervals, with a maximum of four players per group, so the course never feels crowded.\n\nGreen fees are charged per player and vary between weekdays and weekends. Golf carts, buggies, caddies and club rental can all be added to your booking when you reserve your tee time, so you can arrive with nothing but your shoes."
+		short_description: "A coastal course at Nusa Dua playable as nine or eighteen holes, with tee times released daily and green fees set per player.",
+		description: "Our course runs along the coast at Nusa Dua and can be played as a nine or an eighteen hole round. Tee times are released on a rolling daily basis and spaced at fifteen minute intervals, with a maximum of four players per group, so the course never feels crowded.\n\nGreen fees are charged per player and vary between weekdays and weekends. Golf carts, buggies, caddies and club rental can all be added to your booking when you reserve your tee time, so you can arrive with nothing but your shoes."
 	},
 	id: {
 		name: "Golf",
-		short_description: "Lapangan tepi pantai di Tuban yang dapat dimainkan sembilan atau delapan belas hole, dengan tee time yang dibuka setiap hari dan green fee per pemain.",
-		description: "Lapangan kami membentang di tepi pantai Tuban dan dapat dimainkan dalam sembilan atau delapan belas hole. Tee time dibuka setiap hari dengan jarak sepuluh menit dan maksimal empat pemain per grup, sehingga lapangan tidak pernah terasa padat.\n\nGreen fee dihitung per pemain dan berbeda antara hari kerja dan akhir pekan. Golf cart, buggy, caddie, serta penyewaan stik dapat ditambahkan saat Anda memesan tee time.",
+		short_description: "Lapangan tepi pantai di Nusa Dua yang dapat dimainkan sembilan atau delapan belas hole, dengan tee time yang dibuka setiap hari dan green fee per pemain.",
+		description: "Lapangan kami membentang di tepi pantai Nusa Dua dan dapat dimainkan dalam sembilan atau delapan belas hole. Tee time dibuka setiap hari dengan jarak lima belas menit dan maksimal empat pemain per grup, sehingga lapangan tidak pernah terasa padat.\n\nGreen fee dihitung per pemain dan berbeda antara hari kerja dan akhir pekan. Golf cart, buggy, caddie, serta penyewaan stik dapat ditambahkan saat Anda memesan tee time.",
 		cta_label: "Pesan Tee Time"
 	},
 	image: "sports/golf.png"
@@ -101,13 +101,13 @@ club_life_node!(
 	attrs: {
 		club_life: false, parent_id: golf.id, position: 1, sport_id: golf_sport&.id,
 		cta_label: "Book Tee Time", cta_url: "/book/golf",
-		short_description: "Nine or eighteen holes, ten minute tee intervals, up to four players per group.",
+		short_description: "Nine or eighteen holes, fifteen minute tee intervals, up to four players per group.",
 		description: "Book a tee time online and choose your round length at checkout. Carts, buggies, caddies and club rental are available as add-ons, and green fees are shown per player before you confirm."
 	},
 	id: {
 		name: "Lapangan Golf",
 		slug: "course",
-		short_description: "Sembilan atau delapan belas hole, interval tee sepuluh menit, hingga empat pemain per grup.",
+		short_description: "Sembilan atau delapan belas hole, interval tee lima belas menit, hingga empat pemain per grup.",
 		description: "Pesan tee time secara online dan pilih panjang permainan saat checkout. Cart, buggy, caddie, dan penyewaan stik tersedia sebagai tambahan, dan green fee ditampilkan per pemain sebelum Anda mengonfirmasi.",
 		cta_label: "Pesan Tee Time"
 	},

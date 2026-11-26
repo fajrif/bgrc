@@ -2,6 +2,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
   # prepend_before_action :check_captcha, only: [:create] # Change this to be any actions you want to protect.
   before_action :check_session_devise_omniauth_data, :only => [:new_by_provider, :create_by_provider]
   before_action :configure_permitted_parameters, if: :devise_controller?
+  before_action :join_phone_param, only: [:create, :create_by_provider]
 
 	def new
 		build_resource({})
@@ -57,9 +58,6 @@ class Users::RegistrationsController < Devise::RegistrationsController
     @resource.phone = params[:user][:phone]
 
     # additional data
-    @resource.gender = 1
-    @resource.dob = 10.years.ago
-    @resource.nationality = "Indonesian"
 
     @resource.password = Devise.friendly_token[0,20]
     @resource.create_provider_from_omniauth!(session["devise.omniauth_data"])
@@ -102,6 +100,13 @@ protected
 
 	def configure_permitted_parameters
 		devise_parameter_sanitizer.permit(:sign_up, keys: [:full_name, :phone, :dob, :gender, :nationality, :use_v2])
+	end
+
+	# The phone field posts a country code and a local number; store them as one value.
+	def join_phone_param
+		return unless params[:user]
+		code = params[:user].delete(:country_code)
+		params[:user][:phone] = User.join_phone(code, params[:user][:phone])
 	end
 
 	def check_captcha
